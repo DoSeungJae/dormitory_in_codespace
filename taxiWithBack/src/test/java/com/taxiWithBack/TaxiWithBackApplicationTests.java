@@ -1,4 +1,4 @@
-package com.example.taxiWithBack;
+package com.taxiWithBack;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
