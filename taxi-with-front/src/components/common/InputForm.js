@@ -1,18 +1,21 @@
-import React from 'react'
+import {React,useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.css'; 
-import 'bootstrap/dist/js/bootstrap.js'; 
+import 'bootstrap/dist/js/bootstrap.js';
 
-const InputForm = ({type,placeholder,value}) => {
+
+function InputForm({ placeholder, type, value, onChange }) {
     return (
-        <input 
-        type={type} //text or password
-        class="form-control" 
-        placeholder={placeholder} 
-        value={value}
-
+      <div className="col">
+        <input
+          type={type}
+          className="form-control"
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
         />
+      </div>
     );
-};
+  }
 
 export default InputForm;
 
