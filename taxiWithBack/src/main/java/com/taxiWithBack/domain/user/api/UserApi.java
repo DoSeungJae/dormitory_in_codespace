@@ -1,11 +1,12 @@
 package com.taxiWithBack.domain.user.api;
 
-
 import com.taxiWithBack.domain.user.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins="http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 @Slf4j
@@ -20,15 +21,19 @@ public class UserApi {
     }
 
     @PostMapping("/logIn")
-    public void logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity
+    public ResponseEntity<UserDTO> logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity <> :User
+        log.info("logIn");
         UserDTO user=dto.toEntity();
         log.info(user.toString());
 
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(user);
     }
 
-    @GetMapping("signUp")
-    public void logIn(){
-        
+    @GetMapping("/signUp")
+    public void signUp(){
+
+
     }
 
 }
