@@ -20,8 +20,9 @@ function UseLogInButton() {
       }
 
       else{
+        console.log(id);
+        console.log(pw);
         
-      
       }
       
     };
@@ -44,7 +45,7 @@ function UseLogInButton() {
             value={pw}
             onChange={(e) => setPw(e.target.value)}
           />
-          {pwError && <small class="mt-2" style={{ Left: '10px' }}>비밀번호를 입력해주세요.</small>}
+          {pwError && <small class="mt-2">비밀번호를 입력해주세요.</small>}
         </div>
   
         <div class="d-grid mt-4 pb-4">
