@@ -3,12 +3,23 @@ import {useState} from 'react';
 import InputForm from '../../components/common/InputForm.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
+import axios from 'axios';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
     const [idError,setIdError]=useState(false);
     const [pwError,setPwError]=useState(false);
+
+    const buttonPressedTest = () => {
+      axios.get('http://localhost:8080/user/test')
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+    }
   
     const buttonPressed = () => {
       if(id===''){
@@ -20,9 +31,14 @@ function UseLogInButton() {
       }
 
       else{
-        console.log(id);
-        console.log(pw);
-        
+        axios.post('http://localhost:8080/user/logIn',{logInId:id,passWord:pw})
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error(error);
+        })
+  
       }
       
     };
