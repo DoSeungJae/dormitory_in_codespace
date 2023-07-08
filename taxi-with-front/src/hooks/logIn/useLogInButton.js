@@ -10,6 +10,7 @@ function UseLogInButton() {
   
     const buttonPressed = () => {
       console.log(id, pw);
+      
     };
   
     return (
