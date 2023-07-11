@@ -26,11 +26,12 @@ public class UserApi {
         UserDTO user=dto.toEntity();
         log.info(user.toString());
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .body(user);
     }
 
-    @GetMapping("/signUp")
+    @GetMapping("/signUp/newUser")
     public void signUp(){
 
 
