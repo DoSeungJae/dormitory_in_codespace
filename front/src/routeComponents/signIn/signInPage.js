@@ -1,9 +1,14 @@
 import react from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
+import axios from 'axios';
+import UseSignInButton from '../../hooks/signIn/UseSignInButton';
 
-const signInPage = () => {
+const SignInPage = () => {
     return (
-        <div className="signInPage">
-            <h1>123</h1>
+        <div className="SignInPage">
+            <UseSignInButton/>
+            
+            
 
 
         </div>
@@ -11,4 +16,4 @@ const signInPage = () => {
     );
 };
 
-export default signInPage;
+export default SignInPage;

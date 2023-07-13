@@ -55,3 +55,16 @@
   text-align : left;
   padding-left : 25px;
 }
+
+#signInContainer {
+  padding-top : 15%;
+  padding-bottom : 15%;
+  padding-left:10%;
+  padding-right:10%;
+
+}
+
+#test {
+  text-align : left;
+
+}
