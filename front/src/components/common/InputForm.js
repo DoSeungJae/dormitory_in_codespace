@@ -5,7 +5,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 
 function InputForm({ placeholder, type, value, onChange }) {
     return (
-      <div  className="col">
+      <div  >
         <input
           type={type}
           className="form-control"

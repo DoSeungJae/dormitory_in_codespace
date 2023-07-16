@@ -57,7 +57,7 @@
 }
 
 #signInContainer {
-  padding-top : 15%;
+  padding-top : 35%;
   padding-bottom : 15%;
   padding-left:10%;
   padding-right:10%;
@@ -66,5 +66,17 @@
 
 #test {
   text-align : left;
+
+}
+
+#signInForm{
+  text-align : left;
+  padding-left : 25px;
+}
+
+
+#signInSmall {
+  text-align : right;
+  
 
 }
