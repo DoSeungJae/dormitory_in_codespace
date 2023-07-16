@@ -42,7 +42,6 @@ const UseSignInButton = () => {
             <label class="row mt-3">
                 <h6 id="signInForm" >비밀번호</h6>
                 <div class="col">
-
                     {pw.length!==0 && rex_pw.test(pw)===false
                     && <small id="signInSmall">
                         양식에 맞지 않아요!
@@ -59,10 +58,13 @@ const UseSignInButton = () => {
 
             <label class="row mt-3">
                 <h6 id="signInForm">비밀번호 확인</h6>
-                {pw2.length!==0 && pw!==pw2 && 
-                    <small id="signInSmall">
-                    비밀번호가 일치하지 않아요!
-                    </small>}
+                <div class="col">
+                        {pw2.length!==0 && pw!==pw2 && 
+                        <small id="signInSmall">
+                        비밀번호가 일치하지 않아요!
+                        </small>}
+                </div>
+
                 <InputForm
                     type="password"
                     placeholder="한 번 더 입력해주세요! "
