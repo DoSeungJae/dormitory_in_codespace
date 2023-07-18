@@ -9,11 +9,6 @@ const UseSignInButton = () => {
     const [pw2,setPw2]= useState('');
     const [tel, setTel] = useState('');
     const [nick, setNick] = useState('');
-    const [idError,setIdError]=useState(false);
-    const [pwError,setPwError]=useState(false);
-    const [pw2Error,setpw2Error]=useState(false);
-    const [telError,setTelError]=useState(false);
-    const [nickError,setNickError]=useState(false);
 
     const rex_id = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,12}$/;
     const rex_pw = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9!@#$%^&*()]{8,16}$/;
@@ -22,8 +17,9 @@ const UseSignInButton = () => {
 
     return (
         <div class="SignInPage">
-
+            
         <div className="container p-4">
+        <h3  className="Title mt-3" >회원정보를 입력해주세요!</h3>
         <label class="row mt-3">
                 <h6 class="col" id="signInForm">아이디</h6>
                 <div class="col">
