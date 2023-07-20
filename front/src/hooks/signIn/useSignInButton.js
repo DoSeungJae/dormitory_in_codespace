@@ -106,18 +106,23 @@ const UseSignInButton = () => {
         </label>
 
         <label className="row mt-3">
-          <h6 id="signInForm">닉네임</h6>
-          {nick.length !== 0 && rex_nick.test(nick) && isNickFocused === false && (
-            <small id="signInSmall">양식을 확인해주세요!</small>
-          )}
+          <h6 className="col" id="signInForm">
+            닉네임
+          </h6>
+          <div className="col">
+            {nick.length !== 0 && rex_nick.test(nick) === false && isNickFocused === false && (
+              <small id="signInSmall">양식에 맞지 않아요!</small>
+            )}
+          </div>
           <SignInForm
             type="text"
-            placeholder="특수문자 없이 8자리 이하 "
+            placeholder="특수문자 없이 8자리 이하"
             value={nick}
             onChange={(e) => setNick(e.target.value)}
             ref={refNick}
           />
         </label>
+
       </div>
     </div>
   );
