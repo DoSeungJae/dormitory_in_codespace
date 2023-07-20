@@ -29,9 +29,6 @@ const UseSignInButton = () => {
   const isNickFocused = refNick.current === document.activeElement;
 
 
-  console.log(isMailFocused);
-
-
   return (
     <div className="SignInPage">
       <div className="container p-4">
@@ -44,7 +41,6 @@ const UseSignInButton = () => {
             {eMail.length !== 0 && rex_email.test(eMail) === false && isMailFocused === false &&  (
               <small id="signInSmall">양식에 맞지 않아요!</small>
             )}
-            {isMailFocused ===true &&<small>123</small>}
           </div>
           <SignInForm
             type="text"
@@ -60,7 +56,7 @@ const UseSignInButton = () => {
             비밀번호
           </h6>
           <div className="col">
-            {pw.length !== 0 && rex_pw.test(pw) === false && (
+            {pw.length !== 0 && rex_pw.test(pw) === false && isPwFocused === false && (
               <small id="signInSmall">양식에 맞춰주세요!</small>
             )}
           </div>
@@ -78,7 +74,7 @@ const UseSignInButton = () => {
             비밀번호 확인
           </h6>
           <div className="col">
-            {pw2.length !== 0 && pw !== pw2 && (
+            {pw2.length !== 0 && pw !== pw2 && isPw2Focused === false &&  (
               <small id="signInSmall">일치하지 않아요!</small>
             )}
           </div>
@@ -96,7 +92,7 @@ const UseSignInButton = () => {
             전화번호
           </h6>
           <div className="col">
-            {tel.length !== 0 && rex_tel.test(tel) === false && (
+            {tel.length !== 0 && rex_tel.test(tel) === false && isTelFocused === false && (
               <small id="signInSmall">양식에 맞지 않아요!</small>
             )}
           </div>
@@ -111,7 +107,7 @@ const UseSignInButton = () => {
 
         <label className="row mt-3">
           <h6 id="signInForm">닉네임</h6>
-          {nick.length !== 0 && rex_nick.test(nick) && (
+          {nick.length !== 0 && rex_nick.test(nick) && isNickFocused === false && (
             <small id="signInSmall">양식을 확인해주세요!</small>
           )}
           <SignInForm
