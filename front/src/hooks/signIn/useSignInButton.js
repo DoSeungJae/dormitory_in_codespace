@@ -3,6 +3,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import InputForm from '../../components/common/InputForm';
 import SignInForm from '../../components/signIn/SignInForm';
+import Button from '../../components/common/Button';
+import axios from 'axios';
+
 
 const UseSignInButton = () => {
   const [eMail, setEMail] = useState('');
@@ -27,6 +30,26 @@ const UseSignInButton = () => {
   const isPw2Focused = refPw2.current === document.activeElement;
   const isTelFocused = refTel.current === document.activeElement;
   const isNickFocused = refNick.current === document.activeElement;
+
+  const buttonPressed = () => {
+    if(rex_email.test(eMail) &&
+        rex_pw.test(pw) &&
+        pw===pw2 &&
+        rex_tel.test(tel) &&
+        rex_nick.test(nick)
+        ){
+            axios.post('http://localhost:8000/user/signIn',
+            {})
+
+            
+        }
+    else{
+        console.log("error")
+    }
+  }
+
+
+
 
 
   return (
@@ -122,6 +145,11 @@ const UseSignInButton = () => {
             ref={refNick}
           />
         </label>
+        
+
+        <div className="row mt-5">
+            <Button onClick={buttonPressed}>회원가입</Button>
+        </div>
 
       </div>
     </div>
