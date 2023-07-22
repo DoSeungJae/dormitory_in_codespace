@@ -38,8 +38,14 @@ const UseSignInButton = () => {
         rex_tel.test(tel) &&
         rex_nick.test(nick)
         ){
-            axios.post('http://localhost:8000/user/signIn',
-            {})
+            axios.post('http://localhost:8080/user/signIn',
+            {eMail:eMail,passWord:pw,nickName:nick})
+            .then(response => {
+              console.log(response.data);
+            })
+            .catch(error => {
+              console.error(error);
+            })
 
             
         }

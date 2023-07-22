@@ -31,14 +31,14 @@ function UseLogInButton() {
       }
 
       else{
-        axios.post('http://localhost:8080/user/logIn',{logInId:id,passWord:pw})
+        axios.post('http://localhost:8080/user/logIn',
+        {eMail:id,passWord:pw})
         .then(response => {
           console.log(response.data);
         })
         .catch(error => {
           console.error(error);
         })
-  
       }
       
     };
