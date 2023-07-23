@@ -30,11 +30,15 @@ public class UserApi {
                 .status(HttpStatus.OK)
                 .body(user);
     }
+    @PostMapping("/signIn")
+    public ResponseEntity<UserDTO> signUp(@RequestBody UserDTO dto){
+        log.info("signIn");
+        UserDTO user=dto.toEntity();
+        log.info(user.toString());
 
-    @GetMapping("/signUp/newUser")
-    public void signUp(){
-
-
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(user);
     }
 
 }
