@@ -32,7 +32,7 @@ function UseLogInButton() {
 
       else{
         axios.post('http://localhost:8080/user/logIn',
-        {eMail:id,passWord:pw})
+        {eMail:id,passWord:pw,nickName:null})
         .then(response => {
           console.log(response.data);
         })
