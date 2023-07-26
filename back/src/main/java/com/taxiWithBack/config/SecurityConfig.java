@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -22,11 +23,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public void init(WebSecurity web) throws Exception {
-        web.ignoring()
-    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -34,6 +30,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
@@ -44,6 +41,17 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("user").password(encodePwd().encode("password")).roles("USER")
+                .and()
+                .withUser("admin").password(encodePwd().encode("password")).roles("ADMIN");
+
+    }
+
+
+
 
 
 
