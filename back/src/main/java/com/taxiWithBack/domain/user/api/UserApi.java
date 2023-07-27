@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/vi/user")
 @Slf4j
 public class UserApi {
     private UserService userService;
@@ -37,25 +37,11 @@ public class UserApi {
         }
     }
 
-    @PostMapping("/signIn")
-    public ResponseEntity<UserDTO> signUp(@RequestBody UserDTO dto) {
-        try {
-            User user = userService.signIn(dto.getEmail(), dto.getPassWord(), dto.getNickName());
-            log.info("회원가입 성공" + user.toString());
-
-            //회원 가입 성공 시 이후 처리 필요 (JWT 등)
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(dto);
-
-        } catch (IllegalArgumentException e) {
-            log.error("회원가입 실패 : " + e.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .build();
-
-        }
+    @PostMapping("/join") //singIn -> join !!
+    public ResponseEntity<?> signUp(@RequestBody UserDTO dto) {
+        User user = userService.signUp(dto.getEmail(), dto.getPassWord(), dto.getNickName());
+        return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + user.toString());
     }
+
 
 }

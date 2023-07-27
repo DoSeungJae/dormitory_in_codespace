@@ -37,21 +37,4 @@ public class UserDTO {
     }
 
 
-    /*
-    public UserDTO toEntity(){
-        return new UserDTO(eMail,passWord,nickName);
-    }
-
-    @Override
-    public String toString(){
-        String str="eMail : "+eMail+" passWord : "+passWord;
-        if(nickName!=null){
-            return str+" nickName : "+nickName;
-        }
-        return str;
-
-
-    }
-
-     */
 }
