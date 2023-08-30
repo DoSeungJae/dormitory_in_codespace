@@ -37,7 +37,7 @@ class UserApiTest {
         String passWord="thslr1234";
         String nickName="niiick";
 
-        mockMvc.perform(post("/api/vi/users/join")
+        mockMvc.perform(post("/api/v1/users/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new UserDTO(eMail,passWord,nickName))))
                 .andDo(print())
@@ -52,7 +52,7 @@ class UserApiTest {
         String passWord="thslr1234";
         String nickName="niiick";
 
-        mockMvc.perform(post("/api/vi/users/join")
+        mockMvc.perform(post("/api/v1/users/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new UserDTO(eMail,passWord,nickName))))
                 .andDo(print())

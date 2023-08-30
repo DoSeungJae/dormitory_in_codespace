@@ -10,7 +10,7 @@ package com.taxiWithBack.domain.user.entity;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "app_user")
+@Table
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
