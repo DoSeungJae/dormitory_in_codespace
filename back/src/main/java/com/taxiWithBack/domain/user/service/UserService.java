@@ -17,11 +17,17 @@ public class UserService {
     private UserRepository userRepository;
 
     public User signUp(String eMail, String passWord, String nickName) {
-        User existingUser = userRepository.findByeMail(eMail);
-        if (existingUser != null) {
-            throw new IllegalArgumentException("이미 사용중인 메일입니다.");
+        User existingUserMail = userRepository.findByeMail(eMail);
+        User existingUserNick = userRepository.findByNickName(nickName);
 
+        if (existingUserMail != null) {
+            throw new IllegalArgumentException("이미 사용중인 메일입니다.");
         }
+
+        if(existingUserNick != null){
+            throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
+        }
+
         User user = User.builder()
                 .eMail(eMail)
                 .passWord(passWord)
@@ -33,18 +39,18 @@ public class UserService {
 
     }
 
-
-
     public User logIn(String eMail, String passWord){
         User user=userRepository.findByeMail(eMail);
         if(user==null){
             throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
         }
 
-        else{
-            throw new RuntimeException("비밀번호가 일치하지 않습니다"); //IllegalArgumentException -> Run
-
+        else if(!user.getPassWord().equals(passWord)){
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
+
+        return user;
+
     }
 
 
