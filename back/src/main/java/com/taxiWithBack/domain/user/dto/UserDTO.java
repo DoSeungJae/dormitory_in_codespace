@@ -10,6 +10,11 @@ public class UserDTO {
         this.passWord=passWord;
         this.nickName=nickName;
     }
+    @Override
+    public String toString(){
+        return (this.eMail+","+this.passWord+","+this.nickName);
+
+    }
 
     public String getEmail(){
         return eMail;

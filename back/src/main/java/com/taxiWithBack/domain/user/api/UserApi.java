@@ -4,6 +4,7 @@ import com.taxiWithBack.domain.user.dto.UserDTO;
 import com.taxiWithBack.domain.user.entity.User;
 import com.taxiWithBack.domain.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/user")
 @Slf4j
 public class UserApi {
-    private UserService userService;
+    private final UserService userService;
+    @Autowired
+    public UserApi(UserService userService){
+        this.userService=userService;
+
+    }
     @GetMapping("/test")
     public String test(){
         log.info("12");
@@ -39,6 +45,8 @@ public class UserApi {
 
     @PostMapping("/join") //singIn -> join !!
     public ResponseEntity<?> signUp(@RequestBody UserDTO dto) {
+        log.info(dto.toString());
+
         User user = userService.signUp(dto.getEmail(), dto.getPassWord(), dto.getNickName());
         return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + user.toString());
     }
