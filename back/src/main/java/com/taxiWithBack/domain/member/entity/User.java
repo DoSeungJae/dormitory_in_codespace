@@ -1,4 +1,4 @@
-package com.taxiWithBack.domain.user.entity;
+package com.taxiWithBack.domain.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 @Data

@@ -1,9 +1,8 @@
-package com.taxiWithBack.domain.user.service;
+package com.taxiWithBack.domain.member.service;
 
 
-import com.taxiWithBack.domain.user.dto.UserDTO;
-import com.taxiWithBack.domain.user.entity.User;
-import com.taxiWithBack.domain.user.repository.UserRepository;
+import com.taxiWithBack.domain.member.entity.User;
+import com.taxiWithBack.domain.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

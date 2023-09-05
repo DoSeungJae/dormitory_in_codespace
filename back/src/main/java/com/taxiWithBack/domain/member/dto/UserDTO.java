@@ -1,4 +1,4 @@
-package com.taxiWithBack.domain.user.dto;
+package com.taxiWithBack.domain.member.dto;
 
 public class UserDTO {
 

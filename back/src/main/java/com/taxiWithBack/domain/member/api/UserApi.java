@@ -1,8 +1,8 @@
-package com.taxiWithBack.domain.user.api;
+package com.taxiWithBack.domain.member.api;
 
-import com.taxiWithBack.domain.user.dto.UserDTO;
-import com.taxiWithBack.domain.user.entity.User;
-import com.taxiWithBack.domain.user.service.UserService;
+import com.taxiWithBack.domain.member.dto.UserDTO;
+import com.taxiWithBack.domain.member.entity.User;
+import com.taxiWithBack.domain.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +45,7 @@ public class UserApi {
         }
     }
 
-    @PostMapping("/join") //singIn -> join !!
+    @PostMapping("/join") //singIn ->= join !!
     public ResponseEntity<?> signUp(@RequestBody UserDTO dto) {
         log.info(dto.toString());
 

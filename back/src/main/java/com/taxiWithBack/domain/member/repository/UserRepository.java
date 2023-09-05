@@ -1,7 +1,7 @@
-package com.taxiWithBack.domain.user.repository;
+package com.taxiWithBack.domain.member.repository;
 
 
-import com.taxiWithBack.domain.user.entity.User;
+import com.taxiWithBack.domain.member.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User,Long> {
     User findByeMail(String eMail);
