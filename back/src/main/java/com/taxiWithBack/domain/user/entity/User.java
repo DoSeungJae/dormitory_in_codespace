@@ -1,8 +1,6 @@
 package com.taxiWithBack.domain.user.entity;
-
-        import jakarta.persistence.*;
-        import lombok.*;
-
+import jakarta.persistence.*;
+import lombok.*;
 @Data
 @Builder
 @ToString

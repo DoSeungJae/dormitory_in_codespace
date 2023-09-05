@@ -1,6 +1,7 @@
 package com.taxiWithBack.domain.user.dto;
 
 public class UserDTO {
+
     String eMail;
     String passWord;
     String nickName;
