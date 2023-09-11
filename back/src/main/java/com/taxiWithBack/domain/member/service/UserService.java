@@ -3,9 +3,14 @@ package com.taxiWithBack.domain.member.service;
 
 import com.taxiWithBack.domain.member.entity.User;
 import com.taxiWithBack.domain.member.repository.UserRepository;
+import com.taxiWithBack.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,6 +19,13 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
 
     public User signUp(String eMail, String passWord, String nickName) {
         User existingUserMail = userRepository.findByeMail(eMail);
