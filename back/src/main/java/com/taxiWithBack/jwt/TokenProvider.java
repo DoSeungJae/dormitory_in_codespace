@@ -5,14 +5,11 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.sql.results.graph.collection.CollectionResultGraphNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -41,7 +37,7 @@ public class TokenProvider implements InitializingBean {
     public TokenProvider(
 
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityMilliseconds){
+            @Value("${jwt.token-validity-in-seconds}") long tokenValidityMilliseconds){ //properties에서 추가 필요
 
         this.secret=secret;
         this.tokenValidityMilliseconds=tokenValidityMilliseconds*1000;
@@ -69,6 +65,21 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .compact();
 
+    }
+
+    public String createTokenNoSecurity(com.taxiWithBack.domain.member.entity.User user){ //With no Spring Security
+
+        Date now=new Date();
+        Date validity=new Date(now.getTime()+this.tokenValidityMilliseconds);
+
+        return Jwts.builder()
+                .setSubject(user.getEMail())
+                .claim("userId",user.getEMail())
+                .claim("roles","USER")
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(key,SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public Authentication getAuthentication(String token){

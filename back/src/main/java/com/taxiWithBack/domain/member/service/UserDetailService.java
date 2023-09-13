@@ -16,8 +16,10 @@ public class UserDetailService implements UserDetailsService {
     private final PasswordEncoder passWordEncoder;
     @Override
     public UserDetails loadUserByUsername(String eMail) throws UsernameNotFoundException {
-        User user=userRepository.findByeMail(eMail)
-                .orElseThrow(() -> new UsernameNotFoundException(eMail+"을(를) 찾을 수 없습니다."));
+        User user=userRepository.findByeMail(eMail);
+        if(user==null){
+            throw new UsernameNotFoundException("이메일"+eMail+"을(를) 찾을 수 없습니다.");
+        }
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEMail())
