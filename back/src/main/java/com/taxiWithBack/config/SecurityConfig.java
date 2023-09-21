@@ -1,6 +1,6 @@
 package com.taxiWithBack.config;
-import com.taxiWithBack.domain.member.service.UserDetailService;
-import com.taxiWithBack.jwt.JwtSecurityConfig;
+//import com.taxiWithBack.domain.member.service.UserDetailService;
+//import com.taxiWithBack.jwt.JwtSecurityConfig;
 import com.taxiWithBack.jwt.TokenProvider;
 import com.taxiWithBack.jwt.exception.JwtAccessDeniedHandler;
 import com.taxiWithBack.jwt.exception.JwtAuthenticationEntryPoint;
@@ -17,41 +17,36 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    private final TokenProvider tokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    @Autowired
-    private final UserDetailService userDetailService;
+    //private final TokenProvider tokenProvider1;
+    //private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint1;
+    //private final JwtAccessDeniedHandler jwtAccessDeniedHandle1r;
+    //@Autowired
+    //private final UserDetailService userDetailService1;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    //private final AuthenticationManagerBuilder authenticationManagerBuilder1;
 
 
     public SecurityConfig(
             TokenProvider tokenProvider,
-            JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-            JwtAccessDeniedHandler jwtAccessDeniedHandler,
-            UserDetailService userDetailService,
+            //JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint1,
+            //JwtAccessDeniedHandler jwtAccessDeniedHandler1,
+            //UserDetailService userDetailService1,
             AuthenticationManagerBuilder authenticationManagerBuilder){
 
-        this.tokenProvider=tokenProvider;
-        this.jwtAuthenticationEntryPoint=jwtAuthenticationEntryPoint;
-        this.jwtAccessDeniedHandler=jwtAccessDeniedHandler;
-        this.userDetailService=userDetailService;
-        this.authenticationManagerBuilder=authenticationManagerBuilder;
+        //this.tokenProvider=tokenProvider;
+        //this.jwtAuthenticationEntryPoint=jwtAuthenticationEntryPoint;
+        //this.jwtAccessDeniedHandler=jwtAccessDeniedHandler;
+        //this.userDetailService=userDetailService;
+        //this.authenticationManagerBuilder=authenticationManagerBuilder;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-
-        return new BCryptPasswordEncoder();
-    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                //.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                //.accessDeniedHandler(jwtAccessDeniedHandler)
 
                 //h2-console 사용
                 .and()
@@ -69,17 +64,20 @@ public class SecurityConfig {
                 .requestMatchers("api/v1/user/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
+                .authenticated();
 
-                .and()
-                .apply(new JwtSecurityConfig(tokenProvider))
+                //.and()
+                //.apply(new JwtSecurityConfig(tokenProvider))
 
-                .and()
-                .authenticationProvider(daoAuthenticationProvider()); //??
+                //.and()
+                //.authenticationProvider(daoAuthenticationProvider()); //??
 
         return http.build();
     }
 
+
+
+    /*
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider =  new DaoAuthenticationProvider();
@@ -88,6 +86,8 @@ public class SecurityConfig {
 
         return daoAuthenticationProvider;
     }
+
+     */
 
 
 

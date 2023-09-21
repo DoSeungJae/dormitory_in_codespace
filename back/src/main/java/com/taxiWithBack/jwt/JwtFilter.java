@@ -15,6 +15,8 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 
 
+
+/*
 //JWT를 위한 커스텀 필터를 만들기 위한 클래스
 public class JwtFilter extends GenericFilterBean {
 
@@ -27,6 +29,7 @@ public class JwtFilter extends GenericFilterBean {
     public JwtFilter(TokenProvider tokenProvider){
         this.tokenProvider=tokenProvider;
     }
+
 
 
     @Override
@@ -59,6 +62,8 @@ public class JwtFilter extends GenericFilterBean {
 
     }
 }
+
+ */
 
 
 

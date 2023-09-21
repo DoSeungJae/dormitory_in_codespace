@@ -28,14 +28,14 @@ public class UserApi {
 
 
     @PostMapping("/logIn")
-    public ResponseEntity<UserDTO> logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity <String>
+    public ResponseEntity<String> logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity <String>
         try{
-            User user=userService.logInNoSecurity(dto.getEmail(),dto.getPassWord());
+            String token=userService.logInNoSecurity(dto.getEmail(),dto.getPassWord());
             log.info("로그인 성공");
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(dto);
+                    .body(token);
         }
         catch(IllegalArgumentException e){
             log.error("로그인 실패 : "+e.getMessage());

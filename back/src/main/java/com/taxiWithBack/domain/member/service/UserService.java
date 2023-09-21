@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+//Spring Security
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -24,8 +25,9 @@ public class UserService {
     @Autowired
     private TokenProvider tokenProvider;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    //@Autowired
+    //private AuthenticationManager authenticationManager1;
+
 
 
     public User signUp(String eMail, String passWord, String nickName) {
@@ -51,7 +53,7 @@ public class UserService {
 
     }
 
-    public ResponseEntity<String> logInNoSecurity(String eMail, String passWord){
+    public String logInNoSecurity(String eMail, String passWord){
         User user=userRepository.findByeMail(eMail);
         if(user==null){
             throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
@@ -61,9 +63,7 @@ public class UserService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        TokenProvider tokenProvider=new TokenProvider() //
-        String token=tokenProvider.createTokenNoSecurity(user);
-        return ResponseEntity.ok(token);
+        return tokenProvider.createTokenNoSecurity(user);
 
 
     }

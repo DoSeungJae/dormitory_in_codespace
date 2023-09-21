@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 @Data
 @Builder
 @ToString
@@ -24,18 +26,33 @@ public class User {
     @Column
     private String nickName;
 
-    private PasswordEncoder passwordEncoder;
+    @ElementCollection(fetch=FetchType.EAGER)
+    private List<String> roles;
+
+    //private PasswordEncoder passwordEncoder;
+
+    //public void setPassWord(String passWord){
+        //this.passWord=new BCryptPasswordEncoder().encode(passWord);
+    //}
 
 
     public User(String eMail, String passWord, String nickName){
         this.eMail=eMail;
         this.passWord=passWord;
         this.nickName=nickName;
+        this.roles=roles;
+
     }
+
+
+
+    /*
     @Bean
     public PasswordEncoder passwordEncoder(){
 
         return new BCryptPasswordEncoder();
     }
+
+     */
 
 }
