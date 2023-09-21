@@ -29,6 +29,7 @@ public class UserApi {
 
     @PostMapping("/logIn")
     public ResponseEntity<String> logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity <String>
+        log.info(dto.toString());
         try{
             String token=userService.logInNoSecurity(dto.getEmail(),dto.getPassWord());
             log.info("로그인 성공");

@@ -8,19 +8,17 @@ public class UserDTO {
     String passWord;
     String nickName;
 
-    Set<String> roles;
+    public UserDTO(){}
+
     public UserDTO(String eMail, String passWord,String nickName){
         this.eMail=eMail;
         this.passWord=passWord;
         this.nickName=nickName;
     }
 
-    public UserDTO(String eMail, String passWord,String nickName,Set<String> roles){
-        this.roles=roles;
-    }
     @Override
     public String toString(){
-        return (this.eMail+","+this.passWord+","+this.nickName+","+this.roles);
+        return (this.eMail+","+this.passWord+","+this.nickName+",");
 
     }
 
@@ -40,7 +38,6 @@ public class UserDTO {
         this.passWord=passWord;
 
     }
-
     public String getNickName(){
         return nickName;
     }
@@ -48,12 +45,4 @@ public class UserDTO {
     public void setNickName(String nickName){
         this.nickName=nickName;
     }
-
-    public Set<String> getRoles() {
-        return roles;
-    }
-    public void setRoles(Set<String> roles){
-        this.roles=roles;
-    }
-
 }

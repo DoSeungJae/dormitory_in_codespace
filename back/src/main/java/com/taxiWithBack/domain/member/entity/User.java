@@ -26,9 +26,6 @@ public class User {
     @Column
     private String nickName;
 
-    @ElementCollection(fetch=FetchType.EAGER)
-    private List<String> roles;
-
     //private PasswordEncoder passwordEncoder;
 
     //public void setPassWord(String passWord){
@@ -40,8 +37,6 @@ public class User {
         this.eMail=eMail;
         this.passWord=passWord;
         this.nickName=nickName;
-        this.roles=roles;
-
     }
 
 
