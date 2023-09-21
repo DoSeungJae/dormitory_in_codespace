@@ -1,7 +1,12 @@
 package com.taxiWithBack.domain.member.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Set;
 
+@Setter
+@Getter
 public class UserDTO {
 
     String eMail;
@@ -22,11 +27,11 @@ public class UserDTO {
 
     }
 
-    public String getEmail(){
+    public String getEMail(){
         return eMail;
     }
 
-    public void setEmail(String eMail){
+    public void setEMail(String eMail){
         this.eMail=eMail;
     }
 
@@ -34,7 +39,7 @@ public class UserDTO {
         return passWord;
     }
 
-    public void setPassWord(){
+    public void setPassWord(String passWord){
         this.passWord=passWord;
 
     }

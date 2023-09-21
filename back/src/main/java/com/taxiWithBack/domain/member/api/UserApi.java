@@ -31,7 +31,7 @@ public class UserApi {
     public ResponseEntity<String> logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity <String>
         log.info(dto.toString());
         try{
-            String token=userService.logInNoSecurity(dto.getEmail(),dto.getPassWord());
+            String token=userService.logInNoSecurity(dto.getEMail(),dto.getPassWord());
             log.info("로그인 성공");
 
             return ResponseEntity
@@ -50,7 +50,7 @@ public class UserApi {
     public ResponseEntity<?> signUp(@RequestBody UserDTO dto) {
         log.info(dto.toString());
 
-        User user = userService.signUp(dto.getEmail(), dto.getPassWord(), dto.getNickName());
+        User user = userService.signUp(dto.getEMail(), dto.getPassWord(), dto.getNickName());
         return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + user.toString());
     }
 
