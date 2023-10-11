@@ -1,5 +1,5 @@
 # Project
-Project - Delivery
+Project - Joint Delivery Service in Dormitory
 
 백엔드 - Spring Boot
 
