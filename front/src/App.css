@@ -15,6 +15,7 @@
   }
 }
 
+/*
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -25,6 +26,61 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+*/
+
+.App-header,
+.App-main,
+.App-footer {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.App-header {
+  background-color : F5F5F5;
+  height : 10vh
+}
+
+.App-main {
+  height: 81vh; /* Adjust this value as needed */
+  background-color : F5F5F5;
+}
+
+.slide-menu {
+  display : flex;
+  overflow-x : auto;
+
+}
+
+.slide-item { 
+  flex: 0 0 auto;
+  margin-right:10px;
+  padding:10px;
+  border-radius:10px;
+  background-color:skyblue;
+}
+
+.bottom-menu{
+  margin-top:600px; /*임시 margin , 고정값이기 때문에 반응형으로 바꿔줘야함. -> 에러 해결 필요*/
+  display : flex;
+  justify-content : space-between;
+}
+
+
+.menu-item {
+
+  color: #000;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.App-footer { 
+  background-color : F5F5F5;
+  height : 9vh
+}
+
 
 .App-link {
   color: #61dafb;
@@ -79,4 +135,19 @@
   text-align : right;
   
 
+}
+
+
+/* 반응형 디자인을 위한 코드, 테스트 필요 */
+@media only screen and (max-width : 600px){
+  .App-header, .App-footer {
+
+  }
+}
+
+
+/* 메뉴가 열렸을 때 화면 전환 애니메이션 */
+.App-footer.open {
+  transform: translateY(-100%);
+  transition: transform .3s ease-in-out;
 }
