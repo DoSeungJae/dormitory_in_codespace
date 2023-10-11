@@ -38,7 +38,7 @@ const UseSignInButton = () => {
         rex_tel.test(tel) &&
         rex_nick.test(nick)
         ){
-            axios.post('http://localhost:8080/user/signIn',
+            axios.post('http://localhost:8080/api/v1/user/join',
             {eMail:eMail,passWord:pw,nickName:nick})
             .then(response => {
               console.log(response.data);
@@ -51,6 +51,7 @@ const UseSignInButton = () => {
         }
     else{
         console.log("error")
+        
     }
   }
 

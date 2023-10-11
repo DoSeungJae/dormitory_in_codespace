@@ -12,7 +12,7 @@ function UseLogInButton() {
     const [pwError,setPwError]=useState(false);
 
     const buttonPressedTest = () => {
-      axios.get('http://localhost:8080/user/test')
+      axios.get('http://localhost:8080/api/v1/user/test')
       .then(response => {
         console.log(response.data);
       })
@@ -31,7 +31,7 @@ function UseLogInButton() {
       }
 
       else{
-        axios.post('http://localhost:8080/user/logIn',
+        axios.post('http://localhost:8080/api/v1/user/logIn',
         {eMail:id,passWord:pw,nickName:null})
         .then(response => {
           console.log(response.data);
