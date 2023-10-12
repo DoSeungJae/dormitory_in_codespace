@@ -42,7 +42,7 @@
 }
 
 .App-main {
-  height: 81vh; /* Adjust this value as needed */
+  height: 80vh; /* Adjust this value as needed */
   background-color : F5F5F5;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .bottom-menu{
-  margin-top:600px; /*임시 margin , 고정값이기 때문에 반응형으로 바꿔줘야함. -> 에러 해결 필요*/
+
   display : flex;
   justify-content : space-between;
 }
@@ -74,11 +74,15 @@
   display: flex;
   justify-content: center;
   align-items: center; 
+  margin-top : 15px;
 }
 
 .App-footer { 
   background-color : F5F5F5;
-  height : 9vh
+  height : 10vh;
+  border-top : 0.5px solid #000000;
+
+
 }
 
 

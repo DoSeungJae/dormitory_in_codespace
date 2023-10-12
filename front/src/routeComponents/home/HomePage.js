@@ -26,18 +26,17 @@ function HomePage() {
         })}
     </div>
 
-        <h1></h1>
-        <div style={{flex:100}}></div>
-        <div className="bottom-menu">
+
+
+      </main>
+      <footer className="App-footer">
+      <div className="bottom-menu">
             {['홈','내 글', '글쓰기', '알림'].map((item, i) => (
             <div key={i} className="menu-item">
                 {item}
             </div>
         ))}
         </div>
-      </main>
-      <footer className="App-footer">
-        <h1>footer</h1>
       </footer>
     </div>
   );
