@@ -24,7 +24,6 @@ public class UserDTO {
     @Override
     public String toString(){
         return (this.eMail+","+this.passWord+","+this.nickName+",");
-
     }
 
     public String getEMail(){
