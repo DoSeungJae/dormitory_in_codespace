@@ -47,7 +47,7 @@ public class TokenProvider implements InitializingBean {
             //@Value("${jwt.token-validity-in-seconds}") long tokenValiditySeconds
     ) {
         this.secret = "mySecretKey20220393VlwEyVBsYt9V7zq57Te";
-        this.tokenValidityMilliseconds = 3600 * 1000;  // Convert seconds to milliseconds
+        this.tokenValidityMilliseconds = 600 * 1000;  // Convert seconds to milliseconds
 
 
         if (this.secret == null || this.secret.isEmpty()) {
