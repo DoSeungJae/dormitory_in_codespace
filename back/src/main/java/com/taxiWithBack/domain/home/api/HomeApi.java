@@ -74,8 +74,6 @@ public class HomeApi {
         return ResponseEntity.ok(true);
     }
 
-
-
     @PostMapping("/myWriting") //jwt 유효성 검사 필요, try-catch
     public ResponseEntity<Boolean> myWriting(@RequestBody HomeDto dto){
         return ResponseEntity.ok(true);
