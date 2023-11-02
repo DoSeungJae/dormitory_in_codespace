@@ -1,5 +1,9 @@
 package com.taxiWithBack.domain.article.api;
+import com.taxiWithBack.domain.article.dto.ArticleDTO;
+import com.taxiWithBack.domain.article.service.ArticleService;
+import com.taxiWithBack.domain.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/article")
 @Slf4j
 public class ArticleApi {
+
+    private final ArticleService articleService;
+
+    @Autowired
+    public ArticleApi(ArticleService articleService){
+        this.articleService=articleService;
+    }
+
 
     @GetMapping("/Test")
     public String articleTest(){
@@ -25,7 +37,8 @@ public class ArticleApi {
     }
 
     @GetMapping("/{dorId}")
-    public ResponseEntity dorArticle(@PathVariable("dorId") Long dorId){
+    public ResponseEntity dorArticle(@PathVariable("dorId") Long dorId, @RequestBody ArticleDTO dto){
+
         return ResponseEntity.status(HttpStatus.OK).body(null);
 
     }

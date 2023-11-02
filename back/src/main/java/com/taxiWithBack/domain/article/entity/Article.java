@@ -20,8 +20,6 @@ public class Article {
     @Column(nullable=false,name="dor_id")
     private Long dorId ;
 
-
-
     @Column(nullable=false,name="user_id") //테스트 이후 외래키 설정 필요.
     private Long usrId;
     @Column(nullable=false,name="title")
@@ -35,6 +33,6 @@ public class Article {
     @Column(name="category")
     private String category;
     @Column(name="appointed_time")
-    private LocalDateTime AppointedTime;
+    private LocalDateTime appointedTime;
 
 }
