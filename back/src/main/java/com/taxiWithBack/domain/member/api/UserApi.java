@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/user")
 @Slf4j
 public class UserApi {
+
+
     private final UserService userService;
     @Autowired
     public UserApi(UserService userService){
@@ -21,7 +23,7 @@ public class UserApi {
 
     }
     @GetMapping("/test")
-    public String test(){
+    public String userTest(){
         log.info("12");
         return "12";
     }

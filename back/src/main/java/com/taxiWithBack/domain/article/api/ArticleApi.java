@@ -10,6 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ArticleApi {
 
+    @GetMapping("/Test")
+    public String articleTest(){
+        String msg="article test";
+        log.info(msg);
+        return msg;
+
+    }
+
     @GetMapping("")
     public ResponseEntity allArticles(){
         return ResponseEntity.status(HttpStatus.OK).body(null);

@@ -18,12 +18,16 @@ public class HomeApi {
     @Autowired
     private TokenProvider tokenProvider;
 
+
+    /*
     private final HomeService homeService;
     @Autowired
     public HomeApi(HomeService homeService){
         this.homeService=homeService;
 
     }
+
+     */
 
     @GetMapping("/test")
     public String homeTest(){
