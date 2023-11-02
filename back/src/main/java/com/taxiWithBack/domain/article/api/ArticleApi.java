@@ -28,8 +28,17 @@ public class ArticleApi {
 
     }
 
-    @PatchMapping()
-    @DeleteMapping()
+    @PatchMapping("/{dorId}")
+    public ResponseEntity patchArticle(@PathVariable("dorId") Long dorId){
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @DeleteMapping("/{dorId}")
+    public ResponseEntity deleteArticle(@PathVariable("dorId") Long dorId){
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+
 
 
 

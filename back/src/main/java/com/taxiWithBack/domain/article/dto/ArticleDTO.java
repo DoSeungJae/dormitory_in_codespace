@@ -7,7 +7,7 @@ import java.sql.Time;
 
 @Getter
 @Setter
-public class ArticleDto {
+public class ArticleDTO {
     private Long id;
     private Long dorId;
     private Long usrId;
@@ -18,7 +18,7 @@ public class ArticleDto {
     private Time appointedTime; //Time or String?? 배달 약속 시간
 
 
-    public ArticleDto(Long id, Long dorId,Long usrId,String category,String title, String content,Time createTime,Time appointedTime){
+    public ArticleDTO(Long id, Long dorId, Long usrId, String category, String title, String content, Time createTime, Time appointedTime){
         this.id=id;
         this.dorId=dorId;
         this.usrId=usrId;
@@ -29,7 +29,7 @@ public class ArticleDto {
         this.appointedTime=appointedTime;
 
     }
-    public ArticleDto(Long id, Long dorId,Long usrId,String title, String content,Time createTime){
+    public ArticleDTO(Long id, Long dorId, Long usrId, String title, String content, Time createTime){ //category,appointedTime
         this.id=id;
         this.dorId=dorId;
         this.usrId=usrId;
