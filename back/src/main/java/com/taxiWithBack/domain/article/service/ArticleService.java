@@ -1,6 +1,5 @@
 package com.taxiWithBack.domain.article.service;
 
-
 import com.taxiWithBack.domain.article.dto.ArticleDTO;
 import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.article.repository.ArticleRepository;
@@ -20,14 +19,12 @@ public class ArticleService {
     //Token provider가 필요한가?
     public Article newArticle(ArticleDTO dto){
         Article newOne=Article.builder()
-                .id(dto.getId())
                 .dorId(dto.getDorId())
-                .usrId(dto.getUsrId())
                 .title(dto.getTitle())
                 .content(dto.getContent())
-                .createTime(dto.getCreateTime())
                 .category(dto.getCategory())
-                .appointedTime(dto.getAppointedTime())
+                .createTime(dto.getCreateTime())
+                .appointedTime(null)
                 .build();
 
         Article saved=articleRepository.save(newOne);

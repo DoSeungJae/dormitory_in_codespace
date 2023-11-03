@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="article_id",nullable=false)
-    private Long id;
+    @Column(name="article_id")
+    private Long articleId;
     @Column(nullable=false,name="dor_id")
     private Long dorId ;
 
-    @Column(nullable=false,name="user_id") //테스트 이후 외래키 설정 필요.
+    @Column(name="user_id") //테스트 이후 외래키 설정 필요. (외래키 설정 이전에 jwt 인증)
     private Long usrId;
     @Column(nullable=false,name="title")
     private String title;
@@ -32,7 +32,7 @@ public class Article {
     private LocalDateTime createTime;
     @Column(name="category")
     private String category;
-    @Column(name="appointed_time")
+    @Column(name="appointed_time") //추후에 설정.
     private LocalDateTime appointedTime;
 
 }

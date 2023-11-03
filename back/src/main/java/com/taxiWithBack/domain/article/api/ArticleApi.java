@@ -1,5 +1,6 @@
 package com.taxiWithBack.domain.article.api;
 import com.taxiWithBack.domain.article.dto.ArticleDTO;
+import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.article.service.ArticleService;
 import com.taxiWithBack.domain.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,15 +38,17 @@ public class ArticleApi {
     }
 
     @GetMapping("/{dorId}")
-    public ResponseEntity dorArticle(@PathVariable("dorId") Long dorId, @RequestBody ArticleDTO dto){
+    public ResponseEntity dorArticle(@PathVariable("dorId") Long dorId){
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
 
     }
 
-    @PostMapping("/{dorId}")
-    public ResponseEntity newArticle(@PathVariable("dorId") Long dorId){
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+    @PostMapping("/new")
+    public ResponseEntity newArticle(@RequestBody ArticleDTO dto){
+        Article article=articleService.newArticle(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(article.toString());
+
 
     }
 
