@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/user")
 @Slf4j
 public class UserApi {
-
-
     private final UserService userService;
     @Autowired
     public UserApi(UserService userService){
