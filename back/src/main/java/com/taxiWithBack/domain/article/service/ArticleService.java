@@ -79,8 +79,7 @@ public class ArticleService {
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }
-        articleRepository.delete(target);
-
+        articleRepository.delete(target);g
     }
 
 
