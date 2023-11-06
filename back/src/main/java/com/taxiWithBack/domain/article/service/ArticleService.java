@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class ArticleService {
                 .category(dto.getCategory())
                 .createTime(dto.getCreateTime())
                 .appointedTime(null)
+                .usrId(null)
                 .build();
 
         Article saved = articleRepository.save(newOne);
@@ -36,17 +38,26 @@ public class ArticleService {
 
     public Article getArticle(Long articleId){
         Article article=articleRepository.findByArticleId(articleId);
+        if(article==null){
+            throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
+        }
         return article;
 
     }
     public List<Article> getAllArticles(){
         List<Article> articles=articleRepository.findAll();
+        if(articles.isEmpty()){
+            throw new RuntimeException("글이 존재하지 않습니다.");
+        }
         return articles;
 
     }
 
     public List<Article> getDorArticles(Long dorId){
         List<Article> dorArticles=articleRepository.findAllByDorId(dorId);
+        if(dorArticles.isEmpty()){
+            throw new RuntimeException("유효하지 않는 기숙사 번호이거나 글이 존재하지 않습니다.");
+        }
         return dorArticles;
     }
 
