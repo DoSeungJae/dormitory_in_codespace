@@ -1,4 +1,4 @@
-package com.taxiWithBack.domain.exception;
+package com.taxiWithBack.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

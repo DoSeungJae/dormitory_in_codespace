@@ -1,6 +1,7 @@
 package com.taxiWithBack.domain.member.api;
 
 import com.taxiWithBack.domain.member.dto.UserDTO;
+import com.taxiWithBack.domain.member.dto.UserLogInDTO;
 import com.taxiWithBack.domain.member.entity.User;
 import com.taxiWithBack.domain.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class UserApi {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
     @PostMapping("/logIn")
-    public ResponseEntity<String> logIn(@RequestBody UserDTO dto){ //return type : ResponseEntity <String>
+    public ResponseEntity<String> logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
         log.info(dto.toString());
         try{
             String token=userService.logInNoSecurity(dto.getEMail(),dto.getPassWord());

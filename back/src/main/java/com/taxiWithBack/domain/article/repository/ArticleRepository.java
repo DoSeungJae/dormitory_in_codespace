@@ -10,6 +10,7 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
 
     Article findByArticleId(Long id);
 
+    Article findByUsrId(Long usrId);
     List<Article> findAllByDorId(Long dorId);
 
 

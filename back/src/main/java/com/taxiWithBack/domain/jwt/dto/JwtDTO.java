@@ -1,4 +1,4 @@
-package com.taxiWithBack.jwt.dto;
+package com.taxiWithBack.domain.jwt.dto;
 
 public class JwtDTO {
     private String token;

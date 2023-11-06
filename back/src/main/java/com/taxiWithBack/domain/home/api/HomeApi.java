@@ -2,8 +2,7 @@ package com.taxiWithBack.domain.home.api;
 
 
 import com.taxiWithBack.domain.home.dto.HomeDto;
-import com.taxiWithBack.domain.home.service.HomeService;
-import com.taxiWithBack.jwt.TokenProvider;
+import com.taxiWithBack.domain.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

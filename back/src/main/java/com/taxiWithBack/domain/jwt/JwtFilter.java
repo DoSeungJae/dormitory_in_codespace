@@ -1,4 +1,4 @@
-package com.taxiWithBack.jwt;
+package com.taxiWithBack.domain.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

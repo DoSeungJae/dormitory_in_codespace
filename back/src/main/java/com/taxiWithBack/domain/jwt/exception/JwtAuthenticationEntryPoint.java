@@ -1,4 +1,4 @@
-package com.taxiWithBack.jwt.exception;
+package com.taxiWithBack.domain.jwt.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

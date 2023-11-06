@@ -1,6 +1,6 @@
 package com.taxiWithBack.config;
 
-import com.taxiWithBack.jwt.TokenProvider;
+import com.taxiWithBack.domain.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

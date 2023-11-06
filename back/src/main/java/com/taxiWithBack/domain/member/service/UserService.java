@@ -4,15 +4,10 @@ package com.taxiWithBack.domain.member.service;
 import com.taxiWithBack.domain.member.dto.UserDTO;
 import com.taxiWithBack.domain.member.entity.User;
 import com.taxiWithBack.domain.member.repository.UserRepository;
-import com.taxiWithBack.jwt.TokenProvider;
+import com.taxiWithBack.domain.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 //Spring Security
 import org.springframework.stereotype.Service;
 

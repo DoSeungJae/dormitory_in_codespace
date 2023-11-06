@@ -1,12 +1,10 @@
-package com.taxiWithBack.jwt.api;
+package com.taxiWithBack.domain.jwt.api;
 
 
-import com.taxiWithBack.domain.member.service.UserService;
-import com.taxiWithBack.jwt.TokenProvider;
-import com.taxiWithBack.jwt.dto.JwtDTO;
+import com.taxiWithBack.domain.jwt.TokenProvider;
+import com.taxiWithBack.domain.jwt.dto.JwtDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
