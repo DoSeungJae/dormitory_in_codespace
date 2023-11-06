@@ -17,7 +17,7 @@ import java.util.Date;
 @Slf4j
 public class TokenProvider implements InitializingBean {
 
-    private static final String USER_ID_KEY = "userId";
+    private static final String USER_ID_KEY = "usrId";
 
     private final Logger logger=LoggerFactory.getLogger(TokenProvider.class);
     private static final String AUTHORITIES_KEY="auth20220393";
@@ -96,7 +96,7 @@ public class TokenProvider implements InitializingBean {
 
     }
 
-    public String getUserEMailFromToken(String token){ //DB상에서 user테이블에서 id를 반환하는지, e_mail을 반환하는지 테스트 필요.
+    public String getUserEMailFromToken(String token){
         Claims claims=Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -106,17 +106,6 @@ public class TokenProvider implements InitializingBean {
         return claims.get(USER_ID_KEY,String.class);
 
     }
-    public Long getUserIdFromToken(JwtDTO dto){
-        Claims claims=Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(dto.getToken())
-                .getBody();
-
-        return claims.get(USER_ID_KEY,Long.class);
-    }
-
-
     public boolean validateToken(String token){
         try{
             Jwts.parserBuilder()

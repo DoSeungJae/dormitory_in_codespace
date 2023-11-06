@@ -43,26 +43,26 @@ public class ArticleApi {
     }
 
     @GetMapping("{articleId}")
-    public ResponseEntity article(@PathVariable("articleId") Long articleId){
+    public ResponseEntity article(@PathVariable("articleId") Long articleId){ //token 인증이 필요할 수도 있음.
         Article article=articleService.getArticle(articleId);
         return ResponseEntity.status(HttpStatus.OK).body(article);
     }
 
     @PostMapping("/new")
-    public ResponseEntity newArticle(@RequestBody ArticleDTO dto){
-        Article article=articleService.newArticle(dto);
+    public ResponseEntity newArticle(@RequestBody ArticleDTO dto, @RequestHeader("Authorization") String token){
+        Article article=articleService.newArticle(dto,token);
         return ResponseEntity.status(HttpStatus.CREATED).body(article.toString());
     }
 
     @PatchMapping("/{articleId}")
-    public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody ArticleDTO dto){
-        Article updatedArticle=articleService.updateArticle(dto,articleId);
+    public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody ArticleDTO dto,@RequestHeader("Authorization") String token) {
+        Article updatedArticle=articleService.updateArticle(dto,articleId,token);
         return ResponseEntity.status(HttpStatus.OK).body(updatedArticle);
     }
 
     @DeleteMapping("/{articleId}")
-    public ResponseEntity deleteArticle(@PathVariable("articleId") Long articleId){
-        articleService.deleteArticle(articleId);
+    public ResponseEntity deleteArticle(@PathVariable("articleId") Long articleId, @RequestHeader("Authorization") String token){
+        articleService.deleteArticle(articleId,token);
         return ResponseEntity.status(HttpStatus.OK).body("ARTICLE DELETED");
     }
 

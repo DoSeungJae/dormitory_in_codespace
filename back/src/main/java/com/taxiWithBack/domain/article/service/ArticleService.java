@@ -3,6 +3,8 @@ package com.taxiWithBack.domain.article.service;
 import com.taxiWithBack.domain.article.dto.ArticleDTO;
 import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.article.repository.ArticleRepository;
+import com.taxiWithBack.domain.jwt.TokenProvider;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,16 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
+    private TokenProvider tokenProvider;
+
+
     //Token provider가 필요한가?
     @Transactional
-    public Article newArticle(ArticleDTO dto) {
+    public Article newArticle(ArticleDTO dto,String token) {
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+
         Article newOne = Article.builder()
                 .dorId(dto.getDorId())
                 .title(dto.getTitle())
@@ -62,7 +71,11 @@ public class ArticleService {
     }
 
     @Transactional
-    public Article updateArticle(ArticleDTO dto,Long articleId){
+    public Article updateArticle(ArticleDTO dto,Long articleId,String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+
         Article article=articleRepository.findById(articleId).orElse(null);
         article.update(dto);
         Article saved=articleRepository.save(article);
@@ -74,7 +87,11 @@ public class ArticleService {
     }
 
     @Transactional
-    public void deleteArticle(Long articleId){
+    public void deleteArticle(Long articleId,String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+
         Article target=articleRepository.findById(articleId).orElse(null);
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
