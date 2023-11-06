@@ -1,4 +1,5 @@
 package com.taxiWithBack.domain.member.entity;
+import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.member.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,17 +16,20 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name="users")
+@Table(name="user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long usrId;
+    private Long id;
     @Column(nullable=false, unique = true)
     private String eMail;
     @Column(nullable = false)
     private String passWord;
     @Column
     private String nickName;
+
+    @OneToMany(mappedBy = "usrId")
+    private List<Article> articles;
 
     //private PasswordEncoder passwordEncoder;
 

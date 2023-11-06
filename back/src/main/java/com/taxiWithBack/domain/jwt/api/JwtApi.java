@@ -28,16 +28,15 @@ public class JwtApi {
 
     }
     @PostMapping("/validate") //<boolean>(primitive) -> <Boolean>(wrapper) ResponseEntity의 body에 primitive type을 담을 수 없음.
-    public ResponseEntity<Boolean> tokenValidation(@RequestBody JwtDTO dto){
-        log.info(dto.getToken());
+    public ResponseEntity tokenValidation(@RequestBody JwtDTO dto){
         Boolean isValid=jwtService.validateToken(dto.getToken());
-        if(isValid==true){
-            return ResponseEntity
-                    .ok(true);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(isValid);
+    }
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .build();
+    @PostMapping("/usrId")
+    public ResponseEntity UsrIdFromToken(@RequestBody JwtDTO dto){
+        Long usrId=jwtService.getUserIdFromToken(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(usrId);
+
     }
 }

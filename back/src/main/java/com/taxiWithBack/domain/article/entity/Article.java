@@ -1,5 +1,6 @@
 package com.taxiWithBack.domain.article.entity;
 import com.taxiWithBack.domain.article.dto.ArticleDTO;
+import com.taxiWithBack.domain.member.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,14 +17,16 @@ import java.time.LocalDateTime;
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="article_id")
-    private Long articleId;
+    @Column(name="id")
+    private Long id;
 
     @Column(nullable=false,name="dor_id")
     private Long dorId ;
 
-    @Column(name="user_id") //테스트 이후 외래키 설정 필요. (외래키 설정 이전에 jwt 인증)
-    private Long usrId;
+    @ManyToOne
+    @JoinColumn(name="usr_id") //테스트 이후 외래키 설정 필요. (외래키 설정 이전에 jwt 인증)
+    //@Column(name="usr_id")
+    private User usrId;
     @Column(nullable=false,name="title")
     private String title;
     @Column(nullable=false,name="content")

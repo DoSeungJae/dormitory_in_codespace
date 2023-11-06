@@ -37,7 +37,7 @@ public class ArticleService {
     }
 
     public Article getArticle(Long articleId){
-        Article article=articleRepository.findByArticleId(articleId);
+        Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
         }
@@ -63,7 +63,7 @@ public class ArticleService {
 
     @Transactional
     public Article updateArticle(ArticleDTO dto,Long articleId){
-        Article article=articleRepository.findByArticleId(articleId);
+        Article article=articleRepository.findById(articleId).orElse(null);
         article.update(dto);
         Article saved=articleRepository.save(article);
 
@@ -75,7 +75,7 @@ public class ArticleService {
 
     @Transactional
     public void deleteArticle(Long articleId){
-        Article target=articleRepository.findByArticleId(articleId);
+        Article target=articleRepository.findById(articleId).orElse(null);
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }

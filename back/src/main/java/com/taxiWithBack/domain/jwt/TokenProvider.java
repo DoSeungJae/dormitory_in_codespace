@@ -1,5 +1,6 @@
 package com.taxiWithBack.domain.jwt;
 
+import com.taxiWithBack.domain.jwt.dto.JwtDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -104,6 +105,15 @@ public class TokenProvider implements InitializingBean {
 
         return claims.get(USER_ID_KEY,String.class);
 
+    }
+    public Long getUserIdFromToken(JwtDTO dto){
+        Claims claims=Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(dto.getToken())
+                .getBody();
+
+        return claims.get(USER_ID_KEY,Long.class);
     }
 
 

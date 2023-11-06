@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User getUser(Long usrId){
-        User user=userRepository.findByUsrId(usrId);
+        User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public User updateUser(Long usrId, UserDTO dto){
-        User user=userRepository.findByUsrId(usrId);
+        User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
@@ -93,7 +93,7 @@ public class UserService {
     }
 
     public void deleteUser(Long usrId){
-        User target=userRepository.findByUsrId(usrId);
+        User target=userRepository.findById(usrId).orElse(null);
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
