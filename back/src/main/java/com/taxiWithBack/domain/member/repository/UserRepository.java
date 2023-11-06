@@ -12,5 +12,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     User findByeMail(String eMail);
 
+    User findByUsrId(Long usrId);
+
 
 }

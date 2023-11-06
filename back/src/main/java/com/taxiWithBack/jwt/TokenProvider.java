@@ -110,7 +110,7 @@ public class TokenProvider implements InitializingBean {
 
     }
 
-    public String getUserEMailFromToken(String token){
+    public String getUserEMailFromToken(String token){ //DB상에서 user테이블에서 id를 반환하는지, e_mail을 반환하는지 테스트 필요.
         Claims claims=Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

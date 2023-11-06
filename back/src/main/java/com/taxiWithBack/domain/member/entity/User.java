@@ -1,4 +1,5 @@
 package com.taxiWithBack.domain.member.entity;
+import com.taxiWithBack.domain.member.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.Bean;
@@ -14,11 +15,11 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long usrId;
     @Column(nullable=false, unique = true)
     private String eMail;
     @Column(nullable = false)
@@ -37,6 +38,12 @@ public class User {
         this.eMail=eMail;
         this.passWord=passWord;
         this.nickName=nickName;
+    }
+
+    public void update(UserDTO dto){
+        this.eMail=dto.getEMail();
+        this.nickName=dto.getNickName();
+        this.passWord=dto.getPassWord();
     }
 
 

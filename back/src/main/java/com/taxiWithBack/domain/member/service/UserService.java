@@ -1,6 +1,7 @@
 package com.taxiWithBack.domain.member.service;
 
 
+import com.taxiWithBack.domain.member.dto.UserDTO;
 import com.taxiWithBack.domain.member.entity.User;
 import com.taxiWithBack.domain.member.repository.UserRepository;
 import com.taxiWithBack.jwt.TokenProvider;
@@ -14,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 //Spring Security
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,7 +32,32 @@ public class UserService {
     //@Autowired
     //private AuthenticationManager authenticationManager1;
 
+    public List<User> getAllUsers(){
+        List<User> users=userRepository.findAll();
+        if(users.isEmpty()){
+            throw new RuntimeException("사용자가 존재하지 않습니다.");
+        }
+        return users;
+    }
 
+    public User getUser(Long usrId){
+        User user=userRepository.findByUsrId(usrId);
+        if(user==null){
+            throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
+        }
+        return user;
+    }
+
+    public User updateUser(Long usrId, UserDTO dto){
+        User user=userRepository.findByUsrId(usrId);
+        if(user==null){
+            throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
+        }
+        user.update(dto);
+        User saved=userRepository.save(user);
+        return saved;
+
+    }
 
     public User signUp(String eMail, String passWord, String nickName) {
         User existingUserMail = userRepository.findByeMail(eMail);
@@ -67,6 +95,14 @@ public class UserService {
         return tokenProvider.createTokenNoSecurity(user);
 
 
+    }
+
+    public void deleteUser(Long usrId){
+        User target=userRepository.findByUsrId(usrId);
+        if(target==null){
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+        userRepository.delete(target);
     }
 
 
