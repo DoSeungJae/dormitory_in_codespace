@@ -2,19 +2,18 @@ package com.taxiWithBack.domain.article.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class ArticleDTO {
     private Long dorId;
-
     private String category;
     private String title;
     private String content;
     private LocalDateTime createTime;
+
+    //appointedTime 추가 필요
 
     public ArticleDTO(){}
 

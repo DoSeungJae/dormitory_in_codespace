@@ -1,4 +1,5 @@
 package com.taxiWithBack.domain.article.entity;
+import com.taxiWithBack.domain.article.dto.ArticleDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,5 +36,14 @@ public class Article {
     private String category;
     @Column(name="appointed_time") //추후에 설정.
     private LocalDateTime appointedTime;
+
+    public void update(ArticleDTO dto){
+        this.dorId=dto.getDorId();
+        this.title=dto.getTitle();
+        this.content=dto.getContent();
+        this.category=dto.getCategory();
+        this.createTime=dto.getCreateTime();
+        //this.appointedTime=dto.getAppointedTime();
+    }
 
 }

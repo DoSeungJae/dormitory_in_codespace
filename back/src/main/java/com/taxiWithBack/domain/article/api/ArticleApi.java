@@ -23,30 +23,26 @@ public class ArticleApi {
         this.articleService=articleService;
     }
 
-
     @GetMapping("/test")
     public String articleTest(){
         String msg="article test";
         log.info(msg);
         return msg;
-
     }
 
     @GetMapping("")
     public ResponseEntity allArticles(){
         List<Article> articles=articleService.getAllArticles();
         return ResponseEntity.status(HttpStatus.OK).body(articles);
-        //body는 commentlist를 반환
     }
 
     @GetMapping("/dorId/{dorId}")
     public ResponseEntity dorArticles(@PathVariable("dorId") Long dorId){
         List<Article> articles=articleService.getDorArticles(dorId);
         return ResponseEntity.status(HttpStatus.OK).body(articles);
-
     }
 
-    @GetMapping("articleId/{articleId}")
+    @GetMapping("{articleId}")
     public ResponseEntity article(@PathVariable("articleId") Long articleId){
         Article article=articleService.getArticle(articleId);
         return ResponseEntity.status(HttpStatus.OK).body(article);
@@ -56,25 +52,19 @@ public class ArticleApi {
     public ResponseEntity newArticle(@RequestBody ArticleDTO dto){
         Article article=articleService.newArticle(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(article.toString());
-
-
     }
 
-
-    @PatchMapping("/{dorId}")
-    public ResponseEntity patchArticle(@PathVariable("dorId") Long dorId){
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+    @PatchMapping("/{articleId}")
+    public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody ArticleDTO dto){
+        Article updatedArticle=articleService.updateArticle(dto,articleId);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedArticle);
     }
 
-    @DeleteMapping("/{dorId}")
-    public ResponseEntity deleteArticle(@PathVariable("dorId") Long dorId){
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity deleteArticle(@PathVariable("articleId") Long articleId){
+        articleService.deleteArticle(articleId);
+        return ResponseEntity.status(HttpStatus.OK).body("ARTICLE DELETED");
     }
-
-
-
-
-
 
 }
 

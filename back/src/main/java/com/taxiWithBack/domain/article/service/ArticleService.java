@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -20,6 +19,7 @@ public class ArticleService {
     private ArticleRepository articleRepository;
 
     //Token provider가 필요한가?
+    @Transactional
     public Article newArticle(ArticleDTO dto) {
         Article newOne = Article.builder()
                 .dorId(dto.getDorId())
@@ -61,6 +61,27 @@ public class ArticleService {
         return dorArticles;
     }
 
+    @Transactional
+    public Article updateArticle(ArticleDTO dto,Long articleId){
+        Article article=articleRepository.findByArticleId(articleId);
+        article.update(dto);
+        Article saved=articleRepository.save(article);
+
+        if(article==null){
+            throw new IllegalArgumentException("존재하지 않는 글입니다.");
+        }
+        return saved;
+    }
+
+    @Transactional
+    public void deleteArticle(Long articleId){
+        Article target=articleRepository.findByArticleId(articleId);
+        if(target==null){
+            throw new IllegalArgumentException("존재하지 않는 글입니다.");
+        }
+        articleRepository.delete(target);
+
+    }
 
 
 
