@@ -8,7 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 @Data
 @Builder
-@ToString
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
@@ -47,6 +46,13 @@ public class Article {
         this.category=dto.getCategory();
         this.createTime=dto.getCreateTime();
         //this.appointedTime=dto.getAppointedTime();
+    }
+
+    @Override
+    public String toString(){
+        return "article id: "+this.id+", dormitory id: "+this.dorId+", user(writer) id: "+this.usrId.getId()+", title: "+title+", content: "+content+", createTime: "+createTime+
+                ", category: "+category+", appointed time: "+appointedTime;
+
     }
 
 }

@@ -88,7 +88,7 @@ public class TokenProvider implements InitializingBean {
         Date validity=new Date(now.getTime()+this.tokenValidityMilliseconds);
 
         return Jwts.builder()
-                .claim(USER_ID_KEY,user.getEMail())
+                .claim(USER_ID_KEY,user.getId())
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(key,SignatureAlgorithm.HS256)
@@ -96,14 +96,14 @@ public class TokenProvider implements InitializingBean {
 
     }
 
-    public String getUserEMailFromToken(String token){
+    public Long getUserIdFromToken(String token){
         Claims claims=Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.get(USER_ID_KEY,String.class);
+        return claims.get(USER_ID_KEY,Long.class);
 
     }
     public boolean validateToken(String token){

@@ -4,6 +4,9 @@ import com.taxiWithBack.domain.article.dto.ArticleDTO;
 import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.article.repository.ArticleRepository;
 import com.taxiWithBack.domain.jwt.TokenProvider;
+import com.taxiWithBack.domain.member.dto.UserLogInDTO;
+import com.taxiWithBack.domain.member.entity.User;
+import com.taxiWithBack.domain.member.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +23,23 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TokenProvider tokenProvider;
 
 
     //Token provider가 필요한가?
     @Transactional
     public Article newArticle(ArticleDTO dto,String token) {
+
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
+
+        Long usrId=tokenProvider.getUserIdFromToken(token);
+        User user=userRepository.findById(usrId).orElse(null);
 
         Article newOne = Article.builder()
                 .dorId(dto.getDorId())
@@ -37,7 +48,7 @@ public class ArticleService {
                 .category(dto.getCategory())
                 .createTime(dto.getCreateTime())
                 .appointedTime(null)
-                .usrId(null)
+                .usrId(user)
                 .build();
 
         Article saved = articleRepository.save(newOne);

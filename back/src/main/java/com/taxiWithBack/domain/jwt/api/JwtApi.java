@@ -33,10 +33,4 @@ public class JwtApi {
         return ResponseEntity.status(HttpStatus.OK).body(isValid);
     }
 
-    @PostMapping("/usrId")
-    public ResponseEntity UsrIdFromToken(@RequestBody JwtDTO dto){
-        Long usrId=jwtService.getUserIdFromToken(dto);
-        return ResponseEntity.status(HttpStatus.OK).body(usrId);
-
-    }
 }

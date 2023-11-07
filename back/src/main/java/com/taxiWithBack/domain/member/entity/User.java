@@ -3,15 +3,17 @@ import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.member.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+
+@Slf4j
 @Data
 @Builder
-@ToString
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
@@ -48,6 +50,11 @@ public class User {
         this.eMail=dto.getEMail();
         this.nickName=dto.getNickName();
         this.passWord=dto.getPassWord();
+    }
+
+    @Override
+    public String toString(){
+        return this.id+" "+this.eMail+" "+this.nickName;
     }
 
 
