@@ -4,6 +4,7 @@ import LogInPage from './routeComponents/logIn/LogInPage';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import SignInPage from './routeComponents/signIn/SignInPage';
 import HomePage from './routeComponents/home/HomePage';
+import HomePageV0 from './routeComponents/home/HomePageV0';
 
 function App() {
   
