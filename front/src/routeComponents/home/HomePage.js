@@ -1,9 +1,10 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 
 function HomePage() {
-
+  
+  const token="";
+  
   const buttonToPath = {
     '오름1': 'oreum1',
     '오름2': 'oreum2',
@@ -12,7 +13,7 @@ function HomePage() {
     '푸름2': 'preum2',
     '푸름3': 'preum3',
     '푸름4': 'preum4',
-    "홈": "home",
+    "홈": "",
     "내 글": "myWriting",
     "글쓰기": "newWriting",
     "알림": "alarm"
@@ -92,8 +93,10 @@ function HomePage() {
     if (!path) return; // 만약 해당 버튼 이름이 buttonToPath 객체에 없다면 함수 종료
 
     try {
-      const response = await axios.post(`http://localhost:8080/api/v1/home/${path}`, {
-        token: "your-token-here"
+      const response = await axios.get(`http://localhost:8080/api/v1/${path}`, {
+        headers:{
+          'Authorization' : 'Bearer'+token
+        }
       });
       console.log(response.data); // 서버 응답 데이터 처리
     } catch (error) {
