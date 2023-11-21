@@ -1,21 +1,23 @@
 import React from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 function HomePage() {
   
   const token="";
   
   const buttonToPath = {
-    '오름1': 'oreum1',
-    '오름2': 'oreum2',
-    '오름3': 'oreum3',
-    '푸름1': 'preum1',
-    '푸름2': 'preum2',
-    '푸름3': 'preum3',
-    '푸름4': 'preum4',
+    '오름1': 'dor/0',
+    '오름2': 'dor/1',
+    '오름3': 'dor/2',
+    '푸름1': 'dor/3',
+    '푸름2': 'dod/4',
+    '푸름3': 'dor/5',
+    '푸름4': 'dor/6',
     "홈": "",
     "내 글": "myWriting",
-    "글쓰기": "newWriting",
+    "글쓰기": "validate", 
+    "글저장":"newWriting",
     "알림": "alarm"
   };
 
@@ -91,69 +93,82 @@ function HomePage() {
   const handleButtonClick = async (buttonName) => {
     const path = buttonToPath[buttonName];
     if (!path) return; // 만약 해당 버튼 이름이 buttonToPath 객체에 없다면 함수 종료
+    const fullPath=`http://localhost:8080/api/v1/article/${path}`
 
-    try {
-      const response = await axios.get(`http://localhost:8080/api/v1/${path}`, {
-        headers:{
-          'Authorization' : 'Bearer'+token
-        }
-      });
-      console.log(response.data); // 서버 응답 데이터 처리
-    } catch (error) {
-      console.error(error);
+    if(path=='myWriting' || path=='newWriting' || path=='alarm' || parh=='validate'){
+      try {
+        const response = await axios.get(fullPath, {
+          headers:{
+            'Authorization' : 'Bearer'+token
+          }
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }   
     }
+    else{
+      try {
+        const response = await axios.get(fullPath);
+        console.log(response.data);
+    } catch (error) {
+        console.error(error);
+    }
+
+    }
+
 };
 
-  return (
-    <div className="App">
-      <header className="App-home-header">
-        <h1></h1>
-      </header>
-      
-      <main className="App-main">
-        <div className="slide-menu">
-          {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
-            let color;
-            if (item.startsWith('오름')) {
-                // forestgreen 계열
-                color = `hsl(120, 39%, ${55 - (i * 5)}%)`;
-            } else {
-                // skyblue 계열
-                color = `hsl(197, 71%, ${65 - (i-3) * 10}%)`;
-            }
-            
-            return (
-              <div 
-                key={i} 
-                className="slide-item" 
-                style={{backgroundColor: color, color: '#fff'}}
-                onClick={() => handleButtonClick(item.toLowerCase())}
-              >
-                  {item}
-              </div>
-            );
-          })}
-        </div>
-      </main>
-
-      <footer className="App-footer">
-        <div className="bottom-menu">
-
-          {['홈','내 글', '글쓰기', '알림'].map((item, i) => (
+return (
+  <div className="App">
+    <header className="App-home-header">
+      <h1></h1>
+    </header>
+    
+    <main className="App-main">
+      <div className="slide-menu">
+        {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
+          let color;
+          if (item.startsWith('오름')) {
+              // forestgreen 계열
+              color = `hsl(120, 39%, ${55 - (i * 5)}%)`;
+          } else {
+              // skyblue 계열
+              color = `hsl(197, 71%, ${65 - (i-3) * 10}%)`;
+          }
+          
+          return (
             <div 
-              key={i}
-              className="menu-item"
-              style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}
-              onClick={() => handleButtonClick(item.replace(' ', '').toLowerCase())}
+              key={i} 
+              className="slide-item" 
+              style={{backgroundColor: color, color: '#fff'}}
+              onClick={() => handleButtonClick(item.toLowerCase())}
             >
-              {svgMap[item]}
-              <div style={{fontSize: '14px'}}>{item}</div>
+                {item}
             </div>
-          ))}
-         </div>
-       </footer>
-     </div>
-   );
+          );
+        })}
+      </div>
+    </main>
+
+    <footer className="App-footer">
+      <div className="bottom-menu">
+
+        {['홈','내 글', '글쓰기', '알림'].map((item, i) => (
+          <div 
+            key={i}
+            className="menu-item"
+            style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}
+            onClick={() => handleButtonClick(item.replace(' ', '').toLowerCase())}
+          >
+            {svgMap[item]}
+            <div style={{fontSize: '14px'}}>{item}</div>
+          </div>
+        ))}
+       </div>
+     </footer>
+   </div>
+ );
 }
 
 export default HomePage;
