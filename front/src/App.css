@@ -36,13 +36,13 @@
 }
 
 
-.App-header {
+.App-home-header {
   background-color : F5F5F5;
-  height : 10vh
+  height :6.5vh
 }
 
 .App-main {
-  height: 80vh; /* Adjust this value as needed */
+  height: 81.5vh; /* Adjust this value as needed */
   background-color : F5F5F5;
 }
 

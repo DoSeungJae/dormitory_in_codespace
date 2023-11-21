@@ -103,7 +103,7 @@ function HomePage() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="App-home-header">
         <h1></h1>
       </header>
       
