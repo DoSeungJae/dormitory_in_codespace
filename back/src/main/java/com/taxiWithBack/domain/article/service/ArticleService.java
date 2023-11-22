@@ -4,7 +4,6 @@ import com.taxiWithBack.domain.article.dto.ArticleDTO;
 import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.article.repository.ArticleRepository;
 import com.taxiWithBack.domain.jwt.TokenProvider;
-import com.taxiWithBack.domain.member.dto.UserLogInDTO;
 import com.taxiWithBack.domain.member.entity.User;
 import com.taxiWithBack.domain.member.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
@@ -29,8 +28,6 @@ public class ArticleService {
 
     @Autowired
     private TokenProvider tokenProvider;
-
-
     //Token provider가 필요한가?
     @Transactional
     public Article newArticle(ArticleDTO dto,String token) {
