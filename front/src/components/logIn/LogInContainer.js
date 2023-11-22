@@ -9,7 +9,7 @@ const LogInContainer = () => {
     return (
         <div class="LogInPage">
             <div className="container pb-4  ">
-                <Title title="Taxi With"/>
+                <Title title="Title"/>
             </div>
 
             <UseLogInButton/>

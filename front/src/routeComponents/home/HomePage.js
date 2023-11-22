@@ -1,17 +1,43 @@
-import React from 'react';
+import {React,useEffect} from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Link,useNavigate} from 'react-router-dom';
 
 function HomePage() {
-  
   const token="";
+  const navigate = useNavigate();
+
+  const checkToken = async () => {
+    try {
+        const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT를 Authorization 헤더에 담습니다.
+            }
+        });
+
+        if (response.data === true) {
+            // 토큰이 유효하다면 newWriting 페이지로 이동합니다.
+            navigate('/newWriting');
+        } else {
+            // 토큰이 유효하지 않다면 메시지 창을 띄우고 logIn 페이지로 이동합니다.
+            alert('토큰이 유효하지 않습니다. 다시 로그인해주세요.');
+            navigate('/logIn');
+        }
+    } catch (error) {
+        // 요청이 실패하면, 에러 메시지를 확인합니다.
+        console.error('An error occurred:', error);
+    }
+  };
+
+  useEffect(() => {
+    //checkToken();
+  }, [navigate]);
   
   const buttonToPath = {
     '오름1': 'dor/0',
     '오름2': 'dor/1',
     '오름3': 'dor/2',
     '푸름1': 'dor/3',
-    '푸름2': 'dod/4',
+    '푸름2': 'dor/4',
     '푸름3': 'dor/5',
     '푸름4': 'dor/6',
     "홈": "",
@@ -89,13 +115,13 @@ function HomePage() {
     ),
   };
 
-
   const handleButtonClick = async (buttonName) => {
     const path = buttonToPath[buttonName];
     if (!path) return; // 만약 해당 버튼 이름이 buttonToPath 객체에 없다면 함수 종료
     const fullPath=`http://localhost:8080/api/v1/article/${path}`
 
-    if(path=='myWriting' || path=='newWriting' || path=='alarm' || parh=='validate'){
+
+    if(path=='myWriting' || path=='newWriting' || path=='alarm'){
       try {
         const response = await axios.get(fullPath, {
           headers:{
@@ -107,6 +133,7 @@ function HomePage() {
         console.error(error);
       }   
     }
+
     else{
       try {
         const response = await axios.get(fullPath);
@@ -142,6 +169,7 @@ return (
               key={i} 
               className="slide-item" 
               style={{backgroundColor: color, color: '#fff'}}
+              
               onClick={() => handleButtonClick(item.toLowerCase())}
             >
                 {item}
@@ -159,7 +187,18 @@ return (
             key={i}
             className="menu-item"
             style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}
-            onClick={() => handleButtonClick(item.replace(' ', '').toLowerCase())}
+
+            onClick={() => {
+              const itemValue=item.replace(' ','').toLowerCase();
+              if(itemValue!='홈'){
+                checkToken();
+                item=null;
+
+              }
+              else{
+                handleButtonClick(item.replace(' ','').toLowerCase());
+              }
+            }}
           >
             {svgMap[item]}
             <div style={{fontSize: '14px'}}>{item}</div>
@@ -170,5 +209,7 @@ return (
    </div>
  );
 }
+
+
 
 export default HomePage;

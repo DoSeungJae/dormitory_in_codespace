@@ -4,6 +4,7 @@ import LogInPage from './routeComponents/logIn/LogInPage';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import SignInPage from './routeComponents/signIn/SignInPage';
 import HomePage from './routeComponents/home/HomePage';
+import WritingPage from './routeComponents/home/WritingPage';
 
 function App() {
   
@@ -14,7 +15,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<HomePage/>}></Route> {/*홈 주소 : /home*/ }
-          <Route path="/oreum1"></Route> {/* /home/oreum1 ... */}
+          <Route path="/oreum1"></Route> {/* /oreum1 ... */}
           <Route path="/oreum2"></Route>
           <Route path="/oreum3"></Route>
 
@@ -31,8 +32,10 @@ function App() {
           <Route path="/newWriting"></Route>
           <Route path="/alarm"></Route>
 
-
           <Route path="/signIn" element={<SignInPage/>}></Route>
+          <Route path="/logIn" element={<LogInPage/>}></Route>
+          <Route path="/asdf" element={<WritingPage/>}></Route>
+          
         </Routes>
       </BrowserRouter>  
       
