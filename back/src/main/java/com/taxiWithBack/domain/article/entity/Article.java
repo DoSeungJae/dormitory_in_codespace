@@ -50,8 +50,8 @@ public class Article {
 
     @Override
     public String toString(){
-        return "article id: "+this.id+", dormitory id: "+this.dorId+", user(writer) id: "+this.usrId.getId()+", title: "+title+", content: "+content+", createTime: "+createTime+
-                ", category: "+category+", appointed time: "+appointedTime;
+        return "article id:"+this.id+", dormitory id:"+this.dorId+", user(writer) id:"+this.usrId.getId()+", title:"+title+", content:"+content+", createTime:"+createTime+
+                ", category:"+category+", appointed time:"+appointedTime;
 
     }
 

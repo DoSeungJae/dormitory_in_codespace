@@ -107,6 +107,10 @@ public class TokenProvider implements InitializingBean {
 
     }
     public boolean validateToken(String token){
+        if(token==null || token.isEmpty()){
+            throw new JwtException("토큰이 없습니다.");
+
+        }
         try{
             Jwts.parserBuilder()
                     .setSigningKey(key)

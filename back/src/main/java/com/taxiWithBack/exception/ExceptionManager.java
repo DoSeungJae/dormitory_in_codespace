@@ -13,9 +13,6 @@ public class ExceptionManager {
     public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e){
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(e.getMessage());
-
-
-
     }
 
     @ExceptionHandler(JwtException.class)

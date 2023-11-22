@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -108,6 +109,14 @@ public class ArticleService {
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }
         articleRepository.delete(target);
+    }
+
+    public List<String> listStringify(List<Article> articleList){
+        List<String> stringifiedArticleList=articleList.stream()
+                .map(Article::toString)
+                .collect(Collectors.toList());
+
+        return stringifiedArticleList;
     }
 
 

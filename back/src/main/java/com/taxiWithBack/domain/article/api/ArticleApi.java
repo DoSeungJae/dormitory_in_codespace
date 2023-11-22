@@ -2,8 +2,11 @@ package com.taxiWithBack.domain.article.api;
 import com.taxiWithBack.domain.article.dto.ArticleDTO;
 import com.taxiWithBack.domain.article.entity.Article;
 import com.taxiWithBack.domain.article.service.ArticleService;
+import com.taxiWithBack.domain.jwt.TokenProvider;
+import com.taxiWithBack.domain.jwt.dto.JwtDTO;
 import com.taxiWithBack.domain.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,53 +20,71 @@ import java.util.List;
 @Slf4j
 public class ArticleApi {
     private final ArticleService articleService;
-
+    private final TokenProvider tokenProvider;
     @Autowired
-    public ArticleApi(ArticleService articleService){
+    public ArticleApi(ArticleService articleService, TokenProvider tokenProvider){
+        this.tokenProvider=tokenProvider;
         this.articleService=articleService;
     }
-
     @GetMapping("/test")
     public String articleTest(){
         String msg="article test";
         log.info(msg);
         return msg;
     }
-
     @GetMapping("")
     public ResponseEntity allArticles(){
         List<Article> articles=articleService.getAllArticles();
-        return ResponseEntity.status(HttpStatus.OK).body(articles);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(articleService.listStringify(articles));
     }
 
-    @GetMapping("/dorId/{dorId}")
+    @GetMapping("/dor/{dorId}")
     public ResponseEntity dorArticles(@PathVariable("dorId") Long dorId){
         List<Article> articles=articleService.getDorArticles(dorId);
-        return ResponseEntity.status(HttpStatus.OK).body(articles);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(articleService.listStringify(articles));
     }
 
     @GetMapping("{articleId}")
-    public ResponseEntity article(@PathVariable("articleId") Long articleId){ //token 인증이 필요할 수도 있음.
+    public ResponseEntity article(@PathVariable("articleId") Long articleId){ //token 인증이 필요함.
         Article article=articleService.getArticle(articleId);
-        return ResponseEntity.status(HttpStatus.OK).body(article);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(article);
     }
 
     @PostMapping("/new")
     public ResponseEntity newArticle(@RequestBody ArticleDTO dto, @RequestHeader("Authorization") String token){
         Article article=articleService.newArticle(dto,token);
-        return ResponseEntity.status(HttpStatus.CREATED).body(article.toString());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(article.toString());
     }
 
     @PatchMapping("/{articleId}")
     public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody ArticleDTO dto,@RequestHeader("Authorization") String token) {
         Article updatedArticle=articleService.updateArticle(dto,articleId,token);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedArticle);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(updatedArticle);
     }
 
     @DeleteMapping("/{articleId}")
     public ResponseEntity deleteArticle(@PathVariable("articleId") Long articleId, @RequestHeader("Authorization") String token){
         articleService.deleteArticle(articleId,token);
-        return ResponseEntity.status(HttpStatus.OK).body("ARTICLE DELETED");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("ARTICLE DELETED");
+    }
+    @GetMapping("/validate") //글쓰기 페이지에 입장하기전 토큰 유효성 검사
+    public ResponseEntity tokenValidation(@RequestHeader("Authorization") String token){
+        Boolean isValid=tokenProvider.validateToken(token);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(isValid);
     }
 
 }
