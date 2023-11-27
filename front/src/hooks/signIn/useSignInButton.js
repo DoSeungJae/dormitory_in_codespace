@@ -46,8 +46,6 @@ const UseSignInButton = () => {
             })
             .catch(error => {
               console.error(error);
-              console.log();
-              
             })
 
             

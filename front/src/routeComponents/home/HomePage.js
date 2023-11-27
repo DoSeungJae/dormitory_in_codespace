@@ -6,24 +6,22 @@ function HomePage() {
   const token=localStorage.getItem('token');
   const navigate = useNavigate();
 
-  const checkToken = async () => {
+  const checkToken = async (item) => {
     try {
         const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
             headers: {
-                'Authorization': `${token}` // JWT를 Authorization 헤더에 담습니다.
+                'Authorization': `${token}`
             }
         });
 
         if (response.data === true) {
-            // 토큰이 유효하다면 newWriting 페이지로 이동합니다.
-            navigate('/newWriting');
+          const path=buttonToPath[item]
+          navigate(`/${path}`);
         } else {
-            // 토큰이 유효하지 않다면 메시지 창을 띄우고 logIn 페이지로 이동합니다.
             alert('회원 정보가 유효하지 않아요! 로그인해주세요.');
             navigate('/logIn',{state:{from:'/newWriting'}});
         }
     } catch (error) {
-        // 요청이 실패하면, 에러 메시지를 확인합니다.
         console.error('An error occurred:', error);
     }
   };
@@ -42,8 +40,7 @@ function HomePage() {
     '푸름4': 'dor/6',
     "홈": "",
     "내 글": "myWriting",
-    "글쓰기": "validate", 
-    "글저장":"newWriting",
+    "글쓰기": "newWriting", 
     "알림": "alarm"
   };
 
@@ -186,11 +183,10 @@ return (
             key={i}
             className="menu-item"
             style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}
-
+            
             onClick={() => {
-              const itemValue=item.replace(' ','').toLowerCase();
-              if(itemValue!='홈'){
-                checkToken();
+              if(item!='홈'){
+                checkToken(item)
                 item=null;
                 
               }
