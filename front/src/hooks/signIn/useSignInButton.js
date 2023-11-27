@@ -23,6 +23,7 @@ const UseSignInButton = () => {
   const rex_email = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const rex_pw = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9!@#$%^&*()]{8,16}$/;
   const rex_tel = /^010\d{8}$/;
+  
   const rex_nick = /^[a-zA-Z0-9ㄱ-ㅎ]{1,8}$/;
 
   const isMailFocused = refMail.current === document.activeElement;
@@ -54,6 +55,8 @@ const UseSignInButton = () => {
         
     }
   }
+  
+
 
 
 
