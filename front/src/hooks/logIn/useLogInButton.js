@@ -4,12 +4,15 @@ import InputForm from '../../components/common/InputForm.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import axios from 'axios';
+import { useLocation,useNavigate } from 'react-router-dom';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
     const [idError,setIdError]=useState(false);
     const [pwError,setPwError]=useState(false);
+    const location=useLocation();
+    const navigate=useNavigate();
 
     const buttonPressedTest = () => {
       axios.get('http://localhost:8080/api/v1/user/test')
@@ -35,9 +38,23 @@ function UseLogInButton() {
         {email:id,passWord:pw})
         .then(response => {
           console.log(response.data);
+          localStorage.setItem('token',response.data);
+          if(location.state && location.state.from){
+            navigate(location.state.from);
+            console.log(location.state.from);
+            
+            
+          }
+          else{
+            navigate('/');
+          }
+          
         })
         .catch(error => {
           console.error(error);
+          alert('로그인 정보가 일치하지 않아요! 다시 시도해주세요.');
+
+          
         })
       }
       

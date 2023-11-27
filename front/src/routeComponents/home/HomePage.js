@@ -3,14 +3,14 @@ import axios from 'axios';
 import {Link,useNavigate} from 'react-router-dom';
 
 function HomePage() {
-  const token="";
+  const token=localStorage.getItem('token');
   const navigate = useNavigate();
 
   const checkToken = async () => {
     try {
         const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
             headers: {
-                'Authorization': `Bearer ${token}` // JWT를 Authorization 헤더에 담습니다.
+                'Authorization': `${token}` // JWT를 Authorization 헤더에 담습니다.
             }
         });
 
@@ -19,8 +19,8 @@ function HomePage() {
             navigate('/newWriting');
         } else {
             // 토큰이 유효하지 않다면 메시지 창을 띄우고 logIn 페이지로 이동합니다.
-            alert('토큰이 유효하지 않습니다. 다시 로그인해주세요.');
-            navigate('/logIn');
+            alert('회원 정보가 유효하지 않아요! 로그인해주세요.');
+            navigate('/logIn',{state:{from:'/newWriting'}});
         }
     } catch (error) {
         // 요청이 실패하면, 에러 메시지를 확인합니다.
@@ -120,15 +120,14 @@ function HomePage() {
     if (!path) return; // 만약 해당 버튼 이름이 buttonToPath 객체에 없다면 함수 종료
     const fullPath=`http://localhost:8080/api/v1/article/${path}`
 
-
-    if(path=='myWriting' || path=='newWriting' || path=='alarm'){
+    if(path=='myWriting' || path=='newWriting' || path=='alarm'){ //필요없는 코드블록일지도?
       try {
         const response = await axios.get(fullPath, {
           headers:{
             'Authorization' : 'Bearer'+token
           }
         });
-        console.log(response.data);
+        //console.log(response.data);
       } catch (error) {
         console.error(error);
       }   
@@ -137,7 +136,7 @@ function HomePage() {
     else{
       try {
         const response = await axios.get(fullPath);
-        console.log(response.data);
+        //console.log(response.data);
     } catch (error) {
         console.error(error);
     }
@@ -193,7 +192,7 @@ return (
               if(itemValue!='홈'){
                 checkToken();
                 item=null;
-
+                
               }
               else{
                 handleButtonClick(item.replace(' ','').toLowerCase());
@@ -201,7 +200,7 @@ return (
             }}
           >
             {svgMap[item]}
-            <div style={{fontSize: '14px'}}>{item}</div>
+            {/*<div style={{fontSize: '14px'}}>{item}</div>*/}
           </div>
         ))}
        </div>

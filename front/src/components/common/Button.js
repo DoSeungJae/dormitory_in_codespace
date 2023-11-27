@@ -5,7 +5,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 const Button = ({onClick,children}) => {
 
     return (
-        <button class="btn btn-primary" type="button" onClick={onClick}>
+        <button class="btn btn-dark" type="button" onClick={onClick}>
             {children}
         </button>
     );

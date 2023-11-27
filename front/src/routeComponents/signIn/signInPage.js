@@ -7,10 +7,6 @@ const SignInPage = () => {
     return (
         <div className="SignInPage">
             <UseSignInButton/>
-            
-            
-
-
         </div>
     
     );
