@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TaxiWithBackApplication {
+public class DormitoryBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TaxiWithBackApplication.class, args);
+		SpringApplication.run(DormitoryBackApplication.class, args);
 	}
 
 }

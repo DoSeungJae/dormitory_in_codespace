@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.jwt;
 
+import com.DormitoryBack.domain.member.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -81,7 +82,7 @@ public class TokenProvider implements InitializingBean {
         }
     }
 
-    public String createTokenNoSecurity(com.DormitoryBack.domain.member.entity.User user){ //With no Spring Security
+    public String createTokenNoSecurity(User user){ //With no Spring Security
 
         Date now=new Date();
         Date validity=new Date(now.getTime()+this.tokenValidityMilliseconds);

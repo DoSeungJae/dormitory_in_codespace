@@ -1,8 +1,8 @@
 package com.DormitoryBack.domain.article.api;
-import com.DormitoryBack.domain.article.dto.ArticleDTO;
 import com.DormitoryBack.domain.article.entity.Article;
-import com.DormitoryBack.domain.article.service.ArticleService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.article.dto.ArticleDTO;
+import com.DormitoryBack.domain.article.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

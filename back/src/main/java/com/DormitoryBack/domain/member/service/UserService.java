@@ -1,10 +1,10 @@
 package com.DormitoryBack.domain.member.service;
 
 
-import com.DormitoryBack.domain.member.dto.UserDTO;
-import com.DormitoryBack.domain.member.entity.User;
-import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.dto.UserDTO;
+import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

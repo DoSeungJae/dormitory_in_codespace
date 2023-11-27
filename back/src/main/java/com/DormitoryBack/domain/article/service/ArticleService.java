@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class ArticleService {
     private TokenProvider tokenProvider;
     //Token provider가 필요한가?
     @Transactional
-    public Article newArticle(ArticleDTO dto,String token) {
+    public Article newArticle(ArticleDTO dto, String token) {
 
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
