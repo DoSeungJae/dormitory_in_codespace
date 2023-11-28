@@ -18,7 +18,7 @@ function HomePage() {
           const path=buttonToPath[item]
           navigate(`/${path}`);
         } else {
-            alert('회원 정보가 유효하지 않아요! 로그인해주세요.');
+            alert('회원 정보가 유효하지 않아요! (다시) 로그인해주세요.');
             navigate('/logIn',{state:{from:'/newWriting'}});
         }
     } catch (error) {
@@ -31,13 +31,6 @@ function HomePage() {
   }, [navigate]);
   
   const buttonToPath = {
-    '오름1': 'dor/0',
-    '오름2': 'dor/1',
-    '오름3': 'dor/2',
-    '푸름1': 'dor/3',
-    '푸름2': 'dor/4',
-    '푸름3': 'dor/5',
-    '푸름4': 'dor/6',
     "홈": "",
     "내 글": "myWriting",
     "글쓰기": "newWriting", 

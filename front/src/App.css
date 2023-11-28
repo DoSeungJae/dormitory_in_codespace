@@ -186,6 +186,23 @@
 
 }
 
+.containerSelect{
+  width:'80%';
+  margin-left:10%;
+  margin-right:10%;
+}
+
+.dorSelect{
+  width:50%;
+  outline:none;
+
+}
+
+
+
+
+
+
 
 /*
 .form-writingPage{

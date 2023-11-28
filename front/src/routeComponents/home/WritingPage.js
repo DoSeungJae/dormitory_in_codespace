@@ -11,10 +11,16 @@ function WritingPage() {
         // 여기서 post 객체를 처리하거나 서버로 전송
     };
 
-    const [selectedOption, setSelectedOption] = useState("");
+    const [dorSelect, setDorSelect] = useState("");
 
-    const handleChange = (event) => {
-      setSelectedOption(event.target.value);
+    const DorHandleChange = (event) => {
+      setDorSelect(event.target.value);
+    };
+
+    const [cateSelect, setCateSelect]=useState("");
+
+    const CateHandleChange=(event)=>{
+        setCateSelect(event.target.value);
     };
 
 
@@ -32,7 +38,7 @@ function WritingPage() {
                 <br/>
 
                 <div className="containerSelect">
-                    <select value={selectedOption} onChange={handleChange} className="dorSelect">
+                    <select value={dorSelect} onChange={DorHandleChange} className="dorSelect">
                         <option value="">기숙사</option>
                         <option value="0">오름 1</option>
                         <option value="1">오름 2</option>
@@ -46,7 +52,7 @@ function WritingPage() {
                 </div>
 
                 <div className="containerSelect">
-                    <select value={selectedOption} onChange={handleChange} className="CateSelect">
+                    <select value={cateSelect} onChange={CateHandleChange} className="CateSelect">
                         <option value="">카테고리</option>
                         <option value="0">족발•보쌈</option>
                         <option value="1">찜•탕•찌개</option>
