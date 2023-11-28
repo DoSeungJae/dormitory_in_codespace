@@ -4,7 +4,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 
 const Title = ( {title} ) => {
     return (
-        <h2 className="Title mt-3"> {title} </h2>
+        <h3 className="Title mt-3"> {title} </h3>
     );
     
 };
