@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import Title from '../../components/common/Title';
+import 'bootstrap/dist/css/bootstrap.css'; 
 
 function WritingPage() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const post = { title, content};
-        // 여기서 post 객체를 처리하거나 서버로 전송
-    };
 
     const [dorSelect, setDorSelect] = useState("");
 
@@ -23,20 +17,36 @@ function WritingPage() {
         setCateSelect(event.target.value);
     };
 
+    const buttonPressed = () => {
+        //서버로 전송 ,토큰을 담아서 보내야함 -> 유저 정보 파싱
+        
+
+    }
+
 
     return (
         <div className="App">
             <header className="App-writingPage-header">
-                <Title title="글 쓰기"/>
+                    <h6>글 쓰기</h6> 
+                    <button type="button" className='btn btn-dark'onClick={buttonPressed}>작성</button>
             </header>
                         
-            <main /*className="App-writingPage-main"*/>
+            <main className="App-main">
 
-                <form className="form-writingPage" onSubmit={handleSubmit} style={{border: 'none'}}>
-                    <input type="text" placeholder='제목'  style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
+                <input type="text" placeholder='제목'  style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
 
                 <br/>
+                <br/>
 
+                <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setContent(e.target.value)}  />
+                <br />
+                
+
+            </main>
+
+{/*
+            <footer className="App-footer">
+            <div className="flexContainer">
                 <div className="containerSelect">
                     <select value={dorSelect} onChange={DorHandleChange} className="dorSelect">
                         <option value="">기숙사</option>
@@ -69,17 +79,15 @@ function WritingPage() {
                         <option value="12">카페•디저트</option>
                         <option value="13">패스트푸드</option>
                         
-
                     </select>
                 </div>
-                
-                
-                <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setContent(e.target.value)}  />
-                <br />
-                <input type="submit" value="글 작성" />
-                </form>
+            </div>
+            
 
-            </main>
+            </footer>
+*/}
+
+            
 
 
         </div>

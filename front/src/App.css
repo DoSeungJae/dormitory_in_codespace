@@ -187,15 +187,28 @@
 }
 
 .containerSelect{
-  width:'80%';
-  margin-left:10%;
-  margin-right:10%;
+  flex:1;
+  margin:0 10px;
+  outline:none;
+  
 }
 
 .dorSelect{
-  width:50%;
+  width:40%;
   outline:none;
+}
 
+.flexContainer{
+  display:flex;
+  justify-content:space-between;
+
+}
+
+.App-writingPage-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding : 30px 7%;
 }
 
 
