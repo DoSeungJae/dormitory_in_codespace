@@ -51,7 +51,7 @@ const UseSignInButton = () => {
             
         }
     else{
-        console.log("error")
+        console.log("error");
         
     }
   }
