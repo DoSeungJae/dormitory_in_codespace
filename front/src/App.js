@@ -15,7 +15,7 @@ function App() {
       
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={<WritingPage/>}></Route> {/*홈 주소 : /home*/ }
+          <Route exact path="/" element={<HomePage/>}></Route> {/*홈 주소 : /home*/ }
           
           <Route path="/myWriting" element={<MyWritingPage/>}></Route>
           <Route path="/alarm" element={<AlarmPage/>}></Route>
