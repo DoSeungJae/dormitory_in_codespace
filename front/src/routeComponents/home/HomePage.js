@@ -1,8 +1,35 @@
-import {React,useEffect} from 'react';
+import {React,useEffect,useState} from 'react';
 import axios from 'axios';
-import {Link,useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 function HomePage() {
+  const[articleList,setArticleList]=useState([]);
+
+  const getAllArticles = async () => {
+    try{
+      const response = await axios.get('http://localhost:8080/api/v1/article', {
+    });
+    setArticleList(response.data);    
+    }
+    catch(error){
+      console.log('an error occurred:',error);
+    }
+  }
+
+  useEffect(()=>{
+    async function fetchData(){
+      await getAllArticles();
+    }
+    fetchData();
+  },[])
+  
+  useEffect(()=>{
+    //preview에 내용 갱신(내용 넣기)
+    console.log(articleList);
+    
+
+  },[articleList]);
+
   const token=localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -18,23 +45,28 @@ function HomePage() {
           const path=buttonToPath[item]
           navigate(`/${path}`);
         } else {
-            alert('회원 정보가 유효하지 않아요! (다시) 로그인해주세요.');
-            navigate('/logIn',{state:{from:'/newWriting'}});
+            alert('회원 정보가 유효하지 않아요! 로그인해주세요.');
+            navigate('/logIn',{state:{from:'/'}});
         }
     } catch (error) {
         console.error('An error occurred:', error);
     }
   };
 
-  useEffect(() => {
-    //checkToken();
-  }, [navigate]);
+
   
   const buttonToPath = {
     "홈": "",
     "내 글": "myWriting",
     "글쓰기": "newWriting", 
-    "알림": "alarm"
+    "알림": "alarm",
+    "오름1": 1,
+    "오름2": 2,
+    "오름3": 3, 
+    "푸름1": 4,
+    "푸름2": 5,
+    "푸름3": 6,
+    "푸름4": 7
   };
 
   const svgMap = {
@@ -117,10 +149,13 @@ function HomePage() {
             'Authorization' : 'Bearer'+token
           }
         });
-        //console.log(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }   
+    }
+    else if(path>=1 || path<=7){
+      console.log(path);
     }
 
     else{
@@ -152,19 +187,31 @@ return (
               // skyblue 계열
               color = `hsl(197, 71%, ${65 - (i-3) * 10}%)`;
           }
+
           
           return (
             <div 
               key={i} 
               className="slide-item" 
               style={{backgroundColor: color, color: '#fff'}}
-              
               onClick={() => handleButtonClick(item.toLowerCase())}
             >
                 {item}
             </div>
           );
         })}
+      </div>
+    
+
+        <div className="preview">
+          {articleList.map((article, index) => (
+          <div key={index} className="article-item">
+            {/* 여기에 article의 내용을 표시합니다. */}
+            {/* 예를 들어, article이 객체이고 title과 content 속성을 가지고 있다면 다음과 같이 표시할 수 있습니다. */}
+            <h2>{article.title}</h2>
+            <p>{article.content}</p>
+          </div>
+        ))}
       </div>
     </main>
 
@@ -189,7 +236,7 @@ return (
             }}
           >
             {svgMap[item]}
-            {/*<div style={{fontSize: '14px'}}>{item}</div>*/}
+            {<div style={{fontSize: '14px',paddingTop:'6px'}}>{item}</div>}
           </div>
         ))}
        </div>
