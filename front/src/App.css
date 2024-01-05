@@ -44,11 +44,14 @@
 .App-main {
   height: 81.5vh; /* Adjust this value as needed */
   background-color : F5F5F5;
+  
 }
 
 .slide-menu {
   display : flex;
   overflow-x : auto;
+  padding-bottom:10px;
+  border-bottom : 0.5px solid #000000;
 
 }
 
@@ -76,6 +79,12 @@
   align-items: center; 
   margin-top : 15px;
 }
+
+.preview{
+  padding-top:15px;
+
+}
+
 
 .App-footer { 
   background-color : F5F5F5;
