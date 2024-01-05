@@ -56,6 +56,7 @@ public class ArticleApi {
     @PostMapping("/new")
     public ResponseEntity newArticle(@RequestBody ArticleDTO dto, @RequestHeader("Authorization") String token){
         Article article=articleService.newArticle(dto,token);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(article.toString());

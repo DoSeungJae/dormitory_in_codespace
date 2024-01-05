@@ -29,7 +29,6 @@ public class ArticleService {
 
     @Autowired
     private TokenProvider tokenProvider;
-    //Token provider가 필요한가?
     @Transactional
     public Article newArticle(ArticleDTO dto, String token) {
 
@@ -111,7 +110,7 @@ public class ArticleService {
 
     public List<String> listStringify(List<Article> articleList){
         List<String> stringifiedArticleList=articleList.stream()
-                .map(Article::toString)
+                .map(Article::toJsonString)
                 .collect(Collectors.toList());
 
         return stringifiedArticleList;

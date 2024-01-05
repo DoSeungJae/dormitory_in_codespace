@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.jwt;
 
+
 import com.DormitoryBack.domain.member.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -15,7 +16,7 @@ import java.util.Date;
 
 
 @Slf4j
-public class TokenProvider implements InitializingBean {
+public class  TokenProvider implements InitializingBean {
 
     private static final String USER_ID_KEY = "usrId";
 
@@ -93,7 +94,6 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
-
     }
 
     public Long getUserIdFromToken(String token){
@@ -104,7 +104,6 @@ public class TokenProvider implements InitializingBean {
                 .getBody();
 
         return claims.get(USER_ID_KEY,Long.class);
-
     }
     public boolean validateToken(String token){
         if(token==null || token.isEmpty()){
@@ -132,8 +131,6 @@ public class TokenProvider implements InitializingBean {
             logger.info("JWT 토큰이 잘못되었습니다.");
             return false;
         }
-
-
     }
 
 
