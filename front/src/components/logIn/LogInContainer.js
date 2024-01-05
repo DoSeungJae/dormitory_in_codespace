@@ -7,7 +7,7 @@ import Title from '../common/Title';
 const LogInContainer = () => {
 
     return (
-        <div class="LogInPage">
+        <div className="LogInPage">
             <div className="container pb-4  ">
                 <Title title="Title"/>
             </div>

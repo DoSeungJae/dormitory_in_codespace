@@ -70,16 +70,16 @@ function UseLogInButton() {
             onChange={(e) => setId(e.target.value)}
           />
 
-          {idError && <small id="small" class="mt-2">아이디를 입력해주세요.</small>}
+          {idError && <small id="small" className="mt-2">아이디를 입력해주세요.</small>}
         </div>
-        <div class="row mt-3">
+        <div className="row mt-3">
           <InputForm
             type="password"
             placeholder="비밀번호"
             value={pw}
             onChange={(e) => setPw(e.target.value)}
           />
-          {pwError && <small id="small" class="mt-2">비밀번호를 입력해주세요.</small>}
+          {pwError && <small id="small" className="mt-2">비밀번호를 입력해주세요.</small>}
         </div>
   
         <div className="d-grid mt-4 pb-4">
