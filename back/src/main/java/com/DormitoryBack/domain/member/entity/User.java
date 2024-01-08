@@ -1,6 +1,7 @@
 package com.DormitoryBack.domain.member.entity;
 import com.DormitoryBack.domain.article.entity.Article;
 import com.DormitoryBack.domain.member.dto.UserDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class User {
     @Column
     private String nickName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "usrId")
     private List<Article> articles;
 

@@ -66,7 +66,6 @@ public class Article {
                 ", category:"+category+", appointedTime:"+appointedTime;
     }
 
-    //!!!
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
