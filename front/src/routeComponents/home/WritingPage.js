@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import BackButton from '../../components/common/BackButton';
 
 function WritingPage() {
     const [title, setTitle] = useState("");
@@ -27,7 +28,6 @@ function WritingPage() {
         if(title==="" || content==="" || dorSelect==="기숙사" || cateSelect==="카테고리"){
             alert("입력하지 않은 곳이 있어요! 다시 한번 확인해주세요.")
         }
-        //서버로 전송 ,토큰을 헤더에 담아서 보내야함 -> 유저 정보 파싱
         const curTime=nowLocalDateTime();
 
         const fullPath = `http://localhost:8080/api/v1/article/new`;
@@ -37,7 +37,6 @@ function WritingPage() {
           title:title,
           content:content,
           createTime:curTime
-          // 여기에 보내고 싶은 데이터를 JSON 형식으로 추가하세요.
         };
       
         try {
@@ -46,18 +45,15 @@ function WritingPage() {
             'Authorization':`${token}`,
             }
         });
-
+        navigate("/");
 
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
                 alert("회원 정보가 유요하지 않아요! 로그인해주세요.");
                 navigate('/logIn',{state:{from:"/newWriting"}});
+                
             }
         }
-        
-
-        
-
     }
 
     const nowLocalDateTime=()=>{
@@ -76,13 +72,16 @@ function WritingPage() {
         <div className="App">
 
             <header className="App-writingPage-header">
+                    <BackButton></BackButton>
                     <h6>글 쓰기</h6> 
+
                     <button type="button" className='btn btn-outline-primary'onClick={buttonPressed}>작성</button>
+                    
             </header>
                                 
             <main className="App-main">
         
-                <input type="text" value={title} placeholder='제목'  style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
+                <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
         
                 <br/>
                 <br/>
