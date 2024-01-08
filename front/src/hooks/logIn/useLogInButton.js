@@ -41,9 +41,6 @@ function UseLogInButton() {
           localStorage.setItem('token',response.data);
           if(location.state && location.state.from){
             navigate(location.state.from);
-            console.log(location.state.from);
-            
-            
           }
           else{
             navigate('/');
