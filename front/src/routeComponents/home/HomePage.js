@@ -9,7 +9,8 @@ function HomePage() {
     try{
       const response = await axios.get('http://localhost:8080/api/v1/article', {
     });
-    setArticleList(response.data);    
+    const data=response.data.map(item => JSON.parse(item));
+    setArticleList(data);    
     }
     catch(error){
       console.log('an error occurred:',error);
@@ -23,13 +24,6 @@ function HomePage() {
     fetchData();
   },[])
   
-  useEffect(()=>{
-    //preview에 내용 갱신(내용 넣기)
-    console.log(articleList);
-    
-
-  },[articleList]);
-
   const token=localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -52,8 +46,6 @@ function HomePage() {
         console.error('An error occurred:', error);
     }
   };
-
-
   
   const buttonToPath = {
     "홈": "",
@@ -149,19 +141,30 @@ function HomePage() {
             'Authorization' : 'Bearer'+token
           }
         });
-        console.log(response.data);
       } catch (error) {
         console.error(error);
       }   
     }
     else if(path>=1 || path<=7){
-      console.log(path);
+      try{
+        const fullPath=`http://localhost:8080/api/v1/article/dor/${path}`
+        const response=await axios.get(fullPath)
+        .then(response => {
+          const data=response.data.map(item => JSON.parse(item));
+          setArticleList(data);
+        })
+      }
+      catch(error){
+        console.error(error);
+        setArticleList(null);
+
+      }
     }
 
     else{
       try {
         const response = await axios.get(fullPath);
-        //console.log(response.data);
+
     } catch (error) {
         console.error(error);
     }
@@ -198,21 +201,21 @@ return (
             >
                 {item}
             </div>
-          );
-        })}
-      </div>
+             );
+            })}
+          </div>
     
 
-        <div className="preview">
-          {articleList.map((article, index) => (
-          <div key={index} className="article-item">
-            {/* 여기에 article의 내용을 표시합니다. */}
-            {/* 예를 들어, article이 객체이고 title과 content 속성을 가지고 있다면 다음과 같이 표시할 수 있습니다. */}
-            <h2>{article.title}</h2>
-            <p>{article.content}</p>
-          </div>
-        ))}
-      </div>
+            <div className="preview">
+              {articleList===null && <h3>아직 글이 없어요!</h3>}
+              
+              {articleList && articleList.map((article, index) => (
+              <div key={index} className="article-item" onClick={() => navigate('/article',{state:article})}>
+                <h2>{article.title}</h2>
+                <p>{article.content}</p>
+              </div>
+            ))}
+            </div>
     </main>
 
     <footer className="App-footer">
@@ -227,11 +230,11 @@ return (
             onClick={() => {
               if(item!='홈'){
                 checkToken(item)
-                item=null;
-                
+                item=null;                
               }
               else{
                 handleButtonClick(item.replace(' ','').toLowerCase());
+                getAllArticles();
               }
             }}
           >
