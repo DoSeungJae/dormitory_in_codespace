@@ -6,6 +6,7 @@ import HomePage from './routeComponents/home/HomePage';
 import WritingPage from './routeComponents/home/WritingPage';
 import MyWritingPage from './routeComponents/home/MyWritingPage';
 import AlarmPage from './routeComponents/home/AlarmPage';
+import ArticlePage from './routeComponents/article/ArticlePage';
 
 function App() {
   
@@ -23,6 +24,8 @@ function App() {
           <Route path="/signIn" element={<SignInPage/>}></Route>
           <Route path="/logIn" element={<LogInPage/>}></Route>
           <Route path="/newWriting" element={<WritingPage/>}></Route>
+
+          <Route path="/article" element={<ArticlePage/>}></Route>
 
         </Routes>
       </BrowserRouter>  
