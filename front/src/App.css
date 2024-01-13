@@ -42,7 +42,7 @@
 }
 
 .App-main {
-  height: 81.5vh; /* Adjust this value as needed */
+  height: 81.5vh; 
   background-color : F5F5F5;
   
 }
@@ -53,6 +53,18 @@
   padding-bottom:10px;
   border-bottom : 0.5px solid #000000;
 
+}
+
+.article-item {
+  text-align: left;
+  border-bottom: 1px solid #000000;
+  padding: 10px 0;
+}
+
+.preview {
+  max-height: calc(100vh - (6.5vh + 19vh));
+  overflow-y: auto;
+  padding-top:15px;
 }
 
 .slide-item { 
@@ -78,11 +90,6 @@
   justify-content: center;
   align-items: center; 
   margin-top : 15px;
-}
-
-.preview{
-  padding-top:15px;
-
 }
 
 
@@ -224,12 +231,14 @@
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding : 30px 7%;
+  padding : 9% 3%;
 }
 
-.container-select{
-
-
+.app-article-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding : 9% 3%;
 }
 
 .flexContainer button {
@@ -251,5 +260,6 @@
   font-weight:bold;
   background-color:white;
   
-
 }
+
+
