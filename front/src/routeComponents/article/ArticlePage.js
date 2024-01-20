@@ -3,6 +3,7 @@ import axios from 'axios';
 import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/common/BackButton';
 import ThreeDots from '../../components/common/ThreeDots';
+import ThreeDotsMenu from '../../components/home/ThreeDotsMenu';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -31,8 +32,8 @@ function ArticlePage(){
         <div className="App">
             <div className="app-article-header">
                 <BackButton></BackButton>
-                <ThreeDots></ThreeDots>
 
+                <ThreeDotsMenu></ThreeDotsMenu>
             </div>
         </div>
     );
