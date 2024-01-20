@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Button } from 'react-bootstrap';
+import {Dropdown} from 'react-bootstrap';
 import ThreeDots from '../common/ThreeDots';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
