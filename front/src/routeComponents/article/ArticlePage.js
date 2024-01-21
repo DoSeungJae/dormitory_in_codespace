@@ -3,7 +3,8 @@ import axios from 'axios';
 import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/common/BackButton';
 import ThreeDotsMenu from '../../components/home/ThreeDotsMenu';
-import userDefault from '../../images/userDefault.png'
+import userDefault from '../../images/userDefault.png';
+
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const location=useLocation();
@@ -26,17 +27,14 @@ function ArticlePage(){
     },[]);
 
     function formatCreateTime(createTime) {
-      // 현재 년도를 얻어옴
       const currentYear = new Date().getFullYear();
-    
-      // createTime에서 년도, 월, 일, 시간, 분을 추출
+
       const year = createTime[0];
       const month = createTime[1];
       const day = createTime[2];
       const hours = createTime[3];
       const minutes = createTime[4];
-      
-      // 현재 년도와 createTime의 년도가 같다면 년도를 생략하고 "월/일 시간:분" 형태로 반환, 아니라면 "년도/월/일 시간:분" 형태로 반환
+
       return currentYear === year 
         ? `${month}/${day} ${hours}:${minutes}` 
         : `${year}/${month}/${day} ${hours}:${minutes}`;
@@ -61,8 +59,12 @@ function ArticlePage(){
 
               </div>
               <div className='article-body'>
-                <div></div>
-                <p className='article-title'>{article.title}</p>
+              <p className='article-title'>{article.title}</p>
+                <div className="article-meta">
+                  <p className="article-category">{article.category}</p>
+                  <p className="article-appointedTime">{article.appointedTime}</p>
+                </div>
+                
                 <p className='article-content'>{article.content}</p>
 
               </div>
