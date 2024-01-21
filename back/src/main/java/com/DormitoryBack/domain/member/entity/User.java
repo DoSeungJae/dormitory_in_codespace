@@ -1,5 +1,5 @@
 package com.DormitoryBack.domain.member.entity;
-import com.DormitoryBack.domain.article.entity.Article;
+import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

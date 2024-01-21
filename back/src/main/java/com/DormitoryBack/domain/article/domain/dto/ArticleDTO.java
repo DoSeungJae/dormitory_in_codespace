@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.article.dto;
+package com.DormitoryBack.domain.article.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;

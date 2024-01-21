@@ -1,8 +1,8 @@
-package com.DormitoryBack.domain.article.service;
+package com.DormitoryBack.domain.article.domain.service;
 
-import com.DormitoryBack.domain.article.dto.ArticleDTO;
-import com.DormitoryBack.domain.article.entity.Article;
-import com.DormitoryBack.domain.article.repository.ArticleRepository;
+import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
+import com.DormitoryBack.domain.article.domain.entity.Article;
+import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;

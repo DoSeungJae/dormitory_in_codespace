@@ -1,5 +1,5 @@
-package com.DormitoryBack.domain.article.entity;
-import com.DormitoryBack.domain.article.dto.ArticleDTO;
+package com.DormitoryBack.domain.article.domain.entity;
+import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
