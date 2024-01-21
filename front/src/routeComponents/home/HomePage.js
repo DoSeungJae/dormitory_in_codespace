@@ -3,8 +3,8 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 
 function HomePage() {
+  
   const[articleList,setArticleList]=useState([]);
-
   const getAllArticles = async () => {
     try{
       const response = await axios.get('http://localhost:8080/api/v1/article', {
@@ -45,6 +45,26 @@ function HomePage() {
     } catch (error) {
         console.error('An error occurred:', error);
     }
+  };
+
+  const goArticlePage = async (article) => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
+          headers: {
+              'Authorization': `${token}`
+          }
+      });
+
+      if (response.data === true) {
+        navigate('/article',{state:article})
+      } else {
+          alert('글을 보기 위해선 로그인이 필요해요!');
+          navigate('/logIn',{state:{from:'/'}});
+      }
+  } catch (error) {
+      console.error('An error occurred:', error);
+  }
+    
   };
   
   const buttonToPath = {
@@ -210,7 +230,7 @@ return (
               {articleList===null && <h3>아직 글이 없어요!</h3>}
               
               {articleList && articleList.map((article, index) => (
-              <div key={index} className="article-item" onClick={() => navigate('/article',{state:article})}>
+              <div key={index} className="article-item" onClick={() => goArticlePage(article)}>
                 <h2>{article.title}</h2>
                 <p>{article.content}</p>
               </div>
