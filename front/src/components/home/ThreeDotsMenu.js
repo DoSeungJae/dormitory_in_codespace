@@ -19,7 +19,7 @@ const ThreeDotsMenu = () => {
   return (
     <Dropdown>
       <Dropdown.Toggle style={{ color: 'black' }} as={CustomToggle} id="dropdown-autoclose-true">
-        <ThreeDots  />
+        <ThreeDots/>
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
