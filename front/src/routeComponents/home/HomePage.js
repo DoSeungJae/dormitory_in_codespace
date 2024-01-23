@@ -231,8 +231,8 @@ return (
               
               {articleList && articleList.map((article, index) => (
               <div key={index} className="article-item" onClick={() => goArticlePage(article)}>
-                <h2>{article.title}</h2>
-                <p className="article-item-content">{article.content}</p>
+                <h2 className="article-item-children">{article.title}</h2>
+                <p className="article-item-children">{article.content}</p>
               </div>
             ))}
             </div>
