@@ -9,6 +9,19 @@ function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const location=useLocation();
     const article=location.state;
+    
+    const convertDorIdToString = (num) => {
+      const mappingDict = {
+        1: '오름1',
+        2: '오름2',
+        3: '오름3',
+        4: '푸름1',
+        5: '푸름2',
+        6: '푸름3',
+        7: '푸름4',
+      };
+      return mappingDict[num] || "Invalid input";
+    }
 
     const getWriterNickName = async () => {
         try{
@@ -63,6 +76,7 @@ function ArticlePage(){
                 <div className="article-meta">
                   <p className="article-category">{article.category}</p>
                   <p className="article-appointedTime">{article.appointedTime}</p>
+                  <p className="article-dormitory">{convertDorIdToString(article.dorId)}</p>
                 </div>
                 
                 <p className='article-content'>{article.content}</p>
