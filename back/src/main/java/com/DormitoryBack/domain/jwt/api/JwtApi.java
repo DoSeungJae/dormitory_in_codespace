@@ -33,4 +33,17 @@ public class JwtApi {
         return ResponseEntity.status(HttpStatus.OK).body(isValid);
     }
 
+    @GetMapping("/userId")
+    public ResponseEntity fromTokenToUserId(@RequestHeader("Authorization") String token){
+        Boolean isValid=jwtService.validateToken(token);
+        if(!isValid){
+            ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(jwtService.getUserIdFromToken(token));
+    }
+
 }
