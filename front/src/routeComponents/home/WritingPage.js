@@ -55,7 +55,6 @@ function WritingPage() {
             }
         }
     }
-
     const nowLocalDateTime=()=>{
         const now=new Date();
         const localDateTime = now.getFullYear() + '-' +
@@ -70,27 +69,19 @@ function WritingPage() {
     
     return (
         <div className="App">
-
             <header className="App-writingPage-header">
                     <BackButton></BackButton>
                     <h6>글 쓰기</h6> 
 
-                    <button type="button" className='btn btn-outline-primary'onClick={buttonPressed}>작성</button>
-                    
-            </header>
-                                
+                    <button type="button" className='btn btn-outline-primary'onClick={buttonPressed}>작성</button>       
+            </header>                 
             <main className="App-main">
-        
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
-        
                 <br/>
                 <br/>
-        
                 <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%',height:'50%'}} onChange={e => setContent(e.target.value)}  />
                 <br />
             </main>
-
-
             <div className="selects">
                 <div>
                     <DropdownButton id="dropdown-item-button"  title={dorSelect} drop="up">
@@ -104,7 +95,6 @@ function WritingPage() {
                         <Dropdown.Item as="button"><div onClick={() => setDorSelect('푸름4')}>푸름4</div></Dropdown.Item>
                     </DropdownButton>
                 </div>
-
                 <div>
                     <DropdownButton id="dropdown-item-button" title={cateSelect} drop="up">
                     <Dropdown.Item as="button"><div onClick={() => setCateSelect('카테고리')}>카테고리</div> </Dropdown.Item>

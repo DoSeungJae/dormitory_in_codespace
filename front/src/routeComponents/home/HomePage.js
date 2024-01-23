@@ -184,11 +184,9 @@ function HomePage() {
     else{
       try {
         const response = await axios.get(fullPath);
-
     } catch (error) {
         console.error(error);
     }
-
     }
 
 };
@@ -211,7 +209,6 @@ return (
               color = `hsl(197, 71%, ${65 - (i-3) * 10}%)`;
           }
 
-          
           return (
             <div 
               key={i} 
@@ -224,8 +221,6 @@ return (
              );
             })}
           </div>
-    
-
             <div className="preview">
               {articleList===null && <h3>아직 글이 없어요!</h3>}
               
@@ -240,7 +235,6 @@ return (
 
     <footer className="App-footer">
       <div className="bottom-menu">
-
         {['홈','내 글', '글쓰기', '알림'].map((item, i) => (
           <div 
             key={i}
