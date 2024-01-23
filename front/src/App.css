@@ -61,6 +61,20 @@
   border-bottom: 1px solid #000000;
   padding: 10px 0;
 }
+.article-item-content{
+    /* 내용의 최대 높이 설정. 1줄이 최대라고 가정함 */
+    max-height: 1.6em; /* '1.6em'은 한 줄의 높이를 의미 */
+  
+    /* 넘치는 텍스트를 ...로 표시 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    /* 넘치는 텍스트를 ...로 표시하기 위해 필요한 속성 */
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* 몇 줄까지 표시할지 설정. 1줄로 설정함 */
+    -webkit-box-orient: vertical;
+
+}
 
 .preview {
   max-height: calc(100vh - (6.5vh + 19vh));
