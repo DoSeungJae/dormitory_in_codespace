@@ -53,8 +53,6 @@ function ArticlePage(){
         : `${year}/${month}/${day} ${hours}:${minutes}`;
     }
     
-
-
     return (
         <div className="App">
             <div className="app-article-header">
@@ -68,8 +66,6 @@ function ArticlePage(){
                     <p>{writerNickName}</p>
                     <p>{formatCreateTime(article.createTime)}</p>
                   </div>
-                
-
               </div>
               <div className='article-body'>
               <p className='article-title'>{article.title}</p>
