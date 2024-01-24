@@ -248,7 +248,7 @@
   display: flex;
   justify-content:space-between;
 }
-.article-category, .article-appointedTime{
+.article-category, .article-appointedTime, .article-dormitory{
   position:relative;
   top:5px;
   font-size:16px;
