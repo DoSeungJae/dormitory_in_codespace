@@ -2,14 +2,37 @@ import {React,useState,useEffect} from 'react';
 import axios from 'axios';
 import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/common/BackButton';
-import ThreeDotsMenu from '../../components/home/ThreeDotsMenu';
+import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
+    const[isWriter,setIsWriter]=useState(0);
+
     const location=useLocation();
     const article=location.state;
+    const token=localStorage.getItem('token');
     
+    const isSame = async (token) => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/token/userId', {
+            headers: {
+                'Authorization': `${token}`
+            }
+        });
+        if(response.data===article.userId){
+          return 1;
+        }
+        else{
+          return 0;
+        }
+    
+    } catch (error) {
+        console.error('An error occurred isSame in ArticlePage.js:', error);
+        return 0;
+    }
+
+    }
     const convertDorIdToString = (num) => {
       const mappingDict = {
         1: '오름1',
@@ -37,6 +60,7 @@ function ArticlePage(){
 
     useEffect(()=>{
         getWriterNickName();
+        isSame(token).then(result=>setIsWriter(result));
     },[]);
 
     function formatCreateTime(createTime) {
@@ -57,7 +81,8 @@ function ArticlePage(){
         <div className="App">
             <div className="app-article-header">
                 <BackButton></BackButton>
-                <ThreeDotsMenu></ThreeDotsMenu>
+                <ThreeDotsMenu isWriterParam={isWriter}></ThreeDotsMenu>
+                
             </div>
             <div className="app-article-main">
               <div className="article-info">
