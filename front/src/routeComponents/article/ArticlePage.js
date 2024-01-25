@@ -81,7 +81,7 @@ function ArticlePage(){
         <div className="App">
             <div className="app-article-header">
                 <BackButton></BackButton>
-                <ThreeDotsMenu isWriterParam={isWriter}></ThreeDotsMenu>
+                <ThreeDotsMenu isWriterParam={isWriter} articleParam={article}></ThreeDotsMenu>
                 
             </div>
             <div className="app-article-main">
