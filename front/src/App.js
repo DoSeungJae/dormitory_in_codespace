@@ -7,7 +7,7 @@ import WritingPage from './routeComponents/home/WritingPage';
 import MyWritingPage from './routeComponents/home/MyWritingPage';
 import AlarmPage from './routeComponents/home/AlarmPage';
 import ArticlePage from './routeComponents/article/ArticlePage';
-import React,{useState,createContext} from 'react';
+import React,{useState} from 'react';
 import AlertContext from './components/common/AlertContext';
 import Alert from './components/common/Alert';
 
