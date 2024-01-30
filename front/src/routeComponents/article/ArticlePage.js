@@ -4,6 +4,7 @@ import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/common/BackButton';
 import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -79,6 +80,7 @@ function ArticlePage(){
     
     return (
         <div className="App">
+
             <div className="app-article-header">
                 <BackButton></BackButton>
                 <ThreeDotsMenu isWriterParam={isWriter} articleParam={article}></ThreeDotsMenu>
@@ -99,7 +101,7 @@ function ArticlePage(){
                   <p className="article-appointedTime">{article.appointedTime}</p>
                   <p className="article-dormitory">{convertDorIdToString(article.dorId)}</p>
                 </div>
-                
+
                 <p className='article-content'>{article.content}</p>
 
               </div>
