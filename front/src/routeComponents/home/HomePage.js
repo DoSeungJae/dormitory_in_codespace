@@ -1,10 +1,12 @@
 import {React,useEffect,useState} from 'react';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate,useLocation} from 'react-router-dom';
+import {toast} from 'react-toastify';
 
 function HomePage() {
-  
+
   const[articleList,setArticleList]=useState([]);
+  const location=useLocation();
   const getAllArticles = async () => {
     try{
       const response = await axios.get('http://localhost:8080/api/v1/article', {
@@ -16,12 +18,27 @@ function HomePage() {
       console.log('an error occurred:',error);
     }
   }
+  
+  const setAlert= () => {
+    if(!location.state){
+      return 
+    }
+    else if(!location.state.status){
+      toast(location.state.message);
+    }
+    else if(location.state.status=="success"){
+      toast.success(location.state.message);
+    }
+    location.state=0;
+
+  }
 
   useEffect(()=>{
     async function fetchData(){
       await getAllArticles();
     }
     fetchData();
+    setAlert();
   },[])
   
   const token=localStorage.getItem('token');
