@@ -8,26 +8,16 @@ import MyWritingPage from './routeComponents/home/MyWritingPage';
 import AlarmPage from './routeComponents/home/AlarmPage';
 import ArticlePage from './routeComponents/article/ArticlePage';
 import React,{useState} from 'react';
-import AlertContext from './components/common/AlertContext';
-import Alert from './components/common/Alert';
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  const [alert,setAlert]=useState(null);
   
-  const showAlert=(message)=>{
-    setAlert({message});
-  }
-
-  const closeAlert=()=>{
-    setAlert(null);
-  }
-
   return (
-
     <div className="App">
-
-        <AlertContext.Provider value={showAlert}>
-          {alert && <Alert message={alert.message} onClose={closeAlert} />}
+        <ToastContainer
+          className="toast-position"
+          position='top-center'/>
 
           <BrowserRouter>
         <Routes>
@@ -41,8 +31,7 @@ function App() {
           <Route path="/signIn" element={<SignInPage/>}></Route>
           <Route path="/logIn" element={<LogInPage/>}></Route>
         </Routes>
-      </BrowserRouter>  
-        </AlertContext.Provider>
+      </BrowserRouter>
      
 
       
