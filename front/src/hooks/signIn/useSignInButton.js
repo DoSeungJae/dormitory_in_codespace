@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
-import InputForm from '../../components/common/InputForm';
 import SignInForm from '../../components/signIn/SignInForm';
 import Button from '../../components/common/Button';
 import axios from 'axios';
@@ -40,7 +39,7 @@ const UseSignInButton = () => {
         rex_nick.test(nick)
         ){
             axios.post('http://localhost:8080/api/v1/user/join',
-            {eMail:eMail,passWord:pw,nickName:nick})
+            {email:eMail,passWord:pw,nickName:nick})
             .then(response => {
               console.log(response.data);
             })
