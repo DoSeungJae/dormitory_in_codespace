@@ -1,10 +1,11 @@
-import React,{useState}from 'react';
+import React,{useState,useContext}from 'react';
 import {Dropdown} from 'react-bootstrap';
 import ThreeDots from '../common/ThreeDots';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TestContext from '../common/TestContext';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <h1
@@ -25,6 +26,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   const [isWriter,setIsWriter]=useState(0); //초기값을 isWriterParam으로 설정할 시 에러 발생 -> 렌더링 안됨.
   const [article,setArticle]=useState("");
   const notify= (message) => toast(message);
+  const testFunction=useContext(TestContext);
   
   const deleteArticle = async (token,article) => {
     //alert로 한 번 더 확인하는 기능 추가해야함.
@@ -47,7 +49,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   const menuItems = {
     0: [
       { eventKey: "1", text: "신고", action: () => notify("!23123123!!!")},
-      { eventKey: "2", text: "URL 공유", action: () => alert('Action 2 executed') },
+      { eventKey: "2", text: "URL 공유", action: () => testFunction() },
     ],
     1: [
       { eventKey: "1", text: "수정", action: () => alert('Action 1-2 executed') },
