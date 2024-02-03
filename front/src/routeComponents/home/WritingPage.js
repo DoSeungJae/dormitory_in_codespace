@@ -45,7 +45,13 @@ function WritingPage() {
             'Authorization':`${token}`,
             }
         });
-        navigate("/");
+        navigate('/', {
+            state: {
+              from: '/',
+              type: "success",
+              message: "글을 올렸어요!"
+            }
+          });
 
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
