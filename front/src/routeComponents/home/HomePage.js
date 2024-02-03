@@ -1,12 +1,15 @@
-import {React,useEffect,useState} from 'react';
+import {React,useEffect,useState,useContext} from 'react';
 import axios from 'axios';
 import {useNavigate,useLocation} from 'react-router-dom';
 import {toast} from 'react-toastify';
+import AlertContext from '../../components/common/AlertContext.js';
 
 function HomePage() {
 
   const[articleList,setArticleList]=useState([]);
   const location=useLocation();
+  const setAlert=useContext(AlertContext);
+
   const getAllArticles = async () => {
     try{
       const response = await axios.get('http://localhost:8080/api/v1/article', {
@@ -19,26 +22,12 @@ function HomePage() {
     }
   }
   
-  const setAlert= () => {
-    if(!location.state){
-      return 
-    }
-    else if(!location.state.status){
-      toast(location.state.message);
-    }
-    else if(location.state.status=="success"){
-      toast.success(location.state.message);
-    }
-    location.state=0;
-
-  }
-
   useEffect(()=>{
     async function fetchData(){
       await getAllArticles();
     }
     fetchData();
-    setAlert();
+    setAlert(location);
   },[])
   
   const token=localStorage.getItem('token');
@@ -56,8 +45,11 @@ function HomePage() {
           const path=buttonToPath[item]
           navigate(`/${path}`);
         } else {
-            alert('회원 정보가 유효하지 않아요! 로그인해주세요.');
-            navigate('/logIn',{state:{from:'/'}});
+            navigate('/logIn',{state:
+              {from:'/',type:"error",
+              message:'회원 정보가 유효하지 않아요! 로그인해주세요.'}
+                              });
+
         }
     } catch (error) {
         console.error('An error occurred:', error);
@@ -75,8 +67,10 @@ function HomePage() {
       if (response.data === true) {
         navigate('/article',{state:article})
       } else {
-          alert('글을 보기 위해선 로그인이 필요해요!');
-          navigate('/logIn',{state:{from:'/'}});
+          navigate('/logIn',{state:
+            {from:'/',type:"error",
+            message:'글을 보기 위해선 로그인이 필요해요!'}
+                            });
       }
   } catch (error) {
       console.error('An error occurred:', error);
