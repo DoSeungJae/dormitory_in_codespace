@@ -5,7 +5,7 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import TestContext from '../common/TestContext';
+import AlertContext from '../common/AlertContext';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <h1
@@ -26,7 +26,8 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   const [isWriter,setIsWriter]=useState(0); //초기값을 isWriterParam으로 설정할 시 에러 발생 -> 렌더링 안됨.
   const [article,setArticle]=useState("");
   const notify= (message) => toast(message);
-  const testFunction=useContext(TestContext);
+
+  
   
   const deleteArticle = async (token,article) => {
     //alert로 한 번 더 확인하는 기능 추가해야함.
@@ -38,7 +39,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
           }
       });
       if(response.status===200){
-        navigate("/",{state:{status:"success",message:"글을 잘 삭제했어요."}});      
+        navigate("/",{state:{type:"success",message:"글을 잘 삭제했어요."}});      
       } 
     } catch (error) {// jwt 무효 
         toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
@@ -49,10 +50,10 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   const menuItems = {
     0: [
       { eventKey: "1", text: "신고", action: () => notify("!23123123!!!")},
-      { eventKey: "2", text: "URL 공유", action: () => testFunction() },
+      { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
-      { eventKey: "1", text: "수정", action: () => alert('Action 1-2 executed') },
+      { eventKey: "1", text: "수정", action: () => navigate("/article/modify",{state:{articleId:article.id}}) },
       { eventKey: "2", text: "삭제", action: () => deleteArticle(token,article) },
       { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ],

@@ -1,10 +1,11 @@
 import Button from '../../components/common/Button.js';
-import {useState} from 'react';
+import {useState,useContext,useEffect} from 'react';
 import InputForm from '../../components/common/InputForm.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import axios from 'axios';
 import { useLocation,useNavigate } from 'react-router-dom';
+import AlertContext from '../../components/common/AlertContext.js';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
@@ -13,17 +14,12 @@ function UseLogInButton() {
     const [pwError,setPwError]=useState(false);
     const location=useLocation();
     const navigate=useNavigate();
+    const setAlert=useContext(AlertContext);
 
-    const buttonPressedTest = () => {
-      axios.get('http://localhost:8080/api/v1/user/test')
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      })
-    }
-  
+    useEffect(() => {
+      setAlert(location);
+    })
+
     const buttonPressed = () => {
       if(id===''){
         setIdError(true);
@@ -48,8 +44,14 @@ function UseLogInButton() {
           
         })
         .catch(error => {
-          console.error(error);
-          alert('로그인 정보가 일치하지 않아요! 다시 시도해주세요.');
+          console.error(error.response.data);
+          navigate('/logIn', {
+            state: {
+              from: '/',
+              type: "error",
+              message: error.response.data
+            }
+          });
 
           
         })
