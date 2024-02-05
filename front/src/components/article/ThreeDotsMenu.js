@@ -39,7 +39,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
           }
       });
       if(response.status===200){
-        navigate("/",{state:{type:"success",message:"글을 잘 삭제했어요."}});      
+        navigate("/",{state:{type:"success",message:"글을 삭제했어요."}});      
       } 
     } catch (error) {// jwt 무효 
         toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
@@ -53,7 +53,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
       { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
-      { eventKey: "1", text: "수정", action: () => navigate("/article/modify",{state:{articleId:article.id}}) },
+      { eventKey: "1", text: "수정", action: () => navigate("/article/patch",{state:article}) },
       { eventKey: "2", text: "삭제", action: () => deleteArticle(token,article) },
       { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ],

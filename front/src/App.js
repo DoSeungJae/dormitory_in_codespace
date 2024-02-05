@@ -12,7 +12,7 @@ import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from './components/common/AlertContext';
 import {toast} from 'react-toastify';
-import ModificationPage from './routeComponents/home/ModificationPage';
+import PatchPage from './routeComponents/home/PatchPage';
 
 function App() {
   const testFunction= () => {
@@ -58,7 +58,7 @@ function App() {
             <Route path="/alarm" element={<AlarmPage/>}></Route>
 
             <Route  path="/article" element={<ArticlePage/>}></Route> {/* exact가 필요한가 ??*/}
-            <Route path="/article/modify"element={<ModificationPage/>}></Route>
+            <Route path="/article/patch"element={<PatchPage/>}></Route>
             
             <Route path="/signIn" element={<SignInPage/>}></Route>
             <Route path="/logIn" element={<LogInPage/>}></Route>

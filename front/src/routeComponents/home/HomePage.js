@@ -65,7 +65,7 @@ function HomePage() {
       });
 
       if (response.data === true) {
-        navigate('/article',{state:article})
+        navigate('/article',{state:{info:article}})
       } else {
           navigate('/logIn',{state:
             {from:'/',type:"error",
