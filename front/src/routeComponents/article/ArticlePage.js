@@ -1,17 +1,18 @@
-import {React,useState,useEffect} from 'react';
+import {React,useState,useEffect,useContext} from 'react';
 import axios from 'axios';
 import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/common/BackButton';
 import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
+import AlertContext from '../../components/common/AlertContext';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const[isWriter,setIsWriter]=useState(0);
-
+    const setAlert=useContext(AlertContext);
     const location=useLocation();
-    const article=location.state;
+    const article=location.state.info;
     const token=localStorage.getItem('token');
     
     const isSame = async (token) => {
@@ -60,6 +61,7 @@ function ArticlePage(){
       }
 
     useEffect(()=>{
+        //setAlert(location);
         getWriterNickName();
         isSame(token).then(result=>setIsWriter(result));
     },[]);
@@ -113,5 +115,7 @@ function ArticlePage(){
     );
 
 }
+
+
 
 export default ArticlePage;
