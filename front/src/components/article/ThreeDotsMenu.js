@@ -30,7 +30,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   
   
   const deleteArticle = async (token,article) => {
-    //alert로 한 번 더 확인하는 기능 추가해야함.
+    //alert로 한 번 더 확인하는 기능 추가해야함. <- 굳이?
 
     try {
       const response = await axios.delete(`http://localhost:8080/api/v1/article/${article.id}`, {
@@ -41,7 +41,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
       if(response.status===200){
         navigate("/",{state:{type:"success",message:"글을 삭제했어요."}});      
       } 
-    } catch (error) {// jwt 무효 
+    } catch (error) {// jwt 무효 -> 로그인 페이지로 이동할 필요가 있다(navigate).
         toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
         console.error('An error occurred:', error);
     }
@@ -53,7 +53,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
       { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
-      { eventKey: "1", text: "수정", action: () => navigate("/article/patch",{state:article}) },
+      { eventKey: "1", text: "수정", action: () => navigate("/article/patch",{state:article})},
       { eventKey: "2", text: "삭제", action: () => deleteArticle(token,article) },
       { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ],
