@@ -15,9 +15,6 @@ function PatchPage() {
     const location=useLocation();
     const article=location.state;
     
-
-
-    //글의 정보를 불러와서 세팅해야함
     useEffect(()=>{
         if(article){
             setTitle(article.title);
@@ -75,7 +72,8 @@ function PatchPage() {
         {state:
             {from:'/article',type:"success",
             message:'글을 수정했어요!',
-            info:article}
+            info:response.data,
+            reload:1}
                             });
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
