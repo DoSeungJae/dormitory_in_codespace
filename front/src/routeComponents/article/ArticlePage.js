@@ -14,7 +14,7 @@ function ArticlePage(){
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
-    
+
     const isSame = async (token) => {
       try {
         const response = await axios.get('http://localhost:8080/api/v1/token/userId', {
