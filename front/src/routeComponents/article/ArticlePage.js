@@ -33,6 +33,7 @@ function ArticlePage(){
         console.error('An error occurred isSame in ArticlePage.js:', error);
         return 0;
     }
+    
 
     }
     const convertDorIdToString = (num) => {
@@ -61,9 +62,11 @@ function ArticlePage(){
       }
 
     useEffect(()=>{
-        //setAlert(location);
         getWriterNickName();
         isSame(token).then(result=>setIsWriter(result));
+        if(location.state && location.state.info){
+          //setAlert(location);
+        }
     },[]);
 
     function formatCreateTime(createTime) {
