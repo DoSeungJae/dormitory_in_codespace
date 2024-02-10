@@ -1,7 +1,7 @@
 import {React,useState,useEffect,useContext} from 'react';
 import axios from 'axios';
 import {useLocation} from 'react-router-dom';
-import BackButton from '../../components/common/BackButton';
+import BackButton from '../../components/article/BackButton';
 import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
@@ -64,8 +64,10 @@ function ArticlePage(){
     useEffect(()=>{
         getWriterNickName();
         isSame(token).then(result=>setIsWriter(result));
-        if(location.state && location.state.info){
+        if(location.state.reload===1){
           //setAlert(location);
+          console.log(article);
+          location.state.reload=0;
         }
     },[]);
 
