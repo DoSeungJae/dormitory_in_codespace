@@ -6,6 +6,7 @@ import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from '../../components/common/AlertContext';
+import {toast} from 'react-toastify';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -64,13 +65,9 @@ function ArticlePage(){
     useEffect(()=>{
         getWriterNickName();
         isSame(token).then(result=>setIsWriter(result));
-        console.log(typeof(article.createTime));
-        console.log(article.createTime);
-        console.log(article);
 
         if(location.state.reload===1){
-          //setAlert(location);
-          //console.log(article);
+          toast.success("글을 수정했어요!");
           location.state.reload=0;
         }
     },[]);
