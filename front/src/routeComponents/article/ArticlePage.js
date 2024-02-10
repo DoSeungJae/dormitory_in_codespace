@@ -64,9 +64,13 @@ function ArticlePage(){
     useEffect(()=>{
         getWriterNickName();
         isSame(token).then(result=>setIsWriter(result));
+        console.log(typeof(article.createTime));
+        console.log(article.createTime);
+        console.log(article);
+
         if(location.state.reload===1){
           //setAlert(location);
-          console.log(article);
+          //console.log(article);
           location.state.reload=0;
         }
     },[]);

@@ -50,7 +50,7 @@ public class ArticleApi {
         Article article=articleService.getArticle(articleId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(article);
+                .body(article.toJsonString());
     }
 
     @PostMapping("/new")
@@ -59,7 +59,7 @@ public class ArticleApi {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(article.toString());
+                .body(article.toJsonString());
     }
 
     @PatchMapping("/{articleId}")
@@ -67,7 +67,7 @@ public class ArticleApi {
         Article updatedArticle=articleService.updateArticle(dto,articleId,token);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(updatedArticle);
+                .body(updatedArticle.toJsonString());
     }
 
     @DeleteMapping("/{articleId}")
