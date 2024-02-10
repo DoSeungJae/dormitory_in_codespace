@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useMemo } from 'react';
 import 'bootstrap/dist/css/bootstrap.css'; 
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
@@ -14,6 +14,17 @@ function PatchPage() {
     const navigate=useNavigate();
     const location=useLocation();
     const article=location.state;
+
+    const dorIdToDormitory= useMemo(()=>(
+        {
+          1:"오름1",
+          2:"오름2",
+          3:"오름3",
+          4:"푸름1",
+          5:"푸름2",
+          6:"푸름3",
+          7:"푸름4"
+        }),[]);
     
     useEffect(()=>{
         if(article){
@@ -23,7 +34,7 @@ function PatchPage() {
             setDorSelect(dorIdToDormitory[article.dorId]);
             
         }
-    },[])
+    },[article,dorIdToDormitory])
 
     const dormitoryToId = {
         "오름1": 1,
@@ -35,15 +46,7 @@ function PatchPage() {
         "푸름4": 7
       };
     
-      const dorIdToDormitory={
-        1:"오름1",
-        2:"오름2",
-        3:"오름3",
-        4:"푸름1",
-        5:"푸름2",
-        6:"푸름3",
-        7:"푸름4"
-      };
+
 
     const buttonPressed = async () => {
         //예외처리
