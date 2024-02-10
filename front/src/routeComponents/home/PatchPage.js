@@ -74,7 +74,6 @@ function PatchPage() {
         navigate('/article', 
         {state:
             {from:'/article',type:"success",
-            message:'글을 수정했어요!',
             info:response.data,
             reload:1}
                             });
