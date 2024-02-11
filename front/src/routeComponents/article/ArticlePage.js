@@ -7,6 +7,7 @@ import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from '../../components/common/AlertContext';
 import {toast} from 'react-toastify';
+import CommentForm from '../../components/article/CommentForm';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -114,7 +115,9 @@ function ArticlePage(){
 
               </div>
             </div>
+            
             <div className="app-article-footer">
+              <CommentForm></CommentForm>
 
             </div>
         </div>
