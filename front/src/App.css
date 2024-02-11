@@ -237,6 +237,14 @@
   padding-left:5%;
   align-items: left;
 }
+.app-article-footer{
+  padding-right:2%;
+  padding-left:2%;
+  position:fixed;
+  width:100%;
+  bottom:0;
+  padding-bottom:20px;
+}
 .article-title{
   word-wrap:break-word;
   overflow-wrap:break-word;
