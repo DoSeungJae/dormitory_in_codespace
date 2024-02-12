@@ -12,7 +12,5 @@ import lombok.Setter;
 public class CommentUpdateDTO {
     private Long id;
     private String content;
-    private Boolean isUpdated=true;
-    //값을 정해도 되나?
 
 }
