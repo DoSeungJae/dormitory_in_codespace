@@ -1,6 +1,4 @@
 package com.DormitoryBack.config;
-//import com.taxiWithBack.domain.member.service.UserDetailService;
-//import com.taxiWithBack.jwt.JwtSecurityConfig;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
