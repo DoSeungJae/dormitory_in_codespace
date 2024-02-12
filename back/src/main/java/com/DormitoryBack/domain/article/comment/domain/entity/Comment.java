@@ -52,7 +52,7 @@ public class Comment {
     private Boolean isUpdated=false;
 
     public void update(CommentUpdateDTO dto){
-        this.isUpdated=dto.getIsUpdated();
+        this.isUpdated=true;
         this.content=dto.getContent();
     }
     public String toJsonString(){
