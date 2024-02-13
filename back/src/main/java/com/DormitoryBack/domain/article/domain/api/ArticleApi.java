@@ -45,7 +45,7 @@ public class ArticleApi {
                 .body(articleService.listStringify(articles));
     }
 
-    @GetMapping("{articleId}")
+    @GetMapping("/{articleId}")
     public ResponseEntity article(@PathVariable("articleId") Long articleId){ //token 인증이 필요함.
         Article article=articleService.getArticle(articleId);
         return ResponseEntity

@@ -41,7 +41,29 @@ public class CommentService {
     public List<Comment> getAllComments(){
         List<Comment> comments=commentRepository.findAll();
         if(comments.isEmpty()){
-            throw new RuntimeException("NoComment");
+            throw new RuntimeException("NoCommentFound");
+        }
+        return comments;
+    }
+    public List<Comment> getUserComments(Long userId){
+        User user=userRepository.findById(userId).orElse(null);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+        List<Comment> comments=commentRepository.findAllByUser(user);
+        if(comments.isEmpty()){
+            throw new RuntimeException("NoCommentFound");
+        }
+        return comments;
+    }
+    public List<Comment> getArticleComments(Long articleId){
+        Article article=articleRepository.findById(articleId).orElse(null);
+        if(article==null){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        List<Comment> comments=commentRepository.findAllByArticle(article);
+        if(comments.isEmpty()){
+            throw new RuntimeException("NoCommentFound");
         }
         return comments;
     }
@@ -51,15 +73,15 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         return stringifiedCommentList;
-
     }
+    @Transactional
     public Comment newComment(CommentDTO dto,String token){
         if (!tokenProvider.validateToken(token)) {
             throw new JwtException("InvalidToken");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
         User userData=userRepository.findById(userId).orElse(null);
-        Article userArticle=articleRepository.findById(userId).orElse(null);
+        Article userArticle=articleRepository.findById(dto.getArticleId()).orElse(null);
 
         Comment newComment=Comment.builder()
                 .article(userArticle)
@@ -81,6 +103,9 @@ public class CommentService {
         if(comment==null){
             throw new IllegalArgumentException("CommentNotFound");
         }
+        if(comment.getUser().getId()!=tokenProvider.getUserIdFromToken(token)){
+            throw new RuntimeException("NoPermission");
+        }
         comment.update(dto);
         Comment saved=commentRepository.save(comment);
 
@@ -95,6 +120,10 @@ public class CommentService {
         Comment target=commentRepository.findById(commentId).orElse(null);
         if(target==null){
             throw new IllegalArgumentException("CommentNotFound");
+        }
+        Comment comment=commentRepository.findById(commentId).orElse(null);
+        if(comment.getUser().getId()!=tokenProvider.getUserIdFromToken(token)){
+            throw new RuntimeException("NoPermission");
         }
         commentRepository.delete(target);
     }
