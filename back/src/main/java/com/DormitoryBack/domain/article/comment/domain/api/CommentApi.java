@@ -1,6 +1,5 @@
 package com.DormitoryBack.domain.article.comment.domain.api;
 
-
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
@@ -33,7 +32,7 @@ public class CommentApi {
                 .status(HttpStatus.OK)
                 .body("comment test");
     }
-    @GetMapping("{commentId}")
+    @GetMapping("/{commentId}")
     public ResponseEntity Comment(@PathVariable("commentId") Long commentId){
         Comment comment=commentService.getComment(commentId);
         return ResponseEntity
@@ -49,15 +48,18 @@ public class CommentApi {
     }
     @GetMapping("/user/{userId}")
     public ResponseEntity userComments(@PathVariable("userId") Long userId){
+        List<Comment> comments=commentService.getUserComments(userId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("NotImplementedYet");
+                .body(commentService.listStringify(comments));
     }
+    //토큰 인증이 필요하지 않을까?
     @GetMapping("/article/{articleId}")
     public ResponseEntity articleComments(@PathVariable("articleId") Long articleId){
+        List<Comment> comments=commentService.getArticleComments(articleId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("NotImplementedYet");
+                .body(commentService.listStringify(comments));
     }
     @PostMapping("/new")
     public ResponseEntity newComment(@RequestBody CommentDTO dto, @RequestHeader("Authorization") String token){
@@ -80,6 +82,5 @@ public class CommentApi {
                 .status(HttpStatus.OK)
                 .body("CommentDeleted");
     }
-
 
 }
