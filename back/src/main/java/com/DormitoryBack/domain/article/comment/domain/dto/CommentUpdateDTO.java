@@ -10,7 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentUpdateDTO {
-    private Long id;
     private String content;
 
 }
