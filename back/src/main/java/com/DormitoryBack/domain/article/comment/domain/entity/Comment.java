@@ -35,7 +35,7 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
-    //굳이 필요할까?
+    //JsonProperty가 필요하지 않을까?
 
     @JsonProperty
     public Long getArticleId(){
