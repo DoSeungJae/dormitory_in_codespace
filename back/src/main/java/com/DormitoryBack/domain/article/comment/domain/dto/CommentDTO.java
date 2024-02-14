@@ -1,6 +1,5 @@
 package com.DormitoryBack.domain.article.comment.domain.dto;
 
-import com.DormitoryBack.domain.article.domain.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
