@@ -1,6 +1,8 @@
 package com.DormitoryBack.domain.report.entity;
 
 
+import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
+import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,14 +35,22 @@ public class Report {
     @JsonProperty
     public Long getUserId(){return reporter.getId();}
 
-    @Column(nullable=false,name="is_article")
-    private Boolean isArticle;
-    //true면 article에 대한 신고, false면 comment에 대한 신고임
 
-    @Column(name="post_id")
-    private Long postId;
-    //isArticle이 1이면 articleId,
-    //0이면 commentId로 인식
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="comment_id")
+    private Comment comment;
+
+    @JsonProperty
+    public Long getCommentId(){return comment.getId();}
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="article_id")
+    private Article article;
+
+    @JsonProperty
+    public Long getArticleId(){return article.getId();}
 
     @CreatedDate
     @Column(name="time")
