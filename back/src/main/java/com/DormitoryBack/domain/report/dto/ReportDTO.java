@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +11,6 @@ import java.time.LocalDateTime;
 public class ReportDTO {
     private Long articleId;
     private Long commentId;
-    private LocalDateTime time;
     private String reason;
 
 }
