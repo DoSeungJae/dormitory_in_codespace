@@ -11,12 +11,19 @@ import com.DormitoryBack.domain.report.dto.ReportDTO;
 import com.DormitoryBack.domain.report.entity.Report;
 import com.DormitoryBack.domain.report.repository.ReportRepository;
 import io.jsonwebtoken.JwtException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
 public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
@@ -82,7 +89,7 @@ public class ReportService {
         if(user==null){
             throw new RuntimeException("UserNotFound");
         }
-        List<Report> reports=reportRepository.findAllByUser(user);
+        List<Report> reports=reportRepository.findAllByReporter(user);
         if(reports.isEmpty()){
             throw new RuntimeException("NoReportFound");
         }
