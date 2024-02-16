@@ -58,7 +58,7 @@ public class Report {
 
     @Column(name="reason")
     private String reason;
-    //도배, 음란물, 상업적, 정치, 노쇼, 욕설, 비하
+    //도배글, 음란물, 상업적글, 정치글, 노쇼, 욕설, 비하
 
     public String toJsonString(){
         ObjectMapper objectMapper=new ObjectMapper();
