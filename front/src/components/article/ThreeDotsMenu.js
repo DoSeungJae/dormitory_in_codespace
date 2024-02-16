@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from '../common/AlertContext';
+import Swal from 'sweetalert2';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <h1
@@ -27,10 +28,59 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   const [article,setArticle]=useState("");
   const notify= (message) => toast(message);
 
-  
-  
+
+  const handleSwal=async () => {
+    const { value: fruit } = await Swal.fire({
+      title: "신고",
+      input: "select",
+      inputOptions: {
+        도배글:"도배글",
+        음란물:"음란물",
+        상업적글:"상업적글",
+        정치글:"정치글",
+        노쇼:"노쇼",
+        욕설:"욕설",
+        비하:"비하"
+      },
+      inputPlaceholder: "신고 사유를 선택하세요.",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value) {
+            resolve();
+            reportArticle(value);
+          } else {
+            resolve("신고 사유를 선택해주세요!");
+          }
+        });
+      }
+    });
+  }
+
+  const reportArticle = async (reportReason) => {
+    try {
+      const path = `http://localhost:8080/api/v1/report/new`;
+      const data = {
+        articleId:article.id,
+        reason:reportReason
+      };
+      const response = await axios.post(path, data,{
+          headers: {
+              'Authorization': `${token}`
+          }
+      });
+      if(response.status===200){
+        toast.success("신고가 접수되었어요.");
+        console.log(response.data);
+      } 
+    } catch (error) {// jwt 무효 -> 로그인 페이지로 이동할 필요가 있다(navigate).
+        navigate("/logIn",{state:{type:"error",message:"로그인 정보가 만료되었어요! 다시 로그인해주세요."}});    
+        console.error('An error occurred:', error);
+    }
+  }
+
   const deleteArticle = async (token,article) => {
-    //alert로 한 번 더 확인하는 기능 추가해야함. <- 굳이?
+    //sweetalert로 한 번 더 확인하는 기능 추가해야함. <- 굳이?
 
     try {
       const response = await axios.delete(`http://localhost:8080/api/v1/article/${article.id}`, {
@@ -49,7 +99,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
 
   const menuItems = {
     0: [
-      { eventKey: "1", text: "신고", action: () => notify("!23123123!!!")},
+      { eventKey: "1", text: "신고", action: () => handleSwal()},
       { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
@@ -58,6 +108,8 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
       { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ],
   };
+
+
 
 
 
