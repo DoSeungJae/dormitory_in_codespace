@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,15 +103,20 @@ public class ReportService {
             throw new JwtException("InvalidToken");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
+        log.info(userId.toString());
         User userData=userRepository.findById(userId).orElse(null);
         Article userArticle=articleRepository.findById(dto.getArticleId()).orElse(null);
         Comment userComment=commentRepository.findById(dto.getCommentId()).orElse(null);
+        log.info("user:"+userData.toString());
+        log.info("article:"+userArticle.toJsonString());
+        log.info("comment:"+userComment.toJsonString());
+        //commentID 혹은 articleId가 null인 상황을 제외시켜야함 if문 사용
 
         Report newReport=Report.builder()
                 .reporter(userData)
                 .article(userArticle)
                 .comment(userComment)
-                .time(dto.getTime())
+                .time(LocalDateTime.now())
                 .reason(dto.getReason())
                 .build();
         Report saved=reportRepository.save(newReport);
