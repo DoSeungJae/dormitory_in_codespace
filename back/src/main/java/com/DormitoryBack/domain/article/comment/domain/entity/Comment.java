@@ -49,7 +49,7 @@ public class Comment {
     private LocalDateTime createdTime;
 
     @Column(name="updated")
-    private Boolean isUpdated=false;
+    private Boolean isUpdated;
 
     public void update(CommentUpdateDTO dto){
         this.isUpdated=true;
