@@ -105,12 +105,19 @@ public class ReportService {
         Long userId=tokenProvider.getUserIdFromToken(token);
         log.info(userId.toString());
         User userData=userRepository.findById(userId).orElse(null);
-        Article userArticle=articleRepository.findById(dto.getArticleId()).orElse(null);
-        Comment userComment=commentRepository.findById(dto.getCommentId()).orElse(null);
-        log.info("user:"+userData.toString());
-        log.info("article:"+userArticle.toJsonString());
-        log.info("comment:"+userComment.toJsonString());
-        //commentID 혹은 articleId가 null인 상황을 제외시켜야함 if문 사용
+        Article userArticle=null;
+        Comment userComment=null;
+        if(dto.getCommentId()==null){
+            //글의 형식은 "article"
+            userArticle=articleRepository.findById(dto.getArticleId()).orElse(null);
+        }
+        else if(dto.getArticleId()==null){
+            //글의 형식은 "comment"
+            userComment=commentRepository.findById(dto.getCommentId()).orElse(null);
+        }
+        else{
+            throw new RuntimeException("NoId");
+        }
 
         Report newReport=Report.builder()
                 .reporter(userData)
