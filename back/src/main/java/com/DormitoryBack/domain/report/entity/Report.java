@@ -42,7 +42,12 @@ public class Report {
     private Comment comment;
 
     @JsonProperty
-    public Long getCommentId(){return comment.getId();}
+    public Long getCommentId(){
+        if(comment!=null){
+            return comment.getId();
+        }
+        return null;
+    }
 
     @JsonIgnore
     @ManyToOne
@@ -50,7 +55,12 @@ public class Report {
     private Article article;
 
     @JsonProperty
-    public Long getArticleId(){return article.getId();}
+    public Long getArticleId(){
+        if(article!=null) {
+            return article.getId();
+        }
+        return null;
+    }
 
     @CreatedDate
     @Column(name="time")
