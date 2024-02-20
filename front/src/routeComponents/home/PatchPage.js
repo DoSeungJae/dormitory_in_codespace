@@ -108,7 +108,7 @@ function PatchPage() {
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
                 <br/>
                 <br/>
-                <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%',height:'50%'}} onChange={e => setContent(e.target.value)}  />
+                <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%',height:'90%'}} onChange={e => setContent(e.target.value)}  />
                 <br />
             </main>
             <div className="selects">
