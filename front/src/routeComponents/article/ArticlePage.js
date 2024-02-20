@@ -5,14 +5,12 @@ import BackButton from '../../components/article/BackButton';
 import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
-import AlertContext from '../../components/common/AlertContext';
 import {toast} from 'react-toastify';
 import CommentForm from '../../components/article/CommentForm';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const[isWriter,setIsWriter]=useState(0);
-    const setAlert=useContext(AlertContext);
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
