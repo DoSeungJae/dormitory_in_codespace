@@ -320,3 +320,15 @@
 .toast-position{
   top:2rem !important;
 }
+
+.comment-submit{
+  padding-left:5px;
+  padding-bottom:0px;
+  display:flex;
+  align-items: center;
+}
+
+.comment-submit .MuiIconButton-root {
+  color: #FF8C00;
+}
+
