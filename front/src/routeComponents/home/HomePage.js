@@ -15,7 +15,7 @@ function HomePage() {
       const response = await axios.get('http://localhost:8080/api/v1/article', {
     });
     const data=response.data.map(item => JSON.parse(item));
-    setArticleList(data);    
+    setArticleList(data.reverse());    
     }
     catch(error){
       console.log('an error occurred:',error);
