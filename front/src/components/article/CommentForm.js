@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import { IconButton, TextField } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import InputForm from '../common/InputForm';
 
 function CommentForm() {
   const [comment, setComment] = useState('');
 
-  const handleChange = (event) => {
-    setComment(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    alert('댓글이 작성되었습니다: ' + comment);
-    setComment('');
-  };
-
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px' }}>
-      <input 
-        type="text"
-        value={comment} 
-        onChange={handleChange} 
-        placeholder="댓글을 입력하세요." 
-        style={{ flex: 1 }}
-      />
-      <button type="submit">댓글 작성</button>
-    </form>
+    <div className='App'>
+      <div className="comment-submit" >
+        <input
+          type='text'
+          className="form-control"
+          placeholder="댓글을 입력하세요."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <IconButton
+          onClick={() => {
+          console.log("button clicked");
+            }}>
+          <SendIcon/>
+        </IconButton>
+      </div>
+    </div>
+
   );
 }
 
