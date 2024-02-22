@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,15 +81,17 @@ public class CommentService {
         if (!tokenProvider.validateToken(token)) {
             throw new JwtException("InvalidToken");
         }
+
         Long userId=tokenProvider.getUserIdFromToken(token);
         User userData=userRepository.findById(userId).orElse(null);
-        Article userArticle=articleRepository.findById(dto.getArticleId()).orElse(null);
+        Article article=articleRepository.findById(dto.getArticleId()).orElse(null);
+
 
         Comment newComment=Comment.builder()
-                .article(userArticle)
+                .article(article)
                 .user(userData)
                 .content(dto.getContent())
-                .createdTime(dto.getCreatedTime())
+                .createdTime(LocalDateTime.now())
                 .isUpdated(false)
                 .build();
         Comment saved=commentRepository.save(newComment);
