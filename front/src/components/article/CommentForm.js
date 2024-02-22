@@ -1,10 +1,10 @@
 import React, { useState} from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import InputForm from '../common/InputForm';
 
-function CommentForm() {
+function CommentForm({articleId}) {
   const [comment, setComment] = useState('');
+
 
   return (
     <div className='App'>
@@ -19,6 +19,7 @@ function CommentForm() {
         <IconButton
           onClick={() => {
           console.log("button clicked");
+          console.log(articleId);
             }}>
           <SendIcon/>
         </IconButton>
