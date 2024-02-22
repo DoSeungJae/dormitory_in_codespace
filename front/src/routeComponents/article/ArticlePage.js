@@ -115,7 +115,7 @@ function ArticlePage(){
             </div>
             
             <div className="app-article-footer">
-              <CommentForm articleId={article.id}></CommentForm>
+              <CommentForm article_Id={article.id}></CommentForm>
 
             </div>
         </div>
