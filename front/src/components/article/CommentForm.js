@@ -1,9 +1,36 @@
 import React, { useState} from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
-function CommentForm({articleId}) {
+function CommentForm({article_Id}) {
   const [comment, setComment] = useState('');
+  const navigate=useNavigate();
+  const token=localStorage.getItem('token');
+
+  const sendComment = async () => {
+
+    const fullPath = `http://localhost:8080/api/v1/article/comment/new`;
+    const data = {
+      articleId:article_Id,
+      content:comment,
+    };
+  
+    try {
+    const response = await axios.post(fullPath, data, {
+        headers: {
+        'Authorization':`${token}`,
+        }
+    });
+    console.log(response.data);
+    } catch (error) {
+        if(error.response.data==="유효하지 않은 토큰입니다."){
+            alert("회원 정보가 유요하지 않아요! 로그인해주세요.");
+            navigate('/logIn',{state:{from:"/article"}});
+        }
+    }
+}
 
 
   return (
@@ -19,7 +46,9 @@ function CommentForm({articleId}) {
         <IconButton
           onClick={() => {
           console.log("button clicked");
-          console.log(articleId);
+          sendComment();
+          console.log(article_Id);
+          //sendComment();
             }}>
           <SendIcon/>
         </IconButton>
