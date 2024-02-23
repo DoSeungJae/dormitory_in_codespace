@@ -31,6 +31,11 @@ public class Comment {
     @JoinColumn(name="article_id")
     private Article article;
 
+    @JsonProperty
+    public Long getArticleId(){
+        return article.getId();
+    }
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -38,9 +43,8 @@ public class Comment {
     //JsonProperty가 필요하지 않을까?
 
     @JsonProperty
-    public Long getArticleId(){
-        return article.getId();
-    }
+    public User getUser(){return user;}
+
     @Column(nullable = false,name="content")
     private String content;
 
@@ -50,6 +54,7 @@ public class Comment {
 
     @Column(name="updated")
     private Boolean isUpdated;
+
 
     public void update(CommentUpdateDTO dto){
         this.isUpdated=true;
