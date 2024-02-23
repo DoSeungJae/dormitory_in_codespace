@@ -2,6 +2,9 @@ package com.DormitoryBack.domain.member.entity;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,8 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "usrId")
     private List<Article> articles;
+    //DB에 반영되지 않음.
+
 
     //private PasswordEncoder passwordEncoder;
 
@@ -56,7 +61,18 @@ public class User {
         return this.id+" "+this.eMail+" "+this.nickName;
     }
 
+    public String toJsonString(){
+        ObjectMapper objectMapper=new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
+        String jsonString="";
+        try{
+            jsonString=objectMapper.writeValueAsString(this);
+        }catch(JsonProcessingException e){
+            e.printStackTrace();
+        }
+        return jsonString;
+    }
 
     /*
     @Bean

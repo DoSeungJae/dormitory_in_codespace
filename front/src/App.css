@@ -67,6 +67,12 @@
     -webkit-box-orient: vertical;
 }
 
+.comment-item{
+  text-align:left;
+  border-bottom:1px solid gray;
+  padding-top:5px;
+}
+
 .preview {
   max-height: calc(100vh - (6.5vh + 19vh));
   overflow-y: auto;
@@ -332,3 +338,6 @@
   color: #FF8C00;
 }
 
+.comment-list{
+  padding-top:10px;
+}

@@ -10,10 +10,23 @@ import CommentForm from '../../components/article/CommentForm';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
+    const[commentList,setCommentList]=useState([]);
     const[isWriter,setIsWriter]=useState(0);
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
+
+    const getAllComments = async () => {
+      try{
+        const response=await axios.get(`http://localhost:8080/api/v1/article/comment/article/${article.id}`);
+        const data=response.data.map(item => JSON.parse(item));
+        setCommentList(data.reverse());
+      }
+      catch(error){
+        console.error(error);
+      }
+
+    }
 
     const isSame = async (token) => {
       try {
@@ -63,6 +76,7 @@ function ArticlePage(){
 
     useEffect(()=>{
         getWriterNickName();
+        getAllComments();
         isSame(token).then(result=>setIsWriter(result));
 
         if(location.state.reload===1){
@@ -109,14 +123,22 @@ function ArticlePage(){
                   <p className="article-dormitory">{convertDorIdToString(article.dorId)}</p>
                 </div>
 
-                <p className='article-content'>{article.content}</p>
-
+                <div className='article-content'>
+                  {article.content}
+                  <div className="comment-list">
+                  {commentList && commentList.map((comment, index) => (
+                  <div key={index} className="comment-item">
+                    <h2 className="comment-item-children">{comment.user.nickName}</h2>
+                    <p className="comment-item-children">{comment.content}</p>
+                  </div>
+                  ))}
+                  </div>
+                  </div>
               </div>
             </div>
-            
+      
             <div className="app-article-footer">
               <CommentForm article_Id={article.id}></CommentForm>
-
             </div>
         </div>
     );
