@@ -18,7 +18,7 @@ function ArticlePage(){
 
     const getAllComments = async () => {
       try{
-        const response=await axios.get(`http://localhost:8080/api/v1/article/comment/article/${article.id}`);
+        const response=await axios.get(`http://localhost:8080/api/v1/comment/article/${article.id}`);
         const data=response.data.map(item => JSON.parse(item));
         setCommentList(data.reverse());
       }
