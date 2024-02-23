@@ -11,7 +11,7 @@ function CommentForm({article_Id}) {
 
   const sendComment = async () => {
 
-    const fullPath = `http://localhost:8080/api/v1/article/comment/new`;
+    const fullPath = `http://localhost:8080/api/v1/comment/new`;
     const data = {
       articleId:article_Id,
       content:comment,
