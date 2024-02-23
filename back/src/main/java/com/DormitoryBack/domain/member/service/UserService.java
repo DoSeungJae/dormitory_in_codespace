@@ -3,6 +3,7 @@ package com.DormitoryBack.domain.member.service;
 
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserDTO;
+import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.domain.member.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,34 +29,48 @@ public class UserService {
     //@Autowired
     //private AuthenticationManager authenticationManager1;
 
-    public List<User> getAllUsers(){
+    public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
         if(users.isEmpty()){
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
-        return users;
+        List<UserResponseDTO> responseDTO = users.stream()
+                .map(user -> new UserResponseDTO(user.getEMail(), user.getNickName()))
+                .collect(Collectors.toList());
+
+        return responseDTO;
     }
 
-    public User getUser(Long usrId){
+    public UserResponseDTO getUser(Long usrId){
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
-        return user;
+        UserResponseDTO responseDTO=UserResponseDTO.builder()
+                .eMail(user.getEMail())
+                .nickName(user.getNickName())
+                .build();
+
+        return responseDTO;
     }
 
-    public User updateUser(Long usrId, UserDTO dto){
+    public UserResponseDTO updateUser(Long usrId, UserDTO dto){
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
         user.update(dto);
         User saved=userRepository.save(user);
-        return saved;
+        UserResponseDTO responseDTO=UserResponseDTO.builder()
+                .eMail(saved.getEMail())
+                .nickName(saved.getNickName())
+                .build();
+
+        return responseDTO;
 
     }
 
-    public User signUp(String eMail, String passWord, String nickName) {
+    public UserResponseDTO signUp(String eMail, String passWord, String nickName) {
         User existingUserMail = userRepository.findByeMail(eMail);
         User existingUserNick = userRepository.findByNickName(nickName);
 
@@ -73,7 +89,12 @@ public class UserService {
                 .build();
 
         User saved=userRepository.save(user);
-        return saved;
+        UserResponseDTO responseDTO=UserResponseDTO.builder()
+                .eMail(saved.getEMail())
+                .nickName(saved.getNickName())
+                .build();
+
+        return responseDTO;
 
     }
 
