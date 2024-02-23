@@ -2,7 +2,7 @@ package com.DormitoryBack.domain.member.api;
 
 import com.DormitoryBack.domain.member.dto.UserDTO;
 import com.DormitoryBack.domain.member.dto.UserLogInDTO;
-import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +31,15 @@ public class UserApi {
 
     @GetMapping("")
     public ResponseEntity allUsers(){
-        List<User> users=userService.getAllUsers();
+        List<UserResponseDTO> users=userService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(users);
 
     }
 
     @GetMapping("/{usrId}")
     public ResponseEntity user(@PathVariable("usrId") Long usrId){
-        User user=userService.getUser(usrId);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        UserResponseDTO responseDTO=userService.getUser(usrId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
     @PostMapping("/logIn")
     public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
@@ -61,17 +61,17 @@ public class UserApi {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> signUp(@RequestBody UserDTO dto) {
+    public ResponseEntity signUp(@RequestBody UserDTO dto) {
         log.info(dto.toString());
 
-        User user = userService.signUp(dto.getEMail(), dto.getPassWord(), dto.getNickName());
-        return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + user.toString());
+        UserResponseDTO responseDTO = userService.signUp(dto.getEMail(), dto.getPassWord(), dto.getNickName());
+        return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + responseDTO.toString());
     }
 
     @PatchMapping("/{usrId}")
     public ResponseEntity updateUser(@PathVariable("usrId") Long usrId, @RequestBody UserDTO dto){
-        User user=userService.updateUser(usrId,dto);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        UserResponseDTO responseDTO=userService.updateUser(usrId,dto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
     @DeleteMapping("/{usrId}")
@@ -79,8 +79,5 @@ public class UserApi {
         userService.deleteUser(usrId);
         return ResponseEntity.status(HttpStatus.OK).body("USER DELETED");
     }
-
-
-
 
 }
