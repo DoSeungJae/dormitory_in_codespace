@@ -1,6 +1,8 @@
 package com.DormitoryBack.domain.article.comment.domain.service;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.CommentResponseDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
@@ -98,6 +100,13 @@ public class CommentService {
         return saved;
 
     }
+    public CommentResponseDTO newReply(CommentReplyDTO dto, String token) {
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        return null;
+    }
+
     @Transactional
     public Comment updateComment(CommentUpdateDTO dto,Long commentId, String token){
         if(!tokenProvider.validateToken(token)){
@@ -131,4 +140,6 @@ public class CommentService {
         }
         commentRepository.delete(target);
     }
+
+
 }
