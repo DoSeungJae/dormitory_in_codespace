@@ -1,6 +1,8 @@
 package com.DormitoryBack.domain.article.comment.domain.api;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.CommentResponseDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
@@ -67,6 +69,13 @@ public class CommentApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(comment.toJsonString());
+    }
+    @PostMapping("/reply")
+    public ResponseEntity newReply(@RequestBody CommentReplyDTO dto, @RequestHeader("Authorization") String token){
+        CommentResponseDTO responseDTO=commentService.newReply(dto,token);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(responseDTO);
     }
     @PatchMapping("/{commentId}")
     public ResponseEntity updateComment(@RequestBody CommentUpdateDTO dto,@PathVariable("commentId") Long commentId, @RequestHeader("Authorization") String token){
