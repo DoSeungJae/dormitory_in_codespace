@@ -341,3 +341,27 @@
 .comment-list{
   padding-top:10px;
 }
+
+.comment-item-header{
+  display:flex;
+  justify-content:space-between;
+  padding-bottom:5px;
+
+}
+
+.comment-menu {
+  display: flex;
+  justify-content: space-between;
+  width: 150px; /* 메뉴의 너비를 조절하세요. */
+  height:30px;
+  padding: 10px;
+  border-radius: 10px; /* 모서리 둥근 정도를 조절하세요. */
+  background-color: #f0f0f0; /* 배경색을 변경하세요. */
+}
+
+.comment-menu-item{
+  display:flex;
+  align-items: center;
+  cursor:pointer;
+
+}
