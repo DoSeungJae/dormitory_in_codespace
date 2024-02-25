@@ -7,6 +7,7 @@ import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
 import {toast} from 'react-toastify';
 import CommentForm from '../../components/article/CommentForm';
+import CommentMenu from '../../components/article/CommentMenu';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -128,8 +129,11 @@ function ArticlePage(){
                   <div className="comment-list">
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
-                    <h2 className="comment-item-children">{comment.user.nickName}</h2>
-                    <p className="comment-item-children">{comment.content}</p>
+                    <div className="comment-item-header">
+                      {comment.user.nickName}
+                      <CommentMenu/>
+                    </div>
+                    <p className="comment-item-content">{comment.content}</p>
                   </div>
                   ))}
                   </div>
@@ -142,7 +146,6 @@ function ArticlePage(){
             </div>
         </div>
     );
-
 }
 
 
