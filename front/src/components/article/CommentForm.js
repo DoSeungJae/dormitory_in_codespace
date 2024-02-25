@@ -3,6 +3,7 @@ import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 
 function CommentForm({article_Id}) {
   const [comment, setComment] = useState('');
@@ -10,6 +11,10 @@ function CommentForm({article_Id}) {
   const token=localStorage.getItem('token');
 
   const sendComment = async () => {
+    if(comment==''){
+      toast.warn("댓글 내용을 입력해주세요!");
+      return 
+    }
 
     const fullPath = `http://localhost:8080/api/v1/comment/new`;
     const data = {
@@ -47,8 +52,6 @@ function CommentForm({article_Id}) {
           onClick={() => {
           console.log("button clicked");
           sendComment();
-          console.log(article_Id);
-          //sendComment();
             }}>
           <SendIcon/>
         </IconButton>
