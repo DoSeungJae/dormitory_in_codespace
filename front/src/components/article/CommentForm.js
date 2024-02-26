@@ -5,12 +5,19 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 
-function CommentForm({article_Id}) {
+function CommentForm({article_Id,isReply,setIsReply}) {
   const [comment, setComment] = useState('');
   const navigate=useNavigate();
   const token=localStorage.getItem('token');
 
+  const sendReply = async () => {
+    console.log("reply mode");
+  }
   const sendComment = async () => {
+    if(isReply==1){
+      sendReply();
+      return;
+    }
     if(comment==''){
       toast.warn("댓글 내용을 입력해주세요!");
       return 
@@ -38,6 +45,7 @@ function CommentForm({article_Id}) {
 }
 
 
+
   return (
     <div className='App'>
       <div className="comment-submit" >
@@ -52,7 +60,7 @@ function CommentForm({article_Id}) {
           onClick={() => {
           console.log("button clicked");
           sendComment();
-            }}>
+                      }}>
           <SendIcon/>
         </IconButton>
       </div>
