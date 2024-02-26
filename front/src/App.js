@@ -41,32 +41,39 @@ function App() {
     location.state=0;
   }
   
+  const handleTouchStart = (e) => {
+    if(window.location.href==='http://localhost:3000/article'){
+    }
+    //서비스 배포시 유의
+  }
+  
   
   return (
     <div className="App">
-      <ToastContainer
-        className="toast-position"
-        position='top-center'/>
+      <div 
+      onTouchStart={handleTouchStart}  style={{ height: '100vh', width: '100%'}} >
+        <ToastContainer
+          className="toast-position"
+          position='top-center'/>
 
 
-      <AlertContext.Provider value={setAlert}>
-        <BrowserRouter>
-          <Routes>
-            <Route exact path="/" element={<HomePage/>}></Route> 
-            <Route path="/newWriting" element={<WritingPage/>}></Route>
-            <Route path="/myWriting" element={<MyWritingPage/>}></Route>
-            <Route path="/alarm" element={<AlarmPage/>}></Route>
+        <AlertContext.Provider value={setAlert}>
+          <BrowserRouter>
+            <Routes>
+              <Route exact path="/" element={<HomePage/>}></Route> 
+              <Route path="/newWriting" element={<WritingPage/>}></Route>
+              <Route path="/myWriting" element={<MyWritingPage/>}></Route>
+              <Route path="/alarm" element={<AlarmPage/>}></Route>
 
-            <Route  path="/article" element={<ArticlePage/>}></Route> {/* exact가 필요한가 ??*/}
-            <Route path="/article/patch"element={<PatchPage/>}></Route>
-            
-            <Route path="/signIn" element={<SignInPage/>}></Route>
-            <Route path="/logIn" element={<LogInPage/>}></Route>
-          </Routes>
-        </BrowserRouter>
-      </AlertContext.Provider>
-
-      
+              <Route  path="/article" element={<ArticlePage/>}></Route> {/* exact가 필요한가 ??*/}
+              <Route path="/article/patch"element={<PatchPage/>}></Route>
+              
+              <Route path="/signIn" element={<SignInPage/>}></Route>
+              <Route path="/logIn" element={<LogInPage/>}></Route>
+            </Routes>
+          </BrowserRouter>
+        </AlertContext.Provider>
+      </div>
     </div>
 
 
