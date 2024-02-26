@@ -13,6 +13,7 @@ function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const[commentList,setCommentList]=useState([]);
     const[isWriter,setIsWriter]=useState(0);
+    const[isReply,setIsReply]=useState(0);
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
@@ -131,7 +132,10 @@ function ArticlePage(){
                   <div key={index} className="comment-item">
                     <div className="comment-item-header">
                       {comment.user.nickName}
-                      <CommentMenu/>
+                      <CommentMenu
+                        isReply={isReply}
+                        setIsReply={setIsReply}>
+                      </CommentMenu>
                     </div>
                     <p className="comment-item-content">{comment.content}</p>
                   </div>
@@ -142,7 +146,11 @@ function ArticlePage(){
             </div>
       
             <div className="app-article-footer">
-              <CommentForm article_Id={article.id}></CommentForm>
+              <CommentForm 
+                article_Id={article.id}
+                isReply={isReply} 
+                setIsReply={setIsReply}>
+              </CommentForm>
             </div>
         </div>
     );
