@@ -352,7 +352,7 @@
 .comment-menu {
   display: flex;
   justify-content: space-between;
-  width: 150px; /* 메뉴의 너비를 조절하세요. */
+  width: 140px; /* 메뉴의 너비를 조절하세요. */
   height:30px;
   padding: 10px;
   border-radius: 10px; /* 모서리 둥근 정도를 조절하세요. */
