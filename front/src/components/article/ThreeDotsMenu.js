@@ -31,7 +31,10 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
 
   const handleSwal=async () => {
     const { value: fruit } = await Swal.fire({
+      confirmButtonColor:"#FF8C00",
       title: "신고",
+      confirmButtonText:"신고",
+      cancelButtonText:"취소",
       input: "select",
       inputOptions: {
         도배글:"도배글",
