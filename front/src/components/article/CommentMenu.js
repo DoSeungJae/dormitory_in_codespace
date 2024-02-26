@@ -4,13 +4,17 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import {IconButton} from '@mui/material';
 
-function CommentMenu(){
+function CommentMenu({isReply,setIsReply}){
+    const changeToReplyMode = () => {
+        setIsReply(1);
+        console.log(isReply);
+    }
     return (
         <div className="comment-menu">
             <div className="comment-menu-item">
                 <IconButton
                     onClick={() => {
-                    console.log("reply");
+                    changeToReplyMode();
                     }}>
                     <ForumOutlinedIcon  fontSize="small"/>
                 </IconButton>
