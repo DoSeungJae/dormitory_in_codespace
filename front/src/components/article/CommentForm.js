@@ -5,10 +5,11 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 
-function CommentForm({article_Id,isReply,setIsReply}) {
+function CommentForm({placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
   const [comment, setComment] = useState('');
   const navigate=useNavigate();
   const token=localStorage.getItem('token');
+  
 
   const sendReply = async () => {
     console.log("reply mode");
@@ -44,17 +45,23 @@ function CommentForm({article_Id,isReply,setIsReply}) {
     }
 }
 
-
+const handleBlur = () => {
+  if(placeHolder==="대댓글을 입력하세요."){
+    setPlaceHolder("댓글을 입력하세요.");
+  }
+}
 
   return (
     <div className='App'>
       <div className="comment-submit" >
         <input
+          ref={inputRef}
           type='text'
           className="form-control"
-          placeholder="댓글을 입력하세요."
+          placeholder={placeHolder}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
+          onBlur={handleBlur}
         />
         <IconButton
           onClick={() => {
