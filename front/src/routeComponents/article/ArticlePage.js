@@ -1,4 +1,4 @@
-import {React,useState,useEffect,useContext} from 'react';
+import {React,useState,useEffect,useContext,useRef,forwardRef} from 'react';
 import axios from 'axios';
 import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/article/BackButton';
@@ -14,9 +14,12 @@ function ArticlePage(){
     const[commentList,setCommentList]=useState([]);
     const[isWriter,setIsWriter]=useState(0);
     const[isReply,setIsReply]=useState(0);
+    const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
+    const inputRef=useRef();
+
 
     const getAllComments = async () => {
       try{
@@ -133,6 +136,8 @@ function ArticlePage(){
                     <div className="comment-item-header">
                       {comment.user.nickName}
                       <CommentMenu
+                        setPlaceHolder={setFormPlaceHolder}
+                        inputRef={inputRef}
                         isReply={isReply}
                         setIsReply={setIsReply}>
                       </CommentMenu>
@@ -146,7 +151,10 @@ function ArticlePage(){
             </div>
       
             <div className="app-article-footer">
-              <CommentForm 
+              <CommentForm
+                placeHolder={formPlaceHolder}
+                setPlaceHolder={setFormPlaceHolder}
+                inputRef={inputRef}
                 article_Id={article.id}
                 isReply={isReply} 
                 setIsReply={setIsReply}>
