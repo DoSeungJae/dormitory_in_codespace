@@ -41,17 +41,14 @@ function App() {
     location.state=0;
   }
   
-  const handleTouchStart = (e) => {
-    if(window.location.href==='http://localhost:3000/article'){
-    }
+
     //서비스 배포시 유의
-  }
+  
   
   
   return (
     <div className="App">
-      <div 
-      onTouchStart={handleTouchStart}  style={{ height: '100vh', width: '100%'}} >
+      <div>
         <ToastContainer
           className="toast-position"
           position='top-center'/>
