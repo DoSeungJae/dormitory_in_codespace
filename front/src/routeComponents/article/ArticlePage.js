@@ -15,17 +15,25 @@ function ArticlePage(){
     const[isWriter,setIsWriter]=useState(0);
     const[isReply,setIsReply]=useState(0);
     const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
+    const[commentId,setCommentId]=useState(-1);
+    const[touchY,setTouchY]=useState(-1);
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
     const inputRef=useRef();
+
+    const handleTouchStart = (e) => {
+      const touch = e.touches[0];
+      setTouchY(touch.clientY);
+      console.log(touch.clientY);
+    }
 
 
     const getAllComments = async () => {
       try{
         const response=await axios.get(`http://localhost:8080/api/v1/comment/article/${article.id}`);
         const data=response.data.map(item => JSON.parse(item));
-        setCommentList(data.reverse());
+        setCommentList(data);
       }
       catch(error){
         console.error(error);
@@ -105,7 +113,9 @@ function ArticlePage(){
     }
     
     return (
-        <div className="App">
+        <div className="App"
+              onTouchStart={handleTouchStart}
+              style={{ height: '100vh', width: '100vw' }}>
 
             <div className="app-article-header">
                 <BackButton></BackButton>
@@ -136,6 +146,8 @@ function ArticlePage(){
                     <div className="comment-item-header">
                       {comment.user.nickName}
                       <CommentMenu
+                        rootCommentId={comment.id}
+                        setRootCommentId={setCommentId}
                         setPlaceHolder={setFormPlaceHolder}
                         inputRef={inputRef}
                         isReply={isReply}
@@ -152,6 +164,9 @@ function ArticlePage(){
       
             <div className="app-article-footer">
               <CommentForm
+                y={touchY}
+                rootComemntId={commentId}
+                setRootCommentId={setCommentId}
                 placeHolder={formPlaceHolder}
                 setPlaceHolder={setFormPlaceHolder}
                 inputRef={inputRef}
