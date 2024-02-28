@@ -6,10 +6,11 @@ import {IconButton} from '@mui/material';
 import Swal from 'sweetalert2';
 import { RestartAltOutlined } from '@mui/icons-material';
 
-function CommentMenu({setPlaceHolder,inputRef,isReply,setIsReply}){
+function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isReply,setIsReply}){
     const changeToReplyMode = () => {
         setTimeout(()=>{
             setIsReply(1);
+            setRootCommentId(rootCommentId);
             setPlaceHolder("대댓글을 입력하세요.");
             inputRef.current.focus();
         },300)
