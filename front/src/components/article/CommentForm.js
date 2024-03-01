@@ -46,7 +46,7 @@ function CommentForm({y,rootCommentId,SetRootCommentId,placeHolder,setPlaceHolde
         'Authorization':`${token}`,
         }
     });
-    console.log(response.data);
+    window.location.reload();
     } catch (error) {
         if(error.response.data==="유효하지 않은 토큰입니다."){
             alert("회원 정보가 유요하지 않아요! 로그인해주세요.");
@@ -57,9 +57,6 @@ function CommentForm({y,rootCommentId,SetRootCommentId,placeHolder,setPlaceHolde
 
 const handleBlur = () => {
   const rect=formRef.current.getBoundingClientRect();
-  console.log(isReply);
-  console.log(rect.top);
-  console.log(y);
   if(!(y+10<rect.top)){
     return 
   }
