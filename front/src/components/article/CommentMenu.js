@@ -16,7 +16,6 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isR
         },300)
 
     }
-    //문제 해결 블로그 작성하기!
     const handleSwal= () => {
         Swal.fire({
           confirmButtonColor:"#FF8C00",
