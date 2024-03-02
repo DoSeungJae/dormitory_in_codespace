@@ -25,7 +25,6 @@ function ArticlePage(){
     const handleTouchStart = (e) => {
       const touch = e.touches[0];
       setTouchY(touch.clientY);
-      console.log(touch.clientY);
     }
 
 
