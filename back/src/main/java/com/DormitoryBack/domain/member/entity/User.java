@@ -27,6 +27,7 @@ public class User {
     @Column(nullable=false, unique = true)
     private String eMail;
     @Column(nullable = false)
+    @JsonIgnore
     private String passWord;
     @Column
     private String nickName;
