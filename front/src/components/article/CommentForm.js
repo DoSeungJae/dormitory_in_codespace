@@ -6,7 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import Swal from 'sweetalert2';
 
-function CommentForm({y,rootCommentId,SetRootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
+function CommentForm({y,rootCommentId,setRootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
   const [comment, setComment] = useState('');
   const navigate=useNavigate();
   const token=localStorage.getItem('token');
@@ -20,7 +20,22 @@ function CommentForm({y,rootCommentId,SetRootCommentId,placeHolder,setPlaceHolde
       inputRef.current.focus();
     }
     else{
-      //서버에 보내기 
+      const path = `http://localhost:8080/api/v1/comment/newReply`;
+      const data={
+        rootCommentId:102,
+        content:comment,
+      };
+      try{
+        const response=await axios.post(path,data,{
+          headers:{
+            'Authorization':`${token}`,
+          }
+        });
+        console.log(response);
+      }catch(error){
+        console.error(error);
+        //토큰 에러 처리 필요 
+      }
       setIsReply(0);
       setPlaceHolder("댓글을 입력하세요");
       setComment("");
