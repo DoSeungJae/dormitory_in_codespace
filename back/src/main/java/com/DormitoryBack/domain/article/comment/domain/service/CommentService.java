@@ -2,7 +2,7 @@ package com.DormitoryBack.domain.article.comment.domain.service;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentResponseDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyResponseDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
@@ -100,11 +100,38 @@ public class CommentService {
         return saved;
 
     }
-    public CommentResponseDTO newReply(CommentReplyDTO dto, String token) {
+
+    @Transactional
+    public CommentReplyResponseDTO newReply(CommentReplyDTO dto, String token) {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
-        return null;
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        User userData=userRepository.findById(userId).orElse(null);
+        Comment rootComment=commentRepository.findById(dto.getRootCommentId()).orElse(null);
+        if(rootComment==null){
+            throw new RuntimeException("CommentNotFound");
+        }
+        if(rootComment.getRootComment()!=null){
+            throw new RuntimeException("CannotReplyToReplies");
+        }
+        Comment newReply=Comment.builder()
+                .article(null)
+                .user(userData)
+                .content(dto.getContent())
+                .createdTime(LocalDateTime.now())
+                .isUpdated(false)
+                .build();
+
+        rootComment.addReplyComment(newReply);
+        Comment saved=commentRepository.save(newReply);
+        CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
+                .content(saved.getContent())
+                .time(saved.getCreatedTime())
+                .rootCommentId(saved.getRootComment().getId())
+                .build();
+
+        return commentResponseDTO;
     }
 
     @Transactional
