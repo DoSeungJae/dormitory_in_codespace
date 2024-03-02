@@ -2,11 +2,12 @@ package com.DormitoryBack.domain.article.comment.domain.api;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentResponseDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyResponseDTO;
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.global.StrUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,12 +71,15 @@ public class CommentApi {
                 .status(HttpStatus.OK)
                 .body(comment.toJsonString());
     }
-    @PostMapping("/reply")
+    @PostMapping("/newReply")
     public ResponseEntity newReply(@RequestBody CommentReplyDTO dto, @RequestHeader("Authorization") String token){
-        CommentResponseDTO responseDTO=commentService.newReply(dto,token);
+        CommentReplyResponseDTO responseDTO=commentService.newReply(dto,token);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(responseDTO);
+        //StrUtil을 사용하면 time이 Array 타입으로 반환됨,
+        //dto 그대로 반환시 time은 string 타입으로 반환됨.
+
     }
     @PatchMapping("/{commentId}")
     public ResponseEntity updateComment(@RequestBody CommentUpdateDTO dto,@PathVariable("commentId") Long commentId, @RequestHeader("Authorization") String token){
