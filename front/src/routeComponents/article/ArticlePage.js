@@ -159,12 +159,8 @@ function ArticlePage(){
                         <div className="comment-item-header">
                             {reply.user.nickName}
                             <CommentMenu
-                                rootCommentId={reply.id}
-                                setRootCommentId={setCommentId}
-                                setPlaceHolder={setFormPlaceHolder}
-                                inputRef={inputRef}
-                                isReply={isReply}
-                                setIsReply={setIsReply}>
+                              isForReply={1}
+                                >
                             </CommentMenu>
                         </div>
                         <p className="comment-item-content">{reply.content}</p>
@@ -181,7 +177,7 @@ function ArticlePage(){
               <CommentForm
                 y={touchY}
                 rootCommentId={commentId}
-                setRootCommentId={setCommentId}
+                setPlaceHolder={setFormPlaceHolder}
                 placeHolder={formPlaceHolder}
                 inputRef={inputRef}
                 article_Id={article.id}
