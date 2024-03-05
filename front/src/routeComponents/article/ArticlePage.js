@@ -154,6 +154,22 @@ function ArticlePage(){
                       </CommentMenu>
                     </div>
                     <p className="comment-item-content">{comment.content}</p>
+                    {comment.replyComments && comment.replyComments.map((reply, replyIndex) => (
+                    <div key={replyIndex} className="comment-item reply">
+                        <div className="comment-item-header">
+                            {reply.user.nickName}
+                            <CommentMenu
+                                rootCommentId={reply.id}
+                                setRootCommentId={setCommentId}
+                                setPlaceHolder={setFormPlaceHolder}
+                                inputRef={inputRef}
+                                isReply={isReply}
+                                setIsReply={setIsReply}>
+                            </CommentMenu>
+                        </div>
+                        <p className="comment-item-content">{reply.content}</p>
+                    </div>
+                    ))}
                   </div>
                   ))}
                   </div>
