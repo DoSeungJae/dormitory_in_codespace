@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import { RestartAltOutlined } from '@mui/icons-material';
 
 function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isReply,setIsReply}){
-    const changeToReplyMode = () => {
+    const changeToReplyMode =  () => {
         setTimeout(()=>{
             setIsReply(1);
             setRootCommentId(rootCommentId);

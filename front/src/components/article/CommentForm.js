@@ -13,8 +13,6 @@ function CommentForm({y,rootCommentId,setRootCommentId,placeHolder,setPlaceHolde
   const formRef=useRef(null);
 
   const sendReply = async () => {
-    console.log(rootCommentId);
-    console.log(isReply);
     if(comment===""){
       toast.warn("내용을 입력해주세요!");
       inputRef.current.focus();
@@ -22,16 +20,18 @@ function CommentForm({y,rootCommentId,setRootCommentId,placeHolder,setPlaceHolde
     else{
       const path = `http://localhost:8080/api/v1/comment/newReply`;
       const data={
-        rootCommentId:102,
+        rootCommentId:rootCommentId,
         content:comment,
       };
       try{
-        const response=await axios.post(path,data,{
+        const response= await axios.post(path,data,{
           headers:{
             'Authorization':`${token}`,
           }
         });
-        console.log(response);
+        if(response.data===201){
+          window.location.reload();
+        }
       }catch(error){
         console.error(error);
         //토큰 에러 처리 필요 
