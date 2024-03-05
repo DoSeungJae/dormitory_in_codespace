@@ -164,7 +164,7 @@ function ArticlePage(){
             <div className="app-article-footer">
               <CommentForm
                 y={touchY}
-                rootComemntId={commentId}
+                rootCommentId={commentId}
                 setRootCommentId={setCommentId}
                 placeHolder={formPlaceHolder}
                 setPlaceHolder={setFormPlaceHolder}
