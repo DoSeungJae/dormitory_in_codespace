@@ -6,7 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import Swal from 'sweetalert2';
 
-function CommentForm({y,rootCommentId,setRootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
+function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
   const [comment, setComment] = useState('');
   const navigate=useNavigate();
   const token=localStorage.getItem('token');

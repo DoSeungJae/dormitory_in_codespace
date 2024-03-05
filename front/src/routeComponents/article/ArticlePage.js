@@ -167,7 +167,6 @@ function ArticlePage(){
                 rootCommentId={commentId}
                 setRootCommentId={setCommentId}
                 placeHolder={formPlaceHolder}
-                setPlaceHolder={setFormPlaceHolder}
                 inputRef={inputRef}
                 article_Id={article.id}
                 isReply={isReply} 
