@@ -349,14 +349,15 @@
 
 }
 
+
 .comment-menu {
   display: flex;
   justify-content: space-between;
-  width: 140px; /* 메뉴의 너비를 조절하세요. */
+  width: 140px; 
   height:30px;
   padding: 10px;
-  border-radius: 10px; /* 모서리 둥근 정도를 조절하세요. */
-  background-color: #f0f0f0; /* 배경색을 변경하세요. */
+  border-radius: 10px; 
+  background-color: #f0f0f0; 
 }
 
 .comment-menu-item{
@@ -364,4 +365,9 @@
   align-items: center;
   cursor:pointer;
 
+}
+.comment-item.reply{
+  margin-left:20px;
+  border-bottom:none;
+  background-color: #f8f8f8;
 }
