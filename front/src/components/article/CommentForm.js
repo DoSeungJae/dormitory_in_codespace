@@ -28,13 +28,15 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
           headers:{
             'Authorization':`${token}`,
           }
+          
         });
-        if(response.data===201){
-          window.location.reload();
-        }
+      window.location.reload();
       }catch(error){
         console.error(error);
-        //토큰 에러 처리 필요 
+        if(error.response.data==="유효하지 않은 토큰입니다."){
+          alert("회원 정보가 유요하지 않아요! 로그인해주세요.");
+          navigate('/logIn',{state:{from:"/article"}});
+      }
       }
       setIsReply(0);
       setPlaceHolder("댓글을 입력하세요");
