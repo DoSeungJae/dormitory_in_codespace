@@ -10,11 +10,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId}){
+function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId,commentParam}){
     const [width,setWidth]=useState(130);
     const [isWriter,setIswriter]=useState(0);
     const navigate=useNavigate();
-
+    const [comment,setComment]=useState("");
     const token=localStorage.getItem('token');
 
     useEffect(()=>{
@@ -22,6 +22,7 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
             setWidth(88);
         }
         isSame(token).then(result=>setIswriter(result));
+        setComment(commentParam);
     })
  
     const isSame = async (token) => {
@@ -99,7 +100,11 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
             </div>
 
             <div className='comment-menu-item'>
-                <ThreeDotsMenu isWriterParam={isWriter} isForReply={1}></ThreeDotsMenu>
+                <ThreeDotsMenu isWriterParam={isWriter} 
+                isForReply={1}
+                commentParam={comment}
+                >
+                </ThreeDotsMenu>
             </div>
         </div>
     )
