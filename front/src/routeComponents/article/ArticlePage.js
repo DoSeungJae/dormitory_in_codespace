@@ -152,6 +152,7 @@ function ArticlePage(){
                         isReply={isReply}
                         setIsReply={setIsReply}
                         writerId={comment.user.id}
+                        commentParam={comment}
                         >
                         
                       </CommentMenu>
@@ -164,6 +165,7 @@ function ArticlePage(){
                             <CommentMenu
                               isForReply={1}
                               writerId={reply.user.id}
+                              commentParam={reply}
 
                                 >
                             </CommentMenu>
