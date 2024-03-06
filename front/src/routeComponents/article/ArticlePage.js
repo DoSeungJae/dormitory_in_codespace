@@ -150,7 +150,10 @@ function ArticlePage(){
                         setPlaceHolder={setFormPlaceHolder}
                         inputRef={inputRef}
                         isReply={isReply}
-                        setIsReply={setIsReply}>
+                        setIsReply={setIsReply}
+                        writerId={comment.user.id}
+                        >
+                        
                       </CommentMenu>
                     </div>
                     <p className="comment-item-content">{comment.content}</p>
@@ -160,6 +163,8 @@ function ArticlePage(){
                             {reply.user.nickName}
                             <CommentMenu
                               isForReply={1}
+                              writerId={reply.user.id}
+
                                 >
                             </CommentMenu>
                         </div>
