@@ -1,12 +1,52 @@
-import React from 'react';
+import {React,useEffect,useState} from 'react';  
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import {IconButton} from '@mui/material';
 import Swal from 'sweetalert2';
 import { RestartAltOutlined } from '@mui/icons-material';
+import ThreeDotsMenu from './ThreeDotsMenu';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isReply,setIsReply}){
+
+function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId}){
+    const [width,setWidth]=useState(130);
+    const [isWriter,setIswriter]=useState(0);
+    const navigate=useNavigate();
+
+    const token=localStorage.getItem('token');
+
+    useEffect(()=>{
+        if(isForReply){
+            setWidth(88);
+        }
+        isSame(token).then(result=>setIswriter(result));
+    })
+ 
+    const isSame = async (token) => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/token/userId', {
+            headers: {
+                'Authorization': `${token}`
+            }
+        });
+        if(response.data===writerId){
+            return 1;
+        }
+        else{
+            return 0;
+
+        }
+    
+    } catch (error) {
+        navigate('/logIn',{state:{from:"/article"}});
+        return 0;
+    }
+    
+    
+    }
+
     const changeToReplyMode =  () => {
         setTimeout(()=>{
             setIsReply(1);
@@ -16,6 +56,11 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isR
         },300)
 
     }
+    
+    const commentMenuWidth = {
+        width: width+'px',
+      };
+
     const handleSwal= () => {
         Swal.fire({
           confirmButtonColor:"#FF8C00",
@@ -32,16 +77,18 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isR
         });
       }
     return (
-        <div className="comment-menu">
-            <div className="comment-menu-item">
+        <div className="comment-menu" style={commentMenuWidth} >
+            {!isForReply &&
+            <div className="comment-menu-item" >
                 <IconButton
                     onClick={() => {
                     handleSwal();
                     }}>
                     <ForumOutlinedIcon  fontSize="small"/>
                 </IconButton>
-                
             </div>
+            }
+            
             <div className="comment-menu-item">
                 <IconButton
                     onClick={() => {
@@ -49,16 +96,10 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isR
                     }}>
                     <ThumbUpOutlinedIcon  fontSize="small"/>
                 </IconButton>
-                
             </div>
-            <div className="comment-menu-item">
-                <IconButton
-                    onClick={() => {
-                    console.log("threeDots");
-                    }}>
-                    <MoreVertOutlinedIcon  fontSize="small"/>
-                </IconButton>
- 
+
+            <div className='comment-menu-item'>
+                <ThreeDotsMenu isWriterParam={isWriter} isForReply={1}></ThreeDotsMenu>
             </div>
         </div>
     )
