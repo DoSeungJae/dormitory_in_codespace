@@ -21,13 +21,12 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   </h1>
 ));
 
-const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
+const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
   const navigate = useNavigate();
   const token=localStorage.getItem('token');
   const [isWriter,setIsWriter]=useState(0); //초기값을 isWriterParam으로 설정할 시 에러 발생 -> 렌더링 안됨.
   const [article,setArticle]=useState("");
-  const notify= (message) => toast(message);
-
+  const [comment,setComment]=useState("");
 
   const handleSwal=async () => {
     const { value: fruit } = await Swal.fire({
@@ -63,10 +62,23 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
   const reportArticle = async (reportReason) => {
     try {
       const path = `http://localhost:8080/api/v1/report/new`;
-      const data = {
-        articleId:article.id,
-        reason:reportReason
-      };
+      let data={};
+      if(article){
+        data = {
+          articleId:article.id,
+          reason:reportReason
+        };
+      }
+
+
+      else if(comment){
+        console.log(comment);
+        data = {
+          commentId:comment.id,
+          reason:reportReason
+        };
+      }
+
       const response = await axios.post(path, data,{
           headers: {
               'Authorization': `${token}`
@@ -119,7 +131,8 @@ const ThreeDotsMenu = ({isWriterParam,articleParam}) => {
 
   const handleToggle = () => {
     setIsWriter(isWriterParam === 1 ? 1 : 0); // 상태 토글
-    setArticle(articleParam); //필요 없는듯?
+    setArticle(articleParam);
+    setComment(commentParam);
   };
 
   return (
