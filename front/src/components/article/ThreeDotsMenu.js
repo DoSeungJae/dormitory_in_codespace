@@ -95,17 +95,31 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
     }
   }
 
-  const deleteArticle = async (token,article) => {
+  const deleteTarget = async (token,article,comment) => {
     //sweetalert로 한 번 더 확인하는 기능 추가해야함. <- 굳이?
-
+    let path="";
+    let isArticle=0;
+    if(article){
+      path=`http://localhost:8080/api/v1/article/${article.id}`;
+      isArticle=1;
+    }
+    else{
+      path=`http://localhost:8080/api/v1/comment/${comment.id}`
+    }
     try {
-      const response = await axios.delete(`http://localhost:8080/api/v1/article/${article.id}`, {
+      const response = await axios.delete(path, {
           headers: {
               'Authorization': `${token}`
           }
       });
       if(response.status===200){
-        navigate("/",{state:{type:"success",message:"글을 삭제했어요."}});      
+        if(isArticle){
+          navigate("/",{state:{type:"success",message:"글을 삭제했어요."}});     
+        }
+        else{
+          window.location.reload();
+        }
+ 
       } 
     } catch (error) {// jwt 무효 -> 로그인 페이지로 이동할 필요가 있다(navigate).
         toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
@@ -119,10 +133,10 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
-      { eventKey: "1", text: "수정", action: () => navigate("/article/patch",{state:article})},
-      { eventKey: "2", text: "삭제", action: () => deleteArticle(token,article) },
+      commentParam ? null : { eventKey: "1", text: "수정", action: () => navigate("/article/patch",{state:article})},
+      { eventKey: "2", text: "삭제", action: () => deleteTarget(token,article,comment) },
       { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
-    ],
+    ].filter(Boolean),
   };
 
 
