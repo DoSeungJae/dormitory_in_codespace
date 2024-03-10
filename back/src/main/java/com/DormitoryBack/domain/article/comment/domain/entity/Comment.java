@@ -55,15 +55,15 @@ public class Comment {
     private String content;
 
     @CreatedDate
-    @Column(name="time")
+    @Column(name="time",nullable = false)
     private LocalDateTime createdTime;
 
     @Column(name="updated")
-    //jsonView?
     private Boolean isUpdated;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "rootComment")
+    @OrderBy("createdTime ASC")
     private Set<Comment> replyComments=new HashSet<>();
 
     @JsonProperty
