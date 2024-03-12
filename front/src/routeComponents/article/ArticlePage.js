@@ -113,10 +113,6 @@ function ArticlePage(){
 
     },[]);
 
-    const handleScroll = () => {
-      console.log("scrolled");
-    }
-
     function formatCreateTime(createTime) {
       const currentYear = new Date().getFullYear();
 
