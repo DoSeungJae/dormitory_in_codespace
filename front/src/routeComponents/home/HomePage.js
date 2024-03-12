@@ -1,21 +1,24 @@
-import {React,useEffect,useState,useContext} from 'react';
+import {React,useEffect,useState,useContext,useRef} from 'react';
 import axios from 'axios';
 import {useNavigate,useLocation} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import AlertContext from '../../components/common/AlertContext.js';
 
 function HomePage() {
-
   const[articleList,setArticleList]=useState([]);
+  const[page,setPage]=useState(0);
   const location=useLocation();
   const setAlert=useContext(AlertContext);
+  const articleListRef=useRef(null);
+
 
   const getAllArticles = async () => {
+    const path=`http://localhost:8080/api/v1/article?page=${page}`
     try{
-      const response = await axios.get('http://localhost:8080/api/v1/article', {
+      const response = await axios.get(path, {
     });
     const data=response.data.map(item => JSON.parse(item));
-    setArticleList(data.reverse());    
+    setArticleList(data);    
     }
     catch(error){
       console.log('an error occurred:',error);
@@ -29,7 +32,20 @@ function HomePage() {
     fetchData();
     setAlert(location);
   },[])
-  
+
+  useEffect(()=>{
+    const handleScroll= () => {
+      console.log("scrolled");
+    }
+    articleListRef.current.addEventListener('scroll',handleScroll);
+    if(!articleListRef.current){
+      return () => {
+        articleListRef.current.removeEventListener('scroll',handleScroll);
+      };
+    }
+  })
+
+
   const token=localStorage.getItem('token');
   const navigate = useNavigate();
 
@@ -232,7 +248,7 @@ return (
              );
             })}
           </div>
-            <div className="preview">
+            <div className="preview" ref={articleListRef}>
               {articleList===null && <h3>아직 글이 없어요!</h3>}
               
               {articleList && articleList.map((article, index) => (
