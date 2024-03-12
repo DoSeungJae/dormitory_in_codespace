@@ -21,6 +21,7 @@ function ArticlePage(){
     const article=location.state.info;
     const token=localStorage.getItem('token');
     const inputRef=useRef();
+    const commentListRef=useRef(null);
 
     const handleTouchStart = (e) => {
       const touch = e.touches[0];
@@ -95,7 +96,26 @@ function ArticlePage(){
           toast.success("글을 수정했어요!");
           location.state.reload=0;
         }
+
     },[]);
+
+    useEffect(()=>{
+      const handleScroll= () =>{
+        console.log("scrolled");
+      }
+
+      commentListRef.current.addEventListener('scroll', handleScroll);
+      if(!commentListRef.current){
+        return () => {
+          commentListRef.current.removeEventListener('scroll', handleScroll);
+        };
+      }//if 문 밖에서 이벤트리스너를 제거하면 에러 발생 <= 포커스가 해제되면 리스너가 없어지는 것으로 추측
+
+    },[]);
+
+    const handleScroll = () => {
+      console.log("scrolled");
+    }
 
     function formatCreateTime(createTime) {
       const currentYear = new Date().getFullYear();
@@ -137,9 +157,9 @@ function ArticlePage(){
                   <p className="article-dormitory">{convertDorIdToString(article.dorId)}</p>
                 </div>
 
-                <div className='article-content'>
+                <div className='article-content' ref={commentListRef} >
                   {article.content}
-                  <div className="comment-list">
+                  <div className="comment-list" >
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
                     <div className="comment-item-header">
