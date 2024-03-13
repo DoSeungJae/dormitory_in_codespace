@@ -34,9 +34,15 @@ function HomePage() {
   },[])
 
   useEffect(()=>{
-    const handleScroll= () => {
-      console.log("scrolled");
-    }
+    const handleScroll =  () => {
+      if (articleListRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
+        if (scrollTop + clientHeight >= scrollHeight * 0.9) { // Check if scrolled to 90% of the list
+          setPage(prevPage => prevPage + 1); // Load next page
+          console.log(page);
+        }
+      }
+    };
     articleListRef.current.addEventListener('scroll',handleScroll);
     if(!articleListRef.current){
       return () => {
