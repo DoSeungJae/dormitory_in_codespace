@@ -10,6 +10,7 @@ function HomePage() {
   const location=useLocation();
   const setAlert=useContext(AlertContext);
   const articleListRef=useRef(null);
+  const [doLoadPage,setDoLoadPage]=useState(0);
 
 
   const getAllArticles = async () => {
@@ -34,22 +35,28 @@ function HomePage() {
   },[])
 
   useEffect(()=>{
-    const handleScroll =  () => {
+    const handleScroll = () => {
+
       if (articleListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
-        if (scrollTop + clientHeight >= scrollHeight * 0.9) { // Check if scrolled to 90% of the list
-          setPage(prevPage => prevPage + 1); // Load next page
-          console.log(page);
+        if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
+          console.log("scroll down");
+          setDoLoadPage(1);
         }
       }
     };
     articleListRef.current.addEventListener('scroll',handleScroll);
-    if(!articleListRef.current){
-      return () => {
-        articleListRef.current.removeEventListener('scroll',handleScroll);
-      };
+    if(doLoadPage){
+
+      console.log("doLoadPage is 1");
     }
-  })
+    return () => {
+      if(articleListRef.current){
+        articleListRef.current.removeEventListener('scroll',handleScroll);
+      }
+    }
+
+  },[doLoadPage])
 
 
   const token=localStorage.getItem('token');
@@ -255,6 +262,7 @@ return (
             })}
           </div>
             <div className="preview" ref={articleListRef}>
+              
               {articleList===null && <h3>아직 글이 없어요!</h3>}
               
               {articleList && articleList.map((article, index) => (
