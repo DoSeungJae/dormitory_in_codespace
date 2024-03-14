@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {toast} from 'react-toastify';
 import CommentForm from '../../components/article/CommentForm';
 import CommentMenu from '../../components/article/CommentMenu';
-
+import { throttle } from 'lodash';
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const[commentList,setCommentList]=useState([]);
@@ -17,11 +17,16 @@ function ArticlePage(){
     const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
     const[commentId,setCommentId]=useState(-1);
     const[touchY,setTouchY]=useState(-1);
+
+    const [doLoadPage,setDoLoadPage]=useState(0);
+
     const location=useLocation();
     const article=location.state.info;
     const token=localStorage.getItem('token');
     const inputRef=useRef();
     const commentListRef=useRef(null);
+
+
 
     const handleTouchStart = (e) => {
       const touch = e.touches[0];
@@ -100,18 +105,26 @@ function ArticlePage(){
     },[]);
 
     useEffect(()=>{
-      const handleScroll= () =>{
-        console.log("scrolled");
+      const handleScroll = () => {
+        if (commentListRef.current) {
+          const { scrollTop, scrollHeight, clientHeight } = commentListRef.current;
+          if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
+            console.log("scroll down");
+            setDoLoadPage(1);
+          }
+        }
+      };
+      commentListRef.current.addEventListener('scroll', handleScroll);
+      if(doLoadPage){
+        console.log("doPageLoad is 1")
+      }
+      return () => {
+        if(commentListRef.current){
+          commentListRef.current.removeEventListener('scroll',handleScroll);
+        }
       }
 
-      commentListRef.current.addEventListener('scroll', handleScroll);
-      if(!commentListRef.current){
-        return () => {
-          commentListRef.current.removeEventListener('scroll', handleScroll);
-        };
-      }//if 문 밖에서 이벤트리스너를 제거하면 에러 발생 <= 포커스가 해제되면 리스너가 없어지는 것으로 추측
-
-    },[]);
+    },[doLoadPage]);
 
     function formatCreateTime(createTime) {
       const currentYear = new Date().getFullYear();
