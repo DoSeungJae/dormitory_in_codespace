@@ -12,31 +12,31 @@ function HomePage() {
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
 
-
-  const getAllArticles = async () => {
+  const getArticlesPerPage = async (page) => {
     const path=`http://localhost:8080/api/v1/article?page=${page}`
     try{
       const response = await axios.get(path, {
     });
     const data=response.data.map(item => JSON.parse(item));
-    setArticleList(data);    
+    setArticleList((prevItems)=>[...prevItems,...data]);    
     }
     catch(error){
       console.log('an error occurred:',error);
     }
+    setDoLoadPage(0);
   }
   
   useEffect(()=>{
+    console.log("get articles per page, page: ",page);
     async function fetchData(){
-      await getAllArticles();
+      await getArticlesPerPage(page);
     }
-    fetchData();
+    fetchData(); 
     setAlert(location);
-  },[])
+  },[page])
 
   useEffect(()=>{
     const handleScroll = () => {
-
       if (articleListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
         if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
@@ -47,7 +47,7 @@ function HomePage() {
     };
     articleListRef.current.addEventListener('scroll',handleScroll);
     if(doLoadPage){
-
+      setPage(prevPage => prevPage+1);
       console.log("doLoadPage is 1");
     }
     return () => {
@@ -289,7 +289,7 @@ return (
               }
               else{
                 handleButtonClick(item.replace(' ','').toLowerCase());
-                getAllArticles();
+                //getArticlesPerPage();
               }
             }}
           >
