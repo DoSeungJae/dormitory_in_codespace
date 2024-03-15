@@ -44,7 +44,7 @@ function ArticlePage(){
         setDoLoadPage(0);
       }
       catch(error){
-        if(error.response.data==='NoCommentFound'){
+        if(error.response.data==='NoMoreCommentPage'){
           setDoLoadPage(1);
         }
       }
