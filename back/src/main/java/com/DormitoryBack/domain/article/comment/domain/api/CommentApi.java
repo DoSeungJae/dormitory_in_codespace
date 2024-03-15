@@ -10,6 +10,7 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.global.StrUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,12 +58,26 @@ public class CommentApi {
                 .body(commentService.listStringify(comments));
     }
     //토큰 인증이 필요하지 않을까?
+    /*
     @GetMapping("/article/{articleId}")
     public ResponseEntity articleComments(@PathVariable("articleId") Long articleId){
         List<Comment> comments=commentService.getArticleComments(articleId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(commentService.listStringify(comments));
+    }
+    */
+    
+    @GetMapping("article/{articleId}")
+    public ResponseEntity articleCommentsPerPage(
+            @RequestParam(defaultValue="0") int page,
+            @RequestParam(defaultValue ="10") int size
+    ){
+        Page<Comment> commentPage=commentService
+                .getArticleCommentsPerPage(page,size);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(commentService.pageStringify(commentPage));
     }
     @PostMapping("/new")
     public ResponseEntity newComment(@RequestBody CommentDTO dto, @RequestHeader("Authorization") String token){
