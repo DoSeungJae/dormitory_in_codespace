@@ -15,6 +15,10 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +74,17 @@ public class CommentService {
             throw new RuntimeException("NoCommentFound");
         }
         return comments;
+    }
+
+    public Page<Comment> getArticleCommentsPerPage(int page,int size){
+        Pageable pageable= PageRequest.of(page,size, Sort
+                .by("createdTime")
+                .ascending());
+        Page<Comment> commentPage=commentRepository.findAll(pageable);
+        if(commentPage.isEmpty()){
+            throw new RuntimeException("NoMoreCommentPage");
+        }
+        return commentPage;
     }
     public List<String> listStringify(List<Comment> commentList){
         List<String> stringifiedCommentList=commentList.stream()
@@ -166,6 +181,15 @@ public class CommentService {
             throw new RuntimeException("NoPermission");
         }
         commentRepository.delete(target);
+    }
+
+    public List<String> pageStringify(Page<Comment> commentPage){
+        List<String> stringifiedCommentList=commentPage.getContent()
+                .stream()
+                .map(Comment::toJsonString)
+                .collect(Collectors.toList());
+
+        return stringifiedCommentList;
     }
 
 
