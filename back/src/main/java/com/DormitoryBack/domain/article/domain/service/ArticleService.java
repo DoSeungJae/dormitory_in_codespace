@@ -79,7 +79,7 @@ public class ArticleService {
         Pageable pageable= PageRequest.of(page,size, Sort.by("createTime").descending());
         Page<Article> articlePage=articleRepository.findAll(pageable);
         if(articlePage.isEmpty()){
-            throw new RuntimeException("NoArticleFound");
+            throw new RuntimeException("NoMoreArticlePage");
         }
         return articlePage;
     }
