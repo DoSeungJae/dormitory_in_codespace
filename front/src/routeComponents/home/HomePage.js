@@ -17,17 +17,18 @@ function HomePage() {
     try{
       const response = await axios.get(path, {
     });
-    const data=response.data.map(item => JSON.parse(item));
-    setArticleList((prevItems)=>[...prevItems,...data]);    
+      const data=response.data.map(item => JSON.parse(item));
+      setArticleList((prevItems)=>[...prevItems,...data]);
+      setDoLoadPage(0);
     }
     catch(error){
-      console.log('an error occurred:',error);
+      if(error.response.data==='NoArticleFound'){
+        setDoLoadPage(1);
+      }
     }
-    setDoLoadPage(0);
   }
   
   useEffect(()=>{
-    console.log("get articles per page, page: ",page);
     async function fetchData(){
       await getArticlesPerPage(page);
     }
@@ -40,15 +41,16 @@ function HomePage() {
       if (articleListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
         if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
-          console.log("scroll down");
+          //스크롤 감지가 중복으로 되는 경우가 있음.
           setDoLoadPage(1);
         }
       }
     };
     articleListRef.current.addEventListener('scroll',handleScroll);
     if(doLoadPage){
+      //이 조건문은 스크롤 감지(handleScroll)에서와 다르게 한 번만 실행됨
       setPage(prevPage => prevPage+1);
-      console.log("doLoadPage is 1");
+
     }
     return () => {
       if(articleListRef.current){
