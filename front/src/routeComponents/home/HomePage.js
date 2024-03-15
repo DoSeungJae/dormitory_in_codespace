@@ -22,7 +22,7 @@ function HomePage() {
       setDoLoadPage(0);
     }
     catch(error){
-      if(error.response.data==='NoArticleFound'){
+      if(error.response.data==='NoMoreArticlePage'){
         setDoLoadPage(1);
       }
     }
