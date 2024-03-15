@@ -17,6 +17,7 @@ function ArticlePage(){
     const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
     const[commentId,setCommentId]=useState(-1);
     const[touchY,setTouchY]=useState(-1);
+    const[page,setPage]=useState(0);
 
     const [doLoadPage,setDoLoadPage]=useState(0);
 
@@ -34,14 +35,18 @@ function ArticlePage(){
     }
 
 
-    const getAllComments = async () => {
+    const getCommentsPerPage = async (page) => {
+      const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`
       try{
-        const response=await axios.get(`http://localhost:8080/api/v1/comment/article/${article.id}`);
+        const response=await axios.get(path,{});
         const data=response.data.map(item => JSON.parse(item));
-        setCommentList(data);
+        setCommentList((prevItems)=>[...prevItems,...data])
+        setDoLoadPage(0);
       }
       catch(error){
-        console.error(error);
+        if(error.response.data==='NoCommentFound'){
+          setDoLoadPage(1);
+        }
       }
 
     }
@@ -94,8 +99,8 @@ function ArticlePage(){
 
     useEffect(()=>{
         getWriterNickName();
-        getAllComments();
         isSame(token).then(result=>setIsWriter(result));
+      
 
         if(location.state.reload===1){
           toast.success("글을 수정했어요!");
@@ -105,18 +110,26 @@ function ArticlePage(){
     },[]);
 
     useEffect(()=>{
+      async function fetchData(){
+        await getCommentsPerPage(page);
+      }
+      fetchData();
+
+    },[page])
+
+    useEffect(()=>{
       const handleScroll = () => {
         if (commentListRef.current) {
           const { scrollTop, scrollHeight, clientHeight } = commentListRef.current;
           if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
-            console.log("scroll down");
+            //스크롤감지는 중복으로 감지되는 경우가 있음.
             setDoLoadPage(1);
           }
         }
       };
       commentListRef.current.addEventListener('scroll', handleScroll);
       if(doLoadPage){
-        console.log("doPageLoad is 1")
+        setPage(prevPage=>prevPage+1);
       }
       return () => {
         if(commentListRef.current){
