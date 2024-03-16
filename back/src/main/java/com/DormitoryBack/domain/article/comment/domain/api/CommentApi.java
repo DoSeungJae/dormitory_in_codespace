@@ -1,9 +1,6 @@
 package com.DormitoryBack.domain.article.comment.domain.api;
 
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyResponseDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.*;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
@@ -74,11 +71,11 @@ public class CommentApi {
             @RequestParam(defaultValue="0") int page,
             @RequestParam(defaultValue ="10") int size
     ){
-        Page<Comment> commentPage=commentService
+        CommentPageResponseDTO responseDTO=commentService
                 .getArticleCommentsPerPage(page,size,articleId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(commentService.pageStringify(commentPage));
+                .body(responseDTO);
     }
     @PostMapping("/new")
     public ResponseEntity newComment(@RequestBody CommentDTO dto, @RequestHeader("Authorization") String token){
