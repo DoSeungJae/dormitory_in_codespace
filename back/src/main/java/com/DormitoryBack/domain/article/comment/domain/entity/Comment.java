@@ -62,28 +62,18 @@ public class Comment {
     private Boolean isUpdated;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.REMOVE,mappedBy = "rootComment")
-    @OrderBy("createdTime ASC")
-    private Set<Comment> replyComments=new HashSet<>();
-
-    @JsonProperty
-    public Set<Comment> getReplyComments(){
-        return replyComments;
-    }
-
-    @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="root_comment_id")
     private Comment rootComment=null;
 
+    public Boolean isRootCommentNull(){
+        return rootComment==null? true : false;
+    }
+
     public void addReplyComment(Comment replyComment){
-        this.replyComments.add(replyComment);
         replyComment.setRootComment(this);
     }
 
-    public void deleteReplyComment(Comment replyComment){
-        this.replyComments.remove(replyComment);
-    }
     public void update(CommentUpdateDTO dto){
         this.isUpdated=true;
         this.content=dto.getContent();
