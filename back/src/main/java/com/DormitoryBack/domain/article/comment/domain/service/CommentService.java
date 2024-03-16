@@ -1,9 +1,6 @@
 package com.DormitoryBack.domain.article.comment.domain.service;
 
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentReplyResponseDTO;
-import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
+import com.DormitoryBack.domain.article.comment.domain.dto.*;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
@@ -23,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,7 +79,7 @@ public class CommentService {
 
      */
 
-    public Page<Comment> getArticleCommentsPerPage(int page, int size, Long articleId){
+    public CommentPageResponseDTO getArticleCommentsPerPage(int page, int size, Long articleId){
         Pageable pageable= PageRequest.of(page,size, Sort
                 .by("createdTime")
                 .ascending());
@@ -92,7 +91,28 @@ public class CommentService {
         if(commentPage.isEmpty()){
             throw new RuntimeException("NoMoreCommentPage");
         }
-        return commentPage;
+        List<Comment> rootComments=new ArrayList<>();
+        List<Comment> replyComments=new ArrayList<>();
+        Iterator<Comment> iterator=commentPage.iterator();
+        while(iterator.hasNext()){
+            Comment comment=iterator.next();
+            if(comment.isRootCommentNull()){ //rootComment가 없다 => 자신이 rootComment이다. 즉, replyComment가 아님
+                rootComments.add(comment);
+            }
+            else{
+                replyComments.add(comment);
+            }
+        }
+        log.info(listStringify(rootComments).toString());
+        log.info(listStringify(replyComments).toString());
+
+        CommentPageResponseDTO responseDTO=CommentPageResponseDTO
+                .builder()
+                .rootComments(listStringify(rootComments))
+                .replyComments(listStringify(replyComments))
+                .build();
+
+        return responseDTO;
     }
     public List<String> listStringify(List<Comment> commentList){
         List<String> stringifiedCommentList=commentList.stream()
@@ -132,14 +152,18 @@ public class CommentService {
         Long userId=tokenProvider.getUserIdFromToken(token);
         User userData=userRepository.findById(userId).orElse(null);
         Comment rootComment=commentRepository.findById(dto.getRootCommentId()).orElse(null);
+        Article rootArticle=articleRepository.findById(rootComment.getArticleId()).orElse(null);
         if(rootComment==null){
             throw new RuntimeException("CommentNotFound");
         }
         if(rootComment.getRootComment()!=null){
             throw new RuntimeException("CannotReplyToReplies");
         }
+        if(rootArticle==null){
+            throw new RuntimeException("ArticleNotFound");
+        }
         Comment newReply=Comment.builder()
-                .article(null)
+                .article(rootArticle)
                 .user(userData)
                 .content(dto.getContent())
                 .createdTime(LocalDateTime.now())
