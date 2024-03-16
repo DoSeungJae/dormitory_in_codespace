@@ -88,6 +88,9 @@ public class CommentService {
             throw new RuntimeException("ArticleNotFound");
         }
         Page<Comment> commentPage=commentRepository.findAllByArticle(article,pageable);
+        if(commentPage.isEmpty() && page==0){
+            throw new RuntimeException("CommentNotFound");
+        }
         if(commentPage.isEmpty()){
             throw new RuntimeException("NoMoreCommentPage");
         }
