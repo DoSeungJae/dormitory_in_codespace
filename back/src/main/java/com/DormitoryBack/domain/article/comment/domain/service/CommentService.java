@@ -63,7 +63,9 @@ public class CommentService {
             throw new RuntimeException("NoCommentFound");
         }
         return comments;
+
     }
+    /*
     public List<Comment> getArticleComments(Long articleId){
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
@@ -76,11 +78,17 @@ public class CommentService {
         return comments;
     }
 
-    public Page<Comment> getArticleCommentsPerPage(int page,int size){
+     */
+
+    public Page<Comment> getArticleCommentsPerPage(int page, int size, Long articleId){
         Pageable pageable= PageRequest.of(page,size, Sort
                 .by("createdTime")
                 .ascending());
-        Page<Comment> commentPage=commentRepository.findAll(pageable);
+        Article article=articleRepository.findById(articleId).orElse(null);
+        if(article==null){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        Page<Comment> commentPage=commentRepository.findAllByArticle(article,pageable);
         if(commentPage.isEmpty()){
             throw new RuntimeException("NoMoreCommentPage");
         }
