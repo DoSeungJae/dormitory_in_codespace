@@ -78,7 +78,10 @@ public class ArticleService {
     public Page<Article> getAllArticlesWithinPage(int page, int size){
         Pageable pageable= PageRequest.of(page,size, Sort.by("createTime").descending());
         Page<Article> articlePage=articleRepository.findAll(pageable);
-        if(articlePage.isEmpty()){
+        if(articlePage.isEmpty() && page==0){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        else if(articlePage.isEmpty()){
             throw new RuntimeException("NoMoreArticlePage");
         }
         return articlePage;
@@ -90,6 +93,12 @@ public class ArticleService {
             throw new RuntimeException("유효하지 않는 기숙사 번호이거나 글이 존재하지 않습니다.");
         }
         return dorArticles;
+    }
+
+    public Page<Article> getDorArticlesPerPage(Long dorId,int page,int size){
+        Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
+        //Page<Article> articlePage=articleRepository.findAllByDorId(dorId);
+        return null;
     }
 
     @Transactional
