@@ -99,7 +99,7 @@ public class CommentService {
         Iterator<Comment> iterator=commentPage.iterator();
         while(iterator.hasNext()){
             Comment comment=iterator.next();
-            if(comment.isRootCommentNull()){ //rootComment가 없다 => 자신이 rootComment이다. 즉, replyComment가 아님
+            if(comment.getRootComment()==null){ //rootComment가 없다 => 자신이 rootComment이다. 즉, replyComment가 아님
                 rootComments.add(comment);
             }
             else{
