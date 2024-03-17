@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {toast} from 'react-toastify';
 import CommentForm from '../../components/article/CommentForm';
 import CommentMenu from '../../components/article/CommentMenu';
-import { throttle } from 'lodash';
+
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const[commentList,setCommentList]=useState([]);
@@ -36,20 +36,49 @@ function ArticlePage(){
 
 
     const getCommentsPerPage = async (page) => {
-      const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`
+      const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`;
       try{
-        const response=await axios.get(path,{});
-        const data=response.data.map(item => JSON.parse(item));
-        setCommentList((prevItems)=>[...prevItems,...data])
-        setDoLoadPage(0);
+        const response=await axios.get(path);
+        const rootCommentList=response.data.rootComments.map(item => JSON.parse(item));
+        const replyCommentList=response.data.replyComments.map(item => JSON.parse(item));
+        
+        const combinedComments = rootCommentList.map(rootComment => {
+          const repliesToRoot = replyCommentList.filter(reply => reply.rootCommentId === rootComment.id);
+          const unrelatedReplies = replyCommentList.filter(reply => 
+            !rootCommentList.some(rootComment => rootComment.id === reply.rootCommentId));
+          if(unrelatedReplies.length>0){
+            let updatedComments=[...commentList];
+            for(let replyIndex=0;replyIndex<unrelatedReplies.length;replyIndex++){
+              const curReply=unrelatedReplies.at(replyIndex);
+              for(let rootCommentIndex=0;rootCommentIndex<updatedComments.length;rootCommentIndex++){
+                const target=updatedComments[rootCommentIndex]
+                if(curReply.rootCommentId===target.id){
+                  const isDuplicate = target.replyComments.some(reply => reply.id === curReply.id);
+                  if(!isDuplicate){
+                    target.replyComments=target.replyComments.concat(curReply);
+                  }
+                }
+              }
+            }
+            setCommentList(updatedComments);
+            setCommentList((prev)=>[...prev,...rootCommentList]);
+            return
+          }
+            return {...rootComment, replyComments: repliesToRoot};
+          });
+        const update=combinedComments;
+        if(update.at(0)!==undefined){
+          setCommentList((prev)=>[...prev,...update]);
+        }
+        setDoLoadPage(0); 
       }
       catch(error){
         if(error.response.data==='NoMoreCommentPage'){
           setDoLoadPage(1);
-        }
+        } 
       }
-
     }
+
 
     const isSame = async (token) => {
       try {
@@ -138,6 +167,7 @@ function ArticlePage(){
       }
 
     },[doLoadPage]);
+
 
     function formatCreateTime(createTime) {
       const currentYear = new Date().getFullYear();
