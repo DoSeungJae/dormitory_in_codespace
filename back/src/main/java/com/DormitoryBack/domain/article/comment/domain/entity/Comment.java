@@ -66,10 +66,10 @@ public class Comment {
     @JoinColumn(name="root_comment_id")
     private Comment rootComment=null;
 
-    public Boolean isRootCommentNull(){
-        return rootComment==null? true : false;
+    @JsonProperty
+    public Long getRootCommentId(){
+        return rootComment==null ? null : rootComment.getId();
     }
-
     public void addReplyComment(Comment replyComment){
         replyComment.setRootComment(this);
     }
