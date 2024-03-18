@@ -46,26 +46,26 @@ function ArticlePage(){
           const repliesToRoot = replyCommentList.filter(reply => reply.rootCommentId === rootComment.id);
           const unrelatedReplies = replyCommentList.filter(reply => 
             !rootCommentList.some(rootComment => rootComment.id === reply.rootCommentId));
-          if(unrelatedReplies.length>0){
-            let updatedComments=[...commentList];
-            for(let replyIndex=0;replyIndex<unrelatedReplies.length;replyIndex++){
-              const curReply=unrelatedReplies.at(replyIndex);
-              for(let rootCommentIndex=0;rootCommentIndex<updatedComments.length;rootCommentIndex++){
-                const target=updatedComments[rootCommentIndex]
-                if(curReply.rootCommentId===target.id){
-                  const isDuplicate = target.replyComments.some(reply => reply.id === curReply.id);
-                  if(isDuplicate){
-                    return 
-                  }
-                  target.replyComments=target.replyComments.concat(curReply);
+          if(!unrelatedReplies.length>0){
+            return {...rootComment, replyComments: repliesToRoot};
+          }
+          let updatedComments=[...commentList];
+          for(let replyIndex=0;replyIndex<unrelatedReplies.length;replyIndex++){
+            const curReply=unrelatedReplies.at(replyIndex);
+            for(let rootCommentIndex=0;rootCommentIndex<updatedComments.length;rootCommentIndex++){
+              const target=updatedComments[rootCommentIndex]
+              if(curReply.rootCommentId===target.id){
+                const isDuplicate = target.replyComments.some(reply => reply.id === curReply.id);
+                if(isDuplicate){
+                  return ;
                 }
+                target.replyComments=target.replyComments.concat(curReply);
               }
             }
-            setCommentList(updatedComments);
-            setCommentList((prev)=>[...prev,...rootCommentList]);
-            return
           }
-            return {...rootComment, replyComments: repliesToRoot};
+          setCommentList(updatedComments);
+          setCommentList((prev)=>[...prev,...rootCommentList]);
+          return;
           });
         const update=combinedComments;
         if(update.at(0)!==undefined){
