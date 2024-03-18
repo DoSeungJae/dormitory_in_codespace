@@ -291,7 +291,7 @@ return (
               }
               else{
                 handleButtonClick(item.replace(' ','').toLowerCase());
-                //getArticlesPerPage();
+                window.location.reload();
               }
             }}
           >
