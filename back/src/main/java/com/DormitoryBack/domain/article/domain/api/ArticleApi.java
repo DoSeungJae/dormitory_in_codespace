@@ -31,6 +31,8 @@ public class ArticleApi {
         log.info(msg);
         return msg;
     }
+
+
     @GetMapping("")
     public ResponseEntity allArticles(@RequestParam(defaultValue="0") int page,
                                       @RequestParam(defaultValue="10") int size){
@@ -41,12 +43,27 @@ public class ArticleApi {
                 .body(articleService.pageStringify(articles));
     }
 
+    /*
     @GetMapping("/dor/{dorId}")
     public ResponseEntity dorArticles(@PathVariable("dorId") Long dorId){
         List<Article> articles=articleService.getDorArticles(dorId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(articleService.listStringify(articles));
+    }
+     */
+    @GetMapping("/dor/{dorId}")
+    public ResponseEntity dorArticlesPerPage(@PathVariable("dorId") Long dorId,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10")int size){
+
+        Page<Article> dorArticlePage=articleService
+                .getDorArticlesPerPage(dorId,page,size);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(articleService.pageStringify(dorArticlePage));
+
     }
 
     @GetMapping("/{articleId}")
