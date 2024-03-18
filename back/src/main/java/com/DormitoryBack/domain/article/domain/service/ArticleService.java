@@ -87,6 +87,7 @@ public class ArticleService {
         return articlePage;
     }
 
+    /*
     public List<Article> getDorArticles(Long dorId){
         List<Article> dorArticles=articleRepository.findAllByDorId(dorId);
         if(dorArticles.isEmpty()){
@@ -95,10 +96,18 @@ public class ArticleService {
         return dorArticles;
     }
 
+     */
+
     public Page<Article> getDorArticlesPerPage(Long dorId,int page,int size){
         Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
-        //Page<Article> articlePage=articleRepository.findAllByDorId(dorId);
-        return null;
+        Page<Article> articlePage=articleRepository.findAllByDorId(dorId,pageable);
+        if(articlePage.isEmpty() && page==0){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        else if(articlePage.isEmpty()){
+            throw new RuntimeException("NoMoreArticlePage");
+        }
+        return articlePage;
     }
 
     @Transactional
