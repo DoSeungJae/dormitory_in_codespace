@@ -106,8 +106,6 @@ public class CommentService {
                 replyComments.add(comment);
             }
         }
-        log.info(listStringify(rootComments).toString());
-        log.info(listStringify(replyComments).toString());
 
         CommentPageResponseDTO responseDTO=CommentPageResponseDTO
                 .builder()
