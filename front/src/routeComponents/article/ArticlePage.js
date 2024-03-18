@@ -54,9 +54,10 @@ function ArticlePage(){
                 const target=updatedComments[rootCommentIndex]
                 if(curReply.rootCommentId===target.id){
                   const isDuplicate = target.replyComments.some(reply => reply.id === curReply.id);
-                  if(!isDuplicate){
-                    target.replyComments=target.replyComments.concat(curReply);
+                  if(isDuplicate){
+                    return 
                   }
+                  target.replyComments=target.replyComments.concat(curReply);
                 }
               }
             }
@@ -71,7 +72,7 @@ function ArticlePage(){
           setCommentList((prev)=>[...prev,...update]);
         }
         setDoLoadPage(0); 
-      }
+      } 
       catch(error){
         if(error.response.data==='NoMoreCommentPage'){
           setDoLoadPage(1);
