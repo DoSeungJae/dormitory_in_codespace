@@ -219,7 +219,6 @@ function HomePage() {
 return (
   <div className="App">
     <header className="App-home-header">
-      <h1></h1>
     </header>
     
     <main className="App-main">
@@ -286,7 +285,7 @@ return (
             }}
           >
             {svgMap[item]}
-            {<div style={{fontSize: '14px',paddingTop:'6px'}}>{item}</div>}
+            {<div style={{fontSize: '14px',paddingTop:'4px'}}>{item}</div>}
           </div>
         ))}
        </div>
