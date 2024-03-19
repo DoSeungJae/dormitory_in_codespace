@@ -36,7 +36,7 @@
 }
 
 .App-main {
-  height: 85.5vh; 
+  height: 87vh; 
   background-color : F5F5F5;
   text-align: center;
 }
@@ -79,7 +79,7 @@
 }
 
 .preview {
-  max-height: calc(100vh - (4.0vh + 18vh));
+  max-height: calc(100vh - (4.0vh + 16vh));
   overflow-y: auto;
   padding-top:15px;
 }
@@ -103,7 +103,7 @@
   display: flex;
   justify-content: center;
   align-items: center; 
-  margin-top : 15px;
+  margin-top : 10px;
 }
 
 
