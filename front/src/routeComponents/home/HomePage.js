@@ -1,7 +1,6 @@
 import {React,useEffect,useState,useContext,useRef} from 'react';
 import axios from 'axios';
 import {useNavigate,useLocation} from 'react-router-dom';
-import {toast} from 'react-toastify';
 import AlertContext from '../../components/common/AlertContext.js';
 
 function HomePage() {
@@ -11,9 +10,20 @@ function HomePage() {
   const setAlert=useContext(AlertContext);
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
+  const [dorId,setDorId]=useState(0);
 
   const getArticlesPerPage = async (page) => {
-    const path=`http://localhost:8080/api/v1/article?page=${page}`
+    if(!(dorId>=1 || dorId<=7)){
+      return;
+    }
+    let path;
+    if(dorId!=0){
+     path=`http://localhost:8080/api/v1/article/dor/${dorId}?page=${page}`;
+    }
+    else{
+      path=`http://localhost:8080/api/v1/article?page=${page}`;
+    }
+    
     try{
       const response = await axios.get(path, {
     });
@@ -22,12 +32,13 @@ function HomePage() {
       setDoLoadPage(0);
     }
     catch(error){
-      if(error.response.data==='NoMoreArticlePage'){
+      const errMsg=error.response.data;
+      if(errMsg==='NoMoreArticlePage' || errMsg==="ArticleNotFound"){
         setDoLoadPage(1);
       }
     }
-  }
-  
+  };
+
   useEffect(()=>{
     async function fetchData(){
       await getArticlesPerPage(page);
@@ -41,7 +52,8 @@ function HomePage() {
       if (articleListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
         if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
-          //스크롤 감지가 중복으로 되는 경우가 있음.
+          //스크롤 감지가 중복으로 되는 경우가 있기 때문에 여기서 데이터를 가져오지 않음.
+          //대신 doLoadPage를 의존성 배열의 인자로 가지는 useEffect를 선언해서 데이터를 가져오도록 설계함
           setDoLoadPage(1);
         }
       }
@@ -50,7 +62,6 @@ function HomePage() {
     if(doLoadPage){
       //이 조건문은 스크롤 감지(handleScroll)에서와 다르게 한 번만 실행됨
       setPage(prevPage => prevPage+1);
-
     }
     return () => {
       if(articleListRef.current){
@@ -59,6 +70,14 @@ function HomePage() {
     }
 
   },[doLoadPage])
+
+  useEffect(()=>{
+    async function fetchData(){
+      await getArticlesPerPage(page);
+    }
+    fetchData();
+
+  },[dorId])
 
 
   const token=localStorage.getItem('token');
@@ -191,48 +210,6 @@ function HomePage() {
     ),
   };
 
-  const handleButtonClick = async (buttonName) => {
-    const path = buttonToPath[buttonName];
-    if (!path) return; // 만약 해당 버튼 이름이 buttonToPath 객체에 없다면 함수 종료
-    const fullPath=`http://localhost:8080/api/v1/article/${path}`
-
-    if(path=='myWriting' || path=='newWriting' || path=='alarm'){ //필요없는 코드블록일지도?
-      try {
-        const response = await axios.get(fullPath, {
-          headers:{
-            'Authorization' : 'Bearer'+token
-          }
-        });
-      } catch (error) {
-        console.error(error);
-      }   
-    }
-    else if(path>=1 || path<=7){
-      try{
-        const fullPath=`http://localhost:8080/api/v1/article/dor/${path}`
-        const response=await axios.get(fullPath)
-        .then(response => {
-          const data=response.data.map(item => JSON.parse(item));
-          setArticleList(data);
-        })
-      }
-      catch(error){
-        console.error(error);
-        setArticleList(null);
-
-      }
-    }
-
-    else{
-      try {
-        const response = await axios.get(fullPath);
-    } catch (error) {
-        console.error(error);
-    }
-    }
-
-};
-
 return (
   <div className="App">
     <header className="App-home-header">
@@ -256,7 +233,15 @@ return (
               key={i} 
               className="slide-item" 
               style={{backgroundColor: color, color: '#fff'}}
-              onClick={() => handleButtonClick(item.toLowerCase())}
+              onClick={() =>{
+                const dorNum=buttonToPath[item.toLowerCase()];
+                setDorId(dorNum);
+                if(dorNum==dorId){//현재 기숙사 번호와 선택한 기숙사 버튼이 같은 경우 => dorMode를 종료함 => dorId를 0으로 셋
+                  setDorId(0);
+                }
+                setArticleList([]);
+                setPage(0);
+              }}
             >
                 {item}
             </div>
@@ -290,7 +275,6 @@ return (
                 item=null;                
               }
               else{
-                handleButtonClick(item.replace(' ','').toLowerCase());
                 window.location.reload();
               }
             }}
