@@ -40,6 +40,11 @@
   background-color : F5F5F5;
   text-align: center;
 }
+.App-postingPage-main{
+  height:81.5vh;
+  background-color : F5F5F5;
+  text-align: center;
+}
 
 .slide-menu {
   display : flex;
@@ -222,7 +227,7 @@
   border-radius: 10px;
 }
 
-.App-writingPage-header{
+.App-postingPage-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
