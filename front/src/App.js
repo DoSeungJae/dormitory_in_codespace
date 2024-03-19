@@ -3,7 +3,6 @@ import LogInPage from './routeComponents/logIn/LogInPage';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import SignInPage from './routeComponents/signIn/SignInPage';
 import HomePage from './routeComponents/home/HomePage';
-import WritingPage from './routeComponents/home/WritingPage';
 import MyWritingPage from './routeComponents/home/MyWritingPage';
 import AlarmPage from './routeComponents/home/AlarmPage';
 import ArticlePage from './routeComponents/article/ArticlePage';
@@ -13,12 +12,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from './components/common/AlertContext';
 import {toast} from 'react-toastify';
 import PatchPage from './routeComponents/home/PatchPage';
+import PostingPage from './routeComponents/home/PostingPage';
 
 function App() {
-  const testFunction= () => {
-    console.log("전역 함수");
-  };
-
   const setAlert= (location) => {
     if(!location.state){
       return 
@@ -58,7 +54,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<HomePage/>}></Route> 
-              <Route path="/newWriting" element={<WritingPage/>}></Route>
+              <Route path="/newWriting" element={<PostingPage/>}></Route>
               <Route path="/myWriting" element={<MyWritingPage/>}></Route>
               <Route path="/alarm" element={<AlarmPage/>}></Route>
 
