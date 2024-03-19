@@ -32,11 +32,11 @@
 
 .App-home-header {
   background-color : F5F5F5;
-  height :6.5vh
+  height :4.0vh;
 }
 
 .App-main {
-  height: 81.5vh; 
+  height: 85.5vh; 
   background-color : F5F5F5;
   text-align: center;
 }
@@ -74,7 +74,7 @@
 }
 
 .preview {
-  max-height: calc(100vh - (6.5vh + 19vh));
+  max-height: calc(100vh - (4.0vh + 18vh));
   overflow-y: auto;
   padding-top:15px;
 }
