@@ -19,7 +19,7 @@ function HomePage() {
     let path;
     if(dorId!=0){
      path=`http://localhost:8080/api/v1/article/dor/${dorId}?page=${page}`;
-    }
+    } 
     else{
       path=`http://localhost:8080/api/v1/article?page=${page}`;
     }
@@ -33,13 +33,19 @@ function HomePage() {
     }
     catch(error){
       const errMsg=error.response.data;
-      if(errMsg==='NoMoreArticlePage' || errMsg==="ArticleNotFound"){
+      if(errMsg==='NoMoreArticlePage' ){
         setDoLoadPage(1);
+      }
+      if(errMsg==="ArticleNotFound"){
+        return ;
       }
     }
   };
 
   useEffect(()=>{
+    if(page==0){
+      return ;
+    }
     async function fetchData(){
       await getArticlesPerPage(page);
     }
