@@ -43,6 +43,7 @@ function HomePage() {
   };
 
   useEffect(()=>{
+    setAlert(location);
     if(page==0){
       return ;
     }
@@ -50,7 +51,6 @@ function HomePage() {
       await getArticlesPerPage(page);
     }
     fetchData(); 
-    setAlert(location);
   },[page])
 
   useEffect(()=>{
