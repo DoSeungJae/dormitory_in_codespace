@@ -228,16 +228,24 @@ return (
           if (item.startsWith('오름')) {
               // forestgreen 계열
               color = `hsl(120, 39%, ${55 - (i * 5)}%)`;
+
           } else {
               // skyblue 계열
               color = `hsl(197, 71%, ${65 - (i-3) * 10}%)`;
-          }
+              }
 
+          let border = `2px solid ${color}`;
+          const dorItemStyle={
+            background : (i+1)!==dorId ? 'none' : color,
+            color : (i+1)!==dorId ? 'black' : '#fff',
+            border : (i+1)!==dorId ? border : border,
+          };
+          
           return (
             <div 
               key={i} 
               className="slide-item" 
-              style={{backgroundColor: color, color: '#fff'}}
+              style={dorItemStyle}
               onClick={() =>{
                 const dorNum=buttonToPath[item.toLowerCase()];
                 setDorId(dorNum);
