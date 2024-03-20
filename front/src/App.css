@@ -32,7 +32,7 @@
 
 .App-home-header {
   background-color : F5F5F5;
-  height :4.0vh;
+  height :5.0vh;
 }
 
 .App-main {
@@ -108,7 +108,7 @@
 
 .App-footer { 
   background-color : F5F5F5;
-  height : 10vh;
+  height : 5vh;
   border-top : 0.5px solid #000000;
 }
 
