@@ -133,6 +133,26 @@ function HomePage() {
   }
     
   };
+
+  function calculateDorItemStyle(selectedIdx, idx) {
+    const isSelected = idx === selectedIdx;
+    let color;
+    const item = ['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'][idx];
+    if (item.startsWith('오름')) {
+      color = `hsl(120, 39%, ${55 - (idx * 5)}%)`;
+    } else {
+      color = `hsl(197, 71%, ${65 - (idx - 3) * 10}%)`;
+    }
+    const border = `2px solid ${color}`;
+    return {
+      background: isSelected ? color : 'none',
+      color: isSelected ? '#fff' : 'black',
+      border: border,
+    };
+  }
+  
+
+  
   
   const buttonToPath = {
     "홈": "",
@@ -224,23 +244,7 @@ return (
     <main className="App-main">
       <div className="slide-menu">
         {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
-          let color;
-          if (item.startsWith('오름')) {
-              // forestgreen 계열
-              color = `hsl(120, 39%, ${55 - (i * 5)}%)`;
-
-          } else {
-              // skyblue 계열
-              color = `hsl(197, 71%, ${65 - (i-3) * 10}%)`;
-              }
-
-          let border = `2px solid ${color}`;
-          const dorItemStyle={
-            background : (i+1)!==dorId ? 'none' : color,
-            color : (i+1)!==dorId ? 'black' : '#fff',
-            border : (i+1)!==dorId ? border : border,
-          };
-          
+          const dorItemStyle=calculateDorItemStyle(dorId-1,i);
           return (
             <div 
               key={i} 
@@ -271,6 +275,9 @@ return (
                 <p className="article-item-children">{article.content}</p>
               </div>
             ))}
+              <div className="">
+
+              </div>
             </div>
     </main>
 
