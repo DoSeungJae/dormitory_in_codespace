@@ -168,6 +168,16 @@ function HomePage() {
     "푸름4": 7
   };
 
+  const dorIdToDorName={
+    1:"오름1",
+    2:"오름2",
+    3:"오름3",
+    4:"푸름1",
+    5:"푸름2",
+    6:"푸름3",
+    7:"푸름4"
+  };
+
   const svgMap = {
     '홈': (
         <svg
@@ -275,6 +285,14 @@ return (
                   <h2 className="article-item-text">{article.title}</h2>
                   <p className="article-item-text">{article.content}</p>
                 </div>
+                <div className='article-item-icons'>
+                  <div className='dor-icon'
+                    style={calculateDorItemStyle(dorId,article.dorId)}>
+                    {dorIdToDorName[article.dorId]}
+                  </div>
+          
+                  
+                </div>
                 
               </div>
             ))}
@@ -292,7 +310,7 @@ return (
             
             onClick={() => {
               if(item!='홈'){
-                checkToken(item)
+                checkToken(item);
                 item=null;                
               }
               else{
