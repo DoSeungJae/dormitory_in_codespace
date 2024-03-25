@@ -58,7 +58,7 @@
   border-bottom: 1px solid #000000;
   padding: 10px 0;
 }
-.article-item-children{
+.article-item-text {
     /* 내용의 최대 높이 설정. 1줄이 최대라고 가정함 */
     max-height: 1.6em; /* '1.6em'은 한 줄의 높이를 의미 */
   
@@ -86,7 +86,7 @@
 .preview {
   max-height: calc(100vh - (4.0vh + 16vh));
   overflow-y: auto;
-  padding-top:15px;
+  padding-top:5px;
 }
 
 .slide-item { 
