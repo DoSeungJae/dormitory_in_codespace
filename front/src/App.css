@@ -57,6 +57,7 @@
   text-align: left;
   border-bottom: 1px solid #000000;
   padding: 10px 0;
+  padding-bottom:10%;
 
   display: flex; /* Flexbox 레이아웃을 활성화 */
   justify-content: space-between; /* 자식 요소들을 양 끝으로 정렬 */
@@ -83,6 +84,13 @@
     word-wrap: break-word;
     white-space:normal;
 
+}
+
+#article-item-title{
+  font-size: 25px;
+}
+#article-item-content{
+  font-size:18px;
 }
 
 .comment-item{
