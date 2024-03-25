@@ -67,6 +67,11 @@
 .article-item-summary{
   width:80%;
 }
+
+.article-item-icons{
+  padding-bottom:4%;
+
+}
 .article-item-text {
     /* 내용의 최대 높이 설정. 1줄이 최대라고 가정함 */
     max-height: 1.6em; /* '1.6em'은 한 줄의 높이를 의미 */
