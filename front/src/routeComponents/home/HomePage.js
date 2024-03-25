@@ -11,6 +11,7 @@ function HomePage() {
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
   const [dorId,setDorId]=useState(0);
+  const [scrollPosition,setScrollPosition]=useState(0);
 
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -42,6 +43,42 @@ function HomePage() {
     }
   };
 
+  const saveScrollState = () => {
+    localStorage.setItem('scrollPosition',scrollPosition);
+    localStorage.setItem('page',page);
+  }
+
+
+  useEffect(()=>{
+    const loadRangePage = (start,end) => {
+      //서버에 범위 페이지 요청 전송하기
+
+    }
+    const toSavedScroll= () => {
+      const savedPage=localStorage.getItem('page') || 0;
+      const savedScrollPosition=localStorage.getItem('scrollPosition') || 0;
+        
+      setPage(savedPage);
+      //setPage에서 문제가 생길 것임, 예를 들어 page가 3일 때,
+      //0 페이지부터 3 페이지까지 모두 불러와야하는데, 0과 3 페이지만 로드될 것이 분명함
+      //그러므로 이 경우 백엔드에서 추가적인 로직 구현을 고려해보아야함
+
+      setScrollPosition(savedScrollPosition);
+
+      localStorage.removeItem('page');
+      localStorage.removeItem('scrollPosition');
+      if(savedScrollPosition===0){
+        return ;
+      }
+      
+      if(page!==0){
+        loadRangePage(1,page);
+        //이후에 불러온 article 정보들을 articleList에 저장해야함
+      }
+      window.scrollTo(0,parseInt(savedScrollPosition,10));
+    }
+  })
+
   useEffect(()=>{
     setAlert(location);
     if(page==0){
@@ -55,6 +92,9 @@ function HomePage() {
 
   useEffect(()=>{
     const handleScroll = () => {
+      const position=window.scrollY;
+      setScrollPosition(position);
+
       if (articleListRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
         if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
@@ -99,8 +139,10 @@ function HomePage() {
 
         if (response.data === true) {
           const path=buttonToPath[item]
+          saveScrollState();
           navigate(`/${path}`);
         } else {
+            saveScrollState();
             navigate('/logIn',{state:
               {from:'/',type:"error",
               message:'회원 정보가 유효하지 않아요! 로그인해주세요.'}
@@ -121,8 +163,10 @@ function HomePage() {
       });
 
       if (response.data === true) {
+        saveScrollState();
         navigate('/article',{state:{info:article}})
       } else {
+          saveScrollState();
           navigate('/logIn',{state:
             {from:'/',type:"error",
             message:'글을 보기 위해선 로그인이 필요해요!'}
@@ -139,9 +183,9 @@ function HomePage() {
     let color;
     const item = ['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'][idx];
     if (item.startsWith('오름')) {
-      color = `hsl(120, 39%, ${55 - (idx * 5)}%)`;
+      color = `hsl(120, 39%, ${55 - (idx * 6)}%)`;
     } else {
-      color = `hsl(197, 71%, ${65 - (idx - 3) * 10}%)`;
+      color = `hsl(197, 71%, ${70 - (idx - 3) * 10}%)`;
     }
     const border = `2px solid ${color}`;
     return {
@@ -293,7 +337,7 @@ return (
                 </div>
                 <div className='article-item-icons'>
                   <div className='dor-icon'
-                    style={calculateDorItemStyle(dorId,article.dorId)}>
+                    style={calculateDorItemStyle(dorId-1,article.dorId-1)}>
                     {dorIdToDorName[article.dorId]}
                   </div>
           
