@@ -43,6 +43,20 @@ public class ArticleApi {
                 .body(articleService.pageStringify(articles));
     }
 
+    @GetMapping("/range")
+    public ResponseEntity allArticleRangePage
+            (@RequestParam(defaultValue="0") int start,
+             @RequestParam(defaultValue="0") int end,
+             @RequestParam(defaultValue = "10") int size){
+
+        Page<Article> articleRangePage=articleService
+                .getAllArticlesWithinRangePage(start,end,size);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(articleService.pageStringify(articleRangePage));
+    }
+
     /*
     @GetMapping("/dor/{dorId}")
     public ResponseEntity dorArticles(@PathVariable("dorId") Long dorId){
@@ -53,9 +67,10 @@ public class ArticleApi {
     }
      */
     @GetMapping("/dor/{dorId}")
-    public ResponseEntity dorArticlesPerPage(@PathVariable("dorId") Long dorId,
-                                             @RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "10")int size){
+    public ResponseEntity dorArticlesPerPage(
+            @PathVariable("dorId") Long dorId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10")int size){
 
         Page<Article> dorArticlePage=articleService
                 .getDorArticlesPerPage(dorId,page,size);
@@ -63,6 +78,21 @@ public class ArticleApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(articleService.pageStringify(dorArticlePage));
+
+    }
+    @GetMapping("/dor/{dorId}/range")
+    public ResponseEntity dorArticleRangePage(
+            @PathVariable("dorId") Long dorId,
+            @RequestParam(defaultValue = "0") int start,
+            @RequestParam(defaultValue = "0") int end,
+            @RequestParam(defaultValue = "10") int size){
+
+        Page<Article> dorArticleRangePage=articleService.
+                getDorArticlesWithinRangePage(dorId,start,end,size);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(articleService.pageStringify(dorArticleRangePage));
 
     }
 
