@@ -10,13 +10,11 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +85,25 @@ public class ArticleService {
         return articlePage;
     }
 
+    public Page<Article> getAllArticlesWithinRangePage(int startPage, int endPage, int size){
+        List<Article> concatenatedPagesAsList=new ArrayList<>();
+        for(int page=startPage;page<endPage+1;page++){
+            Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
+            Page<Article> articlePage=articleRepository.findAll(pageable);
+            if(articlePage.isEmpty()){
+                throw new RuntimeException("ExceededPage");
+            }
+            concatenatedPagesAsList.addAll(articlePage.getContent());
+        }
+        Page<Article> articleRangePage=new PageImpl<>(
+                concatenatedPagesAsList,
+                PageRequest.of(0,concatenatedPagesAsList.size()),
+                concatenatedPagesAsList.size()
+        );
+
+        return articleRangePage;
+    }
+
     /*
     public List<Article> getDorArticles(Long dorId){
         List<Article> dorArticles=articleRepository.findAllByDorId(dorId);
@@ -108,6 +125,27 @@ public class ArticleService {
             throw new RuntimeException("NoMoreArticlePage");
         }
         return articlePage;
+    }
+
+    public Page<Article> getDorArticlesWithinRangePage(Long dorId, int startPage, int endPage, int size){
+        List<Article> concatenatedPagesAsList=new ArrayList<>();
+        for(int page=startPage;page<endPage+1;page++){
+            Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
+            Page<Article> articlePage=articleRepository.findAllByDorId(dorId,pageable);
+            if(articlePage.isEmpty() && page==0){
+                throw new RuntimeException("ArticleNotFound");
+            }
+            else if(articlePage.isEmpty()){
+                throw new RuntimeException("ExceededPage");
+            }
+            concatenatedPagesAsList.addAll(articlePage.getContent());
+        }
+        Page<Article> rangePage=new PageImpl<>(
+                concatenatedPagesAsList,
+                PageRequest.of(0,concatenatedPagesAsList.size()),
+                concatenatedPagesAsList.size()
+        );
+        return rangePage;
     }
 
     @Transactional
