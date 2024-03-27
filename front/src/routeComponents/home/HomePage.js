@@ -326,14 +326,14 @@ return (
               {articleList && articleList.map((article, index) => (
               <div key={index} className="article-item" onClick={() => goArticlePage(article)}>
                 <div className='article-item-summary'>
-                  <text className="article-item-text" 
+                  <div className="article-item-text" 
                         id='article-item-title'>
                           {article.title}
-                  </text>
-                  <text className="article-item-text"
+                  </div>
+                  <div className="article-item-text"
                         id='article-item-content'>
                           {article.content}
-                  </text>
+                  </div>
                 </div>
                 <div className='article-item-icons'>
                   <div className='dor-icon'
