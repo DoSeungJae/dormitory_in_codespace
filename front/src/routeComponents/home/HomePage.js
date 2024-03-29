@@ -12,6 +12,7 @@ function HomePage() {
   const [doLoadPage,setDoLoadPage]=useState(0);
   const [dorId,setDorId]=useState(0);
   const [scrollPosition,setScrollPosition]=useState(0);
+  const [isDataLoaded,setIsDataLoaded]=useState(false);
 
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -34,7 +35,7 @@ function HomePage() {
     }
     catch(error){
       const errMsg=error.response.data;
-      if(errMsg==='NoMoreArticlePage' ){
+      if(errMsg==='NoMoreArticlePage'){
         setDoLoadPage(1);
       }
       if(errMsg==="ArticleNotFound"){
@@ -50,53 +51,75 @@ function HomePage() {
 
 
   useEffect(()=>{
-    const loadRangePage = (start,end) => {
-      //서버에 범위 페이지 요청 전송하기
+    const loadRangePage = async (start,end) => {
+      console.log(end);
+      setDoLoadPage(0);
+      if(end==="1"){
+        setPage(end);
+      }
+      else if(end>=2){
+        const path=`http://localhost:8080/api/v1/article/range?start=${start}&end=${end-1}`;
+        try{
+          const response=await axios.get(path);
+          const data=response.data.map(item => JSON.parse(item));
+          setArticleList((prevItems)=>[...prevItems,...data]);
+          
+          setPage(end);
+          console.log(end);
+          
+        }
+        catch(error){
+          console.error(error);
+        }
+      }
+
 
     }
     const toSavedScroll= () => {
-      const savedPage=localStorage.getItem('page') || 0;
-      const savedScrollPosition=localStorage.getItem('scrollPosition') || 0;
-        
-      setPage(savedPage);
-      //setPage에서 문제가 생길 것임, 예를 들어 page가 3일 때,
-      //0 페이지부터 3 페이지까지 모두 불러와야하는데, 0과 3 페이지만 로드될 것이 분명함
-      //그러므로 이 경우 백엔드에서 추가적인 로직 구현을 고려해보아야함
-
-      setScrollPosition(savedScrollPosition);
-
-      localStorage.removeItem('page');
-      localStorage.removeItem('scrollPosition');
-      if(savedScrollPosition===0){
+      const savedPage=localStorage.getItem('page') || -1;
+      const savedScrollPosition=(localStorage.getItem('scrollPosition') || -1);
+      if(savedScrollPosition===-1){
+        return ; 
+      }
+      if(savedPage===-1){
         return ;
       }
-      
-      if(page!==0){
-        loadRangePage(1,page);
-        //이후에 불러온 article 정보들을 articleList에 저장해야함
-      }
-      window.scrollTo(0,parseInt(savedScrollPosition,10));
+      loadRangePage(1,savedPage);
+        
+      articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+      localStorage.removeItem('scrollPosition');
+      localStorage.removeItem('page');
     }
-  })
+    
+    if(isDataLoaded){
+      toSavedScroll();
+    }
+    
+  
+  },[isDataLoaded]);
 
   useEffect(()=>{
     setAlert(location);
-    if(page==0){
+    setIsDataLoaded(false);
+    if(page===0){
       return ;
     }
     async function fetchData(){
       await getArticlesPerPage(page);
+      setIsDataLoaded(true);
     }
     fetchData(); 
   },[page])
 
   useEffect(()=>{
     const handleScroll = () => {
-      const position=window.scrollY;
+      const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
+      const position=scrollTop;
       setScrollPosition(position);
 
       if (articleListRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
+        //const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
+        
         if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
           //스크롤 감지가 중복으로 되는 경우가 있기 때문에 여기서 데이터를 가져오지 않음.
           //대신 doLoadPage를 의존성 배열의 인자로 가지는 useEffect를 선언해서 데이터를 가져오도록 설계함
@@ -120,6 +143,7 @@ function HomePage() {
   useEffect(()=>{
     async function fetchData(){
       await getArticlesPerPage(page);
+      setIsDataLoaded(true);
     }
     fetchData();
 
