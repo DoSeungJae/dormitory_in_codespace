@@ -13,6 +13,7 @@ function HomePage() {
   const [dorId,setDorId]=useState(0);
   const [scrollPosition,setScrollPosition]=useState(0);
   const [isDataLoaded,setIsDataLoaded]=useState(false);
+  const [isRangeProcessed, setIsRangeProcessed]=useState(false);
 
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -54,29 +55,29 @@ function HomePage() {
   useEffect(()=>{
     console.log("useEffect 1");
     const loadRangePage = async (start,end) => {
-      
-      console.log(end);
+      if(isRangeProcessed){
+        return ;
+      }
       setDoLoadPage(0);
       if(end===1){
         setPage(end);
+        console.log("end is 1");
       }
       else if(end>=2){
         const path=`http://localhost:8080/api/v1/article/range?start=${start}&end=${end-1}`;
         try{
           const response=await axios.get(path);
-          const data=response.data.map(item => JSON.parse(item));
-          setArticleList((prevItems)=>[...prevItems,...data]);
-          
+          const data=response.data.map(item => JSON.parse(item));          
           setPage(end);
-          console.log(end);
+          setArticleList((prevItems)=>[...prevItems,...data]);
+          console.log("end is bigger than 2");
           
         }
         catch(error){
           console.error(error);
         }
       }
-
-
+      setIsRangeProcessed(true);
     }
     const toSavedScroll = () => {
       const savedPage=parseInt(localStorage.getItem('page') || -1,10);
@@ -94,16 +95,19 @@ function HomePage() {
       .then(()=>{    
         if(savedPage!==page){
           return ;
-        } 
+        }
+
         articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
         localStorage.removeItem('scrollPosition');
         localStorage.removeItem('page');
+        console.log(savedScrollPosition);
       });
 
     }
     
     if(isDataLoaded){
       toSavedScroll();
+      setIsRangeProcessed(true);
     }
     
   
