@@ -54,7 +54,7 @@ function HomePage() {
     const loadRangePage = async (start,end) => {
       console.log(end);
       setDoLoadPage(0);
-      if(end==="1"){
+      if(end===1){
         setPage(end);
       }
       else if(end>=2){
@@ -76,7 +76,7 @@ function HomePage() {
 
     }
     const toSavedScroll= () => {
-      const savedPage=localStorage.getItem('page') || -1;
+      const savedPage=parseInt(localStorage.getItem('page') || -1,10);
       const savedScrollPosition=(localStorage.getItem('scrollPosition') || -1);
       if(savedScrollPosition===-1){
         return ; 
