@@ -14,6 +14,7 @@ function HomePage() {
   const [scrollPosition,setScrollPosition]=useState(0);
   const [isDataLoaded,setIsDataLoaded]=useState(false);
   const [isRangeProcessed, setIsRangeProcessed]=useState(false);
+  const [isEndPage,setIsEndPage]=useState(false);
 
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -38,6 +39,8 @@ function HomePage() {
       const errMsg=error.response.data;
       if(errMsg==='NoMoreArticlePage'){
         setDoLoadPage(1);
+        setIsEndPage(1);
+        
       }
       if(errMsg==="ArticleNotFound"){
         return ;
@@ -147,6 +150,9 @@ function HomePage() {
     articleListRef.current.addEventListener('scroll',handleScroll);
     if(doLoadPage){
       //이 조건문은 스크롤 감지(handleScroll)에서와 다르게 한 번만 실행됨
+      if(isEndPage){
+        return ;
+      }
       setPage(prevPage => prevPage+1);
     }
     return () => {
