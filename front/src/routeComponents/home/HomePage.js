@@ -47,11 +47,14 @@ function HomePage() {
   const saveScrollState = () => {
     localStorage.setItem('scrollPosition',scrollPosition);
     localStorage.setItem('page',page);
+    console.log("save : ",scrollPosition);
   }
 
 
   useEffect(()=>{
+    console.log("useEffect 1");
     const loadRangePage = async (start,end) => {
+      
       console.log(end);
       setDoLoadPage(0);
       if(end===1){
@@ -75,20 +78,28 @@ function HomePage() {
 
 
     }
-    const toSavedScroll= () => {
+    const toSavedScroll = () => {
       const savedPage=parseInt(localStorage.getItem('page') || -1,10);
-      const savedScrollPosition=(localStorage.getItem('scrollPosition') || -1);
+      const savedScrollPosition=parseInt((localStorage.getItem('scrollPosition') || -1),10);
+      console.log(savedScrollPosition);
+      console.log("page: ",page);
+      console.log("savedPage: ",savedPage);
       if(savedScrollPosition===-1){
         return ; 
       }
       if(savedPage===-1){
         return ;
       }
-      loadRangePage(1,savedPage);
-        
-      articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
-      localStorage.removeItem('scrollPosition');
-      localStorage.removeItem('page');
+      loadRangePage(1,savedPage)
+      .then(()=>{    
+        if(savedPage!==page){
+          return ;
+        } 
+        articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+        localStorage.removeItem('scrollPosition');
+        localStorage.removeItem('page');
+      });
+
     }
     
     if(isDataLoaded){
@@ -99,6 +110,7 @@ function HomePage() {
   },[isDataLoaded]);
 
   useEffect(()=>{
+    console.log("useEffect 2");
     setAlert(location);
     setIsDataLoaded(false);
     if(page===0){
@@ -112,6 +124,7 @@ function HomePage() {
   },[page])
 
   useEffect(()=>{
+    console.log("useEffect 3");
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
       const position=scrollTop;
@@ -141,6 +154,7 @@ function HomePage() {
   },[doLoadPage])
 
   useEffect(()=>{
+    console.log("useEffect 4");
     async function fetchData(){
       await getArticlesPerPage(page);
       setIsDataLoaded(true);
