@@ -40,7 +40,6 @@ function HomePage() {
       if(errMsg==='NoMoreArticlePage'){
         setDoLoadPage(1);
         setIsEndPage(1);
-        
       }
       if(errMsg==="ArticleNotFound"){
         return ;
@@ -50,8 +49,13 @@ function HomePage() {
 
   const saveScrollState = () => {
     localStorage.setItem('scrollPosition',scrollPosition);
-    localStorage.setItem('page',page);
-    console.log("save : ",scrollPosition);
+    localStorage.setItem('dor',dorId);
+    if(isEndPage){
+      localStorage.setItem('page',page-1);
+    }
+    else{
+      localStorage.setItem('page',page);
+    }
   }
 
 
@@ -82,10 +86,46 @@ function HomePage() {
       }
       setIsRangeProcessed(true);
     }
+
+    const loadRangeDorPage = async (start,end,dor)=>{
+      console.log("rangeDor");
+      if(isRangeProcessed){
+        return ;
+      }
+      setDoLoadPage(0);
+      setArticleList([]);
+      setDorId(dor);
+      if(dor===0){
+        return ;
+      }
+      if(dorId===0){
+        return ;
+      }
+
+
+      if(end==1){
+        setPage(end);
+      }
+      else if(end>=2){
+        const path=`http://localhost:8080/api/v1/article/dor/${dor}/range?start=${start}&end=${end-1}`;
+        try{
+          const response=await axios.get(path);
+          const data=response.data.map(item => JSON.parse(item));
+          setPage(end);
+          setArticleList((prev)=>[...prev,...data]);
+        
+        }
+        catch(error){
+          console.error(error);
+        }
+      }
+      setIsRangeProcessed(true);
+
+    }
     const toSavedScroll = () => {
       const savedPage=parseInt(localStorage.getItem('page') || -1,10);
       const savedScrollPosition=parseInt((localStorage.getItem('scrollPosition') || -1),10);
-      console.log(savedScrollPosition);
+      const dor=parseInt((localStorage.getItem('dor') || -1),10);
       console.log("page: ",page);
       console.log("savedPage: ",savedPage);
       if(savedScrollPosition===-1){
@@ -94,24 +134,48 @@ function HomePage() {
       if(savedPage===-1){
         return ;
       }
-      loadRangePage(1,savedPage)
-      .then(()=>{    
-        if(savedPage!==page){
-          return ;
-        }
+      if(dor===-1){
+        return ;
+      }
+      if(dor===0){
+        loadRangePage(1,savedPage)
+        .then(()=>{    
+          if(savedPage!==page){
+            return ;
+          }
+  
+          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+          localStorage.removeItem('scrollPosition');
+          localStorage.removeItem('page');
+          console.log(savedScrollPosition);
+        });
+      }
+      else{
+        loadRangeDorPage(0,savedPage,dor)
+        .then(()=>{
+          if(savedPage!==page){
+            return ;
+          }
+          console.log("scroll:",savedScrollPosition);
+          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+          localStorage.removeItem('scrollPosition');
+          localStorage.removeItem('page');
+        })
 
-        articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
-        localStorage.removeItem('scrollPosition');
-        localStorage.removeItem('page');
-        console.log(savedScrollPosition);
-      });
+      }
+    }
+    if(dorId===0){
+      if(isDataLoaded){
+        toSavedScroll();
+        setIsRangeProcessed(true);
+      }
+    }
+    else{
+      if(isDataLoaded){
 
+      }
     }
-    
-    if(isDataLoaded){
-      toSavedScroll();
-      setIsRangeProcessed(true);
-    }
+
     
   
   },[isDataLoaded]);
@@ -148,11 +212,8 @@ function HomePage() {
       }
     };
     articleListRef.current.addEventListener('scroll',handleScroll);
-    if(doLoadPage){
+    if(doLoadPage && !isEndPage){
       //이 조건문은 스크롤 감지(handleScroll)에서와 다르게 한 번만 실행됨
-      if(isEndPage){
-        return ;
-      }
       setPage(prevPage => prevPage+1);
     }
     return () => {
@@ -165,6 +226,8 @@ function HomePage() {
 
   useEffect(()=>{
     console.log("useEffect 4");
+    setIsEndPage(false);
+
     async function fetchData(){
       await getArticlesPerPage(page);
       setIsDataLoaded(true);
