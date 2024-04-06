@@ -60,7 +60,6 @@ function HomePage() {
 
 
   useEffect(()=>{
-    console.log("useEffect 1");
     const loadRangePage = async (start,end) => {
       if(isRangeProcessed){
         return ;
@@ -68,7 +67,6 @@ function HomePage() {
       setDoLoadPage(0);
       if(end===1){
         setPage(end);
-        console.log("end is 1");
       }
       else if(end>=2){
         const path=`http://localhost:8080/api/v1/article/range?start=${start}&end=${end-1}`;
@@ -76,9 +74,7 @@ function HomePage() {
           const response=await axios.get(path);
           const data=response.data.map(item => JSON.parse(item));          
           setPage(end);
-          setArticleList((prevItems)=>[...prevItems,...data]);
-          console.log("end is bigger than 2");
-          
+          setArticleList((prevItems)=>[...prevItems,...data]);     
         }
         catch(error){
           console.error(error);
@@ -88,21 +84,15 @@ function HomePage() {
     }
 
     const loadRangeDorPage = async (start,end,dor)=>{
-      console.log("rangeDor");
       if(isRangeProcessed){
         return ;
       }
-      setDoLoadPage(0);
       setArticleList([]);
       setDorId(dor);
+      setDoLoadPage(0);
       if(dor===0){
         return ;
       }
-      if(dorId===0){
-        return ;
-      }
-
-
       if(end==1){
         setPage(end);
       }
@@ -126,62 +116,44 @@ function HomePage() {
       const savedPage=parseInt(localStorage.getItem('page') || -1,10);
       const savedScrollPosition=parseInt((localStorage.getItem('scrollPosition') || -1),10);
       const dor=parseInt((localStorage.getItem('dor') || -1),10);
-      console.log("page: ",page);
-      console.log("savedPage: ",savedPage);
-      if(savedScrollPosition===-1){
+      if(savedScrollPosition===-1 || savedPage===-1 || dor===-1){
         return ; 
       }
-      if(savedPage===-1){
-        return ;
-      }
-      if(dor===-1){
-        return ;
-      }
+
       if(dor===0){
         loadRangePage(1,savedPage)
-        .then(()=>{    
-          if(savedPage!==page){
-            return ;
-          }
-  
-          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
-          localStorage.removeItem('scrollPosition');
-          localStorage.removeItem('page');
-          console.log(savedScrollPosition);
-        });
-      }
-      else{
-        loadRangeDorPage(0,savedPage,dor)
         .then(()=>{
           if(savedPage!==page){
             return ;
           }
+          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+          localStorage.removeItem('scrollPosition');
+          localStorage.removeItem('page');
+        });
+      }
+      else{
+
+        loadRangeDorPage(0,savedPage,dor)
+        .then(()=>{
           console.log("scroll:",savedScrollPosition);
           articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
           localStorage.removeItem('scrollPosition');
           localStorage.removeItem('page');
+          localStorage.removeItem('dor');
         })
 
       }
     }
-    if(dorId===0){
-      if(isDataLoaded){
-        toSavedScroll();
-        setIsRangeProcessed(true);
-      }
-    }
-    else{
-      if(isDataLoaded){
 
-      }
+    if(isDataLoaded){
+      toSavedScroll();
+      setIsRangeProcessed(true);
     }
 
-    
   
   },[isDataLoaded]);
 
   useEffect(()=>{
-    console.log("useEffect 2");
     setAlert(location);
     setIsDataLoaded(false);
     if(page===0){
@@ -195,7 +167,6 @@ function HomePage() {
   },[page])
 
   useEffect(()=>{
-    console.log("useEffect 3");
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
       const position=scrollTop;
@@ -225,7 +196,6 @@ function HomePage() {
   },[doLoadPage])
 
   useEffect(()=>{
-    console.log("useEffect 4");
     setIsEndPage(false);
 
     async function fetchData(){
