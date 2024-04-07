@@ -67,7 +67,7 @@ function HomePage() {
       }
       setDoLoadPage(0);
       if(end===1){
-        setPage(end);
+        setPage(end); //최대 page가 1일 때 테스트 필요
       }
       else if(end>=2){
         const path=`http://localhost:8080/api/v1/article/range?start=${start}&end=${end-1}`;
@@ -93,23 +93,21 @@ function HomePage() {
         return ;
       }
       setDorId(dor);
-      if(end==1){
-        //setPage(end);
-        console.log(1);
+      if(end===1){
+        setPage(end);
       }
       else if(end>=2){
         const path=`http://localhost:8080/api/v1/article/dor/${dor}/range?start=${start}&end=${end-1}`;
         try{
           const response=await axios.get(path);
           const data=response.data.map(item => JSON.parse(item));
-          setArticleList((prev)=>[...prev,...data]);
           setPage(end);
+          setArticleList((prev)=>[...prev,...data]);
         }
         catch(error){
           console.error(error);
         }
       }
-      setIsDormRangeProcessed(true);
       setIsRangeProcessed(true);
 
     }
@@ -135,9 +133,6 @@ function HomePage() {
       else{
         loadRangeDorPage(1,savedPage,dor)
         .then(()=>{
-          if(isDormRangeProcessed){
-            return ;
-          }
           if(savedPage!==page){
             return ;
           }
@@ -155,8 +150,6 @@ function HomePage() {
       toSavedScroll();
       setIsRangeProcessed(true);
     }
-
-  
   },[isDataLoaded]);
 
   useEffect(()=>{
