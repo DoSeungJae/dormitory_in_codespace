@@ -15,6 +15,7 @@ function HomePage() {
   const [isDataLoaded,setIsDataLoaded]=useState(false);
   const [isRangeProcessed, setIsRangeProcessed]=useState(false);
   const [isEndPage,setIsEndPage]=useState(false);
+  const [isDormRangeProcessed,setIsDormRangeProcessed]=useState(false);
 
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -84,31 +85,31 @@ function HomePage() {
     }
 
     const loadRangeDorPage = async (start,end,dor)=>{
-      if(isRangeProcessed){
+      if(isRangeProcessed || dor===dorId){
         return ;
       }
-      setArticleList([]);
-      setDorId(dor);
       setDoLoadPage(0);
-      if(dor===0){
+      if(dor===0 || dor===-1){
         return ;
       }
+      setDorId(dor);
       if(end==1){
-        setPage(end);
+        //setPage(end);
+        console.log(1);
       }
       else if(end>=2){
         const path=`http://localhost:8080/api/v1/article/dor/${dor}/range?start=${start}&end=${end-1}`;
         try{
           const response=await axios.get(path);
           const data=response.data.map(item => JSON.parse(item));
-          setPage(end);
           setArticleList((prev)=>[...prev,...data]);
-        
+          setPage(end);
         }
         catch(error){
           console.error(error);
         }
       }
+      setIsDormRangeProcessed(true);
       setIsRangeProcessed(true);
 
     }
@@ -132,11 +133,16 @@ function HomePage() {
         });
       }
       else{
-
-        loadRangeDorPage(0,savedPage,dor)
+        loadRangeDorPage(1,savedPage,dor)
         .then(()=>{
+          if(isDormRangeProcessed){
+            return ;
+          }
+          if(savedPage!==page){
+            return ;
+          }
           console.log("scroll:",savedScrollPosition);
-          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+          //articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
           localStorage.removeItem('scrollPosition');
           localStorage.removeItem('page');
           localStorage.removeItem('dor');
@@ -196,8 +202,8 @@ function HomePage() {
   },[doLoadPage])
 
   useEffect(()=>{
+    setArticleList([]);
     setIsEndPage(false);
-
     async function fetchData(){
       await getArticlesPerPage(page);
       setIsDataLoaded(true);
