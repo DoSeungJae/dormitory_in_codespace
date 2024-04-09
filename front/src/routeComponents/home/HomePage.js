@@ -15,8 +15,6 @@ function HomePage() {
   const [isDataLoaded,setIsDataLoaded]=useState(false);
   const [isRangeProcessed, setIsRangeProcessed]=useState(false);
   const [isEndPage,setIsEndPage]=useState(false);
-  const [isDormRangeProcessed,setIsDormRangeProcessed]=useState(false);
-
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
       return;
@@ -24,6 +22,7 @@ function HomePage() {
     let path;
     if(dorId!=0){
      path=`http://localhost:8080/api/v1/article/dor/${dorId}?page=${page}`;
+     
     } 
     else{
       path=`http://localhost:8080/api/v1/article?page=${page}`;
@@ -94,14 +93,22 @@ function HomePage() {
       }
       setDorId(dor);
       if(end===1){
-        setPage(end);
+        const path=`http://localhost:8080/api/v1/article/dor/${dor}?page=0`;
+        try{
+          const response=await axios.get(path);
+          const data=response.data.map(item=>JSON.parse(item));
+          setPage(end);
+        }
+        catch(error){
+          console.error(error);
+        }
       }
       else if(end>=2){
         const path=`http://localhost:8080/api/v1/article/dor/${dor}/range?start=${start}&end=${end-1}`;
         try{
           const response=await axios.get(path);
           const data=response.data.map(item => JSON.parse(item));
-          setPage(end);
+          setPage(end); 
           setArticleList((prev)=>[...prev,...data]);
         }
         catch(error){
@@ -137,7 +144,7 @@ function HomePage() {
             return ;
           }
           console.log("scroll:",savedScrollPosition);
-          //articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
+          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
           localStorage.removeItem('scrollPosition');
           localStorage.removeItem('page');
           localStorage.removeItem('dor');
@@ -202,8 +209,15 @@ function HomePage() {
       setIsDataLoaded(true);
     }
     fetchData();
+    console.log()
 
   },[dorId])
+
+
+  useEffect(()=>{
+    console.log(articleList);
+    console.log(page);
+  },[articleList])
 
 
   const token=localStorage.getItem('token');
