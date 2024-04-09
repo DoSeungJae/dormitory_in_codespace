@@ -143,7 +143,6 @@ function HomePage() {
           if(savedPage!==page){
             return ;
           }
-          console.log("scroll:",savedScrollPosition);
           articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
           localStorage.removeItem('scrollPosition');
           localStorage.removeItem('page');
@@ -209,16 +208,8 @@ function HomePage() {
       setIsDataLoaded(true);
     }
     fetchData();
-    console.log()
 
   },[dorId])
-
-
-  useEffect(()=>{
-    console.log(articleList);
-    console.log(page);
-  },[articleList])
-
 
   const token=localStorage.getItem('token');
   const navigate = useNavigate();
