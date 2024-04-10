@@ -98,6 +98,10 @@ function HomePage() {
           const response=await axios.get(path);
           const data=response.data.map(item=>JSON.parse(item));
           setPage(end);
+          //원래 의도한 코드가 아님
+          //setArticleList((prev)=>[...prev,...data]);를 추가하지 않고 실행하였고,
+          //공교롭게도 에러가 어느정도 해결되었던 것.
+          //단, setArticleList((prev)=>[...prev,...data]);를 추가하면 에러가 나타남..
         }
         catch(error){
           console.error(error);
