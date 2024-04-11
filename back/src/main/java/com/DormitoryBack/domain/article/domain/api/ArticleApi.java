@@ -43,6 +43,25 @@ public class ArticleApi {
                 .body(articleService.pageStringify(articles));
     }
 
+    @GetMapping("/filter/user")
+    public ResponseEntity articlesByUser(@RequestParam(defaultValue = "0")int page,
+                                         @RequestParam(defaultValue = "10")int size,
+                                         @RequestHeader("Authorization") String token){
+        log.info("1");
+        Page<Article> articles=articleService.getArticlesByUser(page,size,token);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(articleService.pageStringify(articles));
+
+    }
+
+    /*
+    @GetMapping("/filter/comment")
+    public ResponseEntity articlesCommentedOnByUser(){
+    }
+    */
+
+
     @GetMapping("/range")
     public ResponseEntity allArticleRangePage
             (@RequestParam(defaultValue="0") int start,
