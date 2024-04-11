@@ -148,6 +148,23 @@ public class ArticleService {
         return rangePage;
     }
 
+    public Page<Article> getArticlesByUser(int page, int size, String token) {
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        User user=userRepository.findById(userId).orElse(null);
+        Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
+        Page<Article> userArticles=articleRepository.findAllByUsrId(user,pageable);
+        if(userArticles.isEmpty() && page==0){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        else if(userArticles.isEmpty()){
+            throw new RuntimeException("ExceededPage");
+        }
+        return userArticles;
+    }
+
     @Transactional
     public Article updateArticle(ArticleDTO dto,Long articleId,String token){
         if(!tokenProvider.validateToken(token)){
