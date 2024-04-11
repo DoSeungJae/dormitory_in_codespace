@@ -409,3 +409,19 @@
   border-bottom:none;
   background-color: #f8f8f8;
 }
+
+.app-myWritingPage-header{
+  padding-top: 5%;
+  padding-right: 2%;
+  padding-left: 2%;
+}
+
+.app-myWritingPage-main{
+  padding-top:3%;
+  padding-right: 3%;
+  padding-left: 3%;
+}
+.myWritingPage-main-text{
+  font-size:25px;
+}
+
