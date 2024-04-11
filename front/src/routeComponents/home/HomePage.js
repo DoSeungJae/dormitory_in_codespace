@@ -97,6 +97,8 @@ function HomePage() {
         try{
           const response=await axios.get(path);
           const data=response.data.map(item=>JSON.parse(item));
+          const response2=await axios.get(path);
+
           setPage(end);
           //원래 의도한 코드가 아님
           //setArticleList((prev)=>[...prev,...data]);를 추가하지 않고 실행하였고,
