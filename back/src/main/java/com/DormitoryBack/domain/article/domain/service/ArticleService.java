@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.article.domain.service;
 
+import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
@@ -22,13 +23,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
-
+    @Autowired
+    private CommentRepository commentRepository;
     @Autowired
     private ArticleRepository articleRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private TokenProvider tokenProvider;
     @Transactional
@@ -164,6 +164,27 @@ public class ArticleService {
         }
         return userArticles;
     }
+
+    public Page<Article> getArticlesCommentedFromUser(int page, int size, String token) {
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        User user=userRepository.findById(userId).orElse(null);
+        Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
+        Page<Article> commentedUserArticles=articleRepository.
+                findAllArticlesByCommentedUsrId(userId,pageable);
+        if(commentedUserArticles.isEmpty() && page==0){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        else if(commentedUserArticles.isEmpty()){
+            throw new RuntimeException("ExceededPage");
+        }
+        return commentedUserArticles;
+
+    }
+
+
 
     @Transactional
     public Article updateArticle(ArticleDTO dto,Long articleId,String token){
