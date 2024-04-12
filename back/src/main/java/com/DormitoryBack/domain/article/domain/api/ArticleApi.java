@@ -54,9 +54,9 @@ public class ArticleApi {
 
     }
 
-    @GetMapping("/filter/comment")
+    @GetMapping("/filter/userComment")
     public ResponseEntity articlesCommentedFromUser(@RequestParam(defaultValue = "0")int page,
-                                                    @RequestParam(defaultValue = "10")int size,
+                                                    @RequestParam(defaultValue = "100")int size,
                                                     @RequestHeader("Authorization") String token){
 
         Page<Article> articles=articleService.getArticlesCommentedFromUser(page,size,token);
