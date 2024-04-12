@@ -1,4 +1,5 @@
 package com.DormitoryBack.domain.article.domain.entity;
+import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +10,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
@@ -50,6 +54,11 @@ public class Article {
     private String category;
     @Column(name="appointed_time") //추후에 설정.
     private LocalDateTime appointedTime;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "article")
+    private Set<Comment> comments=new HashSet<>();
 
     public void update(ArticleDTO dto){
         this.dorId=dto.getDorId();
