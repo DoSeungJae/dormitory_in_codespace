@@ -1,6 +1,13 @@
 import {React} from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-function ArticlePreview(articleList,articleListRef){
+function ArticlePreview({articleList,articleListRef,goArticlePage,calculateDorItemStyle,
+                        saveScrollState,dorId,dorIdToDorName}){
+                          
+  const token=localStorage.getItem('token');
+  const navigate=useNavigate();
+
     return (
         <div className="preview" ref={articleListRef}>
               
@@ -24,7 +31,6 @@ function ArticlePreview(articleList,articleListRef){
               {dorIdToDorName[article.dorId]}
             </div>
           </div>
-          
         </div>
       ))}
 
