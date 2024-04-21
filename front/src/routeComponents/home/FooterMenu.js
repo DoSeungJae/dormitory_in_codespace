@@ -1,7 +1,7 @@
 import react from 'react';
 
 function FooterMenu ({selectMenu,saveScrollState,isEndPage,dorId,scrollPosition,page,
-                        setSelectComponentIndex}){
+                        selectComponentIndex,setSelectComponentIndex}){
     const svgMap = {
         '홈': (
             <svg
@@ -84,7 +84,14 @@ function FooterMenu ({selectMenu,saveScrollState,isEndPage,dorId,scrollPosition,
                             item=null;                
                         }
                         else{
-                            setSelectComponentIndex(0);
+                            if(selectComponentIndex===0){
+                                window.location.reload();
+                            }
+                            else{
+                                setSelectComponentIndex(0);
+                            }
+                            
+
                             //변경 고려
                         }
                     }}
