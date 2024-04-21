@@ -427,30 +427,6 @@ return (
 
     </main>
 
-    <footer className="App-footer">
-      <div className="bottom-menu">
-        {['홈','내 글', '글쓰기', '알림'].map((item, i) => (
-          <div 
-            key={i}
-            className="menu-item"
-            style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}
-            
-            onClick={() => {
-              if(item!='홈'){
-                checkToken(item);
-                item=null;                
-              }
-              else{
-                window.location.reload();
-              }
-            }}
-          >
-            {svgMap[item]}
-            {<div style={{fontSize: '14px',paddingTop:'4px'}}>{item}</div>}
-          </div>
-        ))}
-       </div>
-     </footer>
    </div>
  );
 }
