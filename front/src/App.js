@@ -13,6 +13,7 @@ import AlertContext from './components/common/AlertContext';
 import {toast} from 'react-toastify';
 import PatchPage from './routeComponents/home/PatchPage';
 import PostingPage from './routeComponents/home/PostingPage';
+import HomePageSelect from './routeComponents/home/HomePageSelect';
 
 function App() {
   const setAlert= (location) => {
@@ -53,11 +54,12 @@ function App() {
         <AlertContext.Provider value={setAlert}>
           <BrowserRouter>
             <Routes>
-              <Route exact path="/" element={<HomePage/>}></Route> 
+              <Route exact path="/" element={<HomePageSelect/>}></Route> 
+              {/* 
               <Route path="/newWriting" element={<PostingPage/>}></Route>
               <Route path="/myWriting" element={<MyWritingPage/>}></Route>
               <Route path="/alarm" element={<AlarmPage/>}></Route>
-
+              */}
               <Route  path="/article" element={<ArticlePage/>}></Route> {/* exact가 필요한가 ??*/}
               <Route path="/article/patch"element={<PatchPage/>}></Route>
               
