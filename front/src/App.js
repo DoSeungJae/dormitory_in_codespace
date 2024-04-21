@@ -2,17 +2,13 @@ import './App.css';
 import LogInPage from './routeComponents/logIn/LogInPage';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import SignInPage from './routeComponents/signIn/SignInPage';
-import HomePage from './routeComponents/home/HomePage';
-import MyWritingPage from './routeComponents/home/MyWritingPage';
-import AlarmPage from './routeComponents/home/AlarmPage';
 import ArticlePage from './routeComponents/article/ArticlePage';
-import React,{useState,useContext} from 'react';
+import React from 'react';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from './components/common/AlertContext';
 import {toast} from 'react-toastify';
 import PatchPage from './routeComponents/home/PatchPage';
-import PostingPage from './routeComponents/home/PostingPage';
 import HomePageSelect from './routeComponents/home/HomePageSelect';
 
 function App() {
@@ -37,12 +33,11 @@ function App() {
     }
     location.state=0;
   }
-  
-
     //서비스 배포시 유의
   
   
   
+    
   return (
     <div className="App">
       <div>
