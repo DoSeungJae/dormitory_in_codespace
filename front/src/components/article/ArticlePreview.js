@@ -1,6 +1,5 @@
 import {React} from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 function ArticlePreview({articleList,articleListRef,goArticlePage,calculateDorItemStyle,
                         saveScrollState,dorId,dorIdToDorName}){
