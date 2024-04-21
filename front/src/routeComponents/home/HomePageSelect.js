@@ -6,8 +6,10 @@ import ArticlePreview from '../../components/article/ArticlePreview.js';
 import PostingPage from './PostingPage.js';
 import MyWritingPage from './MyWritingPage.js';
 import AlarmPage from './AlarmPage.js';
+import HomePage from './HomePage.js';
+import FooterMenu from './FooterMenu.js';
 
-function HomePage() {
+function HomePageSelect() {
   const[articleList,setArticleList]=useState([]);
   const[page,setPage]=useState(0);
   const location=useLocation();
@@ -19,6 +21,8 @@ function HomePage() {
   const [isDataLoaded,setIsDataLoaded]=useState(false);
   const [isRangeProcessed, setIsRangeProcessed]=useState(false);
   const [isEndPage,setIsEndPage]=useState(false);
+
+  const [selectComponentIndex,setSelectComponentIndex]=useState(0);
 
 
   const getArticlesPerPage = async (page) => {
@@ -183,34 +187,7 @@ function HomePage() {
     fetchData(); 
   },[page])
 
-  useEffect(()=>{
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
-      const position=scrollTop;
-      setScrollPosition(position);
 
-      if (articleListRef.current) {
-        //const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
-        
-        if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
-          //스크롤 감지가 중복으로 되는 경우가 있기 때문에 여기서 데이터를 가져오지 않음.
-          //대신 doLoadPage를 의존성 배열의 인자로 가지는 useEffect를 선언해서 데이터를 가져오도록 설계함
-          setDoLoadPage(1);
-        }
-      }
-    };
-    articleListRef.current.addEventListener('scroll',handleScroll);
-    if(doLoadPage && !isEndPage){
-      //이 조건문은 스크롤 감지(handleScroll)에서와 다르게 한 번만 실행됨
-      setPage(prevPage => prevPage+1);
-    }
-    return () => {
-      if(articleListRef.current){
-        articleListRef.current.removeEventListener('scroll',handleScroll);
-      }
-    }
-
-  },[doLoadPage])
 
   useEffect(()=>{
     setArticleList([]);
@@ -226,19 +203,16 @@ function HomePage() {
   const token=localStorage.getItem('token');
   const navigate = useNavigate();
 
-  const checkToken = async (item) => {
+  const selectMenu = async (item) => {
     try {
         const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
             headers: {
                 'Authorization': `${token}`
             }
         });
-
         if (response.data === true) {
-          const path=buttonToPath[item]
-          saveScrollState();
-          navigate(`/${path}`);
-        } else {
+            setSelectComponentIndex(menuToIndex[item]);
+          } else {
             saveScrollState();
             navigate('/logIn',{state:
               {from:'/',type:"error",
@@ -319,6 +293,13 @@ function HomePage() {
     7:"푸름4"
   };
 
+  const menuToIndex={
+    '홈':0,
+    '내 글':1,
+    '글쓰기':2,
+    '알림':3,
+  };
+
   const svgMap = {
     '홈': (
         <svg
@@ -389,72 +370,24 @@ function HomePage() {
 
 return (
   <div className="App">
-    <header className="App-home-header">
-    </header>
-    
-    <main className="App-main">
-      <div className="slide-menu">
-        {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
-          const dorItemStyle=calculateDorItemStyle(dorId-1,i);
-          return (
-            <div 
-              key={i} 
-              className="slide-item" 
-              style={dorItemStyle}
-              onClick={() =>{
-                const dorNum=buttonToPath[item.toLowerCase()];
-                setDorId(dorNum);
-                if(dorNum==dorId){//현재 기숙사 번호와 선택한 기숙사 버튼이 같은 경우 => dorMode를 종료함 => dorId를 0으로 셋
-                  setDorId(0);
-                }
-                setArticleList([]);
-                setPage(0);
-              }}
-            >
-                {item}
-            </div>
-             );
-            })}
-          </div>
-              
-              {articleList===null && <h3>아직 글이 없어요!</h3>}
-              
-              <ArticlePreview
-              articleList={articleList}
-              articleListRef={articleListRef}
-              goArticlePage={goArticlePage}
-              calculateDorItemStyle={calculateDorItemStyle}
-              saveScrollState={saveScrollState}
-              dorId={dorId}
-              dorIdToDorName={dorIdToDorName}
-              />
+    <div className='App-component-switcher'>
+        <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
+        <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
+        <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
+        <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><AlarmPage/></div>
 
-
-    </main>
+    </div>
 
     <footer className="App-footer">
-      <div className="bottom-menu">
-        {['홈','내 글', '글쓰기', '알림'].map((item, i) => (
-          <div 
-            key={i}
-            className="menu-item"
-            style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}
-            
-            onClick={() => {
-              if(item!='홈'){
-                checkToken(item);
-                item=null;                
-              }
-              else{
-                window.location.reload();
-              }
-            }}
-          >
-            {svgMap[item]}
-            {<div style={{fontSize: '14px',paddingTop:'4px'}}>{item}</div>}
-          </div>
-        ))}
-       </div>
+            <FooterMenu
+                selectMenu={selectMenu}
+                saveScrollState={saveScrollState}
+                isEndPage={isEndPage}
+                dorId={dorId}
+                scrollPosition={scrollPosition}
+                page={page}
+                setSelectComponentIndex={setSelectComponentIndex}
+            />
      </footer>
    </div>
  );
@@ -462,4 +395,4 @@ return (
 
 
 
-export default HomePage;
+export default HomePageSelect;
