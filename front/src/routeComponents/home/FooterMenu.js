@@ -1,4 +1,3 @@
-import react from 'react';
 
 function FooterMenu ({selectMenu,saveScrollState,isEndPage,dorId,scrollPosition,page,
                         selectComponentIndex,setSelectComponentIndex}){
@@ -90,9 +89,6 @@ function FooterMenu ({selectMenu,saveScrollState,isEndPage,dorId,scrollPosition,
                             else{
                                 setSelectComponentIndex(0);
                             }
-                            
-
-                            //변경 고려
                         }
                     }}
                 >
