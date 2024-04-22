@@ -1,5 +1,5 @@
 import {React} from 'react';
-import BackButton from '../../components/article/BackButton';
+import BackButton from '../../components/home/BackButton';
 
 function MyWritingPage(){
 
