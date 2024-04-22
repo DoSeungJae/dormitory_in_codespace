@@ -3,14 +3,14 @@ import LogInPage from './routeComponents/logIn/LogInPage';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import SignInPage from './routeComponents/signIn/SignInPage';
 import ArticlePage from './routeComponents/article/ArticlePage';
-import React from 'react';
+import {React,createContext,useState} from 'react';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from './components/common/AlertContext';
 import {toast} from 'react-toastify';
 import PatchPage from './routeComponents/home/PatchPage';
 import HomePageSelect from './routeComponents/home/HomePageSelect';
-
+import HomeSelectContext from './components/home/HomeSelectContext';
 function App() {
   const setAlert= (location) => {
     if(!location.state){
@@ -36,8 +36,8 @@ function App() {
     //서비스 배포시 유의
   
   
-  
-    
+  const [selectComponentIndex,setSelectComponentIndex]=useState(0);
+
   return (
     <div className="App">
       <div>
@@ -47,9 +47,11 @@ function App() {
 
 
         <AlertContext.Provider value={setAlert}>
+        <HomeSelectContext.Provider value={{selectComponentIndex,setSelectComponentIndex}}>
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<HomePageSelect/>}></Route> 
+              
               <Route  path="/article" element={<ArticlePage/>}></Route> {/* exact가 필요한가 ??*/}
               <Route path="/article/patch"element={<PatchPage/>}></Route>
               
@@ -57,6 +59,7 @@ function App() {
               <Route path="/logIn" element={<LogInPage/>}></Route>
             </Routes>
           </BrowserRouter>
+          </HomeSelectContext.Provider>
         </AlertContext.Provider>
       </div>
     </div>
