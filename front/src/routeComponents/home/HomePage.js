@@ -323,13 +323,13 @@ return (
               {articleList===null && <h3>아직 글이 없어요!</h3>}
               
               <ArticlePreview
-              articleList={articleList}
-              articleListRef={articleListRef}
-              goArticlePage={goArticlePage}
-              calculateDorItemStyle={calculateDorItemStyle}
-              saveScrollState={saveScrollState}
-              dorId={dorId}
-              dorIdToDorName={dorIdToDorName}
+                articleList={articleList}
+                articleListRef={articleListRef}
+                goArticlePage={goArticlePage}
+                calculateDorItemStyle={calculateDorItemStyle}
+                saveScrollState={saveScrollState}
+                dorId={dorId}
+                dorIdToDorName={dorIdToDorName}
               />
 
 
