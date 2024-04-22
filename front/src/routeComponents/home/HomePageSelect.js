@@ -58,7 +58,6 @@ function HomePageSelect() {
     '알림':3,
   };
 
-
 return (
   <div className="App">
     
@@ -72,20 +71,18 @@ return (
 
     <footer className="App-footer">
             <FooterMenu
-                selectMenu={selectMenu}
-                saveScrollState={saveScrollState}
-                isEndPage={isEndPage}
-                dorId={dorId}
-                scrollPosition={scrollPosition}
-                page={page}
-                setSelectComponentIndex={setSelectComponentIndex}
-                selectComponentIndex={selectComponentIndex}
+              selectMenu={selectMenu}
+              saveScrollState={saveScrollState}
+              isEndPage={isEndPage}
+              dorId={dorId}
+              scrollPosition={scrollPosition}
+              page={page}
+              setSelectComponentIndex={setSelectComponentIndex}
+              selectComponentIndex={selectComponentIndex}
             />
      </footer>
    </div>
  );
 }
-
-
 
 export default HomePageSelect;
