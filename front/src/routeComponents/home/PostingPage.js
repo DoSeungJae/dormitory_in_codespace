@@ -73,6 +73,7 @@ function PostingPage() {
         return localDateTime;
     }
     
+    //현재 사용 불가 기존 아래의 기숙사/카테고리 선택 드랍업을 sweetalert2로 대체하는 과정에 있음 WIP
     return (
         <div className="App">
             <header className="App-postingPage-header">
@@ -85,42 +86,11 @@ function PostingPage() {
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
                 <br/>
                 <br/>
-                <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%',height:'50%'}} onChange={e => setContent(e.target.value)}  />
+                <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%',height:'90%'}} onChange={e => setContent(e.target.value)}  />
                 <br />
             </main>
-            <div className="selects">
-                <div>
-                    <DropdownButton id="dropdown-item-button"  title={dorSelect} drop="up">
-                    <Dropdown.Item as="button" ><div onClick={() => setDorSelect('기숙사')}>기숙사</div></Dropdown.Item>
-                        <Dropdown.Item as="button" ><div onClick={() => setDorSelect('오름1')}>오름1</div></Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setDorSelect('오름2')}>오름2</div></Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setDorSelect('오름3')}>오름3</div></Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setDorSelect('푸름1')}>푸름1</div></Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setDorSelect('푸름2')}>푸름2</div></Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setDorSelect('푸름3')}>푸름3</div></Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setDorSelect('푸름4')}>푸름4</div></Dropdown.Item>
-                    </DropdownButton>
-                </div>
-                <div>
-                    <DropdownButton id="dropdown-item-button" title={cateSelect} drop="up">
-                    <Dropdown.Item as="button"><div onClick={() => setCateSelect('카테고리')}>카테고리</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('족발•보쌈')}>족발•보쌈</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('찜•탕•찌개')}>찜•탕•찌개</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('돈까스•일식')}>돈까스•일식</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('피자')}> 피자</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('고기•구이')}>고기•구이</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('백반•죽•국수')}>백반•죽•국수</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('양식')}>양식</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('치킨')}>치킨</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('중식')}>중식</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('아시안')}>아시안</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('도시락')}>도시락</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('분식')}>분식</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('카페•디저트')}>카페•디저트</div> </Dropdown.Item>
-                        <Dropdown.Item as="button"><div onClick={() => setCateSelect('패스트푸드')}>패스트푸드</div> </Dropdown.Item>    
-                    </DropdownButton>
-                </div>
-            </div>
+            
+
         </div>
         
 
