@@ -32,16 +32,16 @@
 
 .App-home-header {
   background-color : F5F5F5;
-  height :3.5vh;
+  padding-top:5%;
 }
 
 .App-main {
-  height: 87vh; 
+  height: 88.5vh; 
   background-color : F5F5F5;
   text-align: center;
 }
 .App-postingPage-main{
-  height:81.5vh;
+  height:82vh;
   background-color : F5F5F5;
   text-align: center;
 }
@@ -264,7 +264,7 @@
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding : 9% 3%;
+  padding : 5% 3%;
 }
 
 .app-article-header{
