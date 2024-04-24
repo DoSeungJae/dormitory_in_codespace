@@ -5,10 +5,10 @@ function MyWritingPage(){
 
     return (
         <div className='App'>
-            <div className='app-myWritingPage-header'>
+            <header className='App-myWritingPage-header'>
                 <BackButton></BackButton>
-            </div>
-            <div className='app-myWritingPage-main'>
+            </header>
+            <div className='App-myWritingPage-main'>
                 <div className='myWritings'>
                     <div className='myWritingPage-main-text'>내가 쓴 글</div>
                 </div>
