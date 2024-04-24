@@ -26,8 +26,8 @@
 .App-header,
 .App-main,
 .App-footer {
-    padding-left: 1.2vh;
-    padding-right: 1.2vh;
+    padding-left: 2.4vw;
+    padding-right: 2.4vw;
 }
 
 .App-home-header {
@@ -40,11 +40,7 @@
   background-color : F5F5F5;
   text-align: center;
 }
-.App-footer { 
-  background-color : F5F5F5;
-  height :8vh;
-  border-top : 0.5px solid #000000;
-}
+
 .App-postingPage-main{
   height:84.5vh;
   background-color : F5F5F5;
@@ -141,15 +137,22 @@
   position:fixed;
   bottom:0;
   width:100%;
+  padding-bottom: 1vh;
+  padding-top:0.5vh;
 }
-
+.App-footer{
+  border-top : 0.5px solid #000000;
+}
 .menu-item {
   color: #000;
-  flex-grow: 1;
+  flex-grow: 0;
   display: flex;
   justify-content: center;
   align-items: center; 
-  margin-top : 1vh;
+  margin-top : 0.5vh;
+  padding-left:4vw;
+  padding-right:8vw;
+  
 }
 
 .App-link {
