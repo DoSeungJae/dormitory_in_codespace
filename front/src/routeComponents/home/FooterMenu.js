@@ -93,7 +93,7 @@ function FooterMenu ({selectMenu,saveScrollState,isEndPage,dorId,scrollPosition,
                     }}
                 >
                     {svgMap[item]}
-                    {<div style={{fontSize: '14px',paddingTop:'4px'}}>{item}</div>}
+                    {<div style={{fontSize: '1.7vh',paddingTop:'0.5vh'}}>{item}</div>}
                 </div>
                 ))}
             </div>
