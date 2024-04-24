@@ -26,22 +26,27 @@
 .App-header,
 .App-main,
 .App-footer {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 1.2vh;
+    padding-right: 1.2vh;
 }
 
 .App-home-header {
   background-color : F5F5F5;
-  padding-top:5%;
+  padding-top:1.5vh;
 }
 
 .App-main {
-  height: 88.5vh; 
+  height: 90vh;
   background-color : F5F5F5;
   text-align: center;
 }
+.App-footer { 
+  background-color : F5F5F5;
+  height :8vh;
+  border-top : 0.5px solid #000000;
+}
 .App-postingPage-main{
-  height:82vh;
+  height:84.5vh;
   background-color : F5F5F5;
   text-align: center;
 }
@@ -49,15 +54,15 @@
 .slide-menu {
   display : flex;
   overflow-x : auto;
-  padding-bottom:10px;
+  padding-bottom:1vh;
   border-bottom : 0.5px solid #000000;
 }
 
 .article-item {
   text-align: left;
   border-bottom: 1px solid #000000;
-  padding: 10px 0;
-  padding-bottom:10%;
+  padding: 0.5vh 0;
+  padding-bottom:5vh;
 
   display: flex; /* Flexbox 레이아웃을 활성화 */
   justify-content: space-between; /* 자식 요소들을 양 끝으로 정렬 */
@@ -65,16 +70,17 @@
 }
 
 .article-item-summary{
-  width:85%;
+  width:80vw;
 }
 
 .article-item-icons{
-  padding-bottom:4%;
+  padding-bottom:1.5vh;
+  width:15vw;
 
 }
 .article-item-text {
     /* 내용의 최대 높이 설정. 1줄이 최대라고 가정함 */
-    max-height: 1.6em; /* '1.6em'은 한 줄의 높이를 의미 */
+    max-height: 3.5vh; /* '1.6em'은 한 줄의 높이를 의미 */
   
     /* 넘치는 텍스트를 ...로 표시 */
     overflow: hidden;
@@ -92,10 +98,10 @@
 }
 
 #article-item-title{
-  font-size: 25px;
+  font-size: 3vh;
 }
 #article-item-content{
-  font-size:16px;
+  font-size:2vh;
 }
 
 .comment-item{
@@ -104,30 +110,37 @@
   padding-top:5px;
 }
 
-.preview {
-  max-height: calc(100vh - (4.0vh + 16vh));
+.preview { 
+  /*max height를 동적으로 관리하는 방법 고려*/
+  max-height: calc(83vh);
   overflow-y: auto;
-  padding-top:5px;
+  padding-top:0.5vh;
+}
+.preview-home{
+  /*height:700px;*/
 }
 
 .slide-item { 
   flex: 0 0 auto;
-  margin-right:10px;
-  padding:10px;
+  margin-right:0.7vh;
+  padding:1vh;
   border-radius:10px;
 }
 
 .dor-icon{
-  font-size:14px;
+  font-size:3.7vw;
   border-radius:10px;
-  padding:5px;
-  margin-right:5px;
+  padding:0.5vh;
+  margin-right:2vw;
   flex: 0 0 auto;
 }
 
 .bottom-menu{
   display : flex;
   justify-content : space-between;
+  position:fixed;
+  bottom:0;
+  width:100%;
 }
 
 .menu-item {
@@ -136,16 +149,8 @@
   display: flex;
   justify-content: center;
   align-items: center; 
-  margin-top : 10px;
+  margin-top : 1vh;
 }
-
-
-.App-footer { 
-  background-color : F5F5F5;
-  height : 5vh;
-  border-top : 0.5px solid #000000;
-}
-
 
 .App-link {
   color: #61dafb;
@@ -264,7 +269,7 @@
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding : 5% 3%;
+  padding : 1.5vh 2vw;
 }
 
 .app-article-header{
