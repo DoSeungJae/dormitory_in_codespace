@@ -40,11 +40,7 @@
   text-align: center;
 }
 
-.App-postingPage-main{
-  height:84.5vh;
-  background-color : F5F5F5;
-  text-align: center;
-}
+
 
 .slide-menu {
   display : flex;
@@ -266,12 +262,7 @@
   border-radius: 10px;
 }
 
-.App-postingPage-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding : 1.5vh 2vw;
-}
+
 
 .app-article-header{
   display:flex;
@@ -416,18 +407,48 @@
   background-color: #f8f8f8;
 }
 
-.app-myWritingPage-header{
-  padding-top: 5%;
-  padding-right: 2%;
-  padding-left: 2%;
+.App-myWritingPage-header{
+  /*align-items:center;*/
+  display:flex;
+  justify-content:space-between;
+
+  padding-top: 3vh;
+  padding-right: 2vw;
+  padding-left: 2vw;
 }
 
-.app-myWritingPage-main{
-  padding-top:3%;
-  padding-right: 4%;
-  padding-left: 4%;
+.App-myWritingPage-main{
+  padding-top:3vh;
+  padding-right: 4vw;
+  padding-left: 4vw;
 }
+
 .myWritingPage-main-text{
   font-size:23px;
+}
+
+.App-postingPage-header{
+  display:flex;
+  justify-content:space-between;
+  
+  padding-top:3vh;
+  padding-left:2vw;
+  padding-right:2vw;
+}
+
+.App-postingPage-main{
+  height:84.5vh;
+  background-color : F5F5F5;
+  text-align: center;
+}
+
+.App-alarmPage-header{
+  display:flex;
+  justify-content:space-between;
+  /*align-items:center;*/
+
+  padding-top:3vh;
+  padding-left:2vw;
+  padding-right:2vw;
 }
 
