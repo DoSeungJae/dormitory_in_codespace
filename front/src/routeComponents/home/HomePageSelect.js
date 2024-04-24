@@ -1,4 +1,4 @@
-import {React,useState,useContext,createContext} from 'react';
+import {React,useState,useContext} from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import PostingPage from './PostingPage.js';
@@ -37,6 +37,9 @@ function HomePageSelect() {
             }
         });
         if (response.data === true) {
+            if(item===null){
+              return ;
+            }
             setSelectComponentIndex(menuToIndex[item]);
           } else {
             saveScrollState();
