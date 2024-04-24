@@ -24,8 +24,7 @@
 */
 
 .App-header,
-.App-main,
-.App-footer {
+.App-main {
     padding-left: 2.4vw;
     padding-right: 2.4vw;
 }
@@ -76,7 +75,7 @@
 }
 .article-item-text {
     /* 내용의 최대 높이 설정. 1줄이 최대라고 가정함 */
-    max-height: 3.5vh; /* '1.6em'은 한 줄의 높이를 의미 */
+    max-height: 1.6em; /* '1.6em'은 한 줄의 높이를 의미 */
   
     /* 넘치는 텍스트를 ...로 표시 */
     overflow: hidden;
@@ -141,9 +140,7 @@
   padding-top:0.5vh;
   border-top : 0.5px solid #000000;
 }
-.App-footer{
-  
-}
+
 .menu-item {
   color: #000;
   flex-grow: 0;
@@ -151,8 +148,8 @@
   justify-content: center;
   align-items: center; 
   margin-top : 0.5vh;
-  padding-left:4vw;
-  padding-right:8vw;
+  padding-left:6vw;
+  padding-right:6vw;
   
 }
 
