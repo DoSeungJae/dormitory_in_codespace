@@ -1,9 +1,12 @@
 import {React} from 'react'
+import BackButton from '../../components/home/BackButton';
 
 function AlarmPage(){
 
     return (
-        <h1>Alarm Page</h1>
+        <header className='App-alarmPage-header'>
+            <BackButton></BackButton>
+        </header>
     );
 
 }
