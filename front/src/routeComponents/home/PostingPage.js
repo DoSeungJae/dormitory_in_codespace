@@ -4,6 +4,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import BackButton from '../../components/home/BackButton';
+import Swal from 'sweetalert2';
 
 function PostingPage() {
     const [title, setTitle] = useState("");
@@ -22,12 +23,89 @@ function PostingPage() {
         "푸름3": 6,
         "푸름4": 7
       };
+      
+      const handleSwalDorm=async () => {
+        const { value: fruit } = await Swal.fire({
+          confirmButtonColor:"#FF8C00",
+          title: "기숙사",
+          confirmButtonText:"선택",
+          cancelButtonText:"취소",
+          input: "select",
+          inputOptions: {
+            오름1:"오름1",
+            오름2:"오름2",
+            오름3:"오름3",
+            푸름1:"푸름1",
+            푸름2:"푸름2",
+            푸름3:"푸름3",
+            푸름4:"푸름4"
+          },
+          inputPlaceholder: "기숙사를 선택해요.",
+          showCancelButton: true,
+          inputValidator: (value) => {
+            return new Promise((resolve) => {
+              if (value) {
+                resolve();
+                setDorSelect(value);
+              } else {
+                resolve("기숙사를 선택해주세요!");
+              }
+            });
+          }
+        });
+      }
+
+      const handleSwalCate=async () => {
+        const { value: fruit } = await Swal.fire({
+          confirmButtonColor:"#FF8C00",
+          title: "기숙사",
+          confirmButtonText:"선택",
+          cancelButtonText:"취소",
+          input: "select",
+          inputOptions: {
+            "족발•보쌈":"족발•보쌈",
+            "찜•탕•찌개":"찜•탕•찌개",
+            "돈까스•일식":"돈까스•일식",
+            '피자':'피자',
+            '고기•구이':'고기•구이',
+            '백반•죽•국수':'백반•죽•국수',
+            '양식':'양식',
+            '치킨':'치킨',
+            '중식':'중식',
+            '아시안':'아시안',
+            '도시락':'도시락',
+            '분식':'분식',
+            '카페•디저트':'카페•디저트',
+            '패스트푸드':'패스트푸드'
+          },
+          inputPlaceholder: "카테고리를 선택해요.",
+          showCancelButton: true,
+          inputValidator: (value) => {
+            return new Promise((resolve) => {
+              if (value) {
+                resolve();
+                setCateSelect(value);
+              } else {
+                resolve("카테고리를 선택해주세요!");
+              }
+            });
+          }
+        });
+      }
 
     const buttonPressed = async () => {
-        //예외처리
-        if(title==="" || content==="" || dorSelect==="기숙사" || cateSelect==="카테고리"){
-            alert("입력하지 않은 곳이 있어요! 다시 한번 확인해주세요.")
+        if(title==="" || content===""){/*|| dorSelect==="기숙사" || cateSelect==="카테고리" */
+            alert("비워진 부분이 있어요! ");
+            return;
         }
+        handleSwalDorm()
+        .then(()=>handleSwalCate()).then(()=>postArticle());
+    }
+
+    const postArticle = async () => {
+        console.log(dorSelect);
+        console.log(cateSelect);
+
         const curTime=nowLocalDateTime();
 
         const fullPath = `http://localhost:8080/api/v1/article/new`;
@@ -45,6 +123,7 @@ function PostingPage() {
             'Authorization':`${token}`,
             }
         });
+        console.log(response.data);
         navigate('/', {
             state: {
               from: '/',
@@ -84,8 +163,7 @@ function PostingPage() {
             </header>                 
             <main className="App-postingPage-main">
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
-                <br/>
-                <br/>
+                <br/><br/>
                 <textarea value={content} placeholder='내용을 입력하세요.' style={{border:'none',outline:'none',width:'90%',height:'90%'}} onChange={e => setContent(e.target.value)}  />
                 <br />
             </main>
