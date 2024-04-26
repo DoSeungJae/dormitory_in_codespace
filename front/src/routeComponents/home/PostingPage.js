@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useContext,useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css'; 
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import BackButton from '../../components/home/BackButton';
@@ -13,6 +13,14 @@ function PostingPage() {
     const [cateSelect, setCateSelect]=useState("카테고리");
     const token=localStorage.getItem('token');
     const navigate=useNavigate();
+    const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+
+    useEffect(()=>{
+      if(cateSelect==="카테고리" || dorSelect==="기숙사"){
+        return ;
+      }
+      postArticle();
+    },[cateSelect]);
 
     const dormitoryToId = {
         "오름1": 1,
@@ -24,8 +32,8 @@ function PostingPage() {
         "푸름4": 7
       };
       
-      const handleSwalDorm=async () => {
-        const { value: fruit } = await Swal.fire({
+      const handleSwalDorm= async () => {
+        const { value } = await Swal.fire({
           confirmButtonColor:"#FF8C00",
           title: "기숙사",
           confirmButtonText:"선택",
@@ -45,8 +53,10 @@ function PostingPage() {
           inputValidator: (value) => {
             return new Promise((resolve) => {
               if (value) {
-                resolve();
                 setDorSelect(value);
+                resolve();
+                
+
               } else {
                 resolve("기숙사를 선택해주세요!");
               }
@@ -55,10 +65,10 @@ function PostingPage() {
         });
       }
 
-      const handleSwalCate=async () => {
-        const { value: fruit } = await Swal.fire({
+      const handleSwalCate= async () => {
+        const { value } = await Swal.fire({
           confirmButtonColor:"#FF8C00",
-          title: "기숙사",
+          title: "카테고리",
           confirmButtonText:"선택",
           cancelButtonText:"취소",
           input: "select",
@@ -83,8 +93,9 @@ function PostingPage() {
           inputValidator: (value) => {
             return new Promise((resolve) => {
               if (value) {
-                resolve();
                 setCateSelect(value);
+                resolve();
+                
               } else {
                 resolve("카테고리를 선택해주세요!");
               }
@@ -93,13 +104,14 @@ function PostingPage() {
         });
       }
 
-    const buttonPressed = async () => {
-        if(title==="" || content===""){/*|| dorSelect==="기숙사" || cateSelect==="카테고리" */
+    const processNext = async () => {
+        if(title==="" || content===""){
             alert("비워진 부분이 있어요! ");
             return;
         }
+        
         handleSwalDorm()
-        .then(()=>handleSwalCate()).then(()=>postArticle());
+        .then(()=>handleSwalCate());
     }
 
     const postArticle = async () => {
@@ -123,7 +135,7 @@ function PostingPage() {
             'Authorization':`${token}`,
             }
         });
-        console.log(response.data);
+        
         navigate('/', {
             state: {
               from: '/',
@@ -131,7 +143,13 @@ function PostingPage() {
               message: "글을 올렸어요!"
             }
           });
+          
+        setCateSelect("카테고리");
+        setDorSelect("기숙사");
+        setSelectComponentIndex(0);
+        window.location.reload();
 
+         
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
                 alert("회원 정보가 유효하지 않아요! 로그인해주세요.");
@@ -140,6 +158,7 @@ function PostingPage() {
             }
         }
     }
+    
     const nowLocalDateTime=()=>{
         const now=new Date();
         const localDateTime = now.getFullYear() + '-' +
@@ -152,14 +171,13 @@ function PostingPage() {
         return localDateTime;
     }
     
-    //현재 사용 불가 기존 아래의 기숙사/카테고리 선택 드랍업을 sweetalert2로 대체하는 과정에 있음 WIP
     return (
         <div className="App">
             <header className="App-postingPage-header">
                     <BackButton></BackButton>
                     <h6>글 쓰기</h6> 
 
-                    <button type="button" className='btn btn-outline-primary'onClick={buttonPressed}>작성</button>       
+                    <button type="button" className='btn btn-outline-primary'onClick={processNext}>다음</button>       
             </header>                 
             <main className="App-postingPage-main">
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
