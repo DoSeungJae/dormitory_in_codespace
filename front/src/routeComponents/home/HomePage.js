@@ -1,8 +1,9 @@
 import {React,useEffect,useState,useContext,useRef} from 'react';
 import axios from 'axios';
-import {useNavigate,useLocation} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import AlertContext from '../../components/common/AlertContext.js';
 import ArticlePreview from '../../components/article/ArticlePreview.js';
+import { calculateDorItemStyle } from '../../components/home/HomeUtils.js';
 
 function HomePage() {
   const[articleList,setArticleList]=useState([]);
@@ -48,16 +49,6 @@ function HomePage() {
     }
   };
 
-  const saveScrollState = () => {
-    localStorage.setItem('scrollPosition',scrollPosition);
-    localStorage.setItem('dor',dorId);
-    if(isEndPage){
-      localStorage.setItem('page',page-1);
-    }
-    else{
-      localStorage.setItem('page',page);
-    }
-  }
 
 
   useEffect(()=>{
@@ -218,35 +209,8 @@ function HomePage() {
 
   },[dorId])
 
-  const token=localStorage.getItem('token');
-  const navigate = useNavigate();
 
-
-
-  const goArticlePage = async (article) => {
-    try {
-      const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
-          headers: {
-              'Authorization': `${token}`
-          }
-      });
-
-      if (response.data === true) {
-        saveScrollState();
-        navigate('/article',{state:{info:article}})
-      } else {
-          saveScrollState();
-          navigate('/logIn',{state:
-            {from:'/',type:"error",
-            message:'글을 보기 위해선 로그인이 필요해요!'}
-                            });
-      }
-  } catch (error) {
-      console.error('An error occurred:', error);
-  }
-    
-  };
-
+/*
   function calculateDorItemStyle(selectedIdx, idx) {
     const isSelected = idx === selectedIdx;
     let color;
@@ -263,6 +227,8 @@ function HomePage() {
       border: border,
     };
   }
+
+*/
   
   const buttonToPath = {
     "홈": "",
@@ -278,15 +244,6 @@ function HomePage() {
     "푸름4": 7
   };
 
-  const dorIdToDorName={
-    1:"오름1",
-    2:"오름2",
-    3:"오름3",
-    4:"푸름1",
-    5:"푸름2",
-    6:"푸름3",
-    7:"푸름4"
-  };
 
 
 
@@ -325,11 +282,10 @@ return (
               <ArticlePreview
                 articleList={articleList}
                 articleListRef={articleListRef}
-                goArticlePage={goArticlePage}
-                calculateDorItemStyle={calculateDorItemStyle}
-                saveScrollState={saveScrollState}
                 dorId={dorId}
-                dorIdToDorName={dorIdToDorName}
+                page={page}
+                isEndPage={isEndPage}
+                scrollPosition={scrollPosition}
               />
 
 
