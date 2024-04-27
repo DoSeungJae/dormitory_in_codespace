@@ -209,27 +209,6 @@ function HomePage() {
 
   },[dorId])
 
-
-/*
-  function calculateDorItemStyle(selectedIdx, idx) {
-    const isSelected = idx === selectedIdx;
-    let color;
-    const item = ['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'][idx];
-    if (item.startsWith('오름')) {
-      color = `hsl(120, 39%, ${55 - (idx * 6)}%)`;
-    } else {
-      color = `hsl(197, 71%, ${70 - (idx - 3) * 10}%)`;
-    }
-    const border = `2px solid ${color}`;
-    return {
-      background: isSelected ? color : 'none',
-      color: isSelected ? '#fff' : 'black',
-      border: border,
-    };
-  }
-
-*/
-  
   const buttonToPath = {
     "홈": "",
     "내 글": "myWriting",
@@ -243,9 +222,6 @@ function HomePage() {
     "푸름3": 6,
     "푸름4": 7
   };
-
-
-
 
 return (
   <div className="App">
