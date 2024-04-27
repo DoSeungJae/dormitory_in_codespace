@@ -1,7 +1,12 @@
-import {React} from 'react';
+import {React, useRef} from 'react';
 import BackButton from '../../components/home/BackButton';
 
 function MyWritingPage(){
+    const [myArticleList,setMyArticleList]=useState([]);
+    const [commentedArticleList,setCommentedArticleList]=useState([]);
+    const myArticleListRef=useRef(null);
+    const commentedArticleListRef=useRef(null);
+    
 
     return (
         <div className='App'>
