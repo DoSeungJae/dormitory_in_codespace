@@ -1,8 +1,9 @@
 import {React} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 
-function ArticlePreview({articleList,articleListRef,goArticlePage,calculateDorItemStyle,
-                        saveScrollState,dorId,dorIdToDorName}){
+function ArticlePreview({articleList,articleListRef,page,scrollPosition,isEndPage,
+                        dorId}){
                           
   const token=localStorage.getItem('token');
   const navigate=useNavigate();
@@ -13,7 +14,10 @@ function ArticlePreview({articleList,articleListRef,goArticlePage,calculateDorIt
         {articleList===null && <h3>아직 글이 없어요!</h3>}
         
         {articleList && articleList.map((article, index) => (
-        <div key={index} className="article-item" onClick={() => goArticlePage(article)}>
+        <div key={index} className="article-item" 
+        onClick={() => goArticlePage(article,scrollPosition
+                                    ,dorId,isEndPage,
+                                    page,token,navigate)}>
           <div className='article-item-summary'>
             <div className="article-item-text" 
                   id='article-item-title'>
