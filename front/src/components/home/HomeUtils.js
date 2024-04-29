@@ -1,10 +1,14 @@
 
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const goArticlePage = async (article,scrollPosition,dorId,
-                                    isEndPage,page,token,navigate) => {
-
-    const saveScrollState = () => {
+                                    isEndPage,page,token,navigate
+                                    ,location,setSelectComponentIndex) => {
+                      
+    
+    /*
+    const saveScrollState = () => { //불필요
         localStorage.setItem('scrollPosition',scrollPosition);
         localStorage.setItem('dor',dorId);
         if(isEndPage){
@@ -14,6 +18,7 @@ export const goArticlePage = async (article,scrollPosition,dorId,
           localStorage.setItem('page',page);
         }
       }
+      */
       
     try {
       const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
@@ -23,14 +28,11 @@ export const goArticlePage = async (article,scrollPosition,dorId,
       });
 
       if (response.data === true) {
-        saveScrollState();
-        navigate('/article',{state:{info:article}})
+        localStorage.setItem('article',JSON.stringify(article));
+        setSelectComponentIndex(5);
       } else {
-          saveScrollState();
-          navigate('/logIn',{state:
-            {from:'/',type:"error",
-            message:'글을 보기 위해선 로그인이 필요해요!'}
-                            });
+        setSelectComponentIndex(8);
+        toast.error('글을 보기 위해선 로그인이 필요해요!');
       }
   } catch (error) {
       console.error('An error occurred:', error);
