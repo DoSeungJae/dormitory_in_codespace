@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import {useNavigate,useLocation} from 'react-router-dom';
-import BackButton from '../../components/common/BackButton';
+import BackButton from '../../components/home/BackButton';
 
 function PatchPage() {
     const [title, setTitle] = useState("");
