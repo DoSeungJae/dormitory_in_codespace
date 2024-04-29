@@ -51,12 +51,6 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<HomePageSelect/>}></Route> 
-              
-              <Route  path="/article" element={<ArticlePage/>}></Route> {/* exact가 필요한가 ??*/}
-              <Route path="/article/patch"element={<PatchPage/>}></Route>
-              
-              <Route path="/signIn" element={<SignInPage/>}></Route>
-              <Route path="/logIn" element={<LogInPage/>}></Route>
             </Routes>
           </BrowserRouter>
           </HomeSelectContext.Provider>
