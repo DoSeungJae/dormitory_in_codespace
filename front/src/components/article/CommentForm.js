@@ -1,16 +1,18 @@
-import React, { useState,useRef} from 'react';
+import React, { useState,useRef,useContext} from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import Swal from 'sweetalert2';
+import HomeSelectContext from '../home/HomeSelectContext';
 
 function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
   const [comment, setComment] = useState('');
   const navigate=useNavigate();
   const token=localStorage.getItem('token');
   const formRef=useRef(null);
+  const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
   const sendReply = async () => {
     if(comment===""){
@@ -30,12 +32,15 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
           }
           
         });
+      localStorage.setItem("index",5);
       window.location.reload();
+      setSelectComponentIndex(5);
+
       }catch(error){
         console.error(error);
         if(error.response.data==="유효하지 않은 토큰입니다."){
-          alert("회원 정보가 유요하지 않아요! 로그인해주세요.");
-          navigate('/logIn',{state:{from:"/article"}});
+          setSelectComponentIndex(8);
+          toast.error("회원 정보가 유요하지 않아요! 로그인해주세요.");
       }
       }
       setIsReply(0);
@@ -63,11 +68,12 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
         'Authorization':`${token}`,
         }
     });
+    localStorage.setItem("index",5);
     window.location.reload();
     } catch (error) {
         if(error.response.data==="유효하지 않은 토큰입니다."){
-            alert("회원 정보가 유요하지 않아요! 로그인해주세요.");
-            navigate('/logIn',{state:{from:"/article"}});
+            setSelectComponentIndex(8);
+            toast.error("회원 정보가 유요하지 않아요! 로그인해주세요.");
         }
     }
 }
