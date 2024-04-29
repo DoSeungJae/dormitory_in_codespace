@@ -116,7 +116,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       if(response.status===200){
         if(isArticle){
           window.location.reload();
-          toast.success("글을 삭제했어요.");
           setSelectComponentIndex(0);
         }
         else{
