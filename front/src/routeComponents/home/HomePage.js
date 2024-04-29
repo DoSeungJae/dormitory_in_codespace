@@ -1,21 +1,15 @@
 import {React,useEffect,useState,useContext,useRef} from 'react';
 import axios from 'axios';
-import {useLocation} from 'react-router-dom';
-import AlertContext from '../../components/common/AlertContext.js';
 import ArticlePreview from '../../components/article/ArticlePreview.js';
 import { calculateDorItemStyle } from '../../components/home/HomeUtils.js';
 
 function HomePage() {
   const[articleList,setArticleList]=useState([]);
   const[page,setPage]=useState(0);
-  const location=useLocation();
-  const setAlert=useContext(AlertContext);
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
   const [dorId,setDorId]=useState(0);
   const [scrollPosition,setScrollPosition]=useState(0);
-  const [isDataLoaded,setIsDataLoaded]=useState(false);
-  const [isRangeProcessed, setIsRangeProcessed]=useState(false);
   const [isEndPage,setIsEndPage]=useState(false);
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -49,124 +43,12 @@ function HomePage() {
     }
   };
 
-  /*
   useEffect(()=>{
-    const loadRangePage = async (start,end) => {
-      if(isRangeProcessed){
-        return ;
-      }
-      setDoLoadPage(0);
-      if(end===1){
-        setPage(end); //최대 page가 1일 때 테스트 필요
-      }
-      else if(end>=2){
-        const path=`http://localhost:8080/api/v1/article/range?start=${start}&end=${end-1}`;
-        try{
-          const response=await axios.get(path);
-          const data=response.data.map(item => JSON.parse(item));          
-          setPage(end);
-          setArticleList((prevItems)=>[...prevItems,...data]);     
-        }
-        catch(error){
-          console.error(error);
-        }
-      }
-      setIsRangeProcessed(true);
-    }
-
-    const loadRangeDorPage = async (start,end,dor)=>{
-      if(isRangeProcessed || dor===dorId){
-        return ;
-      }
-      setDoLoadPage(0);
-      if(dor===0 || dor===-1){
-        return ;
-      }
-      setDorId(dor);
-      if(end===1){
-        const path=`http://localhost:8080/api/v1/article/dor/${dor}?page=0`;
-        try{
-          const response=await axios.get(path);
-          const data=response.data.map(item=>JSON.parse(item));
-          const response2=await axios.get(path);
-
-          setPage(end);
-          //원래 의도한 코드가 아님
-          //setArticleList((prev)=>[...prev,...data]);를 추가하지 않고 실행하였고,
-          //공교롭게도 에러가 어느정도 해결되었던 것.
-          //단, setArticleList((prev)=>[...prev,...data]);를 추가하면 에러가 나타남..
-        }
-        catch(error){
-          console.error(error);
-        }
-      }
-      else if(end>=2){
-        const path=`http://localhost:8080/api/v1/article/dor/${dor}/range?start=${start}&end=${end-1}`;
-        try{
-          const response=await axios.get(path);
-          const data=response.data.map(item => JSON.parse(item));
-          setPage(end); 
-          setArticleList((prev)=>[...prev,...data]);
-        }
-        catch(error){
-          console.error(error);
-        }
-      }
-      setIsRangeProcessed(true);
-
-    }
-    const toSavedScroll = () => {
-      const savedPage=parseInt(localStorage.getItem('page') || -1,10);
-      const savedScrollPosition=parseInt((localStorage.getItem('scrollPosition') || -1),10);
-      const dor=parseInt((localStorage.getItem('dor') || -1),10);
-      if(savedScrollPosition===-1 || savedPage===-1 || dor===-1){
-        return ; 
-      }
-
-      if(dor===0){
-        loadRangePage(1,savedPage)
-        .then(()=>{
-          if(savedPage!==page){
-            return ;
-          }
-          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
-          localStorage.removeItem('scrollPosition');
-          localStorage.removeItem('page');
-        });
-      }
-      else{
-        loadRangeDorPage(1,savedPage,dor)
-        .then(()=>{
-          if(savedPage!==page){
-            return ;
-          }
-          articleListRef.current.scrollTo(0,parseInt(savedScrollPosition,10));
-          localStorage.removeItem('scrollPosition');
-          localStorage.removeItem('page');
-          localStorage.removeItem('dor');
-        })
-
-      }
-    }
-
-    if(isDataLoaded){
-      toSavedScroll();
-      setIsRangeProcessed(true);
-    }
-  },[isDataLoaded]);
-  */
-
-
-  
-  useEffect(()=>{
-    //setAlert(location);
-    //setIsDataLoaded(false);
     if(page===0){
       return ;
     }
     async function fetchData(){
       await getArticlesPerPage(page);
-      setIsDataLoaded(true);
     }
     fetchData(); 
   },[page])
@@ -205,7 +87,6 @@ function HomePage() {
     setIsEndPage(false);
     async function fetchData(){
       await getArticlesPerPage(page);
-      setIsDataLoaded(true);
     }
     fetchData();
 
