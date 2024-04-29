@@ -1,11 +1,9 @@
-import {React,useState,useEffect,useContext,useRef,forwardRef} from 'react';
+import {React,useState,useEffect,useContext,useRef} from 'react';
 import axios from 'axios';
-import {useLocation} from 'react-router-dom';
 import BackButton from '../../components/article/BackButton';
 import ThreeDotsMenu from '../../components/article/ThreeDotsMenu';
 import userDefault from '../../images/userDefault.png';
 import 'react-toastify/dist/ReactToastify.css';
-import {toast} from 'react-toastify';
 import CommentForm from '../../components/article/CommentForm';
 import CommentMenu from '../../components/article/CommentMenu';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
@@ -30,7 +28,6 @@ function ArticlePage(){
     const commentListRef=useRef(null);
 
     const pageInit = () =>{
-      
       setWriterNickName("");
       setCommentList([]);
       setFormPlaceHolder("댓글을 입력하세요");
@@ -50,7 +47,6 @@ function ArticlePage(){
 
 
     const getCommentsPerPage = async (page) => {
-      console.log("comment page",page);
       const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`;
       try{
         const response=await axios.get(path);
@@ -104,11 +100,9 @@ function ArticlePage(){
             }
         });
         if(response.data===article.userId){
-          console.log(true);
           return 1;
         }
         else{
-          console.log(false);
           return 0;
         }
     
