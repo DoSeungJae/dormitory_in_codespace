@@ -4,22 +4,16 @@ import InputForm from '../../components/common/InputForm.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import axios from 'axios';
-import { useLocation,useNavigate } from 'react-router-dom';
-import AlertContext from '../../components/common/AlertContext.js';
+import HomeSelectContext from '../../components/home/HomeSelectContext.js';
+import { toast } from 'react-toastify';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
     const [idError,setIdError]=useState(false);
     const [pwError,setPwError]=useState(false);
-    const location=useLocation();
-    const navigate=useNavigate();
-    const setAlert=useContext(AlertContext);
-
-    useEffect(() => {
-      setAlert(location);
-    })
-
+    const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+    
     const buttonPressed = () => {
       if(id===''){
         setIdError(true);
@@ -35,25 +29,12 @@ function UseLogInButton() {
         .then(response => {
           console.log(response.data);
           localStorage.setItem('token',response.data);
-          if(location.state && location.state.from){
-            navigate(location.state.from);
-          }
-          else{
-            navigate('/');
-          }
+          setSelectComponentIndex(0);
           
         })
         .catch(error => {
           console.error(error.response.data);
-          navigate('/logIn', {
-            state: {
-              from: '/',
-              type: "error",
-              message: error.response.data
-            }
-          });
-
-          
+          toast.error(error.response.data);
         })
       }
       
