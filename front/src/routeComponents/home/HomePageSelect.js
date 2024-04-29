@@ -18,31 +18,7 @@ function HomePageSelect() {
   const [isEndPage,setIsEndPage]=useState(false);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   const [init,setInit]=useState(1);
-  
-
-
-  
-
-  //실제 article과 같은 형식으로 더미 데이터를 넣어야함
-
-  /*
-  const saveScrollState = () => { //불필요
-    localStorage.setItem('scrollPosition',scrollPosition);
-    localStorage.setItem('dor',dorId);
-    if(isEndPage){
-      localStorage.setItem('page',page-1);
-    }
-    else{
-      localStorage.setItem('page',page);
-    }
-  }
-  */
-
-
- 
-
   const token=localStorage.getItem('token');
-  //const navigate = useNavigate();
 
   const selectMenu = async (item) => {
     try {
