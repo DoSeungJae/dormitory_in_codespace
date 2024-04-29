@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {toast} from 'react-toastify';
 import CommentForm from '../../components/article/CommentForm';
 import CommentMenu from '../../components/article/CommentMenu';
+import HomeSelectContext from '../../components/home/HomeSelectContext';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -18,16 +19,29 @@ function ArticlePage(){
     const[commentId,setCommentId]=useState(-1);
     const[touchY,setTouchY]=useState(-1);
     const[page,setPage]=useState(0);
-
+    const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const [doLoadPage,setDoLoadPage]=useState(0);
 
-    const location=useLocation();
-    const article=location.state.info;
+  
+    const article=JSON.parse(localStorage.getItem('article'));
     const token=localStorage.getItem('token');
+
     const inputRef=useRef();
     const commentListRef=useRef(null);
 
+    const pageInit = () =>{
+      
+      setWriterNickName("");
+      setCommentList([]);
+      setFormPlaceHolder("댓글을 입력하세요");
+      setIsReply(0);
+      setCommentId(-1);
+      setTouchY(-1);
+      setPage(0);
+      setDoLoadPage(0);
+      setSelectComponentIndex(0);
 
+    }
 
     const handleTouchStart = (e) => {
       const touch = e.touches[0];
@@ -36,6 +50,7 @@ function ArticlePage(){
 
 
     const getCommentsPerPage = async (page) => {
+      console.log("comment page",page);
       const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`;
       try{
         const response=await axios.get(path);
@@ -89,9 +104,11 @@ function ArticlePage(){
             }
         });
         if(response.data===article.userId){
+          console.log(true);
           return 1;
         }
         else{
+          console.log(false);
           return 0;
         }
     
@@ -116,6 +133,9 @@ function ArticlePage(){
     }
 
     const getWriterNickName = async () => {
+      if(token=='init'){
+        setWriterNickName("init");
+      }
         try{
           const response = await axios.get(`http://localhost:8080/api/v1/user/${article.userId}`, {
         });
@@ -128,24 +148,23 @@ function ArticlePage(){
       }
 
     useEffect(()=>{
-        getWriterNickName();
-        isSame(token).then(result=>setIsWriter(result));
-      
-
-        if(location.state.reload===1){
-          toast.success("글을 수정했어요!");
-          location.state.reload=0;
-        }
-
-    },[]);
+      if(selectComponentIndex!==5){
+        return ;
+      }
+      getWriterNickName();
+      isSame(token).then(result=>setIsWriter(result));
+    },[selectComponentIndex]);
 
     useEffect(()=>{
+      if(selectComponentIndex!==5){
+        return ;
+      }
       async function fetchData(){
         await getCommentsPerPage(page);
       }
       fetchData();
 
-    },[page])
+    },[page,selectComponentIndex])
 
     useEffect(()=>{
       const handleScroll = () => {
@@ -190,7 +209,11 @@ function ArticlePage(){
               style={{ height: '100vh', width: '100vw' }}>
 
             <div className="app-article-header">
-                <BackButton></BackButton>
+                <BackButton
+                  pageInit={pageInit}
+                >
+
+                </BackButton>
                 <ThreeDotsMenu isWriterParam={isWriter} articleParam={article}></ThreeDotsMenu>
                 
             </div>
