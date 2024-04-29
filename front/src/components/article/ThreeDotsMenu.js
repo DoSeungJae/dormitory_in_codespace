@@ -5,8 +5,8 @@ import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AlertContext from '../common/AlertContext';
 import Swal from 'sweetalert2';
+import HomeSelectContext from '../home/HomeSelectContext';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <h1
@@ -27,6 +27,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
   const [isWriter,setIsWriter]=useState(0); //초기값을 isWriterParam으로 설정할 시 에러 발생 -> 렌더링 안됨.
   const [article,setArticle]=useState("");
   const [comment,setComment]=useState("");
+  const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
   const handleSwal=async () => {
     const { value: fruit } = await Swal.fire({
@@ -114,16 +115,21 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       });
       if(response.status===200){
         if(isArticle){
-          navigate("/",{state:{type:"success",message:"글을 삭제했어요."}});     
+          window.location.reload();
+          toast.success("글을 삭제했어요.");
+          setSelectComponentIndex(0);
         }
         else{
           window.location.reload();
+          setSelectComponentIndex(5);
+          //사실상 작동하지 않음
+          //localStorage를 활용해야함
         }
  
       } 
-    } catch (error) {// jwt 무효 -> 로그인 페이지로 이동할 필요가 있다(navigate).
+    } catch (error) {
         toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
-        console.error('An error occurred:', error);
+
     }
   }
 
