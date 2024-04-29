@@ -1,4 +1,4 @@
-import {React, useRef} from 'react';
+import {React, useRef,useState} from 'react';
 import BackButton from '../../components/home/BackButton';
 
 function MyWritingPage(){
