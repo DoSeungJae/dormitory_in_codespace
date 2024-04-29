@@ -5,21 +5,7 @@ import { toast } from 'react-toastify';
 export const goArticlePage = async (article,scrollPosition,dorId,
                                     isEndPage,page,token,navigate
                                     ,location,setSelectComponentIndex) => {
-                      
-    
-    /*
-    const saveScrollState = () => { //불필요
-        localStorage.setItem('scrollPosition',scrollPosition);
-        localStorage.setItem('dor',dorId);
-        if(isEndPage){
-          localStorage.setItem('page',page-1);
-        }
-        else{
-          localStorage.setItem('page',page);
-        }
-      }
-      */
-      
+           
     try {
       const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
           headers: {
