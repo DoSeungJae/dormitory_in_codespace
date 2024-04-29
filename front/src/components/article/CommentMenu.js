@@ -41,7 +41,8 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
         }
     
     } catch (error) {
-        navigate('/logIn',{state:{from:"/article"}});
+        //navigate('/logIn',{state:{from:"/article"}});
+        console.error(error);
         return 0;
     }
     
