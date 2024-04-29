@@ -49,8 +49,7 @@ function HomePage() {
     }
   };
 
-
-
+  /*
   useEffect(()=>{
     const loadRangePage = async (start,end) => {
       if(isRangeProcessed){
@@ -155,10 +154,13 @@ function HomePage() {
       setIsRangeProcessed(true);
     }
   },[isDataLoaded]);
+  */
 
+
+  
   useEffect(()=>{
-    setAlert(location);
-    setIsDataLoaded(false);
+    //setAlert(location);
+    //setIsDataLoaded(false);
     if(page===0){
       return ;
     }
@@ -263,8 +265,6 @@ return (
                 isEndPage={isEndPage}
                 scrollPosition={scrollPosition}
               />
-
-
     </main>
 
    </div>
