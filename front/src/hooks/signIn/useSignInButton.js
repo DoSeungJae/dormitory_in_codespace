@@ -1,12 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import SignInForm from '../../components/signIn/SignInForm';
 import Button from '../../components/common/Button';
 import axios from 'axios';
-
+import HomeSelectContext from '../../components/home/HomeSelectContext';
 
 const UseSignInButton = () => {
+  const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+
   const [eMail, setEMail] = useState('');
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
@@ -42,6 +44,9 @@ const UseSignInButton = () => {
             {email:eMail,passWord:pw,nickName:nick})
             .then(response => {
               console.log(response.data);
+              //이 지점이 회원가입을 성공했을 때 진입하는 블록인지 다시 확인할 필요가 있음
+              //맞다면 로그인 페이지로 이동하도록 설정해야함
+              setSelectComponentIndex(8);
             })
             .catch(error => {
               console.error(error);
