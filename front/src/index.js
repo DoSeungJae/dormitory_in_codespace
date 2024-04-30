@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { Provider } from 'react-redux';
+import store from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -11,8 +13,12 @@ root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-  */
-  <App/>
+   strictMode는 기본적으로 (모든) 컴포넌트들이 중복(2번)으로 렌더링되므로 사용하지 않음 
+  */ 
+ 
+  <Provider store={store}>
+    <App/>
+  </Provider>
 );
 
 
