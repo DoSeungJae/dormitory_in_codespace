@@ -1,4 +1,4 @@
 package com.DormitoryBack.domain.group.domain.dto;
 
-public class GroupDto {
+public class GroupRequestDto {
 }
