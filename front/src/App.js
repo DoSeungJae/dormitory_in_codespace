@@ -1,16 +1,13 @@
 import './App.css';
-import LogInPage from './routeComponents/logIn/LogInPage';
-import {Routes,Route,BrowserRouter} from "react-router-dom";
-import SignInPage from './routeComponents/signIn/SignInPage';
-import ArticlePage from './routeComponents/article/ArticlePage';
-import {React,createContext,useState} from 'react';
+import {Routes,Route,BrowserRouter} from "react-router-dom";;
+import {React,useState} from 'react';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AlertContext from './components/common/AlertContext';
 import {toast} from 'react-toastify';
-import PatchPage from './routeComponents/home/PatchPage';
 import HomePageSelect from './routeComponents/home/HomePageSelect';
 import HomeSelectContext from './components/home/HomeSelectContext';
+
 function App() {
   const setAlert= (location) => {
     if(!location.state){
@@ -33,8 +30,7 @@ function App() {
     }
     location.state=0;
   }
-    //서비스 배포시 유의
-  
+    //위 함수는 곧 삭제될 예정임 
   
   const [selectComponentIndex,setSelectComponentIndex]=useState(0);
 
