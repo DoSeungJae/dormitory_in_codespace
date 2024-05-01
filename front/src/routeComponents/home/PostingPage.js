@@ -133,12 +133,9 @@ function PostingPage() {
             'Authorization':`${token}`,
             }
         });
-        
-        
-          
+               
         setCateSelect("카테고리");
         setDorSelect("기숙사");
-        setSelectComponentIndex(0);
         window.location.reload();
 
          
