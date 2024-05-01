@@ -41,7 +41,6 @@ function HomePageSelect() {
             setSelectComponentIndex(menuToIndex[item]);
           } else {
             setSelectComponentIndex(8);
-            //setAlert("로그인이 필요한 서비스에요!");
         }
     } catch (error) {
         console.error('An error occurred:', error);
