@@ -1,6 +1,5 @@
 import {React,useState,useContext,useEffect} from 'react';
 import axios from 'axios';
-import {useNavigate,useLocation} from 'react-router-dom';
 import PostingPage from './PostingPage.js';
 import MyWritingPage from './MyWritingPage.js';
 import AlarmPage from './AlarmPage.js';
@@ -20,6 +19,14 @@ function HomePageSelect() {
   const [init,setInit]=useState(1);
   const token=localStorage.getItem('token');
 
+  useEffect(()=>{
+    const idx=parseInt(localStorage.getItem("index"));
+    if(idx>=0){
+      setSelectComponentIndex(idx);
+      localStorage.removeItem('index');
+    } 
+  },)
+  
   const selectMenu = async (item) => {
     try {
         const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
