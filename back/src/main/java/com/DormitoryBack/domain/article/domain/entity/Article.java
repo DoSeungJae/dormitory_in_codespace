@@ -1,6 +1,7 @@
 package com.DormitoryBack.domain.article.domain.entity;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
+import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.member.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -59,6 +60,11 @@ public class Article {
     @JsonIgnore
     @OneToMany(mappedBy = "article")
     private Set<Comment> comments=new HashSet<>();
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name="gathering_id")
+    private Group group;
 
     public void update(ArticleDTO dto){
         this.dorId=dto.getDorId();
