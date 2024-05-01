@@ -2,7 +2,6 @@ import React, { useState,useContext,useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css'; 
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
 import BackButton from '../../components/home/BackButton';
 import Swal from 'sweetalert2';
 
@@ -12,7 +11,6 @@ function PostingPage() {
     const [dorSelect, setDorSelect] = useState("기숙사");
     const [cateSelect, setCateSelect]=useState("카테고리");
     const token=localStorage.getItem('token');
-    const navigate=useNavigate();
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
     useEffect(()=>{
@@ -136,13 +134,7 @@ function PostingPage() {
             }
         });
         
-        navigate('/', {
-            state: {
-              from: '/',
-              type: "success",
-              message: "글을 올렸어요!"
-            }
-          });
+        
           
         setCateSelect("카테고리");
         setDorSelect("기숙사");
@@ -153,7 +145,7 @@ function PostingPage() {
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
                 alert("회원 정보가 유효하지 않아요! 로그인해주세요.");
-                navigate('/logIn',{state:{from:"/newWriting"}});
+                setSelectComponentIndex(8);
                 
             }
         }
