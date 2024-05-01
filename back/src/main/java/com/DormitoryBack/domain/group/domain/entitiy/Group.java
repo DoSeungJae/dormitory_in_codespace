@@ -58,6 +58,7 @@ public class Group {
     @JsonIgnore
     @OneToMany(mappedBy = "group") //이게 무슨 기능?
     private Set<User> members=new HashSet<>();
+    //member에서 호스트는 제외됨
 
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
