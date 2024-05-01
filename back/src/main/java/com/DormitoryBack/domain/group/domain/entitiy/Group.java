@@ -23,7 +23,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Table(name = "group")
+@Table(name = "gathering")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,18 +33,14 @@ public class Group {
     @Column(nullable = false,name="dorm_id")
     private Long dormId;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="host_id")
-    private User host;
-
-    @JsonProperty("hostId")
-    public Long getHostId(){return host.getId();}
+    @JoinColumn(nullable = false,name="host_id")
+    private Long hostId;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="article_id")
     private Article article;
+
     @JsonProperty("articleId")
     public Long getArticleId(){return article.getId();}
 
@@ -56,10 +52,16 @@ public class Group {
     private String category;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "group") //이게 무슨 기능?
-    private Set<User> members=new HashSet<>();
+    private Set<Long> membersId=new HashSet<>();
     //member에서 호스트는 제외됨
 
+
+
+    /*
+    @JsonIgnore
+    private Set<User> members=new HashSet<>();
+    //member에서 호스트는 제외됨
+    */
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
