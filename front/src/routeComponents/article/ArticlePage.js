@@ -20,10 +20,8 @@ function ArticlePage(){
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const [doLoadPage,setDoLoadPage]=useState(0);
 
-  
-    const article=JSON.parse(localStorage.getItem('article'));
     const token=localStorage.getItem('token');
-
+    const article = JSON.parse(localStorage.getItem("article"));
     const inputRef=useRef();
     const commentListRef=useRef(null);
 
@@ -37,14 +35,12 @@ function ArticlePage(){
       setPage(0);
       setDoLoadPage(0);
       setSelectComponentIndex(0);
-
     }
 
     const handleTouchStart = (e) => {
       const touch = e.touches[0];
       setTouchY(touch.clientY);
     }
-
 
     const getCommentsPerPage = async (page) => {
       const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`;
