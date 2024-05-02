@@ -18,8 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     //Entity의 attribute의 이름을 기준으로 Query가 실행되는 것으로 추측
 
     List<Comment> findAllByUser(User user);
-    Page<Comment> findAllByArticle(Article article,Pageable pageable);
-
-
+    List<Comment> findAllByArticle(Article article);
 
 }
