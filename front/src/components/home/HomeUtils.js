@@ -3,9 +3,10 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export const goArticlePage = async (article,scrollPosition,dorId,
-                                    isEndPage,page,token,navigate
-                                    ,location,setSelectComponentIndex) => {
-           
+                                    isEndPage,page,token,locations
+                                    ,setSelectComponentIndex) => {
+    
+    
     try {
       const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
           headers: {
