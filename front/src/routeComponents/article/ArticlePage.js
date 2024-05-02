@@ -18,7 +18,7 @@ function ArticlePage(){
     const[touchY,setTouchY]=useState(-1);
     const[page,setPage]=useState(0);
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-    const [doLoadPage,setDoLoadPage]=useState(0);
+    const [doLoadPage,setDoLoadPage]=useState(0); //
 
     const token=localStorage.getItem('token');
     const article = JSON.parse(localStorage.getItem("article"));
@@ -43,7 +43,7 @@ function ArticlePage(){
     }
 
     const getCommentsPerPage = async (page) => {
-      const path=`http://localhost:8080/api/v1/comment/article/${article.id}?page=${page}`;
+      const path=`http://localhost:8080/api/v1/comment/article/${article.id}`;
       try{
         const response=await axios.get(path);
         const rootCommentList=response.data.rootComments.map(item => JSON.parse(item));
@@ -78,12 +78,9 @@ function ArticlePage(){
         if(update.at(0)!==undefined){
           setCommentList((prev)=>[...prev,...update]);
         }
-        setDoLoadPage(0); 
       } 
       catch(error){
-        if(error.response.data==='NoMoreCommentPage'){
-          setDoLoadPage(1);
-        } 
+        console.error(error);
       }
     }
 
@@ -155,28 +152,6 @@ function ArticlePage(){
       fetchData();
 
     },[page,selectComponentIndex])
-
-    useEffect(()=>{
-      const handleScroll = () => {
-        if (commentListRef.current) {
-          const { scrollTop, scrollHeight, clientHeight } = commentListRef.current;
-          if (scrollTop + clientHeight >= scrollHeight * 0.8 && !doLoadPage) {
-            //스크롤감지는 중복으로 감지되는 경우가 있음.
-            setDoLoadPage(1);
-          }
-        }
-      };
-      commentListRef.current.addEventListener('scroll', handleScroll);
-      if(doLoadPage){
-        setPage(prevPage=>prevPage+1);
-      }
-      return () => {
-        if(commentListRef.current){
-          commentListRef.current.removeEventListener('scroll',handleScroll);
-        }
-      }
-
-    },[doLoadPage]);
 
 
     function formatCreateTime(createTime) {
