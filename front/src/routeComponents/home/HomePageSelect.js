@@ -19,6 +19,7 @@ function HomePageSelect() {
   const [init,setInit]=useState(1);
   const token=localStorage.getItem('token');
 
+
   useEffect(()=>{
     const idx=parseInt(localStorage.getItem("index"));
     if(idx>=0){
@@ -41,6 +42,7 @@ function HomePageSelect() {
             setSelectComponentIndex(menuToIndex[item]);
           } else {
             setSelectComponentIndex(8);
+            localStorage.setItem("index",menuToIndex[item]);
         }
     } catch (error) {
         console.error('An error occurred:', error);
@@ -62,7 +64,9 @@ return (
           <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><AlarmPage/></div>
-          <div style={{display : selectComponentIndex==5 ? 'block' : 'none'}}><ArticlePage/></div>
+          {selectComponentIndex==5 && <ArticlePage/>}
+          {/*<div style={{display : selectComponentIndex==5 ? 'block' : 'none'}}><ArticlePage/></div>*/}
+          {/*article의 값이 설정된 이후에 렌더링하도록 변경해야함 */}
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>
           <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
