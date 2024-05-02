@@ -8,7 +8,6 @@ import HomeSelectContext from '../home/HomeSelectContext';
 
 function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
   const [comment, setComment] = useState('');
-  const navigate=useNavigate();
   const token=localStorage.getItem('token');
   const formRef=useRef(null);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
