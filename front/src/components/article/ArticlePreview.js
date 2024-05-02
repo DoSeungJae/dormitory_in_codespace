@@ -1,13 +1,12 @@
 import {React,useContext} from 'react';
-import { useNavigate,useLocation } from 'react-router-dom';
+import {useLocation } from 'react-router-dom';
 import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
 
 function ArticlePreview({articleList,articleListRef,page,scrollPosition,isEndPage,
                         dorId}){
                           
-  const token=localStorage.getItem('token');
-  const navigate=useNavigate();
+  const token=localStorage.getItem('token');;
   const location=useLocation();
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
@@ -20,7 +19,7 @@ function ArticlePreview({articleList,articleListRef,page,scrollPosition,isEndPag
         <div key={index} className="article-item" 
         onClick={() => goArticlePage(article,scrollPosition
                                     ,dorId,isEndPage,
-                                    page,token,navigate,location,setSelectComponentIndex)}>
+                                    page,token,location,setSelectComponentIndex)}>
           <div className='article-item-summary'>
             <div className="article-item-text" 
                   id='article-item-title'>
