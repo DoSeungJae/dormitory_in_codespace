@@ -64,56 +64,31 @@ public class CommentService {
         return comments;
 
     }
-    /*
-    public List<Comment> getArticleComments(Long articleId){
+    public CommentResponseDTO getArticleComments(Long articleId){
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        List<Comment> comments=commentRepository.findAllByArticle(article);
-        if(comments.isEmpty()){
-            throw new RuntimeException("NoCommentFound");
-        }
-        return comments;
-    }
-
-     */
-
-    public CommentPageResponseDTO getArticleCommentsPerPage(int page, int size, Long articleId){
-        Pageable pageable= PageRequest.of(page,size, Sort
-                .by("createdTime")
-                .ascending());
-        Article article=articleRepository.findById(articleId).orElse(null);
-        if(article==null){
-            throw new RuntimeException("ArticleNotFound");
-        }
-        Page<Comment> commentPage=commentRepository.findAllByArticle(article,pageable);
-        if(commentPage.isEmpty() && page==0){
-            throw new RuntimeException("CommentNotFound");
-        }
-        if(commentPage.isEmpty()){
-            throw new RuntimeException("NoMoreCommentPage");
-        }
+        List<Comment> commentList=commentRepository.findAllByArticle(article);
         List<Comment> rootComments=new ArrayList<>();
         List<Comment> replyComments=new ArrayList<>();
-        Iterator<Comment> iterator=commentPage.iterator();
+        Iterator<Comment> iterator=commentList.iterator();
         while(iterator.hasNext()){
             Comment comment=iterator.next();
-            if(comment.getRootComment()==null){ //rootComment가 없다 => 자신이 rootComment이다. 즉, replyComment가 아님
+            if(comment.getRootComment()==null){
                 rootComments.add(comment);
             }
             else{
                 replyComments.add(comment);
             }
         }
-
-        CommentPageResponseDTO responseDTO=CommentPageResponseDTO
+        CommentResponseDTO responseDTO=CommentResponseDTO
                 .builder()
                 .rootComments(listStringify(rootComments))
                 .replyComments(listStringify(replyComments))
                 .build();
-
         return responseDTO;
+
     }
     public List<String> listStringify(List<Comment> commentList){
         List<String> stringifiedCommentList=commentList.stream()
@@ -144,6 +119,7 @@ public class CommentService {
         return saved;
 
     }
+
 
     @Transactional
     public CommentReplyResponseDTO newReply(CommentReplyDTO dto, String token) {
