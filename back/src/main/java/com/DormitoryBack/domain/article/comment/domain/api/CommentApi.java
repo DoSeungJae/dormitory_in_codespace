@@ -67,12 +67,10 @@ public class CommentApi {
     
     @GetMapping("article/{articleId}")
     public ResponseEntity articleCommentsPerPage(
-            @PathVariable("articleId") Long articleId,
-            @RequestParam(defaultValue="0") int page,
-            @RequestParam(defaultValue ="10") int size
+            @PathVariable("articleId") Long articleId
     ){
-        CommentPageResponseDTO responseDTO=commentService
-                .getArticleCommentsPerPage(page,size,articleId);
+        CommentResponseDTO responseDTO=commentService
+                .getArticleComments(articleId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responseDTO);
