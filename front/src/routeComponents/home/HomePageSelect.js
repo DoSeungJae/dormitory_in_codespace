@@ -65,8 +65,6 @@ return (
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><AlarmPage/></div>
           {selectComponentIndex==5 && <ArticlePage/>}
-          {/*<div style={{display : selectComponentIndex==5 ? 'block' : 'none'}}><ArticlePage/></div>*/}
-          {/*article의 값이 설정된 이후에 렌더링하도록 변경해야함 */}
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>
           <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
