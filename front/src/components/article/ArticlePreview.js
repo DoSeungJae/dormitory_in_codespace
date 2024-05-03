@@ -2,7 +2,7 @@ import {React,useContext} from 'react';
 import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
 
-function ArticlePreview({articleList,articleListRef,page,scrollPosition,isEndPage,
+function ArticlePreview({articleList,articleListRef,page,isEndPage,
                         dorId}){
                           
   const token=localStorage.getItem('token');
@@ -15,8 +15,7 @@ function ArticlePreview({articleList,articleListRef,page,scrollPosition,isEndPag
         
         {articleList && articleList.map((article, index) => (
         <div key={index} className="article-item" 
-        onClick={() => goArticlePage(article,scrollPosition
-                                    ,dorId,isEndPage,
+        onClick={() => goArticlePage(article,dorId,isEndPage,
                                     page,token,setSelectComponentIndex)}>
           <div className='article-item-summary'>
             <div className="article-item-text" 
