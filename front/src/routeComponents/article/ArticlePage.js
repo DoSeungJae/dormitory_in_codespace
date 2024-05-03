@@ -16,9 +16,7 @@ function ArticlePage(){
     const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
     const[commentId,setCommentId]=useState(-1);
     const[touchY,setTouchY]=useState(-1);
-    const[page,setPage]=useState(0);
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-    const [doLoadPage,setDoLoadPage]=useState(0); //
 
     const token=localStorage.getItem('token');
     const article = JSON.parse(localStorage.getItem("article"));
@@ -32,8 +30,6 @@ function ArticlePage(){
       setIsReply(0);
       setCommentId(-1);
       setTouchY(-1);
-      setPage(0);
-      setDoLoadPage(0);
       setSelectComponentIndex(0);
     }
 
@@ -42,7 +38,7 @@ function ArticlePage(){
       setTouchY(touch.clientY);
     }
 
-    const getCommentsPerPage = async (page) => {
+    const getComments = async () => {
       const path=`http://localhost:8080/api/v1/comment/article/${article.id}`;
       try{
         const response=await axios.get(path);
@@ -147,11 +143,11 @@ function ArticlePage(){
         return ;
       }
       async function fetchData(){
-        await getCommentsPerPage(page);
+        await getComments();
       }
       fetchData();
 
-    },[page,selectComponentIndex])
+    },[selectComponentIndex])
 
 
     function formatCreateTime(createTime) {
