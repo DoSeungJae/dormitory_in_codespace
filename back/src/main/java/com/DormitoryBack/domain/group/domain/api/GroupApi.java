@@ -8,6 +8,7 @@ import com.DormitoryBack.domain.group.domain.service.GroupService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,8 @@ import java.util.List;
 @Slf4j
 public class GroupApi {
     private final GroupService groupService;
+
+    @Autowired
     public GroupApi(GroupService groupService){
         this.groupService=groupService;
     }
