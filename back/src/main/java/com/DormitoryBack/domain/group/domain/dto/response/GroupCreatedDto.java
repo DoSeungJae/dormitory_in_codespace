@@ -1,8 +1,9 @@
 package com.DormitoryBack.domain.group.domain.dto.response;
 
-import java.time.LocalDateTime;
+import lombok.Builder;
 
-public class GroupCreateDto {
+@Builder
+public class GroupCreatedDto {
     private Long id; //response dto에 꼭 그룹 id가 포함되어야할까?
     private Long dormId;
     private Long hostId;
