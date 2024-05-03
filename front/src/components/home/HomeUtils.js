@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export const goArticlePage = async (article,scrollPosition,dorId,
-                                    isEndPage,page,token,locations
+                                    isEndPage,page,token
                                     ,setSelectComponentIndex) => {
     
     
