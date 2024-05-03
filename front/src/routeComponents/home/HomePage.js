@@ -1,15 +1,14 @@
-import {React,useEffect,useState,useContext,useRef} from 'react';
+import {React,useEffect,useState,useRef} from 'react';
 import axios from 'axios';
 import ArticlePreview from '../../components/article/ArticlePreview.js';
 import { calculateDorItemStyle } from '../../components/home/HomeUtils.js';
 
 function HomePage() {
-  const[articleList,setArticleList]=useState([]);
+  const [articleList,setArticleList]=useState([]);
   const[page,setPage]=useState(0);
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
   const [dorId,setDorId]=useState(0);
-  const [scrollPosition,setScrollPosition]=useState(0);
   const [isEndPage,setIsEndPage]=useState(false);
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
@@ -56,8 +55,6 @@ function HomePage() {
   useEffect(()=>{
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
-      const position=scrollTop;
-      setScrollPosition(position);
 
       if (articleListRef.current) {
         //const { scrollTop, scrollHeight, clientHeight } = articleListRef.current;
@@ -144,7 +141,6 @@ return (
                 dorId={dorId}
                 page={page}
                 isEndPage={isEndPage}
-                scrollPosition={scrollPosition}
               />
     </main>
 
