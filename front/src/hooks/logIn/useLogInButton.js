@@ -29,7 +29,15 @@ function UseLogInButton() {
         .then(response => {
           console.log(response.data);
           localStorage.setItem('token',response.data);
-          setSelectComponentIndex(0);
+          console.log(localStorage.getItem("nextIndex"));
+          if(localStorage.getItem("nextIndex")===null){
+            setSelectComponentIndex(0);
+          }
+          else{
+            setSelectComponentIndex(parseInt(localStorage.getItem("nextIndex")));
+            localStorage.removeItem("nextIndex");
+          }
+          
           
         })
         .catch(error => {
