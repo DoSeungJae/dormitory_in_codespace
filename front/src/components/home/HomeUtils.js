@@ -20,6 +20,7 @@ export const goArticlePage = async (article,scrollPosition,dorId,
       } else {
         setSelectComponentIndex(8);
         toast.error('글을 보기 위해선 로그인이 필요해요!');
+        
       }
   } catch (error) {
       console.error('An error occurred:', error);
