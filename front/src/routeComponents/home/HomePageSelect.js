@@ -9,6 +9,7 @@ import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import ArticlePage from '../article/ArticlePage.js';
 import SignInPage from '../signIn/SignInPage.js';
 import LogInPage from '../logIn/LogInPage.js';
+import { toast } from 'react-toastify';
 
 function HomePageSelect() {
   const[page,setPage]=useState(0);
@@ -41,8 +42,11 @@ function HomePageSelect() {
             }
             setSelectComponentIndex(menuToIndex[item]);
           } else {
+            localStorage.setItem("nextIndex",menuToIndex[item]);
             setSelectComponentIndex(8);
-            localStorage.setItem("index",menuToIndex[item]);
+            toast.error("로그인이 필요한 서비스에요!");
+
+    
         }
     } catch (error) {
         console.error('An error occurred:', error);
