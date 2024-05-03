@@ -37,6 +37,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
       }catch(error){
         console.error(error);
         if(error.response.data==="유효하지 않은 토큰입니다."){
+          localStorage.setItem("nextIndex",5);
           setSelectComponentIndex(8);
           toast.error("회원 정보가 유요하지 않아요! 로그인해주세요.");
       }
@@ -70,6 +71,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
     window.location.reload();
     } catch (error) {
         if(error.response.data==="유효하지 않은 토큰입니다."){
+            localStorage.setItem("nextIndex",5);
             setSelectComponentIndex(8);
             toast.error("회원 정보가 유요하지 않아요! 로그인해주세요.");
         }
