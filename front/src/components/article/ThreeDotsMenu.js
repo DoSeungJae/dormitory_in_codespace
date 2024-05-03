@@ -90,9 +90,9 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
         console.log(response.data);
       } 
     } catch (error) {// jwt 무효 -> 로그인 페이지로 이동할 필요가 있다(navigate).
-        navigate("/logIn",{state:{from:'/article',type:"error",message:"로그인 정보가 만료되었어요! 다시 로그인해주세요."}}); 
-        //logIn 페이지에서 response==200일 때 /article로 다시 돌아오는 코드가 필요함
-        console.error('An error occurred:', error);
+        localStorage.setItem("nextIndex",5);
+        toast.error("로그인 정보가 만료되었어요! 다시 로그인해주세요.");
+        setSelectComponentIndex(8);
     }
   }
 
