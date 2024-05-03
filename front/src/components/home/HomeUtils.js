@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-export const goArticlePage = async (article,scrollPosition,dorId,
+export const goArticlePage = async (article,dorId,
                                     isEndPage,page,token
                                     ,setSelectComponentIndex) => {
     
