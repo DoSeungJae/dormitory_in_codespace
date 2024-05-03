@@ -4,6 +4,7 @@ import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
 import BackButton from '../../components/home/BackButton';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 function PostingPage() {
     const [title, setTitle] = useState("");
@@ -141,7 +142,8 @@ function PostingPage() {
          
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
-                alert("회원 정보가 유효하지 않아요! 로그인해주세요.");
+                localStorage.setItem("nextIndex",6);
+                toast.error("회원 정보가 유효하지 않아요! 로그인해주세요.");
                 setSelectComponentIndex(8);
                 
             }
