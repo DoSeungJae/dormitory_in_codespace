@@ -10,6 +10,10 @@ function HomePage() {
   const [doLoadPage,setDoLoadPage]=useState(0);
   const [dorId,setDorId]=useState(0);
   const [isEndPage,setIsEndPage]=useState(false);
+  const previewStyle = {
+    maxHeight:'83vh'
+  }
+  
   const getArticlesPerPage = async (page) => {
     if(!(dorId>=1 || dorId<=7)){
       return;
@@ -141,6 +145,7 @@ return (
                 dorId={dorId}
                 page={page}
                 isEndPage={isEndPage}
+                heightStyle={previewStyle}
               />
     </main>
 
