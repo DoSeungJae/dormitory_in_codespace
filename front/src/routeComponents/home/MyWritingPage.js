@@ -32,14 +32,27 @@ function MyWritingPage(){
                 }
             });
             const data=response.data.map(item=>JSON.parse(item));
-            setCommentedArticleList((prev)=>[...prev,...data]);
-            setDoLoadCmtPage(0);
+            if(mode==='cmt'){
+                setCommentedArticleList((prev)=>[...prev,...data]);
+                setDoLoadCmtPage(0);
+            }
+            else{
+                setMyArticleList((prev)=>[...prev,...data]);
+                setDoLoadMyPage(0);
+            }
+
         }
         catch(error){
             const errMsg=error.response.data;
             if(errMsg==='NoMoreArticlePage'){
-                setDoLoadCmtPage(1);
-                setIsEndCmtPage(1);
+                if(mode==='cmt'){
+                    setDoLoadCmtPage(1);
+                    setIsEndCmtPage(1);
+                }
+                else{
+                    setDoLoadMyPage(1);
+                    setIsEndMyPage(1);
+                }
             }
             if(errMsg==='ArticleNotFound'){
                 return ;
