@@ -15,6 +15,7 @@ function MyWritingPage(){
     const myArticleListRef=useRef(null);
     const commentedArticleListRef=useRef(null);
     const token=localStorage.getItem('token');
+    const [extendedPreview,setExtendedPreview]=useState("");// "" or "my" or "cmt"
 
     const [myHeight,setMyHeight]=useState("37vh");
     const [cmtHeight, setCmtHeight]=useState("37vh");
@@ -26,8 +27,38 @@ function MyWritingPage(){
         maxHeight:cmtHeight
     }
 
-    const extendMaxHeightOfPreview = (mode) =>{
-
+    const extendMaxHeightOfPreview = () =>{
+        if(extendedPreview===""){
+            setMyHeight("37vh");
+            setCmtHeight("37vh");
+        }
+        else if(extendedPreview==="my"){
+            setMyHeight("78vh");
+            setCmtHeight("0vh");
+            console.log("my");
+        }
+        else{
+            setMyHeight("0vh");
+            setCmtHeight("78vh");
+            console.log("cmt");
+        }
+    }
+    
+    const handleExtendedMy = () => {
+        if(extendedPreview==="my"){
+            setExtendedPreview("");
+        }
+        else{
+            setExtendedPreview("my")
+        }
+    }
+    const handleExtendedCmt = () => {
+        if(extendedPreview==="cmt"){
+            setExtendedPreview("");
+        }
+        else{
+            setExtendedPreview("cmt");
+        }
     }
     
     const getArticleListPerPage = async (page,mode) => {
@@ -75,10 +106,12 @@ function MyWritingPage(){
     };
 
     useEffect(()=>{
-        console.log(11);
-    })
+        extendMaxHeightOfPreview();
+        console.log(extendedPreview);
+    },[extendedPreview])
 
     useEffect(()=>{
+        
         async function fetchData(){
             const mode='my'
             await getArticleListPerPage(myPage,mode);
@@ -140,28 +173,34 @@ function MyWritingPage(){
                 <BackButton></BackButton>
             </header>
             <div className='App-myWritingPage-main'>
-                <div className='myWritings'>
-                    <div className='myWritingPage-main-text'>내가 쓴 글</div>
-                        <ArticlePreview
-                            articleList={myArticleList}
-                            articleListRef={myArticleListRef}
-                            dorId={0}
-                            page={myPage}
-                            isEndPage={isEndMyPage}
-                            heightStyle={myPreviewStyle}
-                        />
-                </div>
-                <div className='commentedOn'>
-                    <div className='myWritingPage-main-text'>내가 댓글을 단 글</div>
-                        <ArticlePreview
-                            articleList={commentedArticleList}
-                            articleListRef={commentedArticleListRef}
-                            dorId={0}
-                            page={cmtPage}
-                            isEndPage={isEndCmtPage}
-                            heightStyle={cmtPreviewStyle}
-                        />
-                </div>
+                {extendedPreview!=="cmt" &&
+                    (<div className='myWritings'>
+                        <div className='myWritingPage-main-text'
+                            onClick={handleExtendedMy}>내가 쓴 글</div>
+                            <ArticlePreview
+                                articleList={myArticleList}
+                                articleListRef={myArticleListRef}
+                                dorId={0}
+                                page={myPage}
+                                isEndPage={isEndMyPage}
+                                heightStyle={myPreviewStyle}
+                            />
+                    </div>)
+                }
+                {extendedPreview!=="my" &&
+                    (<div className='commentedOn'>
+                        <div className='myWritingPage-main-text'
+                            onClick={handleExtendedCmt}>내가 댓글을 단 글</div>
+                            <ArticlePreview
+                                articleList={commentedArticleList}
+                                articleListRef={commentedArticleListRef}
+                                dorId={0}
+                                page={cmtPage}
+                                isEndPage={isEndCmtPage}
+                                heightStyle={cmtPreviewStyle}
+                            />
+                    </div>)
+                }
             </div>
         </div>
     );
