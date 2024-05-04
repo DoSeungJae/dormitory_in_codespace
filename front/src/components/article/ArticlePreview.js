@@ -2,13 +2,13 @@ import {React,useContext} from 'react';
 import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
 
-function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId}){
+function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightStyle}){
                           
   const token=localStorage.getItem('token');
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-
+    
     return (
-        <div className="preview" ref={articleListRef}>
+        <div className="preview" style={heightStyle} ref={articleListRef}>
               
         {articleList===null && <h3>아직 글이 없어요!</h3>}
         
