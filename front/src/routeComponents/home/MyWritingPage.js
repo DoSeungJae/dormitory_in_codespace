@@ -6,26 +6,33 @@ import axios from 'axios';
 function MyWritingPage(){
     const [myArticleList,setMyArticleList]=useState([]);
     const [commentedArticleList,setCommentedArticleList]=useState([]);
+
     const [myPage,setMyPage]=useState(0);
     const [cmtPage,setCmtPage]=useState(0);
+
     const [doLoadMyPage,setDoLoadMyPage]=useState(0);
     const [doLoadCmtPage,setDoLoadCmtPage]=useState(0);
+
     const [isEndMyPage,setIsEndMyPage]=useState(0);
     const [isEndCmtPage,setIsEndCmtPage]=useState(0);
+
     const myArticleListRef=useRef(null);
     const commentedArticleListRef=useRef(null);
-    const token=localStorage.getItem('token');
-    const [extendedPreview,setExtendedPreview]=useState("");// "" or "my" or "cmt"
 
     const [myHeight,setMyHeight]=useState("37vh");
     const [cmtHeight, setCmtHeight]=useState("37vh");
-    
+
+    const token=localStorage.getItem('token');
+    const [isTokenValid,setIsTokenValid]=useState(0);
+
+    const [extendedPreview,setExtendedPreview]=useState("");// "" or "my" or "cmt"
     const myPreviewStyle={
         maxHeight:myHeight
     }
     const cmtPreviewStyle={
         maxHeight:cmtHeight
     }
+
 
     const extendMaxHeightOfPreview = () =>{
         if(extendedPreview===""){
@@ -104,6 +111,15 @@ function MyWritingPage(){
             }
         }
     };
+    
+    useEffect(()=>{
+        const validateToken = () => {
+            
+        }
+        if(isTokenValid===1){
+            return ;
+        }
+    })
 
     useEffect(()=>{
         extendMaxHeightOfPreview();
