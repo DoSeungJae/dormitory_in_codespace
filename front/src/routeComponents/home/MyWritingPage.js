@@ -15,6 +15,20 @@ function MyWritingPage(){
     const myArticleListRef=useRef(null);
     const commentedArticleListRef=useRef(null);
     const token=localStorage.getItem('token');
+
+    const [myHeight,setMyHeight]=useState("37vh");
+    const [cmtHeight, setCmtHeight]=useState("37vh");
+    
+    const myPreviewStyle={
+        maxHeight:myHeight
+    }
+    const cmtPreviewStyle={
+        maxHeight:cmtHeight
+    }
+
+    const extendMaxHeightOfPreview = (mode) =>{
+
+    }
     
     const getArticleListPerPage = async (page,mode) => {
         let path;
@@ -59,6 +73,10 @@ function MyWritingPage(){
             }
         }
     };
+
+    useEffect(()=>{
+        console.log(11);
+    })
 
     useEffect(()=>{
         async function fetchData(){
@@ -130,6 +148,7 @@ function MyWritingPage(){
                             dorId={0}
                             page={myPage}
                             isEndPage={isEndMyPage}
+                            heightStyle={myPreviewStyle}
                         />
                 </div>
                 <div className='commentedOn'>
@@ -140,6 +159,7 @@ function MyWritingPage(){
                             dorId={0}
                             page={cmtPage}
                             isEndPage={isEndCmtPage}
+                            heightStyle={cmtPreviewStyle}
                         />
                 </div>
             </div>
