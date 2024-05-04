@@ -16,32 +16,15 @@ function MyWritingPage(){
     const commentedArticleListRef=useRef(null);
     const token=localStorage.getItem('token');
     
-    const getMyArticleListPerPage = async (page) =>{
-        const path=`http://localhost:8080/api/v1/article/filter/user?page=${page}`;
-        try{
-            const response=await axios.get(path,{
-                headers :{
-                    'Authorization' : `${token}`,
-                }
-            });
-            const data=response.data.map(item=>JSON.parse(item));
-            setMyArticleList((prev)=>[...prev,...data]);
-            setDoLoadMyPage(0);
+    const getArticleListPerPage = async (page,mode) => {
+        let path;
+        //mode: my or cmt
+        if(mode==='my'){
+            path=`http://localhost:8080/api/v1/article/filter/user?page=${page}`;
         }
-        catch(error){
-            const errMsg=error.response.data;
-            if(errMsg==='NoMoreArticlePage'){
-                setDoLoadMyPage(1);
-                setIsEndMyPage(1);
-            }
-            if(errMsg==='ArticleNotFound'){
-                return ;
-            }
+        else{
+            path=`http://localhost:8080/api/v1/article/filter/userComment?page=${page}`;
         }
-    };
-    
-    const getCommentedArticleListPerPage = async (page) => {
-        const path=`http://localhost:8080/api/v1/article/filter/userComment?page=${page}`;
         try{
             const response=await axios.get(path,{
                 headers : {
@@ -66,7 +49,8 @@ function MyWritingPage(){
 
     useEffect(()=>{
         async function fetchData(){
-            await getMyArticleListPerPage(myPage);
+            const mode='my'
+            await getArticleListPerPage(myPage,mode);
         }
         fetchData();
     },[myPage])
@@ -93,7 +77,8 @@ function MyWritingPage(){
 
     useEffect(()=>{
         async function fetchData(){
-            await getCommentedArticleListPerPage(cmtPage);
+            const mode='cmt';
+            await getArticleListPerPage(cmtPage,mode);
         }
         fetchData();
     },[cmtPage])
@@ -143,7 +128,6 @@ function MyWritingPage(){
                             page={cmtPage}
                             isEndPage={isEndCmtPage}
                         />
-
                 </div>
             </div>
         </div>
