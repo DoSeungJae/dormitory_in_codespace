@@ -2,8 +2,7 @@ import {React,useContext} from 'react';
 import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
 
-function ArticlePreview({articleList,articleListRef,page,isEndPage,
-                        dorId}){
+function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId}){
                           
   const token=localStorage.getItem('token');
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
