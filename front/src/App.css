@@ -103,7 +103,6 @@
 
 .preview { 
   /*max height를 동적으로 관리하는 방법 고려*/
-  max-height: calc(83vh);
   overflow-y: auto;
   padding-top:0.5vh;
 }
@@ -418,13 +417,14 @@
 }
 
 .App-myWritingPage-main{
-  padding-top:3vh;
+  padding-top:1vh;
   padding-right: 2.4vw;
   padding-left: 2.4vw;
 }
 
 .myWritingPage-main-text{
-  font-size:23px;
+  font-size:3vh;
+  padding-bottom:1vh;
 }
 
 .App-postingPage-header{
