@@ -33,7 +33,6 @@ function MyWritingPage(){
         maxHeight:cmtHeight
     }
 
-
     const extendMaxHeightOfPreview = () =>{
         if(extendedPreview===""){
             setMyHeight("37vh");
@@ -42,12 +41,10 @@ function MyWritingPage(){
         else if(extendedPreview==="my"){
             setMyHeight("78vh");
             setCmtHeight("0vh");
-            console.log("my");
         }
         else{
             setMyHeight("0vh");
             setCmtHeight("78vh");
-            console.log("cmt");
         }
     }
     
@@ -112,22 +109,12 @@ function MyWritingPage(){
         }
     };
     
-    useEffect(()=>{
-        const validateToken = () => {
-            
-        }
-        if(isTokenValid===1){
-            return ;
-        }
-    })
 
     useEffect(()=>{
         extendMaxHeightOfPreview();
-        console.log(extendedPreview);
     },[extendedPreview])
 
     useEffect(()=>{
-        
         async function fetchData(){
             const mode='my'
             await getArticleListPerPage(myPage,mode);
