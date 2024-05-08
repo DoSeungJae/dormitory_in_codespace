@@ -4,7 +4,8 @@ import { toast } from 'react-toastify';
 
 export const goArticlePage = async (article,dorId,
                                     isEndPage,page,token
-                                    ,setSelectComponentIndex) => {
+                                    ,setSelectComponentIndex
+                                    ,selectComponentIndex) => {
     
     
     try {
@@ -16,7 +17,9 @@ export const goArticlePage = async (article,dorId,
 
       if (response.data === true) {
         localStorage.setItem('article',JSON.stringify(article));
+        localStorage.setItem("nextIndex",selectComponentIndex);
         setSelectComponentIndex(5);
+
       } else {
         setSelectComponentIndex(8);
         localStorage.setItem("nextIndex",5);
