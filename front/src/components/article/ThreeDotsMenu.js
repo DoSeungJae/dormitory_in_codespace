@@ -119,10 +119,8 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
           setSelectComponentIndex(0);
         }
         else{
+          localStorage.setItem("index",5);
           window.location.reload();
-          setSelectComponentIndex(5);
-          //사실상 작동하지 않음
-          //localStorage를 활용해야함
         }
  
       } 
