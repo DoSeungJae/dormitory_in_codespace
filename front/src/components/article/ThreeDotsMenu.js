@@ -24,7 +24,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
   const navigate = useNavigate();
   const token=localStorage.getItem('token');
-  const [isWriter,setIsWriter]=useState(0); //초기값을 isWriterParam으로 설정할 시 에러 발생 -> 렌더링 안됨.
+  const [isWriter,setIsWriter]=useState(0);
   const [article,setArticle]=useState("");
   const [comment,setComment]=useState("");
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -89,7 +89,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
         toast.success("신고가 접수되었어요.");
         console.log(response.data);
       } 
-    } catch (error) {// jwt 무효 -> 로그인 페이지로 이동할 필요가 있다(navigate).
+    } catch (error) {
         localStorage.setItem("nextIndex",5);
         toast.error("로그인 정보가 만료되었어요! 다시 로그인해주세요.");
         setSelectComponentIndex(8);
@@ -97,7 +97,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
   }
 
   const deleteTarget = async (token,article,comment) => {
-    //sweetalert로 한 번 더 확인하는 기능 추가해야함. <- 굳이?
     let path="";
     let isArticle=0;
     if(article){
@@ -115,8 +114,11 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       });
       if(response.status===200){
         if(isArticle){
+          const prevPage=(localStorage.getItem("nextIndex"));
+          if(prevPage!=null){
+            localStorage.setItem("index",parseInt(prevPage));
+          }
           window.location.reload();
-          setSelectComponentIndex(0);
         }
         else{
           localStorage.setItem("index",5);
