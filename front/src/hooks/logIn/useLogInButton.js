@@ -29,12 +29,14 @@ function UseLogInButton() {
         .then(response => {
           console.log(response.data);
           localStorage.setItem('token',response.data);
-          console.log(localStorage.getItem("nextIndex"));
           if(localStorage.getItem("nextIndex")===null){
+            window.location.reload();
             setSelectComponentIndex(0);
           }
           else{
-            setSelectComponentIndex(parseInt(localStorage.getItem("nextIndex")));
+            const requiredIndex=parseInt(localStorage.getItem("nextIndex"));
+            localStorage.setItem("index",requiredIndex);
+            window.location.reload();
             localStorage.removeItem("nextIndex");
           }
           
