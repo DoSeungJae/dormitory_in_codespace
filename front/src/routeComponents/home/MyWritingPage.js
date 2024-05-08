@@ -23,7 +23,6 @@ function MyWritingPage(){
     const [cmtHeight, setCmtHeight]=useState("37vh");
 
     const token=localStorage.getItem('token');
-    const [isTokenValid,setIsTokenValid]=useState(0);
 
     const [extendedPreview,setExtendedPreview]=useState("");// "" or "my" or "cmt"
     const myPreviewStyle={
