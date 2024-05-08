@@ -50,7 +50,7 @@ public class GroupApi {
     public ResponseEntity quit(@PathVariable("userId") Long userId){
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
-     @DeleteMapping("/delete/{groupId}")
+    @DeleteMapping("/delete/{groupId}")
     public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId){
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
