@@ -30,7 +30,14 @@ function ArticlePage(){
       setIsReply(0);
       setCommentId(-1);
       setTouchY(-1);
-      setSelectComponentIndex(0);
+      const prevPage=(localStorage.getItem("nextIndex"));
+      if(prevPage==null){
+        setSelectComponentIndex(0);
+      }
+      else{
+        setSelectComponentIndex(parseInt(prevPage));
+        localStorage.removeItem("nextIndex");
+      }
     }
 
     const handleTouchStart = (e) => {
