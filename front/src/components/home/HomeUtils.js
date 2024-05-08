@@ -19,6 +19,7 @@ export const goArticlePage = async (article,dorId,
         setSelectComponentIndex(5);
       } else {
         setSelectComponentIndex(8);
+        localStorage.setItem("nextIndex",5);
         toast.error('글을 보기 위해선 로그인이 필요해요!');
         
       }
