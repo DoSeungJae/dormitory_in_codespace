@@ -17,7 +17,6 @@ function HomePageSelect() {
   const [scrollPosition,setScrollPosition]=useState(0);
   const [isEndPage,setIsEndPage]=useState(false);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-  const [init,setInit]=useState(1);
   const token=localStorage.getItem('token');
 
 
