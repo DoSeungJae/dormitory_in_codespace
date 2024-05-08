@@ -15,7 +15,9 @@ function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightS
         {articleList && articleList.map((article, index) => (
         <div key={index} className="article-item" 
         onClick={() => goArticlePage(article,dorId,isEndPage,
-                                    page,token,setSelectComponentIndex)}>
+                                    page,token,
+                                    setSelectComponentIndex,
+                                    selectComponentIndex)}>
           <div className='article-item-summary'>
             <div className="article-item-text" 
                   id='article-item-title'>
