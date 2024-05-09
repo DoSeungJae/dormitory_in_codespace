@@ -8,6 +8,8 @@ import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,9 +21,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class GroupService {
-
     @Autowired
     private GroupRepository groupRepository;
+    @Autowired
+    private RedisTemplate<String,Long> redisTemplate;
 
     public GroupCreatedDto createNewGroup(GroupCreateDto requestDto) {
         Article article=requestDto.getArticle();
@@ -44,7 +47,13 @@ public class GroupService {
                 .category(saved.getCategory())
                 .build();
 
+        initRedisSet(newGroup);
         return responseDto;
+    }
+    public void initRedisSet(Group newGroup){
+        //redis에 {groupId:membersId:(hostId,)} 형태로 초기값이 세팅됨
+        SetOperations<String,Long> setOfMembersId=redisTemplate.opsForSet();
+        setOfMembersId.add(newGroup.getId().toString(), newGroup.getHostId());
     }
 
     public List<GroupCreatedDto> getAllProceedingGroups() {
@@ -59,4 +68,5 @@ public class GroupService {
         return responseDto;
 
     }
+
 }
