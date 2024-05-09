@@ -37,6 +37,16 @@ public class GroupApi {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    @GetMapping("/numMembers")
+    public ResponseEntity numberOfMembers(@RequestParam(name="groupId",defaultValue = "-1")
+                                              Long groupId){
+
+        long num=groupService.getNumberOfMembers(groupId);
+        return ResponseEntity.status(HttpStatus.OK).body(num);
+    }
+
+
+
     @PostMapping("/new")
     public ResponseEntity newGroup(@RequestBody GroupCreateDto requestDto){
         GroupCreatedDto responseDto=groupService.createNewGroup(requestDto);
