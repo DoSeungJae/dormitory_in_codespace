@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -26,6 +28,10 @@ import java.util.Set;
 @Setter
 @Table(name = "gathering")
 public class Group {
+
+
+    private RedisTemplate<String,Long> redisTemplate;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -54,18 +60,9 @@ public class Group {
 
     @JsonIgnore
     private Set<Long> membersId=new HashSet<>();
-    //member에서 호스트는 제외됨
 
     @Column(name="isProceeding")
     private Boolean isProceeding;
-
-
-
-    /*
-    @JsonIgnore
-    private Set<User> members=new HashSet<>();
-    //member에서 호스트는 제외됨
-    */
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -79,6 +76,10 @@ public class Group {
         return jsonString;
     }
 
+    public Set<Long> getMembersIdFromRedis(String key){
+        Set<Long> set=redisTemplate.opsForSet().members(key);
+        return set;
+    }
     public static GroupCreatedDto groupToCreatedDto(Group group){
         GroupCreatedDto responseDto=GroupCreatedDto.builder()
                 .id(group.getId())
