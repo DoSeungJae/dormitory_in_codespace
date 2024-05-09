@@ -68,5 +68,15 @@ public class GroupService {
         return responseDto;
 
     }
-
+    
+    public long getNumberOfMembers(Long groupId) {
+        if(groupId==-1){
+            throw new RuntimeException("GroupIdNotGiven");
+        }
+        long num=redisTemplate.opsForSet().size(groupId.toString());
+        if(num==0){
+            throw new RuntimeException("GroupNotFound");
+        }
+        return num;
+    }
 }
