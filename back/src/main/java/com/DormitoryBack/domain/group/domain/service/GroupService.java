@@ -153,6 +153,43 @@ public class GroupService {
         return responseDto;
     }
 
+    public GroupChangedDto leaveGroup(Long groupId, String token){
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        if(groupId==-1L){
+            throw new RuntimeException("GroupIdNotGiven");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        Long numBeforeAdding=setOperations.size(String.valueOf(groupId));
+        Group targetGroup=groupRepository.findById(groupId).orElse(null);
+        Boolean isMemberOfTargetGroup=setOperations
+                .isMember(String.valueOf(targetGroup.getId()),userId);
+
+        if(isMemberOfTargetGroup==false){
+            throw new RuntimeException("UserNotBelongToGroupToLeave");
+        }
+        else if(userId==targetGroup.getHostId()){
+            throw new RuntimeException("HostCannotLeaveGroup");
+        }
+        setOperations.remove(String.valueOf(targetGroup.getId()),userId);
+        setOperations.remove("groupGlobal",userId);
+        User user=userRepository.findById(userId).orElse(null);
+        UserResponseDTO userChanges=UserResponseDTO.builder()
+                .eMail(user.getEMail())
+                .nickName(user.getNickName())
+                .build();
+
+        GroupChangedDto responseDto=GroupChangedDto.builder()
+                .mode("quit")
+                .userChanges(userChanges)
+                .numberOfRemainings(numBeforeAdding-1L)
+                .build();
+
+        return responseDto;
+    }
+
 
 
 }
