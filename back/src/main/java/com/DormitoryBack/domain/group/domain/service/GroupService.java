@@ -115,18 +115,30 @@ public class GroupService {
     }
 
     public GroupChangedDto participateInGroup(Long groupId, String token) {
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
         if(groupId==-1L){
             throw new RuntimeException("GroupIdNotGiven");
         }
-
         Long userId=tokenProvider.getUserIdFromToken(token);
-        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
-        Long numBeforeAdding=setOperations.size(String.valueOf(userId));
+        Long numBeforeAdding=setOperations.size(String.valueOf(groupId));
+        Group targetGroup=groupRepository.findById(groupId).orElse(null);
+        Boolean isMemberOfTargetGroup=setOperations
+                .isMember(String.valueOf(targetGroup.getId()),userId);
+        if(isMemberOfTargetGroup==true){
+            throw new RuntimeException("AlreadyBelongToThisGroup");
+        }
+        Long notBelongToAnywhere=setOperations.add("groupGlobal",userId);
+        if(notBelongToAnywhere==0L){
+            throw new RuntimeException("DuplicatedParticipation");
+        }
+        if(numBeforeAdding==targetGroup.getMaxCapacity()){
+            throw new RuntimeException("GroupFull");
+        }
+        setOperations.add(String.valueOf(targetGroup.getId()),userId);
         User user=userRepository.findById(userId).orElse(null);
-
         UserResponseDTO userChanges= UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
