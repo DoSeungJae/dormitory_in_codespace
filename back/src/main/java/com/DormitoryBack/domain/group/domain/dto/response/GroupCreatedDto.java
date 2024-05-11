@@ -14,6 +14,7 @@ public class GroupCreatedDto {
     private Long hostId;
     private Long articleId;
     private String category;
+    private Long maxCapacity;
 
 
 }
