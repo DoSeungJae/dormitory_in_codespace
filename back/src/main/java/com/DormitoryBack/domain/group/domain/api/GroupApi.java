@@ -68,7 +68,9 @@ public class GroupApi {
             @RequestParam(name = "groupId",defaultValue = "-1")
             Long groupId){
 
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        GroupChangedDto responseDto=groupService
+                .leaveGroup(groupId,token);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @DeleteMapping("/delete/{groupId}")
     public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId){
