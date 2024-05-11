@@ -76,16 +76,11 @@ public class GroupService {
                 .maxCapacity(saved.getMaxCapacity())
                 .build();
 
-        initRedisSet(newGroup);
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        setOperations.add(String.valueOf(newGroup.getId()),newGroup.getHostId());
+
         return responseDto;
     }
-    public void initRedisSet(Group newGroup){
-        //redis에 {groupId:membersId:(hostId,)} 형태로 초기값이 세팅됨
-        SetOperations<String,Long> setOfMembersId=redisTemplate.opsForSet();
-        String groupId=String.valueOf(newGroup.getId());
-        setOfMembersId.add(groupId, newGroup.getHostId());
-    }
-
     public List<GroupCreatedDto> getAllProceedingGroups() {
         List<Group> proceedingGroups=groupRepository
                 .findAllByIsProceeding(true);
