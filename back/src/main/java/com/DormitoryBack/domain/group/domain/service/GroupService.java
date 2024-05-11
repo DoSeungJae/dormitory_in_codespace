@@ -46,6 +46,9 @@ public class GroupService {
 
     public GroupCreatedDto createNewGroup(GroupCreateDto requestDto) {
         Long articleId=requestDto.getArticleId();
+        if(requestDto.getMaxCapacity()==null){
+            requestDto.setMaxCapacity(4L);
+        }
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
@@ -54,6 +57,7 @@ public class GroupService {
         Group newGroup=Group.builder()
                 .dormId(article.getDorId())
                 .hostId(article.getUserId())
+                .maxCapacity(requestDto.getMaxCapacity())
                 .article(article)
                 .createdTime(LocalDateTime.now())
                 .category(article.getCategory())
@@ -66,6 +70,7 @@ public class GroupService {
                 .dormId(saved.getDormId())
                 .hostId(saved.getHostId())
                 .category(saved.getCategory())
+                .maxCapacity(saved.getMaxCapacity())
                 .build();
 
         initRedisSet(newGroup);
@@ -109,12 +114,12 @@ public class GroupService {
         if(groupId==-1L){
             throw new RuntimeException("GroupIdNotGiven");
         }
+
         Long userId=tokenProvider.getUserIdFromToken(token);
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
-        setOperations.add(String.valueOf(groupId),userId);
-        long num=setOperations.size(String.valueOf(groupId));
-
+        Long numBeforeAdding=setOperations.size(String.valueOf(userId));
         User user=userRepository.findById(userId).orElse(null);
+
         UserResponseDTO userChanges= UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
@@ -123,7 +128,7 @@ public class GroupService {
         GroupChangedDto responseDto=GroupChangedDto.builder()
                 .mode("join")
                 .userChanges(userChanges)
-                .numberOfMember(num)
+                .numberOfRemainings(numBeforeAdding+1L)
                 .build();
 
         return responseDto;
