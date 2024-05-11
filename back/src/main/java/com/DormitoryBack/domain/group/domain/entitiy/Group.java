@@ -28,9 +28,6 @@ import java.util.Set;
 @Setter
 @Table(name = "gathering")
 public class Group {
-
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -56,13 +53,15 @@ public class Group {
 
     @Column(name="category")
     private String category;
+    @Column(name="max_capacity")
+    private Long maxCapacity;
+
+    @Column(name="isProceeding")
+    private Boolean isProceeding;
 
     @JsonIgnore
     @Transient
     private Set<Long> membersId=new HashSet<>();
-
-    @Column(name="isProceeding")
-    private Boolean isProceeding;
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
