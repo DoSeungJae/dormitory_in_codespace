@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class GroupCreateDto {
-    Article article;
+    Long articleId;
 
 }
