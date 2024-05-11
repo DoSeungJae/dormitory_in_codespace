@@ -5,6 +5,7 @@ import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
+import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,26 +39,22 @@ public class GroupApi {
     }
 
     @GetMapping("/numMembers")
-    public ResponseEntity numberOfMembers(@RequestParam(name="groupId",defaultValue = "-1")
+    public ResponseEntity numberOfMembers(
+            @RequestParam(name="groupId",defaultValue = "-1")
                                               Long groupId){
 
         long num=groupService.getNumberOfMembers(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(num);
     }
 
-
-
     @PostMapping("/new")
     public ResponseEntity newGroup(@RequestBody GroupCreateDto requestDto){
         GroupCreatedDto responseDto=groupService.createNewGroup(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-    @PatchMapping("/join/{userId}")
-    public ResponseEntity newJoiner(@PathVariable("userId") Long userId){
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
+
     @PatchMapping("quit/{userId}")
-    public ResponseEntity quit(@PathVariable("userId") Long userId){
+    public ResponseEntity quit(@RequestHeader("Authorization") String token){
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
     @DeleteMapping("/delete/{groupId}")
