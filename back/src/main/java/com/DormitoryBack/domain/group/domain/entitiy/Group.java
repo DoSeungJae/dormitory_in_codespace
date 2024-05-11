@@ -30,7 +30,6 @@ import java.util.Set;
 public class Group {
 
 
-    private RedisTemplate<String,Long> redisTemplate;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +58,7 @@ public class Group {
     private String category;
 
     @JsonIgnore
+    @Transient
     private Set<Long> membersId=new HashSet<>();
 
     @Column(name="isProceeding")
@@ -76,10 +76,6 @@ public class Group {
         return jsonString;
     }
 
-    public Set<Long> getMembersIdFromRedis(String key){
-        Set<Long> set=redisTemplate.opsForSet().members(key);
-        return set;
-    }
     public static GroupCreatedDto groupToCreatedDto(Group group){
         GroupCreatedDto responseDto=GroupCreatedDto.builder()
                 .id(group.getId())
