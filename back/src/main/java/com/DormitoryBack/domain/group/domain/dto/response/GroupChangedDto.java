@@ -13,7 +13,7 @@ public class GroupChangedDto {
     private UserResponseDTO userChanges;
     //나가거나 들어온 user의 정보
 
-    private long numberOfMember;
+    private long numberOfRemainings;
 
 
 }
