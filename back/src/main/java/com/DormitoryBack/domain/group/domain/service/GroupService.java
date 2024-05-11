@@ -49,6 +49,9 @@ public class GroupService {
         if(requestDto.getMaxCapacity()==null){
             requestDto.setMaxCapacity(4L);
         }
+        else if(requestDto.getMaxCapacity()<=1L){
+            throw new RuntimeException("MaxCapacityMustNotLessThan2");
+        }
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
