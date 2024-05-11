@@ -45,21 +45,30 @@ public class GroupService {
     }
 
     public GroupCreatedDto createNewGroup(GroupCreateDto requestDto) {
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         Long articleId=requestDto.getArticleId();
         if(requestDto.getMaxCapacity()==null){
             requestDto.setMaxCapacity(4L);
         }
-        else if(requestDto.getMaxCapacity()<=1L){
+        else if(requestDto.getMaxCapacity()<=1L ){
             throw new RuntimeException("MaxCapacityMustNotLessThan2");
+        }
+        else if(requestDto.getMaxCapacity()>=100L){
+            throw new RuntimeException("MaxCapacityCannotExceed99");
         }
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
+        Long hostId=article.getUserId();
+        Long NotBelongToAnywhere=setOperations.add("groupGlobal",hostId);
+        if(NotBelongToAnywhere==0L){
+            throw new RuntimeException("DuplicatedParticipation");
+        }
 
         Group newGroup=Group.builder()
                 .dormId(article.getDorId())
-                .hostId(article.getUserId())
+                .hostId(hostId)
                 .maxCapacity(requestDto.getMaxCapacity())
                 .article(article)
                 .createdTime(LocalDateTime.now())
@@ -74,9 +83,9 @@ public class GroupService {
                 .hostId(saved.getHostId())
                 .category(saved.getCategory())
                 .maxCapacity(saved.getMaxCapacity())
+                .articleId(saved.getArticleId())
                 .build();
 
-        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         setOperations.add(String.valueOf(newGroup.getId()),newGroup.getHostId());
 
         return responseDto;
