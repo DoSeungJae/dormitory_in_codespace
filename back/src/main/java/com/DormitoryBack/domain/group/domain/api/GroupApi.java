@@ -41,8 +41,7 @@ public class GroupApi {
 
     @GetMapping("/numMembers")
     public ResponseEntity numberOfMembers(
-            @RequestParam(name="groupId",defaultValue = "-1")
-                                              Long groupId){
+            @RequestParam(name="groupId",defaultValue = "-1") Long groupId){
 
         long num=groupService.getNumberOfMembers(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(num);
@@ -56,15 +55,19 @@ public class GroupApi {
     @PatchMapping("/join")
     public ResponseEntity newJoiner(
             @RequestHeader("Authorization") String token,
-            @RequestParam(name="groupId", defaultValue = "-1")
-            Long groupId){
+            @RequestParam(name="groupId", defaultValue = "-1") Long groupId){
 
-        GroupChangedDto responseDto = groupService.participateInGroup(groupId, token);
+        GroupChangedDto responseDto = groupService
+                .participateInGroup(groupId, token);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @PatchMapping("quit/{userId}")
-    public ResponseEntity quit(@RequestHeader("Authorization") String token){
+    @PatchMapping("quit")
+    public ResponseEntity quit(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(name = "groupId",defaultValue = "-1")
+            Long groupId){
+
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
     @DeleteMapping("/delete/{groupId}")
