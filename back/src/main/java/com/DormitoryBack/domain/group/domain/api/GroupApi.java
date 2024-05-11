@@ -3,6 +3,7 @@ package com.DormitoryBack.domain.group.domain.api;
 
 import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 
+import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
@@ -50,6 +51,15 @@ public class GroupApi {
     @PostMapping("/new")
     public ResponseEntity newGroup(@RequestBody GroupCreateDto requestDto){
         GroupCreatedDto responseDto=groupService.createNewGroup(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+    @PatchMapping("/join")
+    public ResponseEntity newJoiner(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(name="groupId", defaultValue = "-1")
+            Long groupId){
+
+        GroupChangedDto responseDto = groupService.participateInGroup(groupId, token);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
