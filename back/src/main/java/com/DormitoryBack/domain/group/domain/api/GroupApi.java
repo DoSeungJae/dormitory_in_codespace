@@ -84,8 +84,13 @@ public class GroupApi {
                 .leaveGroup(groupId,token);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-    @DeleteMapping("/delete/{groupId}")
-    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId){
+    @PatchMapping("/close/{groupId}")
+    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId,
+                                      @RequestHeader("Authorization") String token,
+                                      @RequestParam(name="force",defaultValue = "0")
+                                      Long force){
+
+        groupService.closeGroup(groupId,token,force);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
