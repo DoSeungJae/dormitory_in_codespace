@@ -286,6 +286,9 @@ public class GroupService {
         if(group.getHostId()!= tokenProvider.getUserIdFromToken(token)){
             throw new RuntimeException("NoPermission");
         }
+        if(group.getIsProceeding()==false){
+            throw new RuntimeException("AlreadyClosedGroup");
+        }
         if(setOperations.size(String.valueOf(groupId))>=2L && force==0L){
             throw new RuntimeException("GroupCannotCloseWhileRecruiting");
         }
