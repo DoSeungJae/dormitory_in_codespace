@@ -37,9 +37,10 @@ public class GroupApi {
         GroupListDto responseDto=groupService.getAllGroups();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
     @GetMapping("/proceedings")
     public ResponseEntity allProceedingGroups(){
-        List<GroupCreatedDto> responseDto=groupService.getAllProceedingGroups();
+        GroupListDto responseDto=groupService.getAllProceedingGroups();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
