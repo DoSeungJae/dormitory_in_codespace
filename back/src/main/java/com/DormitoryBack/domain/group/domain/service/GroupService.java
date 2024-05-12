@@ -95,9 +95,25 @@ public class GroupService {
     }
 
     public GroupListDto getAllGroups() {
+        List<Group> groups=groupRepository.findAll();
+
+        List<GroupCreatedDto> createdDtoList=this
+                .groupListToCreatedDtoList(groups);
+        Long groupCnt=Long.valueOf(groups.size());
+        List<String> stringified=stringifyDtoList(createdDtoList);
+        GroupListDto responseDto=GroupListDto.builder()
+                .groups(stringified)
+                .numberOfGroup(groupCnt)
+                .build();
+
+        return responseDto;
+    }
+
+
+
+    public List<GroupCreatedDto> groupListToCreatedDtoList(List<Group> groups){
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         List<GroupCreatedDto> createdDtoList=new ArrayList<>();
-        List<Group> groups=groupRepository.findAll();
         Iterator<Group> iterator=groups.iterator();
 
         while(iterator.hasNext()){
@@ -117,28 +133,9 @@ public class GroupService {
 
             createdDtoList.add(responseDto);
         }
-        Long groupCnt=Long.valueOf(groups.size());
-        List<String> stringified=stringifyDtoList(createdDtoList);
-        GroupListDto responseDto=GroupListDto.builder()
-                .groups(stringified)
-                .numberOfGroup(groupCnt)
-                .build();
-
-        return responseDto;
-
+        return createdDtoList;
     }
-    public List<GroupCreatedDto> getAllProceedingGroups() {
-        List<Group> proceedingGroups=groupRepository
-                .findAllByIsProceeding(true);
 
-        List<GroupCreatedDto> responseDto=proceedingGroups
-                .stream()
-                .map(Group::groupToCreatedDto)
-                .collect(Collectors.toList());
-
-        return responseDto;
-
-    }
 
     public long getNumberOfMembers(Long groupId) {
         if(groupId==-1L){
