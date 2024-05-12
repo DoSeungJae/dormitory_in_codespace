@@ -109,7 +109,19 @@ public class GroupService {
         return responseDto;
     }
 
+    public GroupListDto getAllProceedingGroups() {
+        List<Group> groups=groupRepository.findAllByIsProceeding(true);
+        Long groupCnt=Long.valueOf(groups.size());
+        List<GroupCreatedDto> createdDtoList=this
+                .groupListToCreatedDtoList(groups);
+        List<String> stringified=stringifyDtoList(createdDtoList);
+        GroupListDto responseDto=GroupListDto.builder()
+                .groups(stringified)
+                .numberOfGroup(groupCnt)
+                .build();
 
+        return responseDto;
+    }
 
     public List<GroupCreatedDto> groupListToCreatedDtoList(List<Group> groups){
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
