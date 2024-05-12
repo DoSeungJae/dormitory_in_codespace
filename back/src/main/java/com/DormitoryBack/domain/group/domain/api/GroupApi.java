@@ -5,6 +5,7 @@ import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 
 import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
+import com.DormitoryBack.domain.group.domain.dto.response.GroupListDto;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,13 @@ public class GroupApi {
         return "test in group domain";
     }
 
+
     @GetMapping("")
+    public ResponseEntity allGroups(){
+        GroupListDto responseDto=groupService.getAllGroups();
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+    @GetMapping("/proceedings")
     public ResponseEntity allProceedingGroups(){
         List<GroupCreatedDto> responseDto=groupService.getAllProceedingGroups();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
