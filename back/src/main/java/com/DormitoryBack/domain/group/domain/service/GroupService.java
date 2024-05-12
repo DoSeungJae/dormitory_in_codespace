@@ -18,6 +18,7 @@ import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,8 @@ public class GroupService {
     @Transactional
     public GroupCreatedDto createNewGroup(@NotNull GroupCreateDto requestDto) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
+
         Long articleId=requestDto.getArticleId();
         if(requestDto.getMaxCapacity()==null){
             requestDto.setMaxCapacity(4L);
@@ -87,10 +90,13 @@ public class GroupService {
                 .category(saved.getCategory())
                 .maxCapacity(saved.getMaxCapacity())
                 .articleId(saved.getArticleId())
+                .createdTime(saved.getCreatedTime())
+                .isProceeding(saved.getIsProceeding())
+                .currentNumberOfMembers(1L)
                 .build();
 
         setOperations.add(String.valueOf(newGroup.getId()),newGroup.getHostId());
-
+        hashOperations.put("userBelong",saved.getHostId(),saved.getId());
         return responseDto;
     }
 
@@ -199,6 +205,7 @@ public class GroupService {
 
     public GroupChangedDto participateInGroup(Long groupId, String token) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
@@ -221,6 +228,8 @@ public class GroupService {
             throw new RuntimeException("GroupFull");
         }
         setOperations.add(String.valueOf(targetGroup.getId()),userId);
+        hashOperations.put("userBelong",userId,targetGroup.getId());
+
         User user=userRepository.findById(userId).orElse(null);
         UserResponseDTO userChanges= UserResponseDTO.builder()
                 .eMail(user.getEMail())
@@ -238,6 +247,7 @@ public class GroupService {
 
     public GroupChangedDto leaveGroup(Long groupId, String token){
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
@@ -258,6 +268,7 @@ public class GroupService {
         }
         setOperations.remove(String.valueOf(targetGroup.getId()),userId);
         setOperations.remove("groupGlobal",userId);
+        hashOperations.delete("userBelong",userId);
         User user=userRepository.findById(userId).orElse(null);
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(user.getEMail())
@@ -276,6 +287,7 @@ public class GroupService {
     @Transactional
     public void closeGroup(Long groupId, String token, Long force) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
@@ -298,6 +310,7 @@ public class GroupService {
             Long memberId=iterator.next();
             setOperations.remove(String.valueOf(groupId),memberId);
             setOperations.remove("groupGlobal",memberId);
+            hashOperations.delete("userBelong",memberId);
         }
         group.close();
         Group saved=groupRepository.save(group);
