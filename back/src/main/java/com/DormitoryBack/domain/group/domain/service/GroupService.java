@@ -145,6 +145,7 @@ public class GroupService {
             UserResponseDTO userDto=UserResponseDTO.builder()
                     .eMail(member.getEMail())
                     .nickName(member.getNickName())
+                    .id(member.getId())
                     .build();
 
             userDtoList.add(userDto);
@@ -250,6 +251,7 @@ public class GroupService {
         UserResponseDTO userChanges= UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
+                .id(user.getId())
                 .build();
 
         GroupChangedDto responseDto=GroupChangedDto.builder()
@@ -289,6 +291,7 @@ public class GroupService {
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
+                .id(user.getId())
                 .build();
 
         GroupChangedDto responseDto=GroupChangedDto.builder()
