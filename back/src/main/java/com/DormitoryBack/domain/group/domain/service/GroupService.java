@@ -114,6 +114,20 @@ public class GroupService {
 
         return responseDto;
     }
+    public SingleGroupDto getGroupThatUserBelongsTo(String token) {
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        Long groupId=hashOperations.get("userBelong",userId);
+        if(groupId==null){
+            throw new RuntimeException("UserIndependent");
+        }
+        SingleGroupDto responseDto=this.getGroup(groupId);
+        return responseDto;
+    }
     public SingleGroupDto getGroup(Long groupId){
         Group group=groupRepository.findById(groupId).orElse(null);
         if(group==null){
@@ -190,6 +204,8 @@ public class GroupService {
         }
         return createdDtoList;
     }
+
+
 
 
     public long getNumberOfMembers(Long groupId) {
@@ -333,7 +349,5 @@ public class GroupService {
 
         return stringifiedDtoList;
     }
-
-
 
 }
