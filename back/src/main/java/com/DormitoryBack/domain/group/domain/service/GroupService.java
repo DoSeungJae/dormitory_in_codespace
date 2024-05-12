@@ -1,10 +1,12 @@
 package com.DormitoryBack.domain.group.domain.service;
 
+import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
+import com.DormitoryBack.domain.group.domain.dto.response.GroupListDto;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
@@ -12,7 +14,6 @@ import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,7 +21,9 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,6 +92,40 @@ public class GroupService {
         setOperations.add(String.valueOf(newGroup.getId()),newGroup.getHostId());
 
         return responseDto;
+    }
+
+    public GroupListDto getAllGroups() {
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        List<GroupCreatedDto> createdDtoList=new ArrayList<>();
+        List<Group> groups=groupRepository.findAll();
+        Iterator<Group> iterator=groups.iterator();
+
+        while(iterator.hasNext()){
+            Group group=iterator.next();
+            Long numMembers=setOperations.size(String.valueOf(group.getId()));
+            GroupCreatedDto responseDto=GroupCreatedDto.builder()
+                    .id(group.getId())
+                    .dormId(group.getDormId())
+                    .hostId(group.getHostId())
+                    .articleId(group.getArticleId())
+                    .category(group.getCategory())
+                    .maxCapacity(group.getMaxCapacity())
+                    .isProceeding(group.getIsProceeding())
+                    .createdTime(group.getCreatedTime())
+                    .currentNumberOfMembers(numMembers)
+                    .build();
+
+            createdDtoList.add(responseDto);
+        }
+        Long groupCnt=Long.valueOf(groups.size());
+        List<String> stringified=stringifyDtoList(createdDtoList);
+        GroupListDto responseDto=GroupListDto.builder()
+                .groups(stringified)
+                .numberOfGroup(groupCnt)
+                .build();
+
+        return responseDto;
+
     }
     public List<GroupCreatedDto> getAllProceedingGroups() {
         List<Group> proceedingGroups=groupRepository
@@ -188,6 +225,14 @@ public class GroupService {
                 .build();
 
         return responseDto;
+    }
+
+    public List<String> stringifyDtoList(List<GroupCreatedDto> dtoList){
+        List<String> stringifiedDtoList=dtoList.stream()
+                .map(GroupCreatedDto::toJsonString)
+                .collect(Collectors.toList());
+
+        return stringifiedDtoList;
     }
 
 
