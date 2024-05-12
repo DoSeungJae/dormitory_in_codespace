@@ -91,7 +91,7 @@ public class GroupApi {
                                       Long force){
 
         groupService.closeGroup(groupId,token,force);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body("GroupClosed");
     }
 
 
