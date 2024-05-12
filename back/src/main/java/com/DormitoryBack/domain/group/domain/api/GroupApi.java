@@ -44,6 +44,11 @@ public class GroupApi {
         GroupListDto responseDto=groupService.getAllProceedingGroups();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+    @GetMapping("/userBelongsTo")
+    public ResponseEntity groupThatUserBelongsTo(@RequestHeader("Authorization") String token){
+        SingleGroupDto responseDto=groupService.getGroupThatUserBelongsTo(token);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
 
     @GetMapping("/{groupId}")
     public ResponseEntity group(@PathVariable("groupId") Long groupId){
