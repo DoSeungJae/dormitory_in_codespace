@@ -86,4 +86,9 @@ public class Group {
         return responseDto;
     }
 
+    public void close(){
+        this.isProceeding=false;
+    }
+
+
 }
