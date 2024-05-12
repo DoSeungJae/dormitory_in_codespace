@@ -16,16 +16,14 @@ import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,7 +46,8 @@ public class GroupService {
         this.redisTemplate=redisTemplate;
     }
 
-    public GroupCreatedDto createNewGroup(GroupCreateDto requestDto) {
+    @Transactional
+    public GroupCreatedDto createNewGroup(@NotNull GroupCreateDto requestDto) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         Long articleId=requestDto.getArticleId();
         if(requestDto.getMaxCapacity()==null){
@@ -161,7 +160,7 @@ public class GroupService {
         return responseDto;
     }
 
-    public List<GroupCreatedDto> groupListToCreatedDtoList(List<Group> groups){
+    public List<GroupCreatedDto> groupListToCreatedDtoList(@NotNull List<Group> groups){
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         List<GroupCreatedDto> createdDtoList=new ArrayList<>();
         Iterator<Group> iterator=groups.iterator();
@@ -274,7 +273,36 @@ public class GroupService {
         return responseDto;
     }
 
-    public List<String> stringifyDtoList(List<GroupCreatedDto> dtoList){
+    @Transactional
+    public void closeGroup(Long groupId, String token, Long force) {
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        if(group.getHostId()!= tokenProvider.getUserIdFromToken(token)){
+            throw new RuntimeException("NoPermission");
+        }
+        if(setOperations.size(String.valueOf(groupId))>=2L && force==0L){
+            throw new RuntimeException("GroupCannotCloseWhileRecruiting");
+        }
+        Set<Long> membersId=(setOperations.members(String.valueOf(groupId)));
+        Iterator<Long> iterator=membersId.iterator();
+        while(iterator.hasNext()){
+            Long memberId=iterator.next();
+            setOperations.remove(String.valueOf(groupId),memberId);
+            setOperations.remove("groupGlobal",memberId);
+        }
+        group.close();
+        Group saved=groupRepository.save(group);
+
+        return ;
+    }
+
+    public List<String> stringifyDtoList(@NotNull List<GroupCreatedDto> dtoList){
         List<String> stringifiedDtoList=dtoList.stream()
                 .map(GroupCreatedDto::toJsonString)
                 .collect(Collectors.toList());
@@ -282,15 +310,13 @@ public class GroupService {
         return stringifiedDtoList;
     }
 
-    public List<String> stringifyUserDtoList(List<UserResponseDTO> dtoList){
+    public List<String> stringifyUserDtoList(@NotNull List<UserResponseDTO> dtoList){
         List<String> stringifiedDtoList=dtoList.stream()
                 .map(UserResponseDTO::toJsonString)
                 .collect(Collectors.toList());
 
         return stringifiedDtoList;
     }
-
-
 
 
 
