@@ -11,6 +11,7 @@ import com.DormitoryBack.domain.member.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -189,7 +190,7 @@ public class CommentService {
         commentRepository.delete(target);
     }
 
-    public List<String> pageStringify(Page<Comment> commentPage){
+    public List<String> pageStringify(@NotNull Page<Comment> commentPage){
         List<String> stringifiedCommentList=commentPage.getContent()
                 .stream()
                 .map(Comment::toJsonString)
