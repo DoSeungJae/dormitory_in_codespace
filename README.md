@@ -1,6 +1,8 @@
 # Project
 Project - Joint Delivery Service in Dormitory
 
-백엔드 - Spring Boot
+FE - React.js
 
-프론트엔드 - React
+BE - SpringBoot
+
+DB - MySQL, Redis
