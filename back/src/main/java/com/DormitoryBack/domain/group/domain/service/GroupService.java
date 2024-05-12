@@ -7,6 +7,7 @@ import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupListDto;
+import com.DormitoryBack.domain.group.domain.dto.response.SingleGroupDto;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
@@ -104,6 +105,43 @@ public class GroupService {
         GroupListDto responseDto=GroupListDto.builder()
                 .groups(stringified)
                 .numberOfGroup(groupCnt)
+                .build();
+
+        return responseDto;
+    }
+    public SingleGroupDto getGroup(Long groupId){
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        Long memberCnt=setOperations.size(String.valueOf(groupId));
+        List<Long> membersId= new
+                ArrayList<>(setOperations.members(String.valueOf(groupId)));
+        Iterator<Long> iterator=membersId.iterator();
+        List<UserResponseDTO> userDtoList=new ArrayList<>();
+        while(iterator.hasNext()){
+            User member=userRepository
+                    .findById(iterator.next()).orElse(null);
+            UserResponseDTO userDto=UserResponseDTO.builder()
+                    .eMail(member.getEMail())
+                    .nickName(member.getNickName())
+                    .build();
+
+            userDtoList.add(userDto);
+        }
+        List<String> stringified=stringifyUserDtoList(userDtoList);
+        SingleGroupDto responseDto=SingleGroupDto.builder()
+                .id(group.getId())
+                .dormId(group.getDormId())
+                .hostId(group.getHostId())
+                .articleId(group.getArticleId())
+                .createdTime(group.getCreatedTime())
+                .category(group.getCategory())
+                .maxCapacity(group.getMaxCapacity())
+                .isProceeding(group.getIsProceeding())
+                .members(stringified)
+                .currentNumberOfMembers(memberCnt)
                 .build();
 
         return responseDto;
@@ -243,6 +281,16 @@ public class GroupService {
 
         return stringifiedDtoList;
     }
+
+    public List<String> stringifyUserDtoList(List<UserResponseDTO> dtoList){
+        List<String> stringifiedDtoList=dtoList.stream()
+                .map(UserResponseDTO::toJsonString)
+                .collect(Collectors.toList());
+
+        return stringifiedDtoList;
+    }
+
+
 
 
 
