@@ -6,6 +6,7 @@ import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupListDto;
+import com.DormitoryBack.domain.group.domain.dto.response.SingleGroupDto;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,12 @@ public class GroupApi {
     @GetMapping("/proceedings")
     public ResponseEntity allProceedingGroups(){
         GroupListDto responseDto=groupService.getAllProceedingGroups();
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity group(@PathVariable("groupId") Long groupId){
+        SingleGroupDto responseDto=groupService.getGroup(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
