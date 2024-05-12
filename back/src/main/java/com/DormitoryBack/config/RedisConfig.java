@@ -32,6 +32,10 @@ public class RedisConfig {
         redisTemplate.setDefaultSerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericToStringSerializer<Long>(Long.class));
 
+        redisTemplate.setHashKeySerializer(new GenericToStringSerializer<Long>(Long.class));
+        redisTemplate.setHashValueSerializer(new GenericToStringSerializer<Long>(Long.class));
+
+
         return redisTemplate;
     }
 }
