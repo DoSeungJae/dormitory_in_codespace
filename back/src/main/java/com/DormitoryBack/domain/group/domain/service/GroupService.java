@@ -56,10 +56,10 @@ public class GroupService {
         if(requestDto.getMaxCapacity()==null){
             requestDto.setMaxCapacity(4L);
         }
-        else if(requestDto.getMaxCapacity()<=1L ){
+        else if(requestDto.getMaxCapacity()<2L ){
             throw new RuntimeException("MaxCapacityMustNotLessThan2");
         }
-        else if(requestDto.getMaxCapacity()>=100L){
+        else if(requestDto.getMaxCapacity()>10L){
             throw new RuntimeException("MaxCapacityCannotExceed99");
         }
         Article article=articleRepository.findById(articleId).orElse(null);
