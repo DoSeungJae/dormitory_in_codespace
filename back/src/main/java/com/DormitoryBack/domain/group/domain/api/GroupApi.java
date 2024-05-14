@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -87,6 +86,18 @@ public class GroupApi {
 
         GroupChangedDto responseDto=groupService
                 .leaveGroup(groupId,token);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+    @PatchMapping("expel")
+    public ResponseEntity invite(
+            @RequestHeader("Authorization") String hostToken,
+            @RequestParam(name = "groupId", defaultValue = "-1")
+            Long groupId,
+            @RequestParam(name="targetId", defaultValue = "-1")
+            Long targetId){
+
+        GroupChangedDto responseDto=groupService
+                .expelUser(groupId,hostToken,targetId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @PatchMapping("/close/{groupId}")
