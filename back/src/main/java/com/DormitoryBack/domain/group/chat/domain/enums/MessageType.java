@@ -1,2 +1,5 @@
-package com.DormitoryBack.domain.group.chat.domain.enums;public enum MessageType {
+package com.DormitoryBack.domain.group.chat.domain.enums;
+
+public enum MessageType {
+    SERVER,CLIENT
 }
