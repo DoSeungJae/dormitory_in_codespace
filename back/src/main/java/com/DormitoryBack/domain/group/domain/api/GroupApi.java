@@ -58,7 +58,6 @@ public class GroupApi {
     @GetMapping("/numMembers")
     public ResponseEntity numberOfMembers(
             @RequestParam(name="groupId",defaultValue = "-1") Long groupId){
-
         long num=groupService.getNumberOfMembers(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(num);
     }
@@ -81,8 +80,7 @@ public class GroupApi {
     @PatchMapping("quit")
     public ResponseEntity quit(
             @RequestHeader("Authorization") String token,
-            @RequestParam(name = "groupId",defaultValue = "-1")
-            Long groupId){
+            @RequestParam(name = "groupId",defaultValue = "-1") Long groupId){
 
         GroupChangedDto responseDto=groupService
                 .leaveGroup(groupId,token);
@@ -91,10 +89,8 @@ public class GroupApi {
     @PatchMapping("expel")
     public ResponseEntity invite(
             @RequestHeader("Authorization") String hostToken,
-            @RequestParam(name = "groupId", defaultValue = "-1")
-            Long groupId,
-            @RequestParam(name="targetId", defaultValue = "-1")
-            Long targetId){
+            @RequestParam(name = "groupId", defaultValue = "-1") Long groupId,
+            @RequestParam(name="targetId", defaultValue = "-1") Long targetId){
 
         GroupChangedDto responseDto=groupService
                 .expelUser(groupId,hostToken,targetId);
@@ -103,8 +99,7 @@ public class GroupApi {
     @PatchMapping("/close/{groupId}")
     public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId,
                                       @RequestHeader("Authorization") String token,
-                                      @RequestParam(name="force",defaultValue = "0")
-                                      Long force){
+                                      @RequestParam(name="force",defaultValue = "0") Long force){
 
         groupService.closeGroup(groupId,token,force);
         return ResponseEntity.status(HttpStatus.OK).body("GroupClosed");
