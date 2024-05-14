@@ -181,34 +181,6 @@ public class GroupService {
         return responseDto;
     }
 
-    public List<GroupCreatedDto> groupListToCreatedDtoList(@NotNull List<Group> groups){
-        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
-        List<GroupCreatedDto> createdDtoList=new ArrayList<>();
-        Iterator<Group> iterator=groups.iterator();
-
-        while(iterator.hasNext()){
-            Group group=iterator.next();
-            Long numMembers=setOperations.size(String.valueOf(group.getId()));
-            GroupCreatedDto responseDto=GroupCreatedDto.builder()
-                    .id(group.getId())
-                    .dormId(group.getDormId())
-                    .hostId(group.getHostId())
-                    .articleId(group.getArticleId())
-                    .category(group.getCategory())
-                    .maxCapacity(group.getMaxCapacity())
-                    .isProceeding(group.getIsProceeding())
-                    .createdTime(group.getCreatedTime())
-                    .currentNumberOfMembers(numMembers)
-                    .build();
-
-            createdDtoList.add(responseDto);
-        }
-        return createdDtoList;
-    }
-
-
-
-
     public long getNumberOfMembers(Long groupId) {
         if(groupId==-1L){
             throw new RuntimeException("GroupIdNotGiven");
@@ -397,6 +369,30 @@ public class GroupService {
                 .collect(Collectors.toList());
 
         return stringifiedDtoList;
+    }
+    public List<GroupCreatedDto> groupListToCreatedDtoList(@NotNull List<Group> groups){
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        List<GroupCreatedDto> createdDtoList=new ArrayList<>();
+        Iterator<Group> iterator=groups.iterator();
+
+        while(iterator.hasNext()){
+            Group group=iterator.next();
+            Long numMembers=setOperations.size(String.valueOf(group.getId()));
+            GroupCreatedDto responseDto=GroupCreatedDto.builder()
+                    .id(group.getId())
+                    .dormId(group.getDormId())
+                    .hostId(group.getHostId())
+                    .articleId(group.getArticleId())
+                    .category(group.getCategory())
+                    .maxCapacity(group.getMaxCapacity())
+                    .isProceeding(group.getIsProceeding())
+                    .createdTime(group.getCreatedTime())
+                    .currentNumberOfMembers(numMembers)
+                    .build();
+
+            createdDtoList.add(responseDto);
+        }
+        return createdDtoList;
     }
 
 
