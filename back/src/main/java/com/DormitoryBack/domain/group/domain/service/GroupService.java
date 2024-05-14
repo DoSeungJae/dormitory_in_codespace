@@ -95,7 +95,7 @@ public class GroupService {
                 .currentNumberOfMembers(1L)
                 .build();
 
-        setOperations.add(String.valueOf(newGroup.getId()),newGroup.getHostId());
+        setOperations.add(String.valueOf(saved.getId()),saved.getHostId());
         hashOperations.put("userBelong",saved.getHostId(),saved.getId());
         return responseDto;
     }
