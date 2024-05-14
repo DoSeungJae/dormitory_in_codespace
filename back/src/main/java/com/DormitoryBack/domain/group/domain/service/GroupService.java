@@ -135,13 +135,11 @@ public class GroupService {
         }
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         Long memberCnt=setOperations.size(String.valueOf(groupId));
-        List<Long> membersId= new
-                ArrayList<>(setOperations.members(String.valueOf(groupId)));
+        List<Long> membersId= new ArrayList<>(setOperations.members(String.valueOf(groupId)));
         Iterator<Long> iterator=membersId.iterator();
         List<UserResponseDTO> userDtoList=new ArrayList<>();
         while(iterator.hasNext()){
-            User member=userRepository
-                    .findById(iterator.next()).orElse(null);
+            User member=userRepository.findById(iterator.next()).orElse(null);
             UserResponseDTO userDto=UserResponseDTO.builder()
                     .eMail(member.getEMail())
                     .nickName(member.getNickName())
@@ -170,8 +168,7 @@ public class GroupService {
     public GroupListDto getAllProceedingGroups() {
         List<Group> groups=groupRepository.findAllByIsProceeding(true);
         Long groupCnt=Long.valueOf(groups.size());
-        List<GroupCreatedDto> createdDtoList=this
-                .groupListToCreatedDtoList(groups);
+        List<GroupCreatedDto> createdDtoList=groupListToCreatedDtoList(groups);
         List<String> stringified=stringifyDtoList(createdDtoList);
         GroupListDto responseDto=GroupListDto.builder()
                 .groups(stringified)
@@ -204,8 +201,7 @@ public class GroupService {
         Long userId=tokenProvider.getUserIdFromToken(token);
         Long numBeforeAdding=setOperations.size(String.valueOf(groupId));
         Group targetGroup=groupRepository.findById(groupId).orElse(null);
-        Boolean isMemberOfTargetGroup=setOperations
-                .isMember(String.valueOf(targetGroup.getId()),userId);
+        Boolean isMemberOfTargetGroup=setOperations.isMember(String.valueOf(targetGroup.getId()),userId);
         if(isMemberOfTargetGroup==true){
             throw new RuntimeException("AlreadyBelongToThisGroup");
         }
@@ -247,8 +243,7 @@ public class GroupService {
         Long userId=tokenProvider.getUserIdFromToken(token);
         Long numBeforeOps=setOperations.size(String.valueOf(groupId));
         Group targetGroup=groupRepository.findById(groupId).orElse(null);
-        Boolean isMemberOfTargetGroup=setOperations
-                .isMember(String.valueOf(groupId),userId);
+        Boolean isMemberOfTargetGroup=setOperations.isMember(String.valueOf(groupId),userId);
 
         if(isMemberOfTargetGroup==false){
             throw new RuntimeException("UserNotBelongToGroupToLeave");
@@ -296,8 +291,7 @@ public class GroupService {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
         Long numBeforeOps=setOperations.size(String.valueOf(groupId));
-        Boolean isMemberOfTheGroup=setOperations
-                .isMember(String.valueOf(groupId),targetUserId);
+        Boolean isMemberOfTheGroup=setOperations.isMember(String.valueOf(groupId),targetUserId);
         if(isMemberOfTheGroup==false){
             throw new RuntimeException("UserNotBelongToGroupToBeExpelled");
         }
