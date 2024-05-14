@@ -273,10 +273,10 @@ public class GroupService {
             throw new RuntimeException("GroupIdNotGiven");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        Long numBeforeAdding=setOperations.size(String.valueOf(groupId));
+        Long numBeforeOps=setOperations.size(String.valueOf(groupId));
         Group targetGroup=groupRepository.findById(groupId).orElse(null);
         Boolean isMemberOfTargetGroup=setOperations
-                .isMember(String.valueOf(targetGroup.getId()),userId);
+                .isMember(String.valueOf(groupId),userId);
 
         if(isMemberOfTargetGroup==false){
             throw new RuntimeException("UserNotBelongToGroupToLeave");
@@ -284,23 +284,69 @@ public class GroupService {
         else if(userId==targetGroup.getHostId()){
             throw new RuntimeException("HostCannotLeaveGroup");
         }
-        setOperations.remove(String.valueOf(targetGroup.getId()),userId);
+        setOperations.remove(String.valueOf(groupId),userId);
         setOperations.remove("groupGlobal",userId);
         hashOperations.delete("userBelong",userId);
         User user=userRepository.findById(userId).orElse(null);
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
-                .id(user.getId())
+                .id(userId)
                 .build();
 
         GroupChangedDto responseDto=GroupChangedDto.builder()
                 .mode("quit")
                 .userChanges(userChanges)
-                .numberOfRemainings(numBeforeAdding-1L)
+                .numberOfRemainings(numBeforeOps-1L)
                 .build();
 
         return responseDto;
+    }
+
+    public GroupChangedDto expelUser(Long groupId, String hostToken, Long targetUserId){
+        if(!tokenProvider.validateToken(hostToken)){
+            throw new JwtException("InvalidToken");
+        }
+        if(groupId==-1L){
+            throw new RuntimeException("GroupIdNotGiven");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(hostToken);
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        if(group.getHostId()!=userId){
+            throw new RuntimeException("NoPermission");
+        }
+        if(userId==targetUserId){
+            throw new RuntimeException("CannotExpelOneself");
+        }
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
+        Long numBeforeOps=setOperations.size(String.valueOf(groupId));
+        Boolean isMemberOfTheGroup=setOperations
+                .isMember(String.valueOf(groupId),targetUserId);
+        if(isMemberOfTheGroup==false){
+            throw new RuntimeException("UserNotBelongToGroupToBeExpelled");
+        }
+        setOperations.remove(String.valueOf(groupId),targetUserId);
+        setOperations.remove("groupGlobal",targetUserId);
+        hashOperations.delete("userBelong",targetUserId);
+        User expelledUser=userRepository.findById(targetUserId).orElse(null);
+        UserResponseDTO userChanges=UserResponseDTO.builder()
+                .eMail(expelledUser.getEMail())
+                .nickName(expelledUser.getNickName())
+                .id(targetUserId)
+                .build();
+
+        GroupChangedDto responseDto=GroupChangedDto.builder()
+                .mode("expel")
+                .userChanges(userChanges)
+                .numberOfRemainings(numBeforeOps-1L)
+                .build();
+
+        return responseDto;
+
     }
 
     @Transactional
@@ -352,5 +398,6 @@ public class GroupService {
 
         return stringifiedDtoList;
     }
+
 
 }
