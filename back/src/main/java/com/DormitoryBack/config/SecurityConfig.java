@@ -65,6 +65,8 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers("api/v1/group/**")
                 .permitAll()
+                .requestMatchers("api/v1/chat/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
