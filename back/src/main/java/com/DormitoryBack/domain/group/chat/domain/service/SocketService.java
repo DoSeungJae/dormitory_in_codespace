@@ -17,7 +17,7 @@ public class SocketService {
                 SocketIOClient client: senderClient.getNamespace().getRoomOperations(room).getClients()
         ) {
             if (!client.getSessionId().equals(senderClient.getSessionId())) {
-                client.sendEvent("read_message", message);
+                client.sendEvent("readMessage", message);
             }
         }
     }
