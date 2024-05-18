@@ -3,6 +3,7 @@ package com.DormitoryBack.domain.group.chat.domain.entity;
 import com.DormitoryBack.domain.group.chat.domain.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
@@ -13,22 +14,15 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Document("message")
 public class Message {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
+    private String id;
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
-    @Column
     private String room;
-    @Column
     private String username;
-    @Column
     private String message;
-    @Column
     private LocalDateTime createdTime;
 
 }
