@@ -49,6 +49,7 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation group: 'com.corundumstudio.socketio', name: 'netty-socketio', version: '1.7.17'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 tasks.named('test') {
 	useJUnitPlatform()
