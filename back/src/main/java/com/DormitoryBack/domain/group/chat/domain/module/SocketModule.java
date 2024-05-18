@@ -16,11 +16,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class SocketModule {
-
     private final SocketIOServer server;
-
     private final SocketService socketService;
-
     public SocketModule(SocketIOServer server, SocketService socketService) {
         this.server = server;
         this.socketService = socketService;
