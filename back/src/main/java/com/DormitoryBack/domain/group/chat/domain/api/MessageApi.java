@@ -10,13 +10,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/message")
+@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/v1/chat")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MessageApi {
 
     private final MessageService messageService;
 
-    @CrossOrigin
+    @GetMapping("/test")
+    public String chatTest(){
+        return "test in chat test";
+    }
     @GetMapping("/{room}")
     public ResponseEntity<List<Message>> getMessages(@PathVariable String room) {
         return ResponseEntity.ok(messageService.getMessages(room));
