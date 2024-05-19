@@ -5,4 +5,4 @@ FE - React.js
 
 BE - SpringBoot
 
-DB - MySQL, Redis
+DB - MySQL, Redis, MongoDB
