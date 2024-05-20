@@ -12,7 +12,6 @@ public class SingleGroupDto {
     private Long id;
     private Long dormId;
     private Long hostId;
-    private Long articleId;
     private LocalDateTime createdTime;
     private String category;
     private Long maxCapacity;

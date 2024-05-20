@@ -29,7 +29,6 @@ import java.util.Set;
 @Table(name = "gathering")
 public class Group {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
@@ -38,14 +37,6 @@ public class Group {
 
     @JoinColumn(nullable = false,name="host_id")
     private Long hostId;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="article_id")
-    private Article article;
-
-    @JsonProperty("articleId")
-    public Long getArticleId(){return article.getId();}
 
     @CreatedDate
     @Column(nullable = false,name="created_time")

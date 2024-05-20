@@ -14,7 +14,6 @@ public class GroupCreatedDto {
     private Long id;
     private Long dormId;
     private Long hostId;
-    private Long articleId;
     private String category;
     private Long maxCapacity;
     private Boolean isProceeding;
