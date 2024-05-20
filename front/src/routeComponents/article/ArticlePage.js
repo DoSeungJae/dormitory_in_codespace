@@ -177,22 +177,20 @@ function ArticlePage(){
               style={{ height: '100vh', width: '100vw' }}>
 
             <div className="app-article-header">
-                <BackButton
-                  pageInit={pageInit}
-                >
-
-                </BackButton>
+                <BackButton pageInit={pageInit}></BackButton>
                 <ThreeDotsMenu isWriterParam={isWriter} articleParam={article}></ThreeDotsMenu>
                 
             </div>
             <div className="app-article-main">
               <div className="article-info">
-                <img src={userDefault} alt="description" className='rounded-image'/>
+                <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
                   <div className="article-info-detail">
                     <p>{writerNickName}</p>
                     <p>{formatCreateTime(article.createTime)}</p>
                   </div>
+                <div className='article-info-right'></div>
               </div>
+              
               <div className='article-body'>
               <p className='article-title'>{article.title}</p>
                 <div className="article-meta">
