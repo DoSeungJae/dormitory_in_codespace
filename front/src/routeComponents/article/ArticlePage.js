@@ -8,6 +8,7 @@ import CommentForm from '../../components/article/CommentForm';
 import CommentMenu from '../../components/article/CommentMenu';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import ParticipateButton from '../../components/article/ParticipateButton';
+import GroupStartButton from '../../components/article/GroupStartButton';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -190,7 +191,7 @@ function ArticlePage(){
                     <p>{formatCreateTime(article.createTime)}</p>
                   </div>
                 <div className='article-info-right'>
-                  <ParticipateButton/>
+                  {isWriter === 1 ? <GroupStartButton/> : <ParticipateButton/>}
                 </div>
               </div>
               
