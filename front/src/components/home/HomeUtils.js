@@ -32,6 +32,28 @@ export const goArticlePage = async (article,dorId,
     
   };
 
+export const goToPostingPage = async (selectComponentIndex,setSelectComponentIndex) => {
+  const token=localStorage.getItem("token");
+  try{
+    const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
+      headers: {
+          'Authorization': `${token}`
+      }
+  });
+    if(response.data===true){
+      localStorage.setItem("nextIndex",selectComponentIndex);
+      setSelectComponentIndex(2);
+    }
+    else{
+      setSelectComponentIndex(8);
+      localStorage.setItem("nextIndex",2);
+      toast.error("글을 쓰려면 로그인이 필요해요!");
+    }
+  }catch(error){
+    console.error(error);
+  }
+}
+
 
 export function calculateDorItemStyle(selectedIdx, idx) {
     const isSelected = idx === selectedIdx;

@@ -1,13 +1,14 @@
 import PostArticle from '@mui/icons-material/CreateRounded';
 import { Button } from "@mui/material";
+import { goToPostingPage } from './HomeUtils';
+import { useContext } from 'react';
+import HomeSelectContext from './HomeSelectContext';
 
 const WriteButton = () => {
-    const goToPostingPage = () => {
-        console.log(123);
-    }
+    const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     return (
     <div>        
-        <button  className='write-button' onClick={() => alert('Write button clicked')}>
+        <button  className='write-button' onClick={() => goToPostingPage(selectComponentIndex,setSelectComponentIndex)}>
           글쓰기
         </button>
     </div>
