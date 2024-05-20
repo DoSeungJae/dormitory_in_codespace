@@ -67,7 +67,7 @@ public class GroupApi {
         GroupCreatedDto responseDto=groupService.createNewGroup(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-    @PatchMapping("/join")
+    @PatchMapping("/participate")
     public ResponseEntity newJoiner(
             @RequestHeader("Authorization") String token,
             @RequestParam(name="groupId", defaultValue = "-1") Long groupId){
