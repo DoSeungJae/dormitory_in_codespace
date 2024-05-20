@@ -46,6 +46,7 @@ function ChatRoom({ username, room }) {
   useEffect(() => {
     fetchMessage();
   }, []);
+  //일정 간격으로 fetchMessage 함수를 반복적으로 실행해야함
 
   useEffect(() => {
     addMessageToList(socketResponse);
