@@ -2,6 +2,7 @@ import {React,useEffect,useState,useRef} from 'react';
 import axios from 'axios';
 import ArticlePreview from '../../components/article/ArticlePreview.js';
 import { calculateDorItemStyle } from '../../components/home/HomeUtils.js';
+import WriteButton from '../../components/home/WriteButton.js';
 
 function HomePage() {
   const [articleList,setArticleList]=useState([]);
@@ -147,6 +148,7 @@ return (
                 isEndPage={isEndPage}
                 heightStyle={previewStyle}
               />
+               <WriteButton/>
     </main>
 
    </div>
