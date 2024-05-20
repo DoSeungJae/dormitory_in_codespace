@@ -67,6 +67,19 @@
   background-color: #FFA500;
 }
 
+.group-start-button, .group-participate-button {
+  background-color: #FF8C00;
+  border: none;
+  color: white;
+  padding: .5vh 5vw;
+  border-radius: 10px;
+  font-size: 3.7vw;
+}
+
+.group-start-button:hover .group-participate-button:hover {
+  background-color: #FFA500;
+}
+
 
 .article-item {
   text-align: left;
