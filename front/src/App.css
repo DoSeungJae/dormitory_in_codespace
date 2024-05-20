@@ -49,6 +49,25 @@
   border-bottom : 0.5px solid #000000;
 }
 
+.write-button {
+  position: absolute;
+  right:-7%;
+  bottom:7%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #FF8C00;
+  color: white;
+  border: none;
+  padding: 1vh 6vw;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.write-button:hover {
+  background-color: #FFA500;
+}
+
+
 .article-item {
   text-align: left;
   border-bottom: 1px solid #000000;
@@ -342,7 +361,7 @@
 }
 .article-info-right{
   margin-left: auto;
-  padding-top:1vh;
+  padding-top:2vh;
 }
 
 .article-body{
