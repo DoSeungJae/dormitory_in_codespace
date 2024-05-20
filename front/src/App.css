@@ -340,6 +340,10 @@
 .article-info-detail p {
   margin:0px;
 }
+.article-info-right{
+  margin-left: auto;
+  padding-top:1vh;
+}
 
 .article-body{
   padding-top:5px;
