@@ -4,7 +4,7 @@ import PostingPage from './PostingPage.js';
 import MyWritingPage from './MyWritingPage.js';
 import AlarmPage from './AlarmPage.js';
 import HomePage from './HomePage.js';
-import FooterMenu from './FooterMenu.js';
+import FooterMenu from '../../components/home/FooterMenu.js';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import ArticlePage from '../article/ArticlePage.js';
 import SignInPage from '../signIn/SignInPage.js';
