@@ -4,6 +4,8 @@ import com.DormitoryBack.domain.article.comment.domain.repository.CommentReposit
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
+import com.DormitoryBack.domain.group.domain.entitiy.Group;
+import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,10 @@ public class ArticleService {
     private UserRepository userRepository;
     @Autowired
     private TokenProvider tokenProvider;
+
+    private final RedisTemplate<String,Long> redisTemplate;
+
+    private final GroupRepository groupRepository;
     @Transactional
     public Article newArticle(ArticleDTO dto, String token) {
 
@@ -211,6 +219,12 @@ public class ArticleService {
         Article target=articleRepository.findById(articleId).orElse(null);
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
+        }
+        Group mappedGroup=groupRepository.findById(articleId).orElse(null);
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        log.info(setOperations.size(String.valueOf(articleId)).toString());
+        if(setOperations.size(String.valueOf(articleId))>0){
+            throw new RuntimeException("ArticleWithAProceedingGroupCannotBeDeleted");
         }
         articleRepository.delete(target);
     }
