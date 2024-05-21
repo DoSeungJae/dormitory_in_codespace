@@ -2,7 +2,6 @@ import React,{useState,useContext}from 'react';
 import {Dropdown} from 'react-bootstrap';
 import ThreeDots from '../common/ThreeDots';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
@@ -22,7 +21,6 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 ));
 
 const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
-  const navigate = useNavigate();
   const token=localStorage.getItem('token');
   const [isWriter,setIsWriter]=useState(0);
   const [article,setArticle]=useState("");
@@ -31,7 +29,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
 
   const goToPostingPageInPatchMode = () => {
     localStorage.setItem("toBePatchgedArticleId",article.id);
-    console.log(localStorage.getItem("toBePatchgedArticleId"));
     setSelectComponentIndex(2);
   }
 
