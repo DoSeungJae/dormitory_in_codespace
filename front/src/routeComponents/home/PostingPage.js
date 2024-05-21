@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
 function PostingPage() {
+    const[pageTitle,setPageTitle]=useState("글 쓰기");
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [dorSelect, setDorSelect] = useState("기숙사");
@@ -23,10 +24,12 @@ function PostingPage() {
         setTitle("");
         setContent("");
         setTargetId(0);
+        setPageTitle("글 쓰기");
       }
       if(id===null){
         return ;
       }
+      setPageTitle("글 수정하기");
       setTargetId(parseInt(id));
       localStorage.removeItem("toBePatchgedArticleId");
     },[selectComponentIndex])
@@ -63,6 +66,7 @@ function PostingPage() {
         const response=await axios.get(path);
         setTitle(response.data.title);
         setContent(response.data.content);
+        console.log(response.data);
         //렌더링 문제? 
         //비동기 함수에 의한 렌더링 시간 엇갈림?
 
@@ -232,7 +236,7 @@ function PostingPage() {
         <div className="App">
             <header className="App-postingPage-header">
                     <BackButton></BackButton>
-                    <h6>글 쓰기</h6> 
+                    <h6>{pageTitle}</h6> 
 
                     <button type="button" className='btn btn-outline-primary'onClick={processNext}>다음</button>       
             </header>                 
