@@ -36,11 +36,12 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
         showCancelButton:true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "그대로 수정할게요!",
+        confirmButtonText: "그래도 수정할게요!",
         cancelButtonText:"취소",
       }).then((result)=>{
         if(result.isConfirmed){
           localStorage.setItem("toBePatchgedArticleId",article.id);
+          localStorage.setItem("limitedPatch",1);
           setSelectComponentIndex(2);
         }
 
