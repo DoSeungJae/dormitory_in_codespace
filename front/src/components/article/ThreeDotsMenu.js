@@ -27,10 +27,46 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
   const [comment,setComment]=useState("");
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
-  const goToPostingPageInPatchMode = () => {
-    localStorage.setItem("toBePatchgedArticleId",article.id);
-    setSelectComponentIndex(2);
-  }
+  const goToPostingPageInPatchMode = async () => {
+    const handleSwalAlert = async () => {
+      Swal.fire({
+        title:"수정하시겠어요?",
+        text:"그룹에 다른 사람이 참가한 경우에는 글을 수정할 때 기숙사, 카테고리를 변경할 수 없어요.",
+        icon: "warning",
+        showCancelButton:true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "그대로 수정할게요!",
+        cancelButtonText:"취소",
+      }).then((result)=>{
+        if(result.isConfirmed){
+          localStorage.setItem("toBePatchgedArticleId",article.id);
+          setSelectComponentIndex(2);
+        }
+
+      })
+    }
+
+    const path=`http://localhost:8080/api/v1/group/numMembers?groupId=${article.id}`;
+    try{
+      const response=await axios.get(path);
+      if(response.data>1){
+        handleSwalAlert(); 
+
+      }
+      else{
+        localStorage.setItem("toBePatchgedArticleId",article.id);
+        setSelectComponentIndex(2);
+      }
+    }
+    catch(error){
+      console.log(error);
+    }
+
+
+    }
+
+
 
   const handleSwal=async () => {
     const { value: fruit } = await Swal.fire({
@@ -184,5 +220,4 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
     </Dropdown>
   );
 };
-
 export default ThreeDotsMenu;
