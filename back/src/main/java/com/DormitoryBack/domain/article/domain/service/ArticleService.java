@@ -222,7 +222,6 @@ public class ArticleService {
         }
         Group mappedGroup=groupRepository.findById(articleId).orElse(null);
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
-        log.info(setOperations.size(String.valueOf(articleId)).toString());
         if(setOperations.size(String.valueOf(articleId))>0){
             throw new RuntimeException("ArticleWithAProceedingGroupCannotBeDeleted");
         }
