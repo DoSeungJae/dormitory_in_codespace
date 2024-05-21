@@ -29,6 +29,12 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
   const [comment,setComment]=useState("");
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
+  const goToPostingPageInPatchMode = () => {
+    localStorage.setItem("toBePatchgedArticleId",article.id);
+    console.log(localStorage.getItem("toBePatchgedArticleId"));
+    setSelectComponentIndex(2);
+  }
+
   const handleSwal=async () => {
     const { value: fruit } = await Swal.fire({
       confirmButtonColor:"#FF8C00",
@@ -138,7 +144,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
-      commentParam ? null : { eventKey: "1", text: "수정", action: () => navigate("/article/patch",{state:article})},
+      commentParam ? null : { eventKey: "1", text: "수정", action: () => goToPostingPageInPatchMode()},
       { eventKey: "2", text: "삭제", action: () => deleteTarget(token,article,comment) },
       { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ].filter(Boolean),
