@@ -60,7 +60,7 @@ public class GroupService {
             throw new RuntimeException("MaxCapacityMustNotLessThan2");
         }
         else if(requestDto.getMaxCapacity()>10L){
-            throw new RuntimeException("MaxCapacityCannotExceed99");
+            throw new RuntimeException("MaxCapacityCannotExceed10");
         }
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
