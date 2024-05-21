@@ -13,7 +13,7 @@ import GroupStartButton from '../../components/article/GroupStartButton';
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
     const[commentList,setCommentList]=useState([]);
-    const[isWriter,setIsWriter]=useState(0);
+    const[isWriter,setIsWriter]=useState(1);
     const[isReply,setIsReply]=useState(0);
     const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
     const[commentId,setCommentId]=useState(-1);
@@ -191,7 +191,8 @@ function ArticlePage(){
                     <p>{formatCreateTime(article.createTime)}</p>
                   </div>
                 <div className='article-info-right'>
-                  {isWriter === 1 ? <GroupStartButton/> : <ParticipateButton/>}
+                  {isWriter === 1 ? <GroupStartButton articleId={article.id}/> 
+                                  : <ParticipateButton articleId={article.id}/>}
                 </div>
               </div>
               
