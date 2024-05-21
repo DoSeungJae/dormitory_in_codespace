@@ -19,7 +19,7 @@ const GroupStartButton = ({articleId}) => {
         }catch(error){
             const errMsg=error.response.data;
             if(errMsg=="DuplicatedParticipation"){
-                toast.warn("이미 어떤 그룹에 속해있어요.");
+                toast.warn("이미 그룹에 속해있어요.");
             }
         }
     }
