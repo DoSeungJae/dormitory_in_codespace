@@ -11,8 +11,34 @@ function PostingPage() {
     const [content, setContent] = useState("");
     const [dorSelect, setDorSelect] = useState("기숙사");
     const [cateSelect, setCateSelect]=useState("카테고리");
+    const [targetId,setTargetId]=useState(0);
+    //수정해야할 article의 id를 나타냄, targetId가 0이라는 것은 patch mode가 아니라 posting mode임을 의미함
+    //useEffecf에 toBePatchedArticleId가 존재한다면 그 값을 targetId에 저장하고 해당 변수를 localStorage에서 즉시 삭제 
     const token=localStorage.getItem('token');
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+
+    useEffect(()=>{
+      const id=localStorage.getItem("toBePatchgedArticleId");
+      if(selectComponentIndex!=5){
+        setTitle("");
+        setContent("");
+        setTargetId(0);
+      }
+      if(id===null){
+        return ;
+      }
+      setTargetId(parseInt(id));
+      localStorage.removeItem("toBePatchgedArticleId");
+    },[selectComponentIndex])
+
+    useEffect(()=>{
+      if(targetId==0){
+        return ;
+      }
+      console.log(targetId);
+      setArticleState();
+    },[targetId])
+
 
     useEffect(()=>{
       if(cateSelect==="카테고리" || dorSelect==="기숙사"){
@@ -30,6 +56,22 @@ function PostingPage() {
         "푸름3": 6,
         "푸름4": 7
       };
+
+    const setArticleState = async () => {
+      const path=`http://localhost:8080/api/v1/article/${targetId}`
+      try{
+        const response=await axios.get(path);
+        setTitle(response.data.title);
+        setContent(response.data.content);
+        //렌더링 문제? 
+        //비동기 함수에 의한 렌더링 시간 엇갈림?
+
+      }catch(error){
+        console.log(error);
+        toast.error("예상하지 못한 문제가 발생했어요.");
+      }
+      
+    }
       
       const handleSwalDorm= async () => {
         const { value } = await Swal.fire({
@@ -114,11 +156,7 @@ function PostingPage() {
     }
 
     const postArticle = async () => {
-        console.log(dorSelect);
-        console.log(cateSelect);
-
         const curTime=nowLocalDateTime();
-
         const fullPath = `http://localhost:8080/api/v1/article/new`;
         const data = {
           dorId: dormitoryToId[dorSelect],
@@ -127,6 +165,13 @@ function PostingPage() {
           content:content,
           createTime:curTime
         };
+        setCateSelect("카테고리");
+        setDorSelect("기숙사");
+
+        if(targetId!=0){
+          patchArticle(data);
+          return ;
+        }
       
         try {
         const response = await axios.post(fullPath, data, {
@@ -135,8 +180,7 @@ function PostingPage() {
             }
         });
                
-        setCateSelect("카테고리");
-        setDorSelect("기숙사");
+
         window.location.reload();
 
          
@@ -144,10 +188,32 @@ function PostingPage() {
             if(error.response.data==="유효하지 않은 토큰입니다."){
                 localStorage.setItem("nextIndex",6);
                 toast.error("회원 정보가 유효하지 않아요! 로그인해주세요.");
-                setSelectComponentIndex(8);
-                
+                setSelectComponentIndex(8);   
             }
         }
+    }
+
+    const patchArticle = async (data) => {
+      console.log(token);
+      const path=`http://localhost:8080/api/v1/article/${targetId}`;
+      try{
+        const response= await axios.patch(path,data,{
+          headers:{
+            'Authorization':`${token}`,
+          }
+        });
+        window.location.reload();
+      }catch(error){
+        if(error.response.data==="유효하지 않은 토큰입니다."){
+          localStorage.setItem("nextIndex",6);
+          toast.error("회원 정보가 유효하지 않아요! 로그인해주세요.");
+          setSelectComponentIndex(8);
+          //테스트 필요 
+        }
+      }
+
+      
+
     }
     
     const nowLocalDateTime=()=>{
