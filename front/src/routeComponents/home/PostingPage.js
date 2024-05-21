@@ -38,7 +38,6 @@ function PostingPage() {
       if(targetId==0){
         return ;
       }
-      console.log(targetId);
       setArticleState();
     },[targetId])
 
@@ -66,12 +65,9 @@ function PostingPage() {
         const response=await axios.get(path);
         setTitle(response.data.title);
         setContent(response.data.content);
-        console.log(response.data);
-        //렌더링 문제? 
-        //비동기 함수에 의한 렌더링 시간 엇갈림?
 
       }catch(error){
-        console.log(error);
+        console.error(error);
         toast.error("예상하지 못한 문제가 발생했어요.");
       }
       
@@ -198,7 +194,6 @@ function PostingPage() {
     }
 
     const patchArticle = async (data) => {
-      console.log(token);
       const path=`http://localhost:8080/api/v1/article/${targetId}`;
       try{
         const response= await axios.patch(path,data,{
