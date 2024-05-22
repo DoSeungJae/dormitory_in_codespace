@@ -13,8 +13,11 @@ function PostingPage() {
     const [dorSelect, setDorSelect] = useState("기숙사");
     const [cateSelect, setCateSelect]=useState("카테고리");
     const [targetId,setTargetId]=useState(0);
+    const [limitedPatch,setLimitedPatch]=useState(0);
+    const [article,setArticle]=useState({});
     //수정해야할 article의 id를 나타냄, targetId가 0이라는 것은 patch mode가 아니라 posting mode임을 의미함
-    //useEffecf에 toBePatchedArticleId가 존재한다면 그 값을 targetId에 저장하고 해당 변수를 localStorage에서 즉시 삭제 
+    //useEffecf에 toBePatchedArticleId가 존재한다면 그 값을 targetId에 저장하고 해당 변수를 localStorage에서 즉시 삭제
+    const [buttonText,setButtonText]=useState("다음"); 
     const token=localStorage.getItem('token');
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
@@ -32,11 +35,19 @@ function PostingPage() {
       setPageTitle("글 수정하기");
       setTargetId(parseInt(id));
       localStorage.removeItem("toBePatchgedArticleId");
+      if(localStorage.getItem("limitedPatch")==1){
+        setLimitedPatch(1);
+        localStorage.removeItem("limitedPatch");
+      }
+        
     },[selectComponentIndex])
 
     useEffect(()=>{
       if(targetId==0){
         return ;
+      }
+      if(limitedPatch==1){
+        setButtonText("수정");
       }
       setArticleState();
     },[targetId])
@@ -65,6 +76,7 @@ function PostingPage() {
         const response=await axios.get(path);
         setTitle(response.data.title);
         setContent(response.data.content);
+        setArticle(response.data);
 
       }catch(error){
         console.error(error);
@@ -81,13 +93,13 @@ function PostingPage() {
           cancelButtonText:"취소",
           input: "select",
           inputOptions: {
-            오름1:"오름1",
-            오름2:"오름2",
-            오름3:"오름3",
-            푸름1:"푸름1",
-            푸름2:"푸름2",
-            푸름3:"푸름3",
-            푸름4:"푸름4"
+            1:"오름1",
+            2:"오름2",
+            3:"오름3",
+            4:"푸름1",
+            5:"푸름2",
+            6:"푸름3",
+            7:"푸름4"
           },
           inputPlaceholder: "기숙사를 선택해요.",
           showCancelButton: true,
@@ -147,29 +159,32 @@ function PostingPage() {
 
     const processNext = async () => {
         if(title==="" || content===""){
-            alert("비워진 부분이 있어요! ");
+            toast.error("비워진 부분이 있어요! ");
             return;
         }
-        
-        handleSwalDorm()
-        .then(()=>handleSwalCate());
+        if(limitedPatch==1){
+          setDorSelect(article.dorId);
+          setCateSelect(article.category);
+        }
+        else{
+          handleSwalDorm()
+          .then(()=>handleSwalCate());
+        }
     }
 
     const postArticle = async () => {
         const curTime=nowLocalDateTime();
         const fullPath = `http://localhost:8080/api/v1/article/new`;
         const data = {
-          dorId: dormitoryToId[dorSelect],
+          dorId: dorSelect,
           category:cateSelect,
           title:title,
           content:content,
           createTime:curTime
         };
-        setCateSelect("카테고리");
-        setDorSelect("기숙사");
 
         if(targetId!=0){
-          patchArticle(data);
+          patchArticle();
           return ;
         }
       
@@ -179,21 +194,31 @@ function PostingPage() {
             'Authorization':`${token}`,
             }
         });
-               
-
         window.location.reload();
-
-         
         } catch (error) {
             if(error.response.data==="유효하지 않은 토큰입니다."){
                 localStorage.setItem("nextIndex",6);
                 toast.error("회원 정보가 유효하지 않아요! 로그인해주세요.");
                 setSelectComponentIndex(8);   
             }
+        }finally{
+          setCateSelect("카테고리");
+          setDorSelect("기숙사");
         }
     }
 
-    const patchArticle = async (data) => {
+    const patchArticle = async () => {
+      console.log(dorSelect);
+      console.log(cateSelect);
+      const curTime=nowLocalDateTime();
+      const data = {
+        dorId: dorSelect,
+        category:cateSelect,
+        title:title,
+        content:content,
+        createTime:curTime
+      };
+      console.log(data);
       const path=`http://localhost:8080/api/v1/article/${targetId}`;
       try{
         const response= await axios.patch(path,data,{
@@ -207,7 +232,6 @@ function PostingPage() {
           localStorage.setItem("nextIndex",6);
           toast.error("회원 정보가 유효하지 않아요! 로그인해주세요.");
           setSelectComponentIndex(8);
-          //테스트 필요 
         }
       }
 
@@ -233,7 +257,7 @@ function PostingPage() {
                     <BackButton></BackButton>
                     <h6>{pageTitle}</h6> 
 
-                    <button type="button" className='btn btn-outline-primary'onClick={processNext}>다음</button>       
+                    <button type="button" className='btn btn-outline-primary'onClick={processNext}>{buttonText}</button>       
             </header>                 
             <main className="App-postingPage-main">
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
