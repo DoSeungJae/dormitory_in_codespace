@@ -71,7 +71,7 @@ public class Article {
         this.title=dto.getTitle();
         this.content=dto.getContent();
         this.category=dto.getCategory();
-        this.createTime=dto.getCreateTime();
+        //this.createTime=dto.getCreateTime();
         //this.appointedTime=dto.getAppointedTime();
     }
 
