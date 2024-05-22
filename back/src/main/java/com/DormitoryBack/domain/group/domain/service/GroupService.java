@@ -181,9 +181,6 @@ public class GroupService {
             throw new RuntimeException("GroupIdNotGiven");
         }
         long num=redisTemplate.opsForSet().size(groupId.toString());
-        if(num==0){
-            throw new RuntimeException("GroupNotFound");
-        }
         return num;
     }
 
