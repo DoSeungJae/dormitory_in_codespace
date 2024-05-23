@@ -7,15 +7,14 @@ import { toast } from "react-toastify";
 function ParticipateButton({articleId}) {
     const token = localStorage.getItem("token");
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-    const [isProceeding, setIsProceeding]=useState(1);
-    
+    const [isProceeding, setIsProceeding]=useState(0);
+    const [groupState,setGroupState]=useState(0); //0: 시작 대기, 1: 진행 중, -1: 마감
+    const [isMember, setIsMember]=useState(0);
+    const [buttonText,setButtonText]=useState("참여");
     const isGroupProceeding = async () => {
         const path=`http://localhost:8080/api/v1/group/${articleId}`;
         try{
             const response=await axios.get(path);
-            console.log(response);
-            //startGroup 기능 구현 이후 코드 작성 예정
-            //startGroup 기능 구현 이후 테스트 가능
             setIsProceeding(1);
         }catch(error){
             if(error.response.data=="GroupNotFound"){
@@ -30,7 +29,6 @@ function ParticipateButton({articleId}) {
         };
         try{
             const response=await axios.patch(path,{},{headers});
-            console.log(response.data);
             toast.success('그룹에 참여했어요! "내 그룹"을 확인하세요.');
         }catch(error){
             const errMsg=error.response.data
@@ -51,6 +49,25 @@ function ParticipateButton({articleId}) {
             }
         }
     }
+
+    const checkIsMember = async () => {
+        const path=`http://localhost:8080/api/v1/group/isMember?groupId=${articleId}`;
+        const headers = {
+            'Authorization' : `${token}`
+        };
+        try{
+            const response=await axios.get(path,{headers});
+            if(response.data==true){
+                setIsMember(1);
+            }
+            else{
+                setIsMember(0);
+            }
+        }catch(error){
+            console.error(error);
+        }
+    }
+
     useEffect(()=>{
         if(selectComponentIndex!==5){
             return ;
@@ -58,16 +75,19 @@ function ParticipateButton({articleId}) {
         isGroupProceeding();
 
     },[selectComponentIndex])
+
+    useEffect(()=>{
+        if(isProceeding!=1){
+            return ;
+        }
+        checkIsMember();
+    },[isProceeding])
     
 
     return (
         <>
-        {isProceeding==1 && <button className="group-participate-button" onClick={()=>participate()}>그룹 참여</button>}
+        {isProceeding==1 && <button className="group-participate-button" onClick={()=>participate()}>{buttonText}</button>}
         </>
-        
-
-        
-
     );
 }
 
