@@ -344,6 +344,21 @@ public class GroupService {
         return ;
     }
 
+    public Boolean getIsMember(Long groupId, String token) {
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        Long memberId= tokenProvider.getUserIdFromToken(token);
+        if(groupId==hashOperations.get("userBelong",memberId)){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
     public List<String> stringifyDtoList(@NotNull List<GroupCreatedDto> dtoList){
         List<String> stringifiedDtoList=dtoList.stream()
                 .map(GroupCreatedDto::toJsonString)
@@ -382,6 +397,7 @@ public class GroupService {
         }
         return createdDtoList;
     }
+
 
 
 }
