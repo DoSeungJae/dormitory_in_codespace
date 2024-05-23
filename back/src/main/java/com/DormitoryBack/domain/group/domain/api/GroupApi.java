@@ -61,6 +61,14 @@ public class GroupApi {
         long num=groupService.getNumberOfMembers(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(num);
     }
+    @GetMapping("/isMember")
+    public ResponseEntity isMember(@RequestParam(name = "groupId", defaultValue = "-1") Long groupId,
+                                   @RequestHeader("Authorization") String token){
+
+        Boolean isMember=groupService.getIsMember(groupId,token);
+        return ResponseEntity.status(HttpStatus.OK).body(isMember);
+
+    }
 
     @PostMapping("/new")
     public ResponseEntity newGroup(@RequestBody GroupCreateDto requestDto){
