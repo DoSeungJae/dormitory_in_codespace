@@ -311,7 +311,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void closeGroup(Long groupId, String token, Long force) {
+    public void finishGroup(Long groupId, String token, Long force) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
         if(!tokenProvider.validateToken(token)){

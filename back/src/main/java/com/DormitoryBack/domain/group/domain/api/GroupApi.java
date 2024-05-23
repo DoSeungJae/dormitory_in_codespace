@@ -104,12 +104,12 @@ public class GroupApi {
                 .expelUser(groupId,hostToken,targetId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-    @PatchMapping("/close/{groupId}")
+    @PatchMapping("/finish/{groupId}")
     public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId,
                                       @RequestHeader("Authorization") String token,
                                       @RequestParam(name="force",defaultValue = "0") Long force){
 
-        groupService.closeGroup(groupId,token,force);
+        groupService.finishGroup(groupId,token,force);
         return ResponseEntity.status(HttpStatus.OK).body("GroupClosed");
     }
 
