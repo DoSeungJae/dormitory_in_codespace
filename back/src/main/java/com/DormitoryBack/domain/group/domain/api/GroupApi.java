@@ -110,6 +110,13 @@ public class GroupApi {
                                       @RequestParam(name="force",defaultValue = "0") Long force){
 
         groupService.finishGroup(groupId,token,force);
+        return ResponseEntity.status(HttpStatus.OK).body("GroupFinished");
+    }
+    @PatchMapping("/close/{groupId}")
+    public ResponseEntity closeGroup(@PathVariable("groupId") Long groupId,
+                                     @RequestHeader("Authorization") String token){
+
+        groupService.closeGroup(groupId,token);
         return ResponseEntity.status(HttpStatus.OK).body("GroupClosed");
     }
 
