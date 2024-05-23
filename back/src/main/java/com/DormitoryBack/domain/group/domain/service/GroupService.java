@@ -325,10 +325,10 @@ public class GroupService {
             throw new RuntimeException("NoPermission");
         }
         if(group.getIsProceeding()==false){
-            throw new RuntimeException("AlreadyClosedGroup");
+            throw new RuntimeException("AlreadyFinishedGroup");
         }
         if(setOperations.size(String.valueOf(groupId))>=2L && force==0L){
-            throw new RuntimeException("GroupCannotCloseWhileRecruiting");
+            throw new RuntimeException("CannotFinishWhileRecruiting");
         }
         Set<Long> membersId=(setOperations.members(String.valueOf(groupId)));
         Iterator<Long> iterator=membersId.iterator();
@@ -337,6 +337,29 @@ public class GroupService {
             setOperations.remove(String.valueOf(groupId),memberId);
             setOperations.remove("groupGlobal",memberId);
             hashOperations.delete("userBelong",memberId);
+        }
+        group.close();
+        Group saved=groupRepository.save(group);
+
+        return ;
+    }
+
+    @Transactional
+    public void closeGroup(Long groupId, String token) {
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        if(group.getHostId()!= tokenProvider.getUserIdFromToken(token)){
+            throw new RuntimeException("NoPermission");
+        }
+        if(group.getIsProceeding()==false){
+            throw new RuntimeException("AlreadyClosedGroup");
         }
         group.close();
         Group saved=groupRepository.save(group);
@@ -356,7 +379,6 @@ public class GroupService {
         else{
             return false;
         }
-
     }
 
     public List<String> stringifyDtoList(@NotNull List<GroupCreatedDto> dtoList){
