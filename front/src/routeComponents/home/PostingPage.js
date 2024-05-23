@@ -60,15 +60,6 @@ function PostingPage() {
       postArticle();
     },[cateSelect]);
 
-    const dormitoryToId = {
-        "오름1": 1,
-        "오름2": 2,
-        "오름3": 3, 
-        "푸름1": 4,
-        "푸름2": 5,
-        "푸름3": 6,
-        "푸름4": 7
-      };
 
     const setArticleState = async () => {
       const path=`http://localhost:8080/api/v1/article/${targetId}`
@@ -108,8 +99,6 @@ function PostingPage() {
               if (value) {
                 setDorSelect(value);
                 resolve();
-                
-
               } else {
                 resolve("기숙사를 선택해주세요!");
               }
@@ -234,9 +223,6 @@ function PostingPage() {
           setSelectComponentIndex(8);
         }
       }
-
-      
-
     }
     
     const nowLocalDateTime=()=>{
