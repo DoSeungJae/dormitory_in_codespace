@@ -19,7 +19,28 @@ function ParticipateButton({articleId}) {
     //참여자의 숫자를 나타내는 값, 마감 혹은 종료 상태를 판단할 수 있음
     //위 기능 뿐만 아니라 다른 곳에서도 필요할 것으로 예상
 
-    const [buttonText,setButtonText]=useState("참여");
+    const [buttonText,setButtonText]=useState("");
+    const mapButtonText = () => {
+        if(groupState==0){
+            setButtonText("시작 대기");
+        }
+        else if(groupState==2){
+            setButtonText("그룹 참가");
+        }
+        else if(groupState==1){
+            setButtonText("그룹 퇴장")
+        }
+        else if(groupState==-1){
+            setButtonText("마감됨");
+        }
+        else if(groupState==-2){
+            setButtonText("종료됨");
+        }
+        else if(groupState==9){
+            setButtonText("인원 꽉참");
+        }
+    }
+
     const checkGroupState = async () => {
         let isMemberRegion=0;
         const checkIsMember = async () => {
@@ -122,6 +143,7 @@ function ParticipateButton({articleId}) {
         if(selectComponentIndex!=5){
             return ;
         }
+        mapButtonText();
         console.log(groupState);
     },[groupState]);
 
