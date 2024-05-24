@@ -21,7 +21,7 @@ function ParticipateButton({articleId}) {
 
     const [buttonText,setButtonText]=useState("");
 
-    const mapFunctionDependingOnState = () => {
+    const mapFunctions = () => {
         switch(groupState){
             case 0:
                 toast.info("그룹이 시작되지 않았어요.");
@@ -92,13 +92,14 @@ function ParticipateButton({articleId}) {
                 const isProceeding=response.data.isProceeding;
                 const numMembersRegion=response.data.currentNumberOfMembers;
                 const maxCapacity=response.data.maxCapacity;
-                if(isProceeding && isMemberRegion==1){
-                    setGroupState(1);
-                }
+
                 if(isProceeding && isMemberRegion==0){
                     setGroupState(2);
                 }
-                if(isProceeding && maxCapacity===numMembersRegion){
+                if(isProceeding && isMemberRegion==1){
+                    setGroupState(1);
+                }
+                else if(isProceeding && maxCapacity===numMembersRegion){
                     setGroupState(9);
                 }
                 else if(!isProceeding && numMembersRegion!=0){
@@ -131,6 +132,8 @@ function ParticipateButton({articleId}) {
         try{
             const response=await axios.patch(path,{},{headers});
             toast.success('그룹에 참여했어요! "내 그룹"을 확인하세요.');
+            setGroupState(1);
+            
         }catch(error){
             const errMsg=error.response.data
             if(errMsg=="InvalidToken"){
@@ -147,6 +150,23 @@ function ParticipateButton({articleId}) {
             }
             else if(errMsg==="GroupFull"){
                 toast.warn("그룹이 꽉 찼어요!");
+            }
+        }
+    }
+
+    const quit = async () => {
+        const path=`http://localhost:8080/api/v1/group/quit?groupId=${articleId}`;
+        const headers = {
+            'Authorization':`${token}`
+        };
+        try{
+            const response=await axios.patch(path,{},{headers});
+            toast.info("그룹을 나왔어요. 이제 다른 그룹에 참여할 수 있어요.");
+            setGroupState(2);
+        }catch(error){
+            const errMsg=error.response.data;
+            if(errMsg=="InvalidToken"){
+                //토큰 예외 처리 
             }
         }
     }
@@ -172,7 +192,7 @@ function ParticipateButton({articleId}) {
 
     return (
         <>
-        {<button className="group-participate-button" onClick={()=>mapFunctionDependingOnState}>{buttonText}</button>}
+        {<button className="group-participate-button" onClick={()=>mapFunctions()}>{buttonText}</button>}
         </>
     );
 }
