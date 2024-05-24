@@ -203,7 +203,9 @@ function ParticipateButton({articleId}) {
 
     return (
         <>
-        {<button className="group-participate-button" style={{backgroundColor:bgColor}} onClick={()=>mapFunctions()}>{buttonText}</button>}
+        {<button className="group-participate-button" onClick={()=>mapFunctions()} style={{
+            backgroundColor:bgColor,
+            transition: 'background-color 0.8s ease'}} >{buttonText}</button>}
         </>
     );
 }
