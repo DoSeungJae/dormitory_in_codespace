@@ -7,21 +7,77 @@ import { toast } from "react-toastify";
 function ParticipateButton({articleId}) {
     const token = localStorage.getItem("token");
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-    const [isProceeding, setIsProceeding]=useState(0);
-    const [groupState,setGroupState]=useState(0); //0: 시작 대기, 1: 진행 중, -1: 마감
+    //const [isProceeding, setIsProceeding]=useState(0);
+    //진행중인 group이라면 groupState를 1로 설정
+    const [groupState,setGroupState]=useState(0); 
+    //0: 시작 대기, 1: 진행중&%member, 2:진행중&&nonMember -1: 마감됨, -2: 종료됨, //9: 꽉 참
+    const [doesGroupExist,setDoesGroupExist]=useState(0); //그룹이 존재하면 1, 그렇지 않다면 0
+    //위 값으로 "시작 대기" 상태를 체크할 수 있음.
+    //doesGroupExist가 0이면 대기 상태고, 그렇지 않다면 다른 상태일 것임
     const [isMember, setIsMember]=useState(0);
+    const [numMembers,setNumMembers]=useState(0);
+    //참여자의 숫자를 나타내는 값, 마감 혹은 종료 상태를 판단할 수 있음
+    //위 기능 뿐만 아니라 다른 곳에서도 필요할 것으로 예상
+
     const [buttonText,setButtonText]=useState("참여");
-    const isGroupProceeding = async () => {
-        const path=`http://localhost:8080/api/v1/group/${articleId}`;
-        try{
-            const response=await axios.get(path);
-            setIsProceeding(1);
-        }catch(error){
-            if(error.response.data=="GroupNotFound"){
-                setIsProceeding(0);
+    const checkGroupState = async () => {
+        let isMemberRegion=0;
+        const checkIsMember = async () => {
+            const path=`http://localhost:8080/api/v1/group/isMember?groupId=${articleId}`;
+            const headers = {
+                'Authorization' : `${token}`
+            };
+            try{
+                const response=await axios.get(path,{headers});
+                if(response.data==true){
+                    setIsMember(1);
+                    isMemberRegion=1;
+                }
+                else{
+                    setIsMember(0);
+                    isMemberRegion=0;
+                }
+            }catch(error){
+                console.error(error);
             }
+        } 
+        const mainfunc = async () => {
+            const path=`http://localhost:8080/api/v1/group/${articleId}`;
+            try{
+                const response=await axios.get(path);
+                const isProceeding=response.data.isProceeding;
+                const numMembersRegion=response.data.currentNumberOfMembers;
+                if(isProceeding && isMemberRegion==1){
+                    //진행중인 그룹에 참여중
+                    setGroupState(1);
+                }
+                if(isProceeding && isMemberRegion==0){
+                    //진행중인 그룹에 참여하지 않은 상태
+                    setGroupState(2);
+                }
+                else if(!isProceeding && numMembersRegion!=0){
+                    setGroupState(-1);
+                }
+                if(!isProceeding && numMembersRegion==0){
+                    setGroupState(-2);
+                }
+            }catch(error){
+                if(error.response.data=="GroupNotFound"){
+                    setGroupState(0);
+                }
+            }  
         }
+
+        try{
+            await checkIsMember();
+        }catch(error){
+            
+        }finally{
+            await mainfunc();
+        }
+
     }
+
     const participate = async ()  => {
         const path=`http://localhost:8080/api/v1/group/participate?groupId=${articleId}`;
         const headers = {
@@ -50,43 +106,27 @@ function ParticipateButton({articleId}) {
         }
     }
 
-    const checkIsMember = async () => {
-        const path=`http://localhost:8080/api/v1/group/isMember?groupId=${articleId}`;
-        const headers = {
-            'Authorization' : `${token}`
-        };
-        try{
-            const response=await axios.get(path,{headers});
-            if(response.data==true){
-                setIsMember(1);
-            }
-            else{
-                setIsMember(0);
-            }
-        }catch(error){
-            console.error(error);
-        }
-    }
+
 
     useEffect(()=>{
         if(selectComponentIndex!==5){
             return ;
         }
-        isGroupProceeding();
+        checkGroupState();
 
     },[selectComponentIndex])
 
     useEffect(()=>{
-        if(isProceeding!=1){
+        if(selectComponentIndex!=5){
             return ;
         }
-        checkIsMember();
-    },[isProceeding])
+    },[groupState]);
+
     
 
     return (
         <>
-        {isProceeding==1 && <button className="group-participate-button" onClick={()=>participate()}>{buttonText}</button>}
+        {<button className="group-participate-button" onClick={()=>participate()}>{buttonText}</button>}
         </>
     );
 }
