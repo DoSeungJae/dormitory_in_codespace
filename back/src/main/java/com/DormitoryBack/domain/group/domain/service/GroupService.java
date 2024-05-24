@@ -373,7 +373,10 @@ public class GroupService {
             throw new JwtException("InvalidToken");
         }
         Long memberId= tokenProvider.getUserIdFromToken(token);
-        if(groupId==hashOperations.get("userBelong",memberId)){
+        //둘다 타입은 Long이지만 ==로 판단하면 false가 나옴
+        //단, memberId가 host인 경우에 true가 나옴
+        //자세하게 파봐야됨
+        if(groupId.equals(hashOperations.get("userBelong",memberId))){
             return true;
         }
         else{
