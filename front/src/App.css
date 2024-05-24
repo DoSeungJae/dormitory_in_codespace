@@ -67,9 +67,10 @@
   background-color: #FF8C00;
   border: none;
   color: white;
-  padding: .5vh 2vw;
   border-radius: 10px;
-  font-size: 3.7vw;
+  font-size: 3.5vw;
+  width:20vw;
+  height:3.5vh;
 }
 
 .article-item {
