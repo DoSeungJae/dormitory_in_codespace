@@ -324,7 +324,7 @@ public class GroupService {
         if(group.getHostId()!= tokenProvider.getUserIdFromToken(token)){
             throw new RuntimeException("NoPermission");
         }
-        if(group.getIsProceeding()==false){
+        if(group.getIsProceeding()==false && setOperations.size(String.valueOf(groupId))==0){
             throw new RuntimeException("AlreadyFinishedGroup");
         }
         if(setOperations.size(String.valueOf(groupId))>=2L && force==0L){
