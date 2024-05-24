@@ -47,13 +47,15 @@ function ParticipateButton({articleId}) {
                 const response=await axios.get(path);
                 const isProceeding=response.data.isProceeding;
                 const numMembersRegion=response.data.currentNumberOfMembers;
+                const maxCapacity=response.data.maxCapacity;
                 if(isProceeding && isMemberRegion==1){
-                    //진행중인 그룹에 참여중
                     setGroupState(1);
                 }
                 if(isProceeding && isMemberRegion==0){
-                    //진행중인 그룹에 참여하지 않은 상태
                     setGroupState(2);
+                }
+                if(isProceeding && maxCapacity===numMembersRegion){
+                    setGroupState(9);
                 }
                 else if(!isProceeding && numMembersRegion!=0){
                     setGroupState(-1);
@@ -120,6 +122,7 @@ function ParticipateButton({articleId}) {
         if(selectComponentIndex!=5){
             return ;
         }
+        console.log(groupState);
     },[groupState]);
 
     
