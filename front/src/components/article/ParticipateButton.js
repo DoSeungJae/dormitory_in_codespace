@@ -10,7 +10,7 @@ function ParticipateButton({articleId}) {
     //const [isProceeding, setIsProceeding]=useState(0);
     //진행중인 group이라면 groupState를 1로 설정
     const [groupState,setGroupState]=useState(0); 
-    //0: 시작 대기, 1: 진행중&%member, 2:진행중&&nonMember -1: 마감됨, -2: 종료됨, //9: 꽉 참
+    //0: 시작 대기, 1: 진행중&%member, 2:진행중&&nonMember -1: 마감됨, -2: 종료됨, 9: 꽉 참
     const [doesGroupExist,setDoesGroupExist]=useState(0); //그룹이 존재하면 1, 그렇지 않다면 0
     //위 값으로 "시작 대기" 상태를 체크할 수 있음.
     //doesGroupExist가 0이면 대기 상태고, 그렇지 않다면 다른 상태일 것임
@@ -20,6 +20,29 @@ function ParticipateButton({articleId}) {
     //위 기능 뿐만 아니라 다른 곳에서도 필요할 것으로 예상
 
     const [buttonText,setButtonText]=useState("");
+
+    const mapFunctionDependingOnState = () => {
+        switch(groupState){
+            case 0:
+                toast.info("그룹이 시작되지 않았어요.");
+                break;
+            case 2:
+                participate();
+                break;
+            case 1:
+                quit();
+                break;
+            case -1:
+                toast.info("마감된 그룹은 참여할 수 없어요.")
+                break;
+            case -2:
+                toast.info("이미 종료된 그룹이에요.");
+                break;
+            case 9:
+                toast.info("그룹이 꽉 차서 참여할 수 없어요.")
+                break;
+        }
+    }
     const mapButtonText = () => {
         if(groupState==0){
             setButtonText("시작 대기");
@@ -98,7 +121,6 @@ function ParticipateButton({articleId}) {
         }finally{
             await mainfunc();
         }
-
     }
 
     const participate = async ()  => {
@@ -144,14 +166,13 @@ function ParticipateButton({articleId}) {
             return ;
         }
         mapButtonText();
-        console.log(groupState);
     },[groupState]);
 
     
 
     return (
         <>
-        {<button className="group-participate-button" onClick={()=>participate()}>{buttonText}</button>}
+        {<button className="group-participate-button" onClick={()=>mapFunctionDependingOnState}>{buttonText}</button>}
         </>
     );
 }
