@@ -18,8 +18,20 @@ function ParticipateButton({articleId}) {
     const [numMembers,setNumMembers]=useState(0);
     //참여자의 숫자를 나타내는 값, 마감 혹은 종료 상태를 판단할 수 있음
     //위 기능 뿐만 아니라 다른 곳에서도 필요할 것으로 예상
-
+    
     const [buttonText,setButtonText]=useState("");
+    const [isBlur, setIsBlur]=useState(0);
+
+    const defaultColor = '#FF8C00';
+    const bgColor = isBlur ? 'rgba(255, 140, 0, 0.6)' : defaultColor;
+    const handleBlurStyle = () => {
+        if(groupState==-1 || groupState==-2 || groupState==9){
+            setIsBlur(1);
+        }
+        else{
+            setIsBlur(0);
+        }
+    }
 
     const mapFunctions = () => {
         switch(groupState){
@@ -171,8 +183,6 @@ function ParticipateButton({articleId}) {
         }
     }
 
-
-
     useEffect(()=>{
         if(selectComponentIndex!==5){
             return ;
@@ -186,13 +196,14 @@ function ParticipateButton({articleId}) {
             return ;
         }
         mapButtonText();
+        handleBlurStyle();
     },[groupState]);
 
     
 
     return (
         <>
-        {<button className="group-participate-button" onClick={()=>mapFunctions()}>{buttonText}</button>}
+        {<button className="group-participate-button" style={{backgroundColor:bgColor}} onClick={()=>mapFunctions()}>{buttonText}</button>}
         </>
     );
 }
