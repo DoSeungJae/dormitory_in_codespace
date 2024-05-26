@@ -5,7 +5,7 @@ import HomeSelectContext from './components/home/HomeSelectContext';
 import { ToastContainer} from 'react-toastify';
 import {React,useState} from 'react';
 import './App.css';
-import {Routes,Route,BrowserRouter} from "react-router-dom";;
+import {Routes,Route,BrowserRouter} from "react-router-dom";
 
 
 
@@ -15,6 +15,7 @@ function App() {
 
   return (
     <div className="App">
+      {
       <div>
         <ToastContainer
           className="toast-position"
@@ -28,6 +29,7 @@ function App() {
           </BrowserRouter>
           </HomeSelectContext.Provider>
       </div>
+      }
     </div>
 
 
