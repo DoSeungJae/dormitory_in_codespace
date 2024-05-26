@@ -41,6 +41,12 @@ public class UserApi {
         UserResponseDTO responseDTO=userService.getUser(usrId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
+
+    @GetMapping("/NickName")
+    public ResponseEntity userNickName(@RequestHeader("Authorization") String token){
+        String userNickName=userService.getUserNickName(token);
+        return ResponseEntity.status(HttpStatus.OK).body(userNickName);
+    }
     @PostMapping("/logIn")
     public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
         log.info(dto.toString());
@@ -59,6 +65,7 @@ public class UserApi {
                     .body(false);
         }
     }
+
 
     @PostMapping("/join")
     public ResponseEntity signUp(@RequestBody UserDTO dto) {
