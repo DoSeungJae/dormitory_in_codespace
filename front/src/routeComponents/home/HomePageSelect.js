@@ -10,6 +10,7 @@ import ArticlePage from '../article/ArticlePage.js';
 import SignInPage from '../signIn/SignInPage.js';
 import LogInPage from '../logIn/LogInPage.js';
 import { toast } from 'react-toastify';
+import MyGroupPage from './MyGroupPage.js';
 
 function HomePageSelect() {
   const[page,setPage]=useState(0);
@@ -57,6 +58,7 @@ function HomePageSelect() {
     '내 글':1,
     '글쓰기':2,
     '알림':3,
+    '내 그룹':4,
   };
 
 return (
@@ -67,6 +69,7 @@ return (
           <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><AlarmPage/></div>
+          <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>
           {selectComponentIndex==5 && <ArticlePage/>}
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>
