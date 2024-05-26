@@ -442,8 +442,22 @@
   padding-right: 2vw;
   padding-left: 2vw;
 }
+.App-myGroupPage-header{
+  display:flex;
+  justify-content:space-between;
+
+  padding-top: 3vh;
+  padding-right: 2vw;
+  padding-left: 2vw;
+}
 
 .App-myWritingPage-main{
+  padding-top:1vh;
+  padding-right: 2.4vw;
+  padding-left: 2.4vw;
+}
+
+.App-myGroupPage-main{
   padding-top:1vh;
   padding-right: 2.4vw;
   padding-left: 2.4vw;
