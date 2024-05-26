@@ -82,7 +82,6 @@ function ChatRoom({ username, room }) {
             {
               messageList.map((message) => {
                 if (message.messageType === 'CLIENT') {
-                  console.log(message);
                   return (
                     <ChatBubble
                       key={message.id} 
