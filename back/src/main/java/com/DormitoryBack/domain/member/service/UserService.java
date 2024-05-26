@@ -6,6 +6,7 @@ import com.DormitoryBack.domain.member.dto.UserDTO;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.domain.member.entity.User;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,15 @@ public class UserService {
 
         return responseDTO;
     }
+    public String getUserNickName(String token) {
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+        Long userId= tokenProvider.getUserIdFromToken(token);
+        User user=userRepository.findById(userId).orElse(null);
+        return user.getNickName();
+    }
+
 
     public UserResponseDTO updateUser(Long usrId, UserDTO dto){
         User user=userRepository.findById(usrId).orElse(null);
@@ -120,6 +130,7 @@ public class UserService {
         }
         userRepository.delete(target);
     }
+
 
 
 }
