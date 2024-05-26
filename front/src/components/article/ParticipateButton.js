@@ -121,7 +121,8 @@ function ParticipateButton({articleId}) {
                     setGroupState(-2);
                 }
             }catch(error){
-                if(error.response.data=="GroupNotFound"){
+                const errMsg=error.response.data
+                if(errMsg=="GroupNotFound"){
                     setGroupState(0);
                 }
             }  
