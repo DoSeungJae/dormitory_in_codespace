@@ -1,6 +1,11 @@
 import {React, useContext, useEffect, useState} from 'react'
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
+import BackButton from '../../components/home/BackButton';
+import { ThemeProvider } from '@mui/material';
+import theme from '../group/theme';
+import ChatRoom from '../../views/group/ChatRoom';
+
 
 function MyGroupPage(){
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -18,15 +23,10 @@ function MyGroupPage(){
         if(groupId==0){
             getGroupIdThatUserBelongsTo();
         }
-        console.log(groupId,nickName);
 
     },[selectComponentIndex])
 
-    useEffect(()=>{
-        console.log(groupId,nickName);
-    },[nickName,groupId])
 
-    
   const getUserNickNameFromToken = async () => {
     if(token==null){
       return ;
@@ -61,12 +61,27 @@ function MyGroupPage(){
   }
 
 
-
-
     return (
-        <h1>MyGroupPage</h1>
-        
+        <div className='App'>
+            <header className='App-myGroupPage-header'>
+                <BackButton></BackButton>
+            </header>
+            <div className='App-myGroupPage-main'>
+                {(groupId!=0 && nickName!="") ?
+                    (
+                    <ThemeProvider theme={theme}>
+                        <ChatRoom
+                            username={nickName}
+                            room={groupId}
+                        />
+                    </ThemeProvider>
+                    ) :(
+                        <><text>그룹에 참여하세요!</text></>
+                    )
+                }
 
+            </div>
+        </div>
     );
 
 }
