@@ -11,11 +11,13 @@ function MyGroupPage(){
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const [nickName,setNickName]=useState("");
     const [groupId,setGroupId]=useState(0);
+    const [hostNickName,setHostNickName]=useState("");
     const token=localStorage.getItem("token");
     
     useEffect(()=>{
         if(selectComponentIndex!=4){
-            return ;   
+          //pageInit();
+          return ;   
         }
         if(nickName==""){
             getUserNickNameFromToken();
@@ -26,6 +28,20 @@ function MyGroupPage(){
 
     },[selectComponentIndex])
 
+    useEffect(()=>{
+      if(nickName!="" && groupId==0){
+        return ;
+      }
+      getGroupHostId();
+    },[nickName,groupId]);
+
+
+
+  const pageInit = () => {
+    setNickName("");
+    setHostNickName("");
+    setGroupId("");
+  }
 
   const getUserNickNameFromToken = async () => {
     if(token==null){
@@ -60,13 +76,26 @@ function MyGroupPage(){
     }
   }
 
+  const getGroupHostId = async () => {
+    if(groupId==0){
+      return ;
+    }
+    const path=`http://localhost:8080/api/v1/group/host/${groupId}`;
+    try{
+      const response=await axios.get(path);
+      setHostNickName(response.data.nickName);
+    }catch(error){
+      console.error(error);
+    }
+  }
+
 
     return (
-        <div className='App'>
+        <div className='App-myGroupPage'>
             <header className='App-myGroupPage-header'>
                 <BackButton></BackButton>
             </header>
-            <div className='App-myGroupPage-main'>
+            <div className='App-myGroupPage-main'>  
                 {(groupId!=0 && nickName!="") ?
                     (
                     <ThemeProvider theme={theme}>
@@ -79,7 +108,6 @@ function MyGroupPage(){
                         <><h6>그룹에 참여하세요!</h6></>
                     )
                 }
-
             </div>
         </div>
     );
