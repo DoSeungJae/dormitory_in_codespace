@@ -1,7 +1,6 @@
 import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import { connect } from 'formik';
 import ChatBubble from '../../../components/group/ChatBubble';
 import { useSocket } from '../../../hooks/group/useSocket';
 import { getSocketResponse } from '../../../service/group/socket';
@@ -22,7 +21,8 @@ function ChatRoom({ username, room }) {
     e.preventDefault();
     if (messageInput !== "") {
       sendData({
-        message: messageInput
+        message: messageInput,
+        createdAt: new Date()
       });
       addMessageToList({
         message: messageInput,
@@ -53,83 +53,44 @@ function ChatRoom({ username, room }) {
   }, [socketResponse]);
 
   return (
-    
-    <Container>
-      <Grid
-        container 
-        gap={3}
-        flexDirection={'column'} 
-        alignItems={"center"} 
-        justifyContent={"center"} 
-        height={'97vh'}
-      >
-        <Grid item sx={{ width: '60%' }}>
-          <Typography variant='h5'>
-            Welcome to room <b>{room}</b>, {username}.
-          </Typography>
-        </Grid>
-        <Grid item sx={{ width: '60%', bgcolor: '#ccd8e2', paddingX: '2rem', borderRadius: 6 }}>
-          <Box 
-            className="chat-box"
-            sx={{ 
-              width: '100%',
-              paddingY: '2rem',
-              borderRadius: 4,
-              height: '60vh',
-              overflow: 'auto'
-            }}
-          >
-            {
-              messageList.map((message) => {
-                if (message.messageType === 'CLIENT') {
-                  return (
-                    <ChatBubble
-                      key={message.id} 
-                      isSender={message.username === username}
-                      username={message.username}
-                      message={message.message}
-                      time={"12:12"}
-                    />
-                  )
-                } 
-              })
+    <div className='App'>
+      <div className='group-messages'>
+        {
+          messageList.map((message) => {
+            if (message.messageType === 'CLIENT') {
+              return (
+                <ChatBubble
+                  key={message.id} 
+                  isSender={message.username === username}
+                  username={message.username}
+                  message={message.message}
+                  time={"12:12"}
+                />
+              )
+            } 
+          })
+        }
+      </div>
+      <div className='group-form'>
+        <TextField 
+          variant="standard"
+          placeholder='메세지를 입력하세요.'
+          value={messageInput}
+          onChange={(e) => setMessageInput(e.target.value)}
+          fullWidth
+          InputProps={{
+            disableUnderline: true,
+            sx: {
+            paddingX: '0.5rem'
             }
-          </Box>
-          <Grid 
-            container 
-            alignItems={"center"}
-            width={"100%"} 
-            sx={{
-              paddingY: '0.5rem',
-              borderTop: '2px solid #99b1c5',
-            }}
-          >
-            <Grid item xs={11}>
-              <TextField 
-                variant="standard"
-                placeholder='Type your message'
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                fullWidth
-                InputProps={{
-                  disableUnderline: true,
-                  sx: {
-                    paddingX: '0.5rem'
-                  }
-                }}
-              />
-            </Grid>
-            <Grid item xs={1}>
-              <Button
-                onClick={(e) => sendMessage(e)}
-              >
-                Send
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Container>
+          }}
+        />
+
+        <Button onClick={(e) => sendMessage(e)}>전송</Button>
+      </div>
+    </div>
+      
+
   )
 }
 
