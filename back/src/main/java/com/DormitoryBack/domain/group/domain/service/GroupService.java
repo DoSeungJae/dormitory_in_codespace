@@ -163,6 +163,22 @@ public class GroupService {
         return responseDto;
     }
 
+    public UserResponseDTO getGroupHost(Long groupId) {
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        User host=userRepository.findById(group.getHostId()).orElse(null);
+        UserResponseDTO responseDto=UserResponseDTO.builder()
+                .id(host.getId())
+                .nickName(host.getNickName())
+                .eMail(host.getEMail())
+                .build();
+
+        return responseDto;
+
+    }
+
     public GroupListDto getAllProceedingGroups() {
         List<Group> groups=groupRepository.findAllByIsProceeding(true);
         Long groupCnt=Long.valueOf(groups.size());
