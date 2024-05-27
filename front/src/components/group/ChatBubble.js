@@ -9,7 +9,7 @@ function ChatBubble({ isSender, username, message="" }) {
     <Box>
       <Grid 
         container 
-        gap={2} 
+        gap={1} 
         flexDirection={isSender ? "row-reverse" : "row"}
         sx={{
           width: '100%',
@@ -26,9 +26,9 @@ function ChatBubble({ isSender, username, message="" }) {
             <Box 
               sx={{ 
                 marginBottom: '0.5rem',
-                paddingRight: isSender ? '0.5rem' : '2rem',
-                paddingLeft: isSender ? '2rem' : '0.5rem',
-                paddingY: '0.25rem',
+                paddingRight: isSender ? '0.5rem' : '1rem',
+                paddingLeft: isSender ? '1rem' : '0.5rem',
+                paddingY: '0.15rem',
                 color: isSender ? '#e6ecf0' : '#001e37',
                 bgcolor: isSender ? '#001e37' : '#e6ecf0',
                 borderRadius: '8px'
