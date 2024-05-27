@@ -76,7 +76,7 @@ function MyGroupPage(){
                         />
                     </ThemeProvider>
                     ) :(
-                        <><text>그룹에 참여하세요!</text></>
+                        <><h6>그룹에 참여하세요!</h6></>
                     )
                 }
 
