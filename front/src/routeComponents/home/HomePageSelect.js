@@ -76,7 +76,7 @@ return (
           <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
       </div>
     {
-      (selectComponentIndex!=8 && selectComponentIndex!=7 && selectComponentIndex!=5) &&
+      (selectComponentIndex!=8 && selectComponentIndex!=7 && selectComponentIndex!=5 && selectComponentIndex!=4) &&
       <footer className="App-footer">
               <FooterMenu
                 selectMenu={selectMenu}
