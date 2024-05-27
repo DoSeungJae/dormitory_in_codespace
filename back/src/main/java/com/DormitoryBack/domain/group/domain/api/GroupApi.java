@@ -8,6 +8,7 @@ import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupListDto;
 import com.DormitoryBack.domain.group.domain.dto.response.SingleGroupDto;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
+import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,11 @@ public class GroupApi {
     @GetMapping("/{groupId}")
     public ResponseEntity group(@PathVariable("groupId") Long groupId){
         SingleGroupDto responseDto=groupService.getGroup(groupId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+    @GetMapping("/host/{groupId}")
+    public ResponseEntity groupHost(@PathVariable("groupId") Long groupId){
+        UserResponseDTO responseDto=groupService.getGroupHost(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
