@@ -16,11 +16,12 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     </h1>
   ));
 
-const ThreeDotsMenu = () => {
+const ThreeDotsMenu = ({isHostParam}) => {
   const [isHost,setIsHost]=useState(0);
   
+
   const handleToggle = () => {
-      setIsHost(0);      
+      setIsHost(isHostParam);     
   }
 
   const menuItems = {
