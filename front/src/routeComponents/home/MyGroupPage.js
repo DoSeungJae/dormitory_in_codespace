@@ -5,6 +5,7 @@ import BackButton from '../../components/home/BackButton';
 import { ThemeProvider } from '@mui/material';
 import theme from '../group/theme';
 import ChatRoom from '../../views/group/ChatRoom';
+import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
 
 
 function MyGroupPage(){
@@ -13,7 +14,8 @@ function MyGroupPage(){
     const [groupId,setGroupId]=useState(0);
     const [hostNickName,setHostNickName]=useState("");
     const token=localStorage.getItem("token");
-    
+    const title=hostNickName+"의 그룹";
+
     useEffect(()=>{
         if(selectComponentIndex!=4){
           //pageInit();
@@ -94,6 +96,9 @@ function MyGroupPage(){
         <div className='App-myGroupPage'>
             <header className='App-myGroupPage-header'>
                 <BackButton></BackButton>
+                {title}
+                <ThreeDotsMenu/>
+
             </header>
             <div className='App-myGroupPage-main'>  
                 {(groupId!=0 && nickName!="") ?
