@@ -13,6 +13,7 @@ function MyGroupPage(){
     const [nickName,setNickName]=useState("");
     const [groupId,setGroupId]=useState(0);
     const [hostNickName,setHostNickName]=useState("");
+    const [isHost,setIsHost]=useState(0);
     const token=localStorage.getItem("token");
     const title=hostNickName+"의 그룹";
 
@@ -21,6 +22,7 @@ function MyGroupPage(){
           //pageInit();
           return ;   
         }
+        checkIsHost();
         if(nickName==""){
             getUserNickNameFromToken();
         }
@@ -34,7 +36,8 @@ function MyGroupPage(){
       if(nickName!="" && groupId==0){
         return ;
       }
-      getGroupHostId();
+      getGroupHostNickName();
+      
     },[nickName,groupId]);
 
 
@@ -78,7 +81,7 @@ function MyGroupPage(){
     }
   }
 
-  const getGroupHostId = async () => {
+  const getGroupHostNickName = async () => {
     if(groupId==0){
       return ;
     }
@@ -91,13 +94,24 @@ function MyGroupPage(){
     }
   }
 
+  const checkIsHost = () => {
+    if(hostNickName==nickName){
+      setIsHost(1);
+    }
+    else{
+      setIsHost(0);
+    }
+  }
+
 
     return (
         <div className='App-myGroupPage'>
             <header className='App-myGroupPage-header'>
                 <BackButton></BackButton>
                 {title}
-                <ThreeDotsMenu/>
+                <ThreeDotsMenu
+                  isHostParam={isHost}
+                />
 
             </header>
             <div className='App-myGroupPage-main'>  
