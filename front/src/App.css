@@ -342,6 +342,11 @@
   font-weight:bold;
   background-color:white;
 }
+.dropdown-item{
+  padding:0.0vh;
+  padding-left:3vw;
+  font-size: 0.9rem;  
+}
 
 .rounded-image {
   width: 50px;  
