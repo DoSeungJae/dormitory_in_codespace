@@ -181,14 +181,17 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
 
   const menuItems = {
     0: [
-      { eventKey: "1", text: "신고", action: () => handleSwal()},
-      { eventKey: "2", text: "URL 공유", action: () => console.log(1) },
+      { type : 'item', eventKey: "1", text: "신고", action: () => handleSwal()},
+      { type: 'divider' },
+      { type : 'item', eventKey: "2", text: "URL 공유", action: () => console.log(1) },
     ],
     1: [
       commentParam ? null : 
-      { eventKey: "1", text: "수정", action: () => goToPostingPageInPatchMode()},
-      { eventKey: "2", text: "삭제", action: () => deleteTarget(token,article,comment) },
-      { eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
+      { type : 'item', eventKey: "1", text: "수정", action: () => goToPostingPageInPatchMode()},
+      { type: 'divider' },
+      { type : 'item', eventKey: "2", text: "삭제", action: () => deleteTarget(token,article,comment) },
+      { type: 'divider' },
+      { type : 'item', eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ].filter(Boolean),
   };
 
@@ -209,16 +212,23 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        {menuItems[isWriter].map((item, index) => (
-        <Dropdown.Item 
-          eventKey={item.eventKey} 
-          key={index} 
-          onClick={item.action} 
-        >
-          {item.text}
-        </Dropdown.Item>
-      ))}
+        {menuItems[isWriter].map((item,index) =>{
+          if(item.type==='divider'){
+            return <Dropdown.Divider key={index}/>;
+          }
+          return (
+            <Dropdown.Item
+              eventKey={item.eventKey}
+              key={index}
+              onClick={item.action}
+            >
+              {item.text}
+            </Dropdown.Item>
+          )
+
+        })}
       </Dropdown.Menu>
+
     </Dropdown>
   );
 };
