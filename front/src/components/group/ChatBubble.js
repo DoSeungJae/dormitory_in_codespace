@@ -18,7 +18,8 @@ function ChatBubble({ isSender, username, message="" }) {
         }} 
       >
         <Grid item>
-          <Avatar src={avatar} />
+          
+          {!isSender && <Avatar src={avatar} />}
         </Grid>
         <Grid item sx={{ textAlign: isSender ? 'right' : 'left' }}>
           <Box>
