@@ -64,7 +64,7 @@ function ChatRoom({ username, room }) {
                   isSender={message.username === username}
                   username={message.username}
                   message={message.message}
-                  time={"12:12"}
+                  createdTime={message.createdTime}
                 />
               )
             } 
