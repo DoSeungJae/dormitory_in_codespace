@@ -1,9 +1,11 @@
 import { Avatar, Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 
-function ChatBubble({ isSender, username, message="" }) {
+function ChatBubble({ isSender, username, message="",createdTime}) {
   const avatar = "https://random.imagecdn.app/500/150";
-  const date = new Date();
+  const date = new Date(createdTime);
+  //현재시간이 아니라 실제로 댓글이 작성된 시점을 파라미터로 가져와서 설정해야함
+
   const time = date.getHours() + ':' + date.getMinutes();
   return (
     <Box>
@@ -18,12 +20,11 @@ function ChatBubble({ isSender, username, message="" }) {
         }} 
       >
         <Grid item>
-          
           {!isSender && <Avatar src={avatar} />}
         </Grid>
         <Grid item sx={{ textAlign: isSender ? 'right' : 'left' }}>
           <Box>
-            <Typography fontSize={14}> {username} </Typography>
+            {!isSender && <Typography fontSize={14}> {username} </Typography>}
             <Box 
               sx={{ 
                 marginBottom: '0.5rem',
@@ -34,8 +35,8 @@ function ChatBubble({ isSender, username, message="" }) {
                 bgcolor: isSender ? '#001e37' : '#e6ecf0',
                 borderRadius: '8px'
               }}>
-              <Typography> {message} </Typography>
-              <Typography fontSize={10}> {time} </Typography>
+              <Typography fontSize={18}> {message} </Typography>
+              <Typography fontSize={11}> {time} </Typography>
             </Box>
           </Box>
         </Grid>
