@@ -14,6 +14,7 @@ function MyGroupPage(){
     const [groupId,setGroupId]=useState(0);
     const [hostNickName,setHostNickName]=useState("");
     const [isHost,setIsHost]=useState(0);
+    const [group,setGroup]=useState({});
     const token=localStorage.getItem("token");
     const title=hostNickName+"의 그룹";
 
@@ -41,11 +42,12 @@ function MyGroupPage(){
     },[nickName,groupId]);
 
 
-
   const pageInit = () => {
     setNickName("");
     setHostNickName("");
     setGroupId("");
+    setGroup({});
+    setIsHost(0);
   }
 
   const getUserNickNameFromToken = async () => {
@@ -76,6 +78,7 @@ function MyGroupPage(){
     try{
       const response=await axios.get(path,{headers});
       setGroupId(response.data.id);
+      setGroup(response.data);
     }catch(error){
       console.error(error);
     }
@@ -111,6 +114,7 @@ function MyGroupPage(){
                 {title}
                 <ThreeDotsMenu
                   isHostParam={isHost}
+                  groupParam={group}
                 />
 
             </header>
