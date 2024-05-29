@@ -19,14 +19,16 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 const ThreeDotsMenu = ({isHostParam,groupParam}) => {
   const [isHost,setIsHost]=useState(0);
   const [group,setGroup]=useState({});
+  const [memberList,setMemberList]=useState([]);
 
   const handleToggle = () => {
     setIsHost(isHostParam);
     setGroup(groupParam);
+    setMemberList(groupParam.members.map(jsonString => JSON.parse(jsonString)))
   }
 
   const showMembers = async () => {
-    console.log(group);
+   console.log(memberList); 
   }
 
   const menuItems = {
