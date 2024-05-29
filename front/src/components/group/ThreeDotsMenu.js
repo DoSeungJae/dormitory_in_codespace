@@ -16,24 +16,29 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     </h1>
   ));
 
-const ThreeDotsMenu = ({isHostParam}) => {
+const ThreeDotsMenu = ({isHostParam,groupParam}) => {
   const [isHost,setIsHost]=useState(0);
-  
+  const [group,setGroup]=useState({});
 
   const handleToggle = () => {
-      setIsHost(isHostParam);     
+    setIsHost(isHostParam);
+    setGroup(groupParam);
+  }
+
+  const showMembers = async () => {
+    console.log(group);
   }
 
   const menuItems = {
     0: [
-      { type: 'item', eventKey: "1", text: "참여자", action: () => console.log(1) },
+      { type: 'item', eventKey: "1", text: "참여자 보기", action: () => showMembers() },
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 나가기", action: () => console.log(2) },
       { type: 'divider' },
       { type: 'item', eventKey: "3", text: "그룹 신고하기", action: () => console.log(3) },
     ],
     1: [
-      { type: 'item', eventKey: "1", text: "참여자", action: () => console.log(4) },
+      { type: 'item', eventKey: "1", text: "참여자 보기", action: () => showMembers() },
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 마감하기", action: () => console.log(5) },
     ],
