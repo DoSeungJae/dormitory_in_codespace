@@ -43,7 +43,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
   const menuItems = {
     //isHost : 0 or 1
     0: [
-      { type: 'item', eventKey: "1", text: "참여자", action: () => {} },
+      { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "준비/해제", action: () => console.log(1) },
       { type: 'divider' },
@@ -52,7 +52,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
       { type: 'item', eventKey: "4", text: "그룹 신고하기", action: () => console.log(3) },
     ],
     1: [
-      { type: 'item', eventKey: "1", text: "참여자", action: () => {} },
+      { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 마감하기", action: () => console.log(5) },
     ],
@@ -69,7 +69,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
           if (item.type === 'divider') {
             return <Dropdown.Divider key={index} />;
           }
-          if (item.text === "참여자") {
+          if (item.text.startsWith("참여자")) {
             return (
               <Dropdown key={index} drop="start" autoClose="outside">
                 <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
