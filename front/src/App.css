@@ -345,8 +345,10 @@
 .dropdown-item{
   padding:0.0vh;
   padding-left:3vw;
+  padding-right: 3vw;
   font-size: 0.9rem; 
   background-color: transparent !important;
+  
 }
 
 .dropdown-item:focus,
@@ -360,6 +362,11 @@
   background-color: transparent !important;
 }
 
+.nested-dropdown-item-container{
+  display: flex ;
+  justify-content: space-between ;
+  align-items: center ;
+}
 
 
 .rounded-image {

@@ -36,25 +36,26 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
     setMemberList(groupParam.members.map(jsonString => JSON.parse(jsonString)))
   }
 
-  const showMembers = async () => {
-   console.log(memberList); 
-  }
 
   const menuItems = {
     //isHost : 0 or 1
     0: [
       { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
       { type: 'divider' },
-      { type: 'item', eventKey: "2", text: "준비/해제", action: () => console.log(1) },
+      { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
       { type: 'divider' },
-      { type: 'item', eventKey: "3", text: "그룹 나가기", action: () => console.log(2) },
+      { type: 'item', eventKey: "3", text: "준비/해제", action: () => console.log(group) },
       { type: 'divider' },
-      { type: 'item', eventKey: "4", text: "그룹 신고하기", action: () => console.log(3) },
+      { type: 'item', eventKey: "4", text: "그룹 나가기", action: () => console.log(2) },
+      { type: 'divider' },
+      { type: 'item', eventKey: "5", text: "그룹 신고하기", action: () => console.log(3) },
     ],
     1: [
       { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
       { type: 'divider' },
-      { type: 'item', eventKey: "2", text: "그룹 마감하기", action: () => console.log(5) },
+      { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
+      { type: 'divider' },
+      { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => console.log(group) },
     ],
   };
 
@@ -81,9 +82,35 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
                                     onClick={()=>{console.log(memberList[memberIndex])}} 
                                     style={{ fontSize: '0.85rem'}}>
                       <div>{handleNickName(member.nickName)}</div>
-                      {(memberIndex!=memberList.length-1) &&<Dropdown.Divider key={`divider-${index}`} />}
+                      {(memberIndex!=memberList.length-1) && <Dropdown.Divider/>}
                     </Dropdown.Item>
                   ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            );
+          }
+          if(item.text=="그룹 정보"){
+            return (
+              <Dropdown key={index} drop='start'  autoClose="outside">
+                <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
+                    <div className='nested-dropdown-item-container'>
+                      <div>{"기숙사"}</div>
+                      <div>{group.dormId}</div>
+                    </div>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
+                    <div className='nested-dropdown-item-container'>
+                      <div>{"카테고리"}</div>
+                      <div>{group.category}</div>
+                    </div>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}} onClick={() =>{console.log(1)}}>
+                    {"게시글로 가기"}
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             );
