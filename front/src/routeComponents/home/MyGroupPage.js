@@ -129,7 +129,7 @@ function MyGroupPage(){
                         />
                     </ThemeProvider>
                     ) :(
-                        <><h6>그룹에 참여하세요!</h6></>
+                        <><h6>그룹을 만들거나 진행중인 그룹에 참여하세요!</h6></>
                     )
                 }
             </div>
