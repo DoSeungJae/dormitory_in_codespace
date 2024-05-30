@@ -1,7 +1,10 @@
-import React,{ useState } from 'react';
+import React,{ useContext, useState } from 'react';
 import {Dropdown} from 'react-bootstrap';
 import ThreeDots from '../common/ThreeDots';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+import HomeSelectContext from '../home/HomeSelectContext';
+import { toast } from 'react-toastify';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <h1
@@ -20,6 +23,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
   const [isHost,setIsHost]=useState(0);
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
+  const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   
   const dormIdToDormName = {
     1:"오름1",
@@ -29,6 +33,25 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
     5:"푸름2",
     6:"푸름3",
     7:"푸름4",
+  }
+  
+  const goToArticlePage = async () => {
+    const path=`http://localhost:8080/api/v1/article/${group.id}`;
+    try{
+      const response=await axios.get(path);
+      const article=(response.data);
+      localStorage.setItem("article",JSON.stringify(article));
+      localStorage.setItem("nextIndex",selectComponentIndex);
+      setSelectComponentIndex(5);
+    }catch(error){
+      console.error(error);
+      setSelectComponentIndex(8);
+      localStorage.setItem("nextIndex",5);
+      toast.error('회원 정보가 유효하지 않아요! 다시 로그인해주세요.');
+      
+    }
+
+
   }
   
   const handleNickName = (nick) => {
@@ -118,7 +141,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
                     </div>
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}} onClick={() =>{console.log(1)}}>
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}} onClick={() =>{goToArticlePage()}}>
                     {"게시글로 가기"}
                   </Dropdown.Item>
                 </Dropdown.Menu>
