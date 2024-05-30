@@ -115,6 +115,7 @@ function MyGroupPage(){
                 <ThreeDotsMenu
                   isHostParam={isHost}
                   groupParam={group}
+                  hostNickNameParam={hostNickName}
                 />
 
             </header>
