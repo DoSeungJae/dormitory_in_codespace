@@ -16,7 +16,12 @@ function MyGroupPage(){
     const [isHost,setIsHost]=useState(0);
     const [group,setGroup]=useState({});
     const token=localStorage.getItem("token");
-    const title=hostNickName+"의 그룹";
+    const title = (
+      <span>
+        <strong>{hostNickName}</strong>{"의 그룹"}
+      </span>
+    );
+    
 
     useEffect(()=>{
         if(selectComponentIndex!=4){
@@ -106,10 +111,7 @@ function MyGroupPage(){
   }
 
   const checkIsHost = () => {
-    console.log("hostN:",hostNickName);
-    console.log("n:",nickName);
     if(hostNickName=="" || nickName==""){
-      setIsHost(-1);
       return ;
     }
     if(hostNickName==nickName){
@@ -130,6 +132,7 @@ function MyGroupPage(){
                   isHostParam={isHost}
                   groupParam={group}
                   hostNickNameParam={hostNickName}
+                  myNickName={nickName}
                 />
 
             </header>
