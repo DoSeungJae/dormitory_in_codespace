@@ -20,7 +20,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     </h1>
   ));
 
-const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
+const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName}) => {
   const [isHost,setIsHost]=useState(0);
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
@@ -126,8 +126,12 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
                                     eventKey={`member-${memberIndex}`}
                                     onClick={()=>{handleSwalMember(memberList[memberIndex])}} 
                                     style={{ fontSize: '0.85rem'}}>
-                      <div>{handleNickName(member.nickName)}</div>
+                      <div className='nested-dropdown-item-container'>
+                        <div>{handleNickName(member.nickName)}</div>
+                        {(myNickName==member.nickName) && <div>{"me!"}</div>}
+                      </div>
                       {(memberIndex!=memberList.length-1) && <Dropdown.Divider/>}
+                      
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
