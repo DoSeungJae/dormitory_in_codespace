@@ -32,7 +32,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam}) => {
   }
 
   const menuItems = {
-    //isHost
+    //isHost : 0 or 1
     0: [
       { type: 'item', eventKey: "1", text: "참여자 보기 ", action: () => {} },
       { type: 'divider' },
@@ -64,10 +64,11 @@ const ThreeDotsMenu = ({isHostParam,groupParam}) => {
             return (
               <Dropdown key={index} drop="start" autoClose="outside">
                 <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
-                <Dropdown.Menu className='nested-dropdown-menu'>
+                <Dropdown.Menu>
                   {memberList.map((member, memberIndex) => (
-                    <Dropdown.Item  key={memberIndex} eventKey={`member-${memberIndex}`}>
+                    <Dropdown.Item  key={memberIndex} eventKey={`member-${memberIndex}`} style={{ fontSize: '0.85rem'}}>
                       {member.nickName}
+                      {(memberIndex!=memberList.length-1) &&<Dropdown.Divider key={`divider-${index}`} />}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
