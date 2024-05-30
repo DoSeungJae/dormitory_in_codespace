@@ -21,6 +21,16 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
   
+  const dormIdToDormName = {
+    1:"오름1",
+    2:"오름2",
+    3:"오름3",
+    4:"푸름1",
+    5:"푸름2",
+    6:"푸름3",
+    7:"푸름4",
+  }
+  
   const handleNickName = (nick) => {
     if(nick==hostNickNameParam){
       return (<div style={{ fontWeight: 'bold' }}>{nick}</div>);
@@ -97,7 +107,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
                   <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
                     <div className='nested-dropdown-item-container'>
                       <div>{"기숙사"}</div>
-                      <div>{group.dormId}</div>
+                      <div>{dormIdToDormName[group.dormId]}</div>
                     </div>
                   </Dropdown.Item>
                   <Dropdown.Divider />
