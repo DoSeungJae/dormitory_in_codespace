@@ -358,6 +358,16 @@
   box-shadow: none !important;
 }
 
+.nested-dropdown-item{
+  background-color: transparent !important;
+}
+.nested-dropdown-item:focus,
+.nested-dropdown-item:active {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
 .rounded-image {
   width: 50px;  
   height: 50px; 

@@ -66,7 +66,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam}) => {
                 <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
                 <Dropdown.Menu>
                   {memberList.map((member, memberIndex) => (
-                    <Dropdown.Item  key={memberIndex} eventKey={`member-${memberIndex}`} style={{ fontSize: '0.85rem'}}>
+                    <Dropdown.Item className='nested-dropdown-item' key={memberIndex} eventKey={`member-${memberIndex}`} style={{ fontSize: '0.85rem'}}>
                       {member.nickName}
                       {(memberIndex!=memberList.length-1) &&<Dropdown.Divider key={`divider-${index}`} />}
                     </Dropdown.Item>
