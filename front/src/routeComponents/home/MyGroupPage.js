@@ -23,13 +23,13 @@ function MyGroupPage(){
           //pageInit();
           return ;   
         }
-        checkIsHost();
         if(nickName==""){
             getUserNickNameFromToken();
         }
         if(groupId==0){
             getGroupIdThatUserBelongsTo();
         }
+
 
     },[selectComponentIndex])
 
@@ -40,6 +40,14 @@ function MyGroupPage(){
       getGroupHostNickName();
       
     },[nickName,groupId]);
+
+    useEffect(()=>{
+      if(nickName=="" || hostNickName==""){
+        return ;
+      }
+      checkIsHost();
+
+    },[hostNickName,nickName])
 
 
   const pageInit = () => {
@@ -98,6 +106,12 @@ function MyGroupPage(){
   }
 
   const checkIsHost = () => {
+    console.log("hostN:",hostNickName);
+    console.log("n:",nickName);
+    if(hostNickName=="" || nickName==""){
+      setIsHost(-1);
+      return ;
+    }
     if(hostNickName==nickName){
       setIsHost(1);
     }
