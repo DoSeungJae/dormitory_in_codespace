@@ -345,28 +345,22 @@
 .dropdown-item{
   padding:0.0vh;
   padding-left:3vw;
-  font-size: 0.9rem;  
+  font-size: 0.9rem; 
+  background-color: transparent !important;
 }
+
+.dropdown-item:focus,
+.dropdown-item:active {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
 .nested-dropdown-toggle{
   background-color: transparent !important;
 }
 
-.nested-dropdown-toggle:focus,
-.nested-dropdown-toggle:active {
-  background-color: transparent !important;
-  color: inherit !important;
-  box-shadow: none !important;
-}
 
-.nested-dropdown-item{
-  background-color: transparent !important;
-}
-.nested-dropdown-item:focus,
-.nested-dropdown-item:active {
-  background-color: transparent !important;
-  color: inherit !important;
-  box-shadow: none !important;
-}
 
 .rounded-image {
   width: 50px;  
