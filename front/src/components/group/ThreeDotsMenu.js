@@ -1,10 +1,11 @@
-import React,{ useContext, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import {Dropdown} from 'react-bootstrap';
 import ThreeDots from '../common/ThreeDots';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import HomeSelectContext from '../home/HomeSelectContext';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <h1
@@ -69,6 +70,19 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
     setMemberList(groupParam.members.map(jsonString => JSON.parse(jsonString)))
   }
 
+  const handleSwalMember = (member) => {
+    Swal.fire({
+      text:`${member.nickName}`,
+      showCancelButton:true,
+      showDenyButton:isHost?true:false,
+      confirmButtonText: "확인",
+      cancelButtonText:"신고하기",
+      denyButtonText:"내보내기"
+
+    })
+  } 
+
+
 
   const menuItems = {
     //isHost : 0 or 1
@@ -76,8 +90,6 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
       { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
-      { type: 'divider' },
-      { type: 'item', eventKey: "3", text: "준비/해제", action: () => console.log(group) },
       { type: 'divider' },
       { type: 'item', eventKey: "4", text: "그룹 나가기", action: () => console.log(2) },
       { type: 'divider' },
@@ -112,7 +124,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam}) => {
                     <Dropdown.Item className='nested-dropdown-item' 
                                     key={memberIndex} 
                                     eventKey={`member-${memberIndex}`}
-                                    onClick={()=>{console.log(memberList[memberIndex])}} 
+                                    onClick={()=>{handleSwalMember(memberList[memberIndex])}} 
                                     style={{ fontSize: '0.85rem'}}>
                       <div>{handleNickName(member.nickName)}</div>
                       {(memberIndex!=memberList.length-1) && <Dropdown.Divider/>}
