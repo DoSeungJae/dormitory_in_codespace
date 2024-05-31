@@ -76,7 +76,7 @@ function ParticipateButton({articleId}) {
         }
     }
 
-    const checkGroupState = async () => {
+    const checkGroupStateFromExternalPerspective = async () => {
         let isMemberRegion=0;
         const checkIsMember = async () => {
             const path=`http://localhost:8080/api/v1/group/isMember?groupId=${articleId}`;
@@ -188,7 +188,7 @@ function ParticipateButton({articleId}) {
         if(selectComponentIndex!==5){
             return ;
         }
-        checkGroupState();
+        checkGroupStateFromExternalPerspective();
 
     },[selectComponentIndex])
 
