@@ -106,16 +106,15 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       let data={};
       if(article){
         data = {
-          articleId:article.id,
+          reportType:"ARTICLE",
+          targetId:article.id,
           reason:reportReason
         };
       }
-
-
       else if(comment){
-        console.log(comment);
         data = {
-          commentId:comment.id,
+          reportType:"COMMENT",
+          targetId:comment.id,
           reason:reportReason
         };
       }
