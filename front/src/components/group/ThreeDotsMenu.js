@@ -6,6 +6,7 @@ import axios from 'axios';
 import HomeSelectContext from '../home/HomeSelectContext';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { closeGroup } from '../../modules/group/groupModule';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <h1
@@ -20,7 +21,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     </h1>
   ));
 
-const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName}) => {
+const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,groupState,setGroupState}) => {
   const [isHost,setIsHost]=useState(0);
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
@@ -73,8 +74,8 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName}) =>
   const handleSwalMember = (member) => {
     Swal.fire({
       text:`${member.nickName}`,
-      showCancelButton:true,
-      showDenyButton:isHost?true:false,
+      showCancelButton:(member.nickName!=myNickName)?true:false,
+      showDenyButton:(isHost&&member.nickName!=myNickName)?true:false,
       confirmButtonText: "확인",
       cancelButtonText:"신고하기",
       denyButtonText:"내보내기"
@@ -100,7 +101,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName}) =>
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
       { type: 'divider' },
-      { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => console.log(group) },
+      { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => closeGroup(group.id,setGroupState) },
     ],
   };
 
