@@ -120,7 +120,7 @@ public class ArticleApi {
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity article(@PathVariable("articleId") Long articleId){ 
+    public ResponseEntity article(@PathVariable("articleId") Long articleId){
         Article article=articleService.getArticle(articleId);
         return ResponseEntity
                 .status(HttpStatus.OK)
