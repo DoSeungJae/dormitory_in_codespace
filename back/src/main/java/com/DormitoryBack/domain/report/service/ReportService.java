@@ -63,28 +63,7 @@ public class ReportService {
         return report;
     }
 
-    public List<Report> getArticleReports(Long articleId) {
-        Article article=articleRepository.findById(articleId).orElse(null);
-        if(article==null){
-            throw new RuntimeException("ArticleNotFound");
-        }
-        List<Report> reports=reportRepository.findAllByArticle(article);
-        if(reports.isEmpty()){
-            throw new RuntimeException("NoReportFound");
-        }
-        return reports;
-    }
-    public List<Report> getCommentReports(Long commentId){
-        Comment comment=commentRepository.findById(commentId).orElse(null);
-        if(comment==null){
-            throw new RuntimeException("CommentNotFound");
-        }
-        List<Report> reports=reportRepository.findAllByComment(comment);
-        if(reports.isEmpty()){
-            throw new RuntimeException("NoReportFound");
-        }
-        return reports;
-    }
+
     public List<Report> getUserReports(Long userId){
         User user=userRepository.findById(userId).orElse(null);
         if(user==null){
@@ -103,29 +82,18 @@ public class ReportService {
             throw new JwtException("InvalidToken");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        log.info(userId.toString());
-        User userData=userRepository.findById(userId).orElse(null);
-        Article userArticle=null;
-        Comment userComment=null;
-        if(dto.getCommentId()==null){
-            //글의 형식은 "article"
-            userArticle=articleRepository.findById(dto.getArticleId()).orElse(null);
+        User user=userRepository.findById(userId).orElse(null);
+        if(user==null) {
+            throw new RuntimeException("UserNotFound");
         }
-        else if(dto.getArticleId()==null){
-            //글의 형식은 "comment"
-            userComment=commentRepository.findById(dto.getCommentId()).orElse(null);
-        }
-        else{
-            throw new RuntimeException("NoId");
-        }
-
         Report newReport=Report.builder()
-                .reporter(userData)
-                .article(userArticle)
-                .comment(userComment)
+                .reporter(user)
+                .targetId(dto.getTargetId())
+                .reportType(dto.getReportType())
                 .time(LocalDateTime.now())
                 .reason(dto.getReason())
                 .build();
+
         Report saved=reportRepository.save(newReport);
         return saved;
     }
