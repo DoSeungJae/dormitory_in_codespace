@@ -50,20 +50,6 @@ public class ReportApi {
                 .body(report.toJsonString());
     }
 
-    @GetMapping("/article/{articleId}")
-    public ResponseEntity articleReports(@PathVariable("articleId") Long articleId){
-        List<Report> reports=reportService.getArticleReports(articleId);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(reportService.listStringify(reports));
-    }
-    @GetMapping("/comment/{commentId}")
-    public ResponseEntity commentReports(@PathVariable("commentId") Long commentId){
-        List<Report> reports=reportService.getCommentReports(commentId);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(reportService.listStringify(reports));
-    }
     @GetMapping("user/{userId}")
     public ResponseEntity userReports(@PathVariable("userId") Long userId){
         List<Report> reports=reportService.getUserReports(userId);
