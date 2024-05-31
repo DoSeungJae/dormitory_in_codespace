@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material';
 import theme from '../group/theme';
 import ChatRoom from '../../views/group/ChatRoom';
 import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
+import { checkGroupState } from '../../modules/group/groupModule';
 
 
 function MyGroupPage(){
@@ -15,14 +16,19 @@ function MyGroupPage(){
     const [hostNickName,setHostNickName]=useState("");
     const [isHost,setIsHost]=useState(0);
     const [group,setGroup]=useState({});
+    const [groupState,setGroupState]=useState(0);
+
     const token=localStorage.getItem("token");
     const title = (
       <span>
         <strong>{hostNickName}</strong>{"의 그룹"}
       </span>
     );
-    
 
+    useEffect(()=>{
+      checkGroupState(groupId,setGroupState);
+    },[groupState])
+  
     useEffect(()=>{
         if(selectComponentIndex!=4){
           //pageInit();
@@ -123,21 +129,28 @@ function MyGroupPage(){
   }
 
 
+
     return (
         <div className='App-myGroupPage'>
             <header className='App-myGroupPage-header'>
                 <BackButton></BackButton>
-                {title}
-                <ThreeDotsMenu
-                  isHostParam={isHost}
-                  groupParam={group}
-                  hostNickNameParam={hostNickName}
-                  myNickName={nickName}
-                />
+                {groupState != -2 && groupState!=0  && (
+                <>
+                    {title}
+                    <ThreeDotsMenu
+                        isHostParam={isHost}
+                        groupParam={group}
+                        hostNickNameParam={hostNickName}
+                        myNickName={nickName}
+                        groupState={groupState}
+                        setGroupState={setGroupState}
+                    />
+                </>
+            )}
 
             </header>
             <div className='App-myGroupPage-main'>  
-                {(groupId!=0 && nickName!="") ?
+                {(groupId!=0 && nickName!="" && groupState!=-2) ?
                     (
                     <ThemeProvider theme={theme}>
                         <ChatRoom
