@@ -4,6 +4,7 @@ package com.DormitoryBack.domain.report.entity;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.report.enums.ReportType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,40 +28,17 @@ public class Report {
     @GeneratedValue
     @Column(name="id")
     private Long id;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="reporter_id")
     private User reporter;
     @JsonProperty
     public Long getUserId(){return reporter.getId();}
-
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="comment_id")
-    private Comment comment;
-
-    @JsonProperty
-    public Long getCommentId(){
-        if(comment!=null){
-            return comment.getId();
-        }
-        return null;
-    }
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="article_id")
-    private Article article;
-
-    @JsonProperty
-    public Long getArticleId(){
-        if(article!=null) {
-            return article.getId();
-        }
-        return null;
-    }
+    @Column(name = "target_type")
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
+    @Column(name = "target_id")
+    private Long targetId;
 
     @CreatedDate
     @Column(name="time")
