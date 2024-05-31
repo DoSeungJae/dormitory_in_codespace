@@ -4,6 +4,8 @@ import { useEffect, useState,useContext } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import HomeSelectContext from "../home/HomeSelectContext";
+import { checkGroupState, closeGroup } from "../../modules/group/groupModule";
+
 const GroupStartButton = ({articleId}) => {
   const [buttontext,setButtonText]=useState("그룹 시작");
   const [groupState, setGroupState]=useState(0);
@@ -54,30 +56,6 @@ const GroupStartButton = ({articleId}) => {
     }
   }
 
-  const checkGroupState = async () => {
-    const path=`http://localhost:8080/api/v1/group/${articleId}`;
-    try{
-      const response=await axios.get(path);
-      const isProceeding=response.data.isProceeding;
-      const numMembers=response.data.currentNumberOfMembers;
-      if(isProceeding){
-        setGroupState(1);
-      }
-      else if(numMembers>=1){
-        setGroupState(-1);
-      }
-      else{
-        setGroupState(-2);
-      }
-    }catch(error){
-      const errMsg=error.response.data;
-      if(errMsg=="GroupNotFound"){
-        setGroupState(0);
-      }
-
-    }
-  }
-
   const handleSWalGroupClose = async () => {
     Swal.fire({
       title:"그룹을 마감할까요?",
@@ -88,7 +66,7 @@ const GroupStartButton = ({articleId}) => {
       showCancelButton: true
       }).then((result)=>{
         if(result.isConfirmed){
-          closeGroup();
+          closeGroup(articleId,setGroupState);
         }
       })
   }
@@ -124,22 +102,6 @@ const GroupStartButton = ({articleId}) => {
       })
   }
 
-  const closeGroup = async () => {
-    const path=`http://localhost:8080/api/v1/group/close/${articleId}`;
-    const headers={
-      'Authorization':`${token}`
-    };
-    try{
-      const response=await axios.patch(path,{},{headers});
-      console.log(response.data);
-      if(response.data=="GroupClosed"){
-        setGroupState(-1);
-        toast.info("그룹이 마감되었어요.");
-      }
-    }catch(error){
-      console.error(error);
-    }
-  }
   const finishGroup = async (forcePath) => {
     let path;
     if(forcePath){
@@ -167,8 +129,6 @@ const GroupStartButton = ({articleId}) => {
     }
   }
 
-  
-  
     const makeGroup = async (maxCapacity) => {
         const path="http://localhost:8080/api/v1/group/new";
         const body={
@@ -187,8 +147,6 @@ const GroupStartButton = ({articleId}) => {
             }
         }
     }
-
-    
 
     const handleSwalMaxCapacity = async () => {
         const { value } = await Swal.fire({
@@ -217,12 +175,11 @@ const GroupStartButton = ({articleId}) => {
       }
 
     
-    
     useEffect(()=>{
       if(selectComponentIndex!=5){
         return ;
       }
-      checkGroupState();
+      checkGroupState(articleId,setGroupState);
     },[selectComponentIndex])
 
     useEffect(()=>{
