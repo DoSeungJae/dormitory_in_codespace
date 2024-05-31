@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report,Long> {
 
-    List<Report> findAllByArticle(Article article);
-    List<Report> findAllByComment(Comment comment);
     List<Report> findAllByReporter(User reporter);
 
 }
