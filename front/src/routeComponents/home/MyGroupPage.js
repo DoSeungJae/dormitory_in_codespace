@@ -8,6 +8,7 @@ import ChatRoom from '../../views/group/ChatRoom';
 import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
 import { checkGroupState } from '../../modules/group/groupModule';
 
+//웹 소켓 기능이 사용되는 컴포넌트이므로 짧은 시간을 주기로 리렌더링이 필요함
 
 function MyGroupPage(){
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
