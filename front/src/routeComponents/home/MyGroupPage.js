@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material';
 import theme from '../group/theme';
 import ChatRoom from '../../views/group/ChatRoom';
 import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
-import { checkGroupState } from '../../modules/group/groupModule';
+import { checkGroupState, mapGroupStateText } from '../../modules/group/groupModule';
 
 //웹 소켓 기능이 사용되는 컴포넌트이므로 짧은 시간을 주기로 리렌더링이 필요함
 
@@ -18,11 +18,12 @@ function MyGroupPage(){
     const [isHost,setIsHost]=useState(0);
     const [group,setGroup]=useState({});
     const [groupState,setGroupState]=useState(0);
+    const [groupStateText,setGroupStateText]=useState("");
 
     const token=localStorage.getItem("token");
     const title = (
       <span>
-        <strong>{hostNickName}</strong>{"의 그룹"}
+        <strong>{hostNickName}</strong>{`의 그룹 • ${groupStateText}`}
       </span>
     );
 
@@ -35,6 +36,15 @@ function MyGroupPage(){
       }
       checkGroupState(groupId,setGroupState);
     },[selectComponentIndex,groupId])
+
+    useEffect(()=>{
+      if(groupState==1){
+        setGroupStateText("진행중");
+      }
+      else if(groupState==-1){
+        setGroupStateText("마감됨");
+      }
+    })
 
   
   
@@ -77,6 +87,7 @@ function MyGroupPage(){
     setGroupId("");
     setGroup({});
     setIsHost(0);
+    setGroupStateText("");
   }
 
   const getUserNickNameFromToken = async () => {
