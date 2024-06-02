@@ -1,5 +1,30 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+
+
+export const checkGroupState = async (groupId,setGroupState) => {
+  const path=`http://localhost:8080/api/v1/group/${groupId}`; //
+  try{
+    const response=await axios.get(path);
+    const isProceeding=response.data.isProceeding;
+    const numMembers=response.data.currentNumberOfMembers;
+    if(isProceeding){
+      setGroupState(1);
+    }
+    else if(numMembers>=1){
+      setGroupState(-1);
+    }
+    else{
+      setGroupState(-2);
+    }
+  }catch(error){
+    const errMsg=error.response.data;
+    if(errMsg=="GroupNotFound"){
+      setGroupState(0);
+    }
+  }
+}
 
 export const closeGroup = async (groupId,setGroupState) => {
     const path=`http://localhost:8080/api/v1/group/close/${groupId}`;
@@ -15,29 +40,24 @@ export const closeGroup = async (groupId,setGroupState) => {
             //다른 멤버에게도 web socket과 같은 형태로 전달
         }
     }catch(error){
-        console.error(error);
+        if(error.response.data==="AlreadyClosedGroup"){
+          toast.warn("그룹이 이미 마감되었어요.");
+        }
     }
 }
 
-export const checkGroupState = async (groupId,setGroupState) => {
-    const path=`http://localhost:8080/api/v1/group/${groupId}`; //
-    try{
-      const response=await axios.get(path);
-      const isProceeding=response.data.isProceeding;
-      const numMembers=response.data.currentNumberOfMembers;
-      if(isProceeding){
-        setGroupState(1);
+
+export const handleSWalGroupClose = async (groupId, setGroupState) => {
+  Swal.fire({
+    title:"그룹을 마감할까요?",
+    text: "마감되면 다시 되돌릴 수 없어요!",
+    confirmButtonColor:"#FF8C00",
+    confirmButtonText:"마감하기",
+    cancelButtonText:"취소",
+    showCancelButton: true
+    }).then((result)=>{
+      if(result.isConfirmed){
+        closeGroup(groupId,setGroupState);
       }
-      else if(numMembers>=1){
-        setGroupState(-1);
-      }
-      else{
-        setGroupState(-2);
-      }
-    }catch(error){
-      const errMsg=error.response.data;
-      if(errMsg=="GroupNotFound"){
-        setGroupState(0);
-      }
-    }
-  }
+    })
+}
