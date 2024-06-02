@@ -26,6 +26,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+  const token=localStorage.getItem("token");
   
   const dormIdToDormName = {
     1:"오름1",
@@ -36,10 +37,91 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     6:"푸름3",
     7:"푸름4",
   }
+
+  const handleSwalReportGroup=async () => {
+    Swal.fire({
+      confirmButtonColor:"#FF8C00",
+      title: "신고",
+      confirmButtonText:"신고",
+      cancelButtonText:"취소",
+      input: "select",
+      inputOptions: {
+        카테고리벗어남:"카테고리벗어남",
+        기타:"기타"
+      },
+      inputPlaceholder: "신고 사유를 선택하세요.",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value) {
+            resolve();
+            report("GROUP",group.id,value);
+          } else {
+            resolve("신고 사유를 선택해주세요!");
+          }
+        });
+      }
+    });
+  }
+
+
+  const handleSwalReportMember=async (memberId) => {
+    Swal.fire({
+      confirmButtonColor:"#FF8C00",
+      title: "신고",
+      confirmButtonText:"신고",
+      cancelButtonText:"취소",
+      input: "select",
+      inputOptions: {
+        도배:"도배",
+        노쇼:"노쇼",
+        욕설:"욕설",
+        기타:"기타"
+      },
+      inputPlaceholder: "신고 사유를 선택하세요.",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value) {
+            resolve();
+            report("USER",memberId,value);
+          } else {
+            resolve("신고 사유를 선택해주세요!");
+          }
+        });
+      }
+    });
+  }
+
+
+  const report = async (targetType,id,reportReason) => {
+    const path = `http://localhost:8080/api/v1/report/new`;
+    const body={
+      reportType:targetType,
+      targetId:id,
+      reason:reportReason
+    };
+    const headers = {
+      'Authorization':`${token}`
+  };
+  try{
+    const response=await axios.post(path,body,{headers});
+    toast.success("신고가 접수되었어요.");
+  }
+  catch(error){
+    const errMsg=error.response.data;
+    if(errMsg=="InvalidToken"){
+        toast.error("로그인 정보가 만료되었어요, 다시 로그인해주세요.");
+    }
+    else{
+      console.log(errMsg);
+    }
+  }
+    
+  }
   
   const quitGroup = async () => {
-    const path=`http://localhost:8080/api/v1/group/quit?groupId=${group.id}`;
-    const token=localStorage.getItem("token");
+    const path=`http://localhost:8080/api/v1/group/quit?groupId=${group.id}`; 
     const headers = {
         'Authorization':`${token}`
     };
@@ -96,7 +178,14 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       confirmButtonText: "확인",
       cancelButtonText:"신고하기",
       denyButtonText:"내보내기"
-
+    }).then((result)=>{
+      if(result.isDismissed){
+        console.log(member.id);
+        handleSwalReportMember(member.id);
+      }
+      else if(result.isDenied){
+        console.log(2);
+      }
     })
   } 
 
@@ -109,7 +198,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       { type: 'divider' },
       { type: 'item', eventKey: "4", text: "그룹 나가기", action: () =>quitGroup() },
       { type: 'divider' },
-      { type: 'item', eventKey: "5", text: "그룹 신고하기", action: () => console.log(3) },
+      { type: 'item', eventKey: "5", text: "그룹 신고하기", action: () => handleSwalReportGroup() },
     ],
     1: [
       { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
