@@ -171,7 +171,7 @@ function MyGroupPage(){
 
             </header>
             <div className='App-myGroupPage-main'>  
-                {(groupId!=0 && nickName!="" && groupState!=-2) ?
+                {(groupId!=0 && nickName!="" && groupState!=-2 && groupState!=0) ?
                     (
                     <ThemeProvider theme={theme}>
                         <ChatRoom

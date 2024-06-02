@@ -37,6 +37,23 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     7:"푸름4",
   }
   
+  const quitGroup = async () => {
+    const path=`http://localhost:8080/api/v1/group/quit?groupId=${group.id}`;
+    const token=localStorage.getItem("token");
+    const headers = {
+        'Authorization':`${token}`
+    };
+    try{
+        const response=await axios.patch(path,{},{headers});
+        toast.info("그룹을 나왔어요. 이제 다른 그룹에 참여할 수 있어요.");
+        setGroupState(0);
+    }catch(error){
+        const errMsg=error.response.data;
+        if(errMsg=="InvalidToken"){
+            toast.error("로그인 정보가 만료되었어요, 다시 로그인해주세요.");
+        }
+    }
+  }
   const goToArticlePage = async () => {
     const path=`http://localhost:8080/api/v1/article/${group.id}`;
     try{
@@ -83,8 +100,6 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     })
   } 
 
-
-
   const menuItems = {
     //isHost : 0 or 1
     0: [
@@ -92,7 +107,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
       { type: 'divider' },
-      { type: 'item', eventKey: "4", text: "그룹 나가기", action: () => console.log(2) },
+      { type: 'item', eventKey: "4", text: "그룹 나가기", action: () =>quitGroup() },
       { type: 'divider' },
       { type: 'item', eventKey: "5", text: "그룹 신고하기", action: () => console.log(3) },
     ],
