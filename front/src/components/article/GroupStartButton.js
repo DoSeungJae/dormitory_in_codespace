@@ -4,7 +4,7 @@ import { useEffect, useState,useContext } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import HomeSelectContext from "../home/HomeSelectContext";
-import { checkGroupState, closeGroup } from "../../modules/group/groupModule";
+import { checkGroupState, closeGroup, handleSWalGroupClose } from "../../modules/group/groupModule";
 
 const GroupStartButton = ({articleId}) => {
   const [buttontext,setButtonText]=useState("그룹 시작");
@@ -29,7 +29,8 @@ const GroupStartButton = ({articleId}) => {
         handleSwalMaxCapacity();
         break;
       case 1:
-        handleSWalGroupClose();
+        handleSWalGroupClose(articleId,setGroupState);
+        
         break;
       case -1:
         handleSWalGroupFinish();
@@ -54,21 +55,6 @@ const GroupStartButton = ({articleId}) => {
         setButtonText("종료됨");
         break;
     }
-  }
-
-  const handleSWalGroupClose = async () => {
-    Swal.fire({
-      title:"그룹을 마감할까요?",
-      text: "마감되면 다시 되돌릴 수 없어요!",
-      confirmButtonColor:"#FF8C00",
-      confirmButtonText:"마감하기",
-      cancelButtonText:"취소",
-      showCancelButton: true
-      }).then((result)=>{
-        if(result.isConfirmed){
-          closeGroup(articleId,setGroupState);
-        }
-      })
   }
 
   const handleSWalGroupFinish = async () => {
