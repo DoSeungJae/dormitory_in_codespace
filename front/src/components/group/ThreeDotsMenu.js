@@ -6,7 +6,7 @@ import axios from 'axios';
 import HomeSelectContext from '../home/HomeSelectContext';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import { closeGroup } from '../../modules/group/groupModule';
+import { closeGroup, handleSWalGroupClose } from '../../modules/group/groupModule';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <h1
@@ -101,7 +101,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       { type: 'divider' },
       { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
       { type: 'divider' },
-      { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => closeGroup(group.id,setGroupState) },
+      { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => handleSWalGroupClose(group.id,setGroupState) },
     ],
   };
 
