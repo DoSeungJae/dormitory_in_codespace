@@ -4,7 +4,7 @@ import { useEffect, useState,useContext } from "react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import HomeSelectContext from "../home/HomeSelectContext";
-import { checkGroupState, closeGroup, handleSWalGroupClose } from "../../modules/group/groupModule";
+import { checkGroupState, closeGroup, handleSWalGroupClose, mapGroupStateText } from "../../modules/group/groupModule";
 
 const GroupStartButton = ({articleId}) => {
   const [buttontext,setButtonText]=useState("그룹 시작");
@@ -40,22 +40,7 @@ const GroupStartButton = ({articleId}) => {
         break;
     } 
   }
-  const mapButtonText = () => {
-    switch(groupState){
-      case 0:
-        setButtonText("그룹 시작");
-        break;
-      case 1:
-        setButtonText("마감하기");
-        break;
-      case -1:
-        setButtonText("마감됨");
-        break;
-      case -2:
-        setButtonText("종료됨");
-        break;
-    }
-  }
+
 
   const handleSWalGroupFinish = async () => {
     Swal.fire({
@@ -172,7 +157,7 @@ const GroupStartButton = ({articleId}) => {
       if(selectComponentIndex!=5){
         return ;
       }
-      mapButtonText();
+      mapGroupStateText(groupState,setButtonText);
       handleBlurStyle();
     },[groupState]);
 

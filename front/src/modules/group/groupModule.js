@@ -61,3 +61,20 @@ export const handleSWalGroupClose = async (groupId, setGroupState) => {
       }
     })
 }
+
+export const mapGroupStateText = (groupState,setter) => {
+  switch(groupState){
+    case 0:
+      setter("그룹 시작");
+      break;
+    case 1:
+      setter("마감하기");
+      break;
+    case -1:
+      setter("마감됨");
+      break;
+    case -2:
+      setter("종료됨");
+      break;
+  }
+}
