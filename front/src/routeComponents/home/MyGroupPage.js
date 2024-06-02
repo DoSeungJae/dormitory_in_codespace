@@ -26,8 +26,16 @@ function MyGroupPage(){
     );
 
     useEffect(()=>{
+      if(selectComponentIndex!=4){
+        return ;
+      }
+      if(groupId==0){
+        return ;
+      }
       checkGroupState(groupId,setGroupState);
-    },[groupState])
+    },[selectComponentIndex,groupId])
+
+  
   
     useEffect(()=>{
         if(selectComponentIndex!=4){
@@ -58,7 +66,8 @@ function MyGroupPage(){
       }
       checkIsHost();
 
-    },[hostNickName,nickName])
+    },[hostNickName,nickName,selectComponentIndex])
+
 
 
   const pageInit = () => {
@@ -134,7 +143,7 @@ function MyGroupPage(){
         <div className='App-myGroupPage'>
             <header className='App-myGroupPage-header'>
                 <BackButton></BackButton>
-                {groupState != -2 && groupState!=0  && (
+                {(groupState != -2 && groupState!=0)  ? (
                 <>
                     {title}
                     <ThreeDotsMenu
@@ -146,7 +155,7 @@ function MyGroupPage(){
                         setGroupState={setGroupState}
                     />
                 </>
-            )}
+            ) : null}
 
             </header>
             <div className='App-myGroupPage-main'>  
