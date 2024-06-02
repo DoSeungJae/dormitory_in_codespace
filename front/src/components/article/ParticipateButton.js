@@ -179,7 +179,7 @@ function ParticipateButton({articleId}) {
         }catch(error){
             const errMsg=error.response.data;
             if(errMsg=="InvalidToken"){
-                //토큰 예외 처리 
+                toast.error("로그인 정보가 만료되었어요, 다시 로그인해주세요.");
             }
         }
     }
