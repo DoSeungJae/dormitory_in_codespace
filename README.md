@@ -1,5 +1,5 @@
 # Project
-Project - Joint Delivery Service in Dormitory
+Project - Group Buying Service in Dormitories
 
 FE - React.js
 
