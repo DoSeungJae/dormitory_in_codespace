@@ -148,7 +148,8 @@ function ParticipateButton({articleId}) {
             setGroupState(1);
             
         }catch(error){
-            const errMsg=error.response.data
+            const errMsg=error.response.data;
+            console.log(errMsg);
             if(errMsg=="InvalidToken"){
                 //토큰 예외 처리 
             }
@@ -164,6 +165,10 @@ function ParticipateButton({articleId}) {
             else if(errMsg==="GroupFull"){
                 toast.warn("그룹이 꽉 찼어요!");
             }
+            else if(errMsg=="CannotParticipateInTheGroupExpelledFromAgain"){
+                toast.error("이 그룹에서 추방되었기 때문에 다시 참여할 수 없어요!");
+            }
+            
         }
     }
 
