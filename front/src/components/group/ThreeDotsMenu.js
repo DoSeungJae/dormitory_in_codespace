@@ -25,6 +25,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   const [isHost,setIsHost]=useState(0);
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
+  const [expelledMemberIdList,setExpelledMemberIdList]=useState([]);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   const token=localStorage.getItem("token");
   
@@ -167,8 +168,12 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   const handleToggle = () => {
     setIsHost(isHostParam);
     setGroup(groupParam);
-    setMemberList(groupParam.members.map(jsonString => JSON.parse(jsonString)))
+    setMemberList(groupParam.members
+      .map(jsonString => JSON.parse(jsonString))
+      .filter(member=>!expelledMemberIdList.includes(member.id))
+    )
   }
+
 
   const handleSwalMember = (member) => {
     Swal.fire({
@@ -180,14 +185,51 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       denyButtonText:"내보내기"
     }).then((result)=>{
       if(result.isDismissed){
-        console.log(member.id);
         handleSwalReportMember(member.id);
       }
       else if(result.isDenied){
-        console.log(2);
+        handleSwalExpelMember(member);
       }
     })
   } 
+
+  const handleSwalExpelMember =  (member) => {
+    Swal.fire({
+      text:`${member.nickName}님을 내보낼까요? 추방된 사용자는 다시 이 그룹에 참여할 수 없어요!`,
+      showCancelButton:true,
+      confirmButtonText:"내보내기",
+      cancelButtonText:"취소"
+    }).then((result)=>{
+      if(result.isConfirmed){
+        expelMember(member);
+      }
+    })
+  }
+
+  useEffect(()=>{
+    console.log(memberList);
+  })
+
+  const expelMember = async (memberToBeExpelled) => {
+    const path=`http://localhost:8080/api/v1/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
+    const headers = {
+      'Authorization':`${token}`
+    };
+    try{
+      const response=await axios.patch(path,{},{headers});
+      console.log(response.data);
+      if(response.data.mode=="expel"){
+        toast.success(`${memberToBeExpelled.nickName}님이 추방되었어요.`); //서버 전체 메시지로 전송하기
+        setExpelledMemberIdList(prev=>[...prev,memberToBeExpelled.id])
+        console.log(expelledMemberIdList);
+      }
+    }catch(error){
+      console.error(error);
+      toast.error("예상하지 못한 문제가 발생했어요!");
+    }
+  }
+
+
 
   const menuItems = {
     //isHost : 0 or 1
