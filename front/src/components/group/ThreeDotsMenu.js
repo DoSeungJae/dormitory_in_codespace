@@ -38,6 +38,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     6:"푸름3",
     7:"푸름4",
   }
+  
 
   const handleSwalReportGroup=async () => {
     Swal.fire({
