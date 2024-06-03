@@ -216,6 +216,9 @@ public class GroupService {
         if(isMemberOfTargetGroup==true){
             throw new RuntimeException("AlreadyBelongToThisGroup");
         }
+        if(setOperations.isMember(String.valueOf("expelledFrom"+groupId),userId)){
+            throw new RuntimeException("CannotParticipateInTheGroupExpelledFromAgain");
+        }
         Long notBelongToAnywhere=setOperations.add("groupGlobal",userId);
         if(notBelongToAnywhere==0L){
             throw new RuntimeException("DuplicatedParticipation");
@@ -304,8 +307,9 @@ public class GroupService {
         Long numBeforeOps=setOperations.size(String.valueOf(groupId));
         Boolean isMemberOfTheGroup=setOperations.isMember(String.valueOf(groupId),targetUserId);
         if(isMemberOfTheGroup==false){
-            throw new RuntimeException("UserNotBelongToGroupToBeExpelled");
+            throw new RuntimeException("MemberIsNotBelongToGroupToBeExpelledFrom");
         }
+        setOperations.add(String.valueOf("expelledFrom"+groupId),targetUserId);
         setOperations.remove(String.valueOf(groupId),targetUserId);
         setOperations.remove("groupGlobal",targetUserId);
         hashOperations.delete("userBelong",targetUserId);
@@ -354,6 +358,7 @@ public class GroupService {
             setOperations.remove("groupGlobal",memberId);
             hashOperations.delete("userBelong",memberId);
         }
+        redisTemplate.delete(String.valueOf("expelledFrom"+groupId));
         group.close();
         Group saved=groupRepository.save(group);
 
