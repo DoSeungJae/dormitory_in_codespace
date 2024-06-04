@@ -32,6 +32,7 @@ public class SocketModule {
             socketService.saveMessage(senderClient, data);
         };
     }
+
     
     private ConnectListener onConnected() {
         return (client) -> {
@@ -39,18 +40,18 @@ public class SocketModule {
 
             // room과 username 값이 null인지 체크하고, null이면 빈 문자열을 사용
             List<String> roomList = params.get("room");
-            String room = (roomList != null) ? roomList.stream().collect(Collectors.joining()) : "";
-            if(roomList==null){
+            String room=(!roomList.isEmpty()) ? roomList.get(0) : "";
+            if(roomList.isEmpty()){
                 return ;
             }
             List<String> usernameList = params.get("username");
-            String username = (usernameList != null) ? usernameList.stream().collect(Collectors.joining()) : "";
-            if(username==null){
+            String username=(!usernameList.isEmpty()) ? usernameList.get(0) : "";
+            if(usernameList.isEmpty()){
                 return ;
             }
-            client.joinRoom(room);
             socketService.saveInfoMessage(client, String.format(Constants.WELCOME_MESSAGE, username), room);
             log.info("Socket ID[{}] - room[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), room, username);
+            log.info(usernameList.toString());
         };
     }
 
@@ -58,12 +59,14 @@ public class SocketModule {
     private DisconnectListener onDisconnected() {
         return client -> {
             var params = client.getHandshakeData().getUrlParams();
-            String room = params.get("room").stream().collect(Collectors.joining());
-            if(room==null){
+            List<String> roomList = params.get("room");
+            String room=(!roomList.isEmpty()) ? roomList.get(0) : "";
+            if(roomList.isEmpty()){
                 return ;
             }
-            String username = params.get("username").stream().collect(Collectors.joining());
-            if(username==null){
+            List<String> usernameList = params.get("username");
+            String username=(!usernameList.isEmpty()) ? usernameList.get(0) : "";
+            if(usernameList.isEmpty()){
                 return ;
             }
             socketService.saveInfoMessage(client, String.format(Constants.DISCONNECT_MESSAGE, username), room);
