@@ -38,7 +38,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     6:"푸름3",
     7:"푸름4",
   }
-  
+
 
   const handleSwalReportGroup=async () => {
     Swal.fire({
@@ -207,9 +207,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     })
   }
 
-  useEffect(()=>{
-    console.log(memberList);
-  })
+
 
   const expelMember = async (memberToBeExpelled) => {
     const path=`http://localhost:8080/api/v1/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
@@ -218,11 +216,9 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     };
     try{
       const response=await axios.patch(path,{},{headers});
-      console.log(response.data);
       if(response.data.mode=="expel"){
         toast.success(`${memberToBeExpelled.nickName}님이 추방되었어요.`); //서버 전체 메시지로 전송하기
         setExpelledMemberIdList(prev=>[...prev,memberToBeExpelled.id])
-        console.log(expelledMemberIdList);
       }
     }catch(error){
       console.error(error);
