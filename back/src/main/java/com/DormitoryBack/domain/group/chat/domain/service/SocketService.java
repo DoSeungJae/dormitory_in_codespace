@@ -14,12 +14,8 @@ import java.time.LocalDateTime;
 @Slf4j
 public class SocketService {
     private final MessageService messageService;
-    public void sendSocketMessage(SocketIOClient senderClient, Message message, String room) {
-        for (SocketIOClient client: senderClient.getNamespace().getRoomOperations(room).getClients()) {
-            if (!client.getSessionId().equals(senderClient.getSessionId())) {
-                client.sendEvent("readMessage", message);
-            }
-        }
+    public void sendSocketMessage(SocketIOClient client, Message message, String room) {
+        client.sendEvent("readMessage", message);
     }
     public void saveMessage(SocketIOClient senderClient, Message message) {
         Message storedMessage = messageService.saveMessage(
@@ -31,6 +27,7 @@ public class SocketService {
                         .createdTime(LocalDateTime.now())
                         .build()
         );
+        storedMessage.setCreatedTime(null);
         sendSocketMessage(senderClient, storedMessage, message.getRoom());
     }
     public void saveInfoMessage(SocketIOClient senderClient, String message, String room) {
@@ -39,9 +36,10 @@ public class SocketService {
                         .messageType(MessageType.SERVER)
                         .message(message)
                         .room(room)
+                        .createdTime(LocalDateTime.now())
                         .build()
         );
-
+        storedMessage.setCreatedTime(null);
         sendSocketMessage(senderClient, storedMessage, room);
     }
 }
