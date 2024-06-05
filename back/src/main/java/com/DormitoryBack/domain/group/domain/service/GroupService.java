@@ -319,13 +319,17 @@ public class GroupService {
         if(isMemberOfTheGroup==false){
             throw new RuntimeException("MemberIsNotBelongToGroupToBeExpelledFrom");
         }
+
+        User expelledUser=userRepository.findById(targetUserId).orElse(null);
+        socketService.saveInfoMessage(String.format(Constants.MEMBER_EXPELLED,expelledUser.getNickName()),groupId.toString());
+
         setOperations.add(String.valueOf("expelledFrom"+groupId),targetUserId);
         setOperations.remove(String.valueOf(groupId),targetUserId);
         setOperations.remove("groupGlobal",targetUserId);
         hashOperations.delete("userBelong",targetUserId);
-        User expelledUser=userRepository.findById(targetUserId).orElse(null);
 
-        socketService.saveInfoMessage(String.format(Constants.MEMBER_EXPELLED,expelledUser.getNickName()),groupId.toString());
+
+
 
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(expelledUser.getEMail())
@@ -365,6 +369,7 @@ public class GroupService {
         if(setOperations.size(String.valueOf(groupId))>=2L && force==0L){
             throw new RuntimeException("CannotFinishWhileRecruiting");
         }
+        socketService.saveInfoMessage(String.format(Constants.GROUP_FINISHED,groupId.toString()),groupId.toString());
         Set<Long> membersId=(setOperations.members(String.valueOf(groupId)));
         Iterator<Long> iterator=membersId.iterator();
         while(iterator.hasNext()){
@@ -374,7 +379,7 @@ public class GroupService {
             hashOperations.delete("userBelong",memberId);
         }
 
-        socketService.saveInfoMessage(String.format(Constants.GROUP_FINISHED,groupId.toString()),groupId.toString());
+
 
         redisTemplate.delete(String.valueOf("expelledFrom"+groupId));
         group.close();
