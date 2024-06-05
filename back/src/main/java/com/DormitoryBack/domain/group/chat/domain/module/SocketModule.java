@@ -36,7 +36,7 @@ public class SocketModule {
     private DataListener<Message> onChatReceived() {
         return (senderClient, data, ackSender) -> {
             log.info(data.toString());
-            socketService.saveMessage(data,chatManager);
+            socketService.saveMessage(data);
         };
     }
     private ConnectListener onConnected() {
@@ -55,7 +55,7 @@ public class SocketModule {
                 return ;
             }
             chatManager.mapUserIdToSocketClient(username,client);
-            socketService.saveInfoMessage(String.format(Constants.WELCOME_MESSAGE, username), room,chatManager);
+            socketService.saveInfoMessage(String.format(Constants.WELCOME_MESSAGE, username), room);
             log.info("Socket ID[{}] - room[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), room, username);
         };
     }
@@ -72,7 +72,7 @@ public class SocketModule {
             if(usernameList.isEmpty()){
                 return ;
             }
-            socketService.saveInfoMessage(String.format(Constants.DISCONNECT_MESSAGE, username), room,chatManager);
+            socketService.saveInfoMessage(String.format(Constants.DISCONNECT_MESSAGE, username), room);
             log.info("Socket ID[{}] - room[{}] - username [{}]  disconnected to chat module through", client.getSessionId().toString(), room, username);
         };
     }
