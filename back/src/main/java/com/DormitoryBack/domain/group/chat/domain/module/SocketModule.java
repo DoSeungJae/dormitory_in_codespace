@@ -36,7 +36,7 @@ public class SocketModule {
     private DataListener<Message> onChatReceived() {
         return (senderClient, data, ackSender) -> {
             log.info(data.toString());
-            socketService.saveMessage(senderClient, data,chatManager);
+            socketService.saveMessage(data,chatManager);
         };
     }
     private ConnectListener onConnected() {

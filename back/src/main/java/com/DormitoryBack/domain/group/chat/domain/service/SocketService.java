@@ -24,7 +24,7 @@ public class SocketService {
     private final GroupRepository groupRepository;
     private final RedisTemplate<String,Long> redisTemplate;
 
-    public void sendSocketMessage(SocketIOClient client, Message message, String room, ChatManager chatManager) {
+    public void sendSocketMessage(Message message, String room, ChatManager chatManager) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         Set<Long> members= setOperations.members(room);
         Iterator<Long> iterator=members.iterator();
@@ -37,7 +37,7 @@ public class SocketService {
             socketClient.sendEvent("readMessage", message);
         }
     }
-    public void saveMessage(SocketIOClient senderClient, Message message,ChatManager chatManager) {
+    public void saveMessage(Message message,ChatManager chatManager) {
         Message storedMessage = messageService.saveMessage(
                 Message.builder()
                         .messageType(MessageType.CLIENT)
@@ -48,9 +48,9 @@ public class SocketService {
                         .build()
         );
         storedMessage.setCreatedTime(null);
-        sendSocketMessage(senderClient, storedMessage, message.getRoom(),chatManager);
+        sendSocketMessage(storedMessage, message.getRoom(),chatManager);
     }
-    public void saveInfoMessage(SocketIOClient senderClient, String message, String room, ChatManager chatManager) {
+    public void saveInfoMessage(String message, String room, ChatManager chatManager) {
         Message storedMessage = messageService.saveMessage(
                 Message.builder()
                         .messageType(MessageType.SERVER)
@@ -60,6 +60,6 @@ public class SocketService {
                         .build()
         );
         storedMessage.setCreatedTime(null);
-        sendSocketMessage(senderClient, storedMessage, room,chatManager);
+        sendSocketMessage(storedMessage, room,chatManager);
     }
 }
