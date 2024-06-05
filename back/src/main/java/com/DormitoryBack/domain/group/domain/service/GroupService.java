@@ -3,6 +3,9 @@ package com.DormitoryBack.domain.group.domain.service;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
+import com.DormitoryBack.domain.group.chat.domain.constant.Constants;
+import com.DormitoryBack.domain.group.chat.domain.module.SocketModule;
+import com.DormitoryBack.domain.group.chat.domain.service.SocketService;
 import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
@@ -36,15 +39,16 @@ public class GroupService {
     private ArticleRepository articleRepository;
     @Autowired
     private final RedisTemplate<String,Long> redisTemplate;
-
+    private SocketService socketService;
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     public TokenProvider tokenProvider;
-
-    public GroupService(RedisTemplate<String,Long> redisTemplate){
+    @Autowired
+    public GroupService(RedisTemplate<String,Long> redisTemplate,SocketService socketService){
         this.redisTemplate=redisTemplate;
+        this.socketService=socketService;
     }
 
     @Transactional
@@ -229,12 +233,15 @@ public class GroupService {
         setOperations.add(String.valueOf(targetGroup.getId()),userId);
         hashOperations.put("userBelong",userId,targetGroup.getId());
 
+
         User user=userRepository.findById(userId).orElse(null);
         UserResponseDTO userChanges= UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
                 .id(user.getId())
                 .build();
+
+        socketService.saveInfoMessage(String.format(Constants.MEMBER_ENTER_GROUP,user.getNickName()),groupId.toString());
 
         GroupChangedDto responseDto=GroupChangedDto.builder()
                 .mode("join")
@@ -269,6 +276,9 @@ public class GroupService {
         setOperations.remove("groupGlobal",userId);
         hashOperations.delete("userBelong",userId);
         User user=userRepository.findById(userId).orElse(null);
+
+        socketService.saveInfoMessage(String.format(Constants.MEMBER_LEFT,user.getNickName()),groupId.toString());
+
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(user.getEMail())
                 .nickName(user.getNickName())
@@ -314,6 +324,9 @@ public class GroupService {
         setOperations.remove("groupGlobal",targetUserId);
         hashOperations.delete("userBelong",targetUserId);
         User expelledUser=userRepository.findById(targetUserId).orElse(null);
+
+        socketService.saveInfoMessage(String.format(Constants.MEMBER_EXPELLED,expelledUser.getNickName()),groupId.toString());
+
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(expelledUser.getEMail())
                 .nickName(expelledUser.getNickName())
@@ -325,6 +338,8 @@ public class GroupService {
                 .userChanges(userChanges)
                 .numberOfRemainings(numBeforeOps-1L)
                 .build();
+
+        //##
 
         return responseDto;
 
@@ -358,11 +373,13 @@ public class GroupService {
             setOperations.remove("groupGlobal",memberId);
             hashOperations.delete("userBelong",memberId);
         }
+
+        socketService.saveInfoMessage(String.format(Constants.GROUP_FINISHED,groupId.toString()),groupId.toString());
+
         redisTemplate.delete(String.valueOf("expelledFrom"+groupId));
         group.close();
         Group saved=groupRepository.save(group);
 
-        return ;
     }
 
     @Transactional
@@ -382,8 +399,13 @@ public class GroupService {
         if(group.getIsProceeding()==false){
             throw new RuntimeException("AlreadyClosedGroup");
         }
+
+        socketService.saveInfoMessage(String.format(Constants.GROUP_CLOSED,groupId.toString()),groupId.toString());
+
         group.close();
         Group saved=groupRepository.save(group);
+
+        //##
 
         return ;
     }
