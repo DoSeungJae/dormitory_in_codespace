@@ -4,6 +4,7 @@ package com.DormitoryBack.domain.group.domain.entitiy;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
 import com.DormitoryBack.domain.member.entity.User;
+import com.corundumstudio.socketio.SocketIOClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +17,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,13 +48,10 @@ public class Group {
     private String category;
     @Column(name="max_capacity")
     private Long maxCapacity;
-
     @Column(name="isProceeding")
     private Boolean isProceeding;
 
-    @JsonIgnore
-    @Transient
-    private Set<Long> membersId=new HashSet<>();
+
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
