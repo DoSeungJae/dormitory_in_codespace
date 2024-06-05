@@ -55,7 +55,7 @@ public class SocketModule {
                 return ;
             }
             chatManager.mapUserIdToSocketClient(username,client);
-            socketService.saveInfoMessage(client, String.format(Constants.WELCOME_MESSAGE, username), room,chatManager);
+            socketService.saveInfoMessage(String.format(Constants.WELCOME_MESSAGE, username), room,chatManager);
             log.info("Socket ID[{}] - room[{}] - username [{}]  Connected to chat module through", client.getSessionId().toString(), room, username);
         };
     }
@@ -72,7 +72,7 @@ public class SocketModule {
             if(usernameList.isEmpty()){
                 return ;
             }
-            socketService.saveInfoMessage(client, String.format(Constants.DISCONNECT_MESSAGE, username), room,chatManager);
+            socketService.saveInfoMessage(String.format(Constants.DISCONNECT_MESSAGE, username), room,chatManager);
             log.info("Socket ID[{}] - room[{}] - username [{}]  disconnected to chat module through", client.getSessionId().toString(), room, username);
         };
     }
