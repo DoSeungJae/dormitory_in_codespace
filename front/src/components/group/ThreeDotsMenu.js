@@ -7,6 +7,7 @@ import HomeSelectContext from '../home/HomeSelectContext';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { closeGroup, handleSWalGroupClose } from '../../modules/group/groupModule';
+import { useSocket } from '../../hooks/group/useSocket';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <h1
@@ -21,7 +22,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     </h1>
   ));
 
-const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,groupState,setGroupState}) => {
+const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,groupState,setGroupState,socketResponse}) => {
   const [isHost,setIsHost]=useState(0);
   const [group,setGroup]=useState({});
   const [memberList,setMemberList]=useState([]);
@@ -39,6 +40,53 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     7:"푸름4",
   }
 
+  useEffect(()=>{
+
+    if(socketResponse.messageType=="SERVER"){
+      handleServerMessage(socketResponse);
+    }
+  },[socketResponse])
+
+  const handleServerMessage =  async (response) => {
+    const type=response.message.split(":")[0];
+    const target=response.message.split(":")[1];
+    switch(type){
+      case 'participatedInGroup':
+        //user 정보 받아오기
+        if(target!=myNickName){
+          toast.info(`${target}님이 그룹에 참가했어요.`)
+        }
+        break;
+      case 'expelledFromGroup':
+        //user 정보 받아오기
+        if(target==myNickName){
+          toast.info(`호스트에 의해 그룹에서 추방됐어요.`);
+        }
+        else{
+          if(isHost!=0){
+            toast.info(`${target}님이 추방됐어요.`);
+          }
+        }
+        break;
+      case 'leftGroup':
+        //user 정보 받아오기
+        if(target!=myNickName){
+          toast.info(`${target}님이 그룹을 떠났어요.`)
+        }
+        break;
+      case 'groupClosed':
+        if(isHost==0){
+          toast.info("그룹이 마감되었어요, 더이상 새로운 참여자를 받지 않아요.");
+        }
+
+        break;
+      case 'groupFinished':
+        if(isHost==0){
+          toast.info("호스트가 그룹을 종료했어요.");
+        }
+        break;
+    }
+  }
 
   const handleSwalReportGroup=async () => {
     Swal.fire({
@@ -174,6 +222,8 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       .filter(member=>!expelledMemberIdList.includes(member.id))
     )
   }
+
+
 
 
   const handleSwalMember = (member) => {
