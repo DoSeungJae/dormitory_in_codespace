@@ -8,6 +8,7 @@ import ChatRoom from '../../views/group/ChatRoom';
 import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
 import { checkGroupState, mapGroupStateText } from '../../modules/group/groupModule';
 import { useSocket } from '../../hooks/group/useSocket';
+import { toast } from 'react-toastify';
 
 
 function MyGroupPage(){
@@ -97,7 +98,12 @@ function MyGroupPage(){
       case 'groupFinished':
         setGroupState(-2);
         break;
-
+      case 'expelledFromGroup':
+        if(isHost==0 && nickName==target){
+          toast.info("호스트에 의해 그룹에서 추방됐어요.");
+          setGroupState(-2);
+        }
+        break;
     }
   }
 
