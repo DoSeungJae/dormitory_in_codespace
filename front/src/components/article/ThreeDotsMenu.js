@@ -168,7 +168,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
     } catch (error) {
         const errMsg=error.response.data;
         if(errMsg=="ArticleWithAProceedingGroupCannotBeDeleted"){
-          toast.error("진행 중인 그룹의 글은 삭제할 수 없어요!")
+          toast.error("글을 삭제하려면 그룹을 종료해야해요.")
         }
         else{
           toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
