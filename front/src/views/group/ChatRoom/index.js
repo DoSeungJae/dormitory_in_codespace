@@ -6,10 +6,11 @@ import { useSocket } from '../../../hooks/group/useSocket';
 import { getSocketResponse } from '../../../service/group/socket';
 import socket from 'socket.io-client/lib/socket';
 import { ConnectingAirportsOutlined } from '@mui/icons-material';
+import { toast } from 'react-toastify';
 
-function ChatRoom({ username, room }) {
+function ChatRoom({ username, room,socketResponse,sendData }) {
 
-  const { isConnected, socketResponse, sendData } = useSocket(room, username);
+
   const [messageInput, setMessageInput] = useState("");
   const [messageList, setMessageList] = useState([]);
 
@@ -49,32 +50,8 @@ function ChatRoom({ username, room }) {
     fetchMessage();
   }, []);
 
-  const handleServerMessage = async (response) => {
-    switch(response.message.split(":")[0]){
-      case 'participatedInGroup':
-        console.log("participatedInGroup");
-        break;
-      case 'expelledFromGroup':
-        console.log("expelledFromGroup");
-        break;
-      case 'leftGroup':
-        console.log("leftGroup");
-        break;
-      case 'groupClosed':
-        console.log("groupClosed");
-        break;
-      case 'groupFinished':
-        console.log("groupFinished");
-        break;
-    }
-  }
-
   useEffect(() => {
     addMessageToList(socketResponse);
-    if(socketResponse.messageType=="SERVER"){
-      console.log(socketResponse);
-      handleServerMessage(socketResponse);
-    }
   }, [socketResponse]);
 
   return (
