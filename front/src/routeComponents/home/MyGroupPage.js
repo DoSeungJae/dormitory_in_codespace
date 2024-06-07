@@ -7,8 +7,8 @@ import theme from '../group/theme';
 import ChatRoom from '../../views/group/ChatRoom';
 import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
 import { checkGroupState, mapGroupStateText } from '../../modules/group/groupModule';
+import { useSocket } from '../../hooks/group/useSocket';
 
-//웹 소켓 기능이 사용되는 컴포넌트이므로 짧은 시간을 주기로 리렌더링이 필요함
 
 function MyGroupPage(){
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -19,6 +19,7 @@ function MyGroupPage(){
     const [group,setGroup]=useState({});
     const [groupState,setGroupState]=useState(0);
     const [groupStateText,setGroupStateText]=useState("");
+    const { isConnected, socketResponse, sendData } = useSocket(groupId, nickName);
 
     const token=localStorage.getItem("token");
     const title = (
@@ -26,6 +27,12 @@ function MyGroupPage(){
         <strong>{hostNickName}</strong>{`의 그룹 • ${groupStateText}`}
       </span>
     );
+
+    useEffect(()=>{
+      if(socketResponse.messageType=="SERVER"){
+        handleServerMessage(socketResponse)
+      }
+    },[socketResponse])
 
     useEffect(()=>{
       if(selectComponentIndex!=4){
@@ -44,7 +51,7 @@ function MyGroupPage(){
       else if(groupState==-1){
         setGroupStateText("마감됨");
       }
-    })
+    },[groupState])
 
   
   
@@ -78,6 +85,21 @@ function MyGroupPage(){
       checkIsHost();
 
     },[hostNickName,nickName,selectComponentIndex])
+
+
+  const handleServerMessage = async (response) => {
+    const type=response.message.split(":")[0];
+    const target=response.message.split(":")[1];
+    switch(type){
+      case 'groupClosed':
+        setGroupState(-1);
+        break;
+      case 'groupFinished':
+        setGroupState(-2);
+        break;
+
+    }
+  }
 
 
 
@@ -165,6 +187,7 @@ function MyGroupPage(){
                         myNickName={nickName}
                         groupState={groupState}
                         setGroupState={setGroupState}
+                        socketResponse={socketResponse}
                     />
                 </>
             ) : null}
@@ -177,6 +200,8 @@ function MyGroupPage(){
                         <ChatRoom
                             username={nickName}
                             room={groupId}
+                            socketResponse={socketResponse}
+                            sendData={sendData}
                         />
                     </ThemeProvider>
                     ) :(
