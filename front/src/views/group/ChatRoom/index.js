@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import ChatBubble from '../../../components/group/ChatBubble';
 import { useSocket } from '../../../hooks/group/useSocket';
 import { getSocketResponse } from '../../../service/group/socket';
+import socket from 'socket.io-client/lib/socket';
+import { ConnectingAirportsOutlined } from '@mui/icons-material';
 
 function ChatRoom({ username, room }) {
 
@@ -46,10 +48,33 @@ function ChatRoom({ username, room }) {
   useEffect(() => {
     fetchMessage();
   }, []);
-  //일정 간격으로 fetchMessage 함수를 반복적으로 실행해야함
+
+  const handleServerMessage = async (response) => {
+    switch(response.message.split(":")[0]){
+      case 'participatedInGroup':
+        console.log("participatedInGroup");
+        break;
+      case 'expelledFromGroup':
+        console.log("expelledFromGroup");
+        break;
+      case 'leftGroup':
+        console.log("leftGroup");
+        break;
+      case 'groupClosed':
+        console.log("groupClosed");
+        break;
+      case 'groupFinished':
+        console.log("groupFinished");
+        break;
+    }
+  }
 
   useEffect(() => {
     addMessageToList(socketResponse);
+    if(socketResponse.messageType=="SERVER"){
+      console.log(socketResponse);
+      handleServerMessage(socketResponse);
+    }
   }, [socketResponse]);
 
   return (
