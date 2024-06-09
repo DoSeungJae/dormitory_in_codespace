@@ -33,8 +33,29 @@ function ParticipateButton({articleId}) {
         }
     }
 
-    const mapFunctions = () => {
-        switch(groupState){
+    const handleClickedPreprocess = async () => {
+        const path=`http://localhost:8080/api/v1/group/stateFromExternal/${articleId}`;
+        const headers={
+            'Authorization':`${token}`
+        };
+        try{
+            const response=await axios.get(path,{headers});
+            const state=response.data
+            if(state!=groupState){
+                setGroupState(state);
+                mapFunctions(state);
+            }
+            else{
+                mapFunctions();
+            }
+        }catch(error){
+            console.error(error);
+        }
+    }
+
+    const mapFunctions = async (force) => {
+        const std=force==undefined?groupState:force;
+        switch(std){
             case 0:
                 toast.info("그룹이 시작되지 않았어요.");
                 break;
@@ -160,7 +181,7 @@ function ParticipateButton({articleId}) {
 
     return (
         <>
-        {<button className="group-participate-button" onClick={()=>mapFunctions()} style={{
+        {<button className="group-participate-button" onClick={()=>handleClickedPreprocess()} style={{
             backgroundColor:bgColor,
             transition: 'background-color 0.8s ease'}} >{buttonText}</button>}
         </>
