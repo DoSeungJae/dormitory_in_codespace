@@ -72,6 +72,13 @@ public class ArticleService {
         return article;
 
     }
+    public Boolean checkArticleExist(Long articleId) {
+        Article article=articleRepository.findById(articleId).orElse(null);
+        if(article==null){
+            return false;
+        }
+        return true;
+    }
     public List<Article> getAllArticles(){
         List<Article> articles=articleRepository.findAll();
         if(articles.isEmpty()){

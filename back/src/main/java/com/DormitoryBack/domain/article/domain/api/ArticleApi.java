@@ -118,6 +118,11 @@ public class ArticleApi {
                 .body(articleService.pageStringify(dorArticleRangePage));
 
     }
+    @GetMapping("/isArticle/{articleId}")
+    public ResponseEntity isArticle(@PathVariable("articleId") Long articleId){
+        Boolean isArticle=articleService.checkArticleExist(articleId);
+        return ResponseEntity.status(HttpStatus.OK).body(isArticle);
+    }
 
     @GetMapping("/{articleId}")
     public ResponseEntity article(@PathVariable("articleId") Long articleId){
