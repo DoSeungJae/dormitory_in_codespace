@@ -36,9 +36,6 @@ function MyGroupPage(){
     },[socketResponse])
 
     useEffect(()=>{
-      if(selectComponentIndex!=4){
-        return ;
-      }
       if(groupId==0){
         return ;
       }
@@ -57,18 +54,12 @@ function MyGroupPage(){
   
   
     useEffect(()=>{
-        if(selectComponentIndex!=4){
-          //pageInit();
-          return ;   
-        }
         if(nickName==""){
             getUserNickNameFromToken();
         }
         if(groupId==0){
             getGroupIdThatUserBelongsTo();
         }
-
-
     },[selectComponentIndex])
 
     useEffect(()=>{
