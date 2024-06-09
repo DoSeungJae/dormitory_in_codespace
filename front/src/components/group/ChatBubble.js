@@ -17,8 +17,8 @@ function ChatBubble({ isSender, username, message="",createdTime}) {
           display: 'flex',
           flexDirection:'column',
           justifyContent: isSender? 'end' : "start",
-          paddingLeft:'1vw',
-          paddingRight:'1vw'
+          paddingLeft:'1.5vw',
+          paddingRight:'1.5vw'
         }} 
       >
         <Grid item>
