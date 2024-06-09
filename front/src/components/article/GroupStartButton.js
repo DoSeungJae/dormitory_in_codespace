@@ -15,6 +15,7 @@ const GroupStartButton = ({articleId}) => {
   const defaultColor = '#FF8C00';
   const [isBlur, setIsBlur]=useState(0);
   const bgColor = isBlur ? 'rgba(255, 140, 0, 0.6)' : defaultColor;
+  
   const handleBlurStyle = () => {
     if(groupState==-1 || groupState==-2){
       setIsBlur(1);
@@ -109,7 +110,9 @@ const GroupStartButton = ({articleId}) => {
         try{
             const response=await axios.post(path,body,{});
             setGroupState(1);
-            toast.success('그룹을 만들었어요! "내 그룹"을 확인하세요.');
+            window.location.reload();
+            localStorage.setItem("index",4);
+            
 
         }catch(error){
             const errMsg=error.response.data;

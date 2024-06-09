@@ -1,9 +1,7 @@
 import {React,useContext} from 'react';
-import {useNavigate} from 'react-router-dom';
 import HomeSelectContext from '../home/HomeSelectContext';
 
 function BackButton({pageInit}) {
-    const navigate=useNavigate();
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
   return (
