@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { closeGroup, handleSWalGroupClose } from '../../modules/group/groupModule';
 import { useSocket } from '../../hooks/group/useSocket';
 
+
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
     <h1
       href=""
@@ -28,6 +29,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   const [memberList,setMemberList]=useState([]);
   const [expelledMemberIdList,setExpelledMemberIdList]=useState([]);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+  const [initial,setInitial]=useState(0);
   const token=localStorage.getItem("token");
   
   const dormIdToDormName = {
@@ -39,6 +41,99 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     6:"푸름3",
     7:"푸름4",
   }
+
+  const DropDownMenuItems = ({}) => {
+    const [dynamicMenuItems, setDynamicMenuItems] = useState([]);
+  
+    useEffect(() => {
+      const updatedMenuItems = {
+        0: [
+          { type: 'item', eventKey: "1", text: `참여자 [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
+          { type: 'divider' },
+          { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
+          { type: 'divider' },
+          { type: 'item', eventKey: "4", text: "그룹 나가기", action: () => quitGroup() },
+          { type: 'divider' },
+          { type: 'item', eventKey: "5", text: "그룹 신고하기", action: () => handleSwalReportGroup() },
+        ],
+        1: [
+          { type: 'item', eventKey: "1", text: `참여자 [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
+          { type: 'divider' },
+          { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
+          { type: 'divider' },
+          { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => handleSWalGroupClose(group.id, setGroupState) },
+        ],
+      };
+      setDynamicMenuItems(updatedMenuItems[isHost]); 
+    }, [memberList,isHost]); 
+  
+    return (
+      <>
+        {dynamicMenuItems.map((item, index) => {
+          if (item.type === 'divider') {
+            return <Dropdown.Divider key={index} />;
+          }
+          if (item.text.startsWith("참여자")) {
+            return (
+              <Dropdown key={index} drop="start" autoClose="outside">
+                <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {memberList.map((member, memberIndex) => (
+                    <Dropdown.Item className='nested-dropdown-item'
+                                    key={memberIndex}
+                                    eventKey={`member-${memberIndex}`}
+                                    onClick={() => { handleSwalMember(memberList[memberIndex]) }}
+                                    style={{ fontSize: '0.85rem' }}>
+                      <div className='nested-dropdown-item-container'>
+                        <div>{handleNickName(member.nickName)}</div>
+                        {(myNickName === member.nickName) && <div>{"me!"}</div>}
+                      </div>
+                      {(memberIndex !== memberList.length - 1) && <Dropdown.Divider />}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            );
+          }
+          if(item.text=="그룹 정보"){
+            return (
+              <Dropdown key={index} drop='start'  autoClose="outside">
+                <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
+                    <div className='nested-dropdown-item-container'>
+                      <div>{"기숙사"}</div>
+                      <div>{dormIdToDormName[group.dormId]}</div>
+                    </div>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
+                    <div className='nested-dropdown-item-container'>
+                      <div>{"카테고리"}</div>
+                      <div>{group.category}</div>
+                    </div>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}} onClick={() =>{goToArticlePage()}}>
+                    {"게시글로 가기"}
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            );
+          }
+          return (
+            <Dropdown.Item
+              eventKey={item.eventKey}
+              key={index}
+              onClick={item.action}
+            >
+              {item.text}
+            </Dropdown.Item>
+          );
+        })}
+      </>
+    );
+  };
 
   useEffect(()=>{
 
@@ -55,22 +150,26 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
         //user 정보 받아오기
         if(target!=myNickName){
           toast.info(`${target}님이 그룹에 참가했어요.`)
+          applyMemberChange(target,1);
         }
         break;
       case 'expelledFromGroup':
         //user 정보 받아오기
         if(target==myNickName){
           toast.info(`호스트에 의해 그룹에서 추방됐어요.`);
+          applyMemberChange(target,-1);
         }
         else{
           if(isHost!=0){
             toast.info(`${target}님이 추방됐어요.`);
+            applyMemberChange(target,-1);
           }
         }
         break;
       case 'leftGroup':
         //user 정보 받아오기
         if(target!=myNickName){
+          applyMemberChange(target,-1);
           toast.info(`${target}님이 그룹을 떠났어요.`)
         }
         break;
@@ -217,14 +316,16 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   const handleToggle = () => {
     setIsHost(isHostParam);
     setGroup(groupParam);
+    if(initial==1){
+      return ;
+    }
     setMemberList(groupParam.members
       .map(jsonString => JSON.parse(jsonString))
       .filter(member=>!expelledMemberIdList.includes(member.id))
     )
+    setInitial(1);
+   
   }
-
-
-
 
   const handleSwalMember = (member) => {
     Swal.fire({
@@ -257,8 +358,6 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     })
   }
 
-
-
   const expelMember = async (memberToBeExpelled) => {
     const path=`http://localhost:8080/api/v1/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
     const headers = {
@@ -276,27 +375,20 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     }
   }
 
-
-
-  const menuItems = {
-    //isHost : 0 or 1
-    0: [
-      { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
-      { type: 'divider' },
-      { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
-      { type: 'divider' },
-      { type: 'item', eventKey: "4", text: "그룹 나가기", action: () =>quitGroup() },
-      { type: 'divider' },
-      { type: 'item', eventKey: "5", text: "그룹 신고하기", action: () => handleSwalReportGroup() },
-    ],
-    1: [
-      { type: 'item', eventKey: "1", text: "참여자"+` [${memberList.length}/${group.maxCapacity}]`, action: () => {} },
-      { type: 'divider' },
-      { type: 'item', eventKey: "2", text: "그룹 정보", action: () => {} },
-      { type: 'divider' },
-      { type: 'item', eventKey: "3", text: "그룹 마감하기", action: () => handleSWalGroupClose(group.id,setGroupState) },
-    ],
-  };
+  const applyMemberChange = async (nickName,mode) => { //-1 : 멤버 제거, 1 : 멤버 추가
+    const path=`http://localhost:8080/api/v1/user/findByNick/${nickName}`;
+    try{
+      const response=await axios.get(path);
+      const user=(response.data);
+      if(mode==1){
+        setMemberList([...memberList,user]);
+      }else{
+        setMemberList(memberList.filter(item=>item.id!=user.id));
+      }
+    }catch(error){
+      console.error(error);
+    }
+  }
 
   return (
     <Dropdown onToggle={handleToggle}>
@@ -305,69 +397,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       </Dropdown.Toggle>
 
       <Dropdown.Menu >
-        {menuItems[isHost].map((item, index) => {
-          if (item.type === 'divider') {
-            return <Dropdown.Divider key={index} />;
-          }
-          if (item.text.startsWith("참여자")) {
-            return (
-              <Dropdown key={index} drop="start" autoClose="outside">
-                <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {memberList.map((member, memberIndex) => (
-                    <Dropdown.Item className='nested-dropdown-item' 
-                                    key={memberIndex} 
-                                    eventKey={`member-${memberIndex}`}
-                                    onClick={()=>{handleSwalMember(memberList[memberIndex])}} 
-                                    style={{ fontSize: '0.85rem'}}>
-                      <div className='nested-dropdown-item-container'>
-                        <div>{handleNickName(member.nickName)}</div>
-                        {(myNickName==member.nickName) && <div>{"me!"}</div>}
-                      </div>
-                      {(memberIndex!=memberList.length-1) && <Dropdown.Divider/>}
-                      
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-            );
-          }
-          if(item.text=="그룹 정보"){
-            return (
-              <Dropdown key={index} drop='start'  autoClose="outside">
-                <Dropdown.Toggle className="dropdown-item nested-dropdown-toggle" as="div">{item.text}</Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
-                    <div className='nested-dropdown-item-container'>
-                      <div>{"기숙사"}</div>
-                      <div>{dormIdToDormName[group.dormId]}</div>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}}>
-                    <div className='nested-dropdown-item-container'>
-                      <div>{"카테고리"}</div>
-                      <div>{group.category}</div>
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item className='nested-dropdown-item' style={{ fontSize: '0.85rem'}} onClick={() =>{goToArticlePage()}}>
-                    {"게시글로 가기"}
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            );
-          }
-          return (
-            <Dropdown.Item
-              eventKey={item.eventKey}
-              key={index}
-              onClick={item.action}
-            >
-              {item.text}
-            </Dropdown.Item>
-          );
-        })}
+        <DropDownMenuItems/>
       </Dropdown.Menu>
     </Dropdown>
   );
