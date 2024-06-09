@@ -42,6 +42,13 @@ public class UserApi {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
+    @GetMapping("/findByNick/{nickName}")
+    public ResponseEntity userByNickName(@PathVariable("nickName") String nickName){
+        UserResponseDTO responseDTO=userService.getUserByNickName(nickName);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+
+    }
+
     @GetMapping("/NickName")
     public ResponseEntity userNickName(@RequestHeader("Authorization") String token){
         String userNickName=userService.getUserNickName(token);

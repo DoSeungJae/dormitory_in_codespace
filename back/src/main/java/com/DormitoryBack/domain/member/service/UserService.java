@@ -54,6 +54,21 @@ public class UserService {
 
         return responseDTO;
     }
+
+    public UserResponseDTO getUserByNickName(String nickName) {
+        User user=userRepository.findByNickName(nickName);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+        UserResponseDTO responseDTO=UserResponseDTO.builder()
+                .eMail(user.getEMail())
+                .nickName(nickName)
+                .id(user.getId())
+                .build();
+
+        return responseDTO;
+    }
+
     public String getUserNickName(String token) {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
