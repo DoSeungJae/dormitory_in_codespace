@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 export const goArticlePage = async (article,dorId,
                                     isEndPage,page,token
@@ -14,7 +15,21 @@ export const goArticlePage = async (article,dorId,
               'Authorization': `${token}`
           }
       });
-
+      const isArticlePath=`http://localhost:8080/api/v1/article/isArticle/${article.id}`;
+      const isArticleResponse=await axios.get(isArticlePath);
+      const isArticle=isArticleResponse.data;
+      if(!isArticle){
+        Swal.fire({
+          text:"해당 글을 찾을 수 없어요.",
+          confirmButtonColor:"#FF8C00"
+        }).then((result)=>{
+          if(result.isConfirmed){
+            window.location.reload();
+            localStorage.setItem("index",selectComponentIndex);
+          }
+        });
+        return ;
+      }
       if (response.data === true) {
         localStorage.setItem('article',JSON.stringify(article));
         localStorage.setItem("nextIndex",selectComponentIndex);
