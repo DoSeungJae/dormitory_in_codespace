@@ -117,6 +117,42 @@ public class GroupService {
 
         return responseDto;
     }
+    public Long getGroupStateFromExternalView(Long groupId, String token) {
+        if (!tokenProvider.validateToken(token)) {
+            throw new JwtException("InvalidToken");
+        }
+        User user=userRepository.findById(tokenProvider.getUserIdFromToken(token)).orElse(null);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            return 0L;
+        }
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        Long curParticipants=setOperations.size(String.valueOf(groupId));
+        Boolean isMember=setOperations.isMember(groupId.toString(),user.getId());
+
+        if(group.getIsProceeding()){
+            if(isMember){
+                return 1L;
+            }
+            else if(curParticipants==group.getMaxCapacity()){
+                return 9L;
+            }
+            else{
+                return 2L;
+            }
+        }
+        else{
+            if(curParticipants==0L){
+                return -2L;
+            }
+            else{
+                return -1L;
+            }
+        }
+    }
     public SingleGroupDto getGroupThatUserBelongsTo(String token) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();

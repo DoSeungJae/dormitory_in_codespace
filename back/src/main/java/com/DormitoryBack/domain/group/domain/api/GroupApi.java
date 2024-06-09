@@ -76,6 +76,15 @@ public class GroupApi {
 
     }
 
+    @GetMapping("/stateFromExternal/{groupId}")
+    public ResponseEntity groupStateFromExternalView(@PathVariable("groupId") Long groupId,
+                                                     @RequestHeader("Authorization") String token){
+
+        Long groupState=groupService.getGroupStateFromExternalView(groupId,token);
+        return ResponseEntity.status(HttpStatus.OK).body(groupState);
+
+    }
+
     @PostMapping("/new")
     public ResponseEntity newGroup(@RequestBody GroupCreateDto requestDto){
         GroupCreatedDto responseDto=groupService.createNewGroup(requestDto);
