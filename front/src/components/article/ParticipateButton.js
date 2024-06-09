@@ -77,63 +77,15 @@ function ParticipateButton({articleId}) {
     }
 
     const checkGroupStateFromExternalPerspective = async () => {
-        let isMemberRegion=0;
-        const checkIsMember = async () => {
-            const path=`http://localhost:8080/api/v1/group/isMember?groupId=${articleId}`;
-            const headers = {
-                'Authorization' : `${token}`
-            };
-            try{
-                const response=await axios.get(path,{headers});
-                if(response.data==true){
-                    setIsMember(1);
-                    isMemberRegion=1;
-                }
-                else{
-                    setIsMember(0);
-                    isMemberRegion=0;
-                }
-            }catch(error){
-                console.error(error);
-            }
-        } 
-        const mainfunc = async () => {
-            const path=`http://localhost:8080/api/v1/group/${articleId}`;
-            try{
-                const response=await axios.get(path);
-                const isProceeding=response.data.isProceeding;
-                const numMembersRegion=response.data.currentNumberOfMembers;
-                const maxCapacity=response.data.maxCapacity;
-
-                if(isProceeding && isMemberRegion==0){
-                    setGroupState(2);
-                }
-                if(isProceeding && isMemberRegion==1){
-                    setGroupState(1);
-                }
-                else if(isProceeding && maxCapacity===numMembersRegion){
-                    setGroupState(9);
-                }
-                else if(!isProceeding && numMembersRegion!=0){
-                    setGroupState(-1);
-                }
-                if(!isProceeding && numMembersRegion==0){
-                    setGroupState(-2);
-                }
-            }catch(error){
-                const errMsg=error.response.data
-                if(errMsg=="GroupNotFound"){
-                    setGroupState(0);
-                }
-            }  
-        }
-
+        const path=`http://localhost:8080/api/v1/group/stateFromExternal/${articleId}`;
+        const headers={
+            'Authorization':`${token}`
+        };
         try{
-            await checkIsMember();
+            const response=await axios.get(path,{headers});
+            setGroupState(response.data);
         }catch(error){
-            
-        }finally{
-            await mainfunc();
+            console.error(error);
         }
     }
 
@@ -194,7 +146,6 @@ function ParticipateButton({articleId}) {
             return ;
         }
         checkGroupStateFromExternalPerspective();
-
     },[selectComponentIndex])
 
     useEffect(()=>{
