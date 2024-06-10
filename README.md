@@ -8,3 +8,5 @@ FE - React.js
 BE - SpringBoot
 
 DB - MySQL, Redis, MongoDB
+
+Platform : Apache Kafka(Streaming)
