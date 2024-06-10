@@ -3,21 +3,14 @@ package com.DormitoryBack.domain.group.chat.domain.module;
 import com.DormitoryBack.domain.group.chat.domain.constant.Constants;
 import com.DormitoryBack.domain.group.chat.domain.entity.Message;
 import com.DormitoryBack.domain.group.chat.domain.service.SocketService;
-import com.DormitoryBack.domain.group.domain.entitiy.Group;
-import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
-import com.DormitoryBack.domain.member.dto.UserResponseDTO;
-import com.DormitoryBack.domain.member.entity.User;
-import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.List;
 @Slf4j
 @Component
@@ -25,7 +18,7 @@ public class SocketModule {
     private final SocketIOServer server;
     private final SocketService socketService;
     private ChatManager chatManager;
-    public SocketModule(SocketIOServer server, SocketService socketService,ChatManager chatManager) {
+    public SocketModule(@Qualifier("socketIOServer") SocketIOServer server, SocketService socketService, ChatManager chatManager) {
         this.server = server;
         this.socketService = socketService;
         this.chatManager=chatManager;
