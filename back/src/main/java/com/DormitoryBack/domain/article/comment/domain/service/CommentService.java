@@ -8,6 +8,8 @@ import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.enums.EntityType;
+import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,9 @@ public class CommentService {
     private UserRepository userRepository;
     @Autowired
     private TokenProvider tokenProvider;
+    @Autowired
+    private NotificationServiceExternal notificationService;
+
 
     public Comment getComment(Long commentId){
         Comment comment=commentRepository.findById(commentId).orElse(null);
@@ -114,6 +119,8 @@ public class CommentService {
                 .isUpdated(false)
                 .build();
         Comment saved=commentRepository.save(newComment);
+        notificationService.saveAndPublishNotification(EntityType.ARTICLE,article.getId(),EntityType.COMMENT,saved.getId(),saved.getContent());
+
         return saved;
 
     }
