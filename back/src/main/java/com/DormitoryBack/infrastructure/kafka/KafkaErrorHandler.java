@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class KafkaExceptionManager implements KafkaListenerErrorHandler {
+public class KafkaErrorHandler implements KafkaListenerErrorHandler {
     @Override
     public Object handleError(Message<?> message, ListenerExecutionFailedException e){
         ConsumerRecord<?,?> record=(ConsumerRecord<?, ?>) message.getHeaders().get(KafkaHeaders.RECEIVED_KEY);
