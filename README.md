@@ -3,9 +3,9 @@ Project - Group Buying Service in Dormitories
 
 MOBILE - ReactNative (planned)
 
-FE - React.js
+FE - React.js(HTML(JSX), CSS, JavaScript)
 
-BE - SpringBoot
+BE - SpringBoot(Java)
 
 DB - MySQL, Redis, MongoDB
 
