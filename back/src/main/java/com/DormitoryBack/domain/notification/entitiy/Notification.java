@@ -39,6 +39,9 @@ public class Notification {
     private LocalDateTime triggeredDate;
     @NotNull
     private Boolean isConfirmed;
+    @NotNull
+    private Boolean isValid;
+
 
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
