@@ -119,7 +119,12 @@ public class CommentService {
                 .isUpdated(false)
                 .build();
         Comment saved=commentRepository.save(newComment);
-        notificationService.saveAndPublishNotification(EntityType.ARTICLE,article.getId(),EntityType.COMMENT,saved.getId(),saved.getContent());
+        notificationService.saveAndPublishNotification(
+                        EntityType.ARTICLE,
+                        article.getId(),
+                        EntityType.COMMENT,
+                        saved.getId(),
+                        saved.getContent());
 
         return saved;
 
@@ -154,6 +159,13 @@ public class CommentService {
 
         rootComment.addReplyComment(newReply);
         Comment saved=commentRepository.save(newReply);
+        notificationService.saveAndPublishNotification(
+                EntityType.COMMENT,
+                rootComment.getId(),
+                EntityType.COMMENT,
+                saved.getId(),
+                saved.getContent());
+
         CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
                 .content(saved.getContent())
                 .time(saved.getCreatedTime())
