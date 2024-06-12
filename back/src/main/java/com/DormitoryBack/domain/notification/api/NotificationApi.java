@@ -26,9 +26,9 @@ public class NotificationApi {
         List<NotificationDto> notifications=notificationService.getAllNotifications();
         return ResponseEntity.status(HttpStatus.OK).body(notifications);
     }
-    @GetMapping("/unconfirmed")
+    @GetMapping("/alive")
     public ResponseEntity allUnconfirmedNotifications(){
-        List<NotificationDto> notifications=notificationService.getAllUnconfirmedNotifications();
+        List<NotificationDto> notifications=notificationService.getAliveNotifications();
         return ResponseEntity.status(HttpStatus.OK).body(notifications);
     }
     @PatchMapping("/confirm/{notificationId}")
