@@ -67,6 +67,8 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers("api/v1/chat/**")
                 .permitAll()
+                .requestMatchers("api/v1/notification/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
