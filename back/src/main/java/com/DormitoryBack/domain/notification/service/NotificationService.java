@@ -41,8 +41,8 @@ public class NotificationService {
         return dtoList;
     }
 
-    public List<NotificationDto> getAllUnconfirmedNotifications() {
-        List<Notification> notifications=notificationRepository.findAllByIsConfirmed(false);
+    public List<NotificationDto> getAliveNotifications() {
+        List<Notification> notifications=notificationRepository.findAliveNotifications();
         List<NotificationDto> dtoList=makeDtoList(notifications);
         return dtoList;
     }
