@@ -49,6 +49,7 @@ public class NotificationServiceExternal {
                 .triggerContent(content)
                 .triggeredDate(LocalDateTime.now())
                 .isConfirmed(false)
+                .isValid(true)
                 .build();
 
         notificationRepository.save(notification);
