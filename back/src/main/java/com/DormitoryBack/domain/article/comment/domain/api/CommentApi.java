@@ -67,8 +67,7 @@ public class CommentApi {
     
     @GetMapping("article/{articleId}")
     public ResponseEntity articleCommentsPerPage(
-            @PathVariable("articleId") Long articleId
-    ){
+            @PathVariable("articleId") Long articleId){
         CommentResponseDTO responseDTO=commentService
                 .getArticleComments(articleId);
         return ResponseEntity
