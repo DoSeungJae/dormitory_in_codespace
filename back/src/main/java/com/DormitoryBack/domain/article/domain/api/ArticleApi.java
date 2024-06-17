@@ -3,7 +3,6 @@ import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.article.domain.service.ArticleService;
-import com.DormitoryBack.global.StrUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @CrossOrigin(origins="http://localhost:3000")
 @RestController
@@ -36,7 +34,7 @@ public class ArticleApi {
     @GetMapping("")
     public ResponseEntity allArticles(@RequestParam(defaultValue="0") int page,
                                       @RequestParam(defaultValue="10") int size){
-        //List<Article> articles=articleService.getAllArticles();
+
         Page<Article> articles=articleService.getAllArticlesWithinPage(page,size);
         return ResponseEntity
                 .status(HttpStatus.OK)
