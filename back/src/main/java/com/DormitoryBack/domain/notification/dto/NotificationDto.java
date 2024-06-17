@@ -1,11 +1,9 @@
 package com.DormitoryBack.domain.notification.dto;
 
-import com.DormitoryBack.domain.notification.enums.EntityType;
+//import com.DormitoryBack.global.model.Notifiable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NotificationDto {
-    @Enumerated(EnumType.STRING)
-    private EntityType subjectType;
-    private String subject;
-    @Enumerated(EnumType.STRING)
-    private EntityType triggerType;
-    private String trigger;
+
+    private Notifiable subject;
+    private Notifiable trigger;
+    private String content;
 
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -33,5 +29,6 @@ public class NotificationDto {
         }
         return jsonString;
     }
+
 
 }
