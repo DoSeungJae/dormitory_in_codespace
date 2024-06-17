@@ -8,6 +8,7 @@ import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
 import io.jsonwebtoken.JwtException;
@@ -118,13 +119,22 @@ public class CommentService {
                 .createdTime(LocalDateTime.now())
                 .isUpdated(false)
                 .build();
+
         Comment saved=commentRepository.save(newComment);
-        notificationService.saveAndPublishNotification(
-                        EntityType.ARTICLE,
-                        article.getId(),
-                        EntityType.COMMENT,
-                        saved.getId(),
-                        saved.getContent());
+
+        Notifiable subject=Notifiable.builder()
+                .entityType(EntityType.ARTICLE)
+                .entityId(article.getId())
+                .stringifiedEntity(saved.toJsonString())
+                .build();
+
+        Notifiable trigger=Notifiable.builder()
+                .entityType(EntityType.COMMENT)
+                .entityId(saved.getId())
+                .stringifiedEntity(saved.toJsonString())
+                .build();
+
+        notificationService.saveAndPublishNotification(subject,trigger,saved.getContent());
 
         return saved;
 
@@ -154,17 +164,26 @@ public class CommentService {
                 .user(userData)
                 .content(dto.getContent())
                 .createdTime(LocalDateTime.now())
-                .isUpdated(false)
                 .build();
+
+
 
         rootComment.addReplyComment(newReply);
         Comment saved=commentRepository.save(newReply);
-        notificationService.saveAndPublishNotification(
-                EntityType.COMMENT,
-                rootComment.getId(),
-                EntityType.COMMENT,
-                saved.getId(),
-                saved.getContent());
+
+       Notifiable subject=Notifiable.builder()
+               .entityType(EntityType.COMMENT)
+               .entityId(rootComment.getId())
+               .stringifiedEntity(rootComment.toJsonString())
+               .build();
+
+       Notifiable trigger=Notifiable.builder()
+               .entityType(EntityType.COMMENT)
+               .entityId(saved.getId())
+               .stringifiedEntity(rootComment.toJsonString())
+               .build();
+
+       notificationService.saveAndPublishNotification(subject,trigger,saved.getContent());
 
         CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
                 .content(saved.getContent())
