@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
 
 @Configuration
-public class SocketIOConfig {
+public class SocketIOConfig { //SocketIOConfigChat 으로 변경 필요
 
     @Value("${socketServer.host}")
     private String host;
@@ -16,7 +16,7 @@ public class SocketIOConfig {
     private Integer port;
 
     @Bean
-    public SocketIOServer socketIOServer() {
+    public SocketIOServer socketIOServer() { //socketIOServerChat 으로 변경 필요
 
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
         config.setHostname(host);
