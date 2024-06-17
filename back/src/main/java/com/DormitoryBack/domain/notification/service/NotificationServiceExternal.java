@@ -28,16 +28,6 @@ public class NotificationServiceExternal {
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
-    private KafkaTemplate<String,String> kafkaTemplate;
-    @Autowired
-    private ArticleRepository articleRepository;
-    @Autowired
-    private CommentRepository commentRepository;
-    @Autowired
-    private GroupRepository groupRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private KafkaProducerNotification producer;
 
 
