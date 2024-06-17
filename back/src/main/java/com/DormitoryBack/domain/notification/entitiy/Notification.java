@@ -1,6 +1,9 @@
 package com.DormitoryBack.domain.notification.entitiy;
 
+import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -22,13 +25,13 @@ public class Notification {
     @Id
     @GeneratedValue
     private Long id;
-    @Enumerated(EnumType.STRING)
     @NotNull
+    @Enumerated(EnumType.STRING)
     private EntityType subjectType;
     @NotNull
     private Long subjectId;
-    @Enumerated(EnumType.STRING)
     @NotNull
+    @Enumerated(EnumType.STRING)
     private EntityType triggerType;
     @NotNull
     private Long triggerId;
@@ -39,10 +42,6 @@ public class Notification {
     private LocalDateTime triggeredDate;
     @NotNull
     private Boolean isConfirmed;
-    @NotNull
-    private Boolean isValid;
-
-
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -55,7 +54,5 @@ public class Notification {
         }
         return jsonString;
     }
-
-
 
 }
