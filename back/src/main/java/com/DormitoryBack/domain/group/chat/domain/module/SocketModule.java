@@ -65,6 +65,7 @@ public class SocketModule {
             if(usernameList.isEmpty()){
                 return ;
             }
+            chatManager.removeSocketClientByUserId(username);
             socketService.saveInfoMessage(String.format(Constants.DISCONNECT_MESSAGE, username), room);
             log.info("Socket ID[{}] - room[{}] - username [{}]  disconnected to chat module through", client.getSessionId().toString(), room, username);
         };

@@ -25,7 +25,7 @@ public class ChatManager {
         User user=userRepository.findByNickName(username);
         Long userId=user.getId();
         socketClientsOfUsers.put(userId,client);
-        //동시성 이슈 발생 가능성 고려
+        //동시성 이슈 발생 가능성 고려해야함
     }
     public SocketIOClient getSocketClientByUserId(Long userId){
         SocketIOClient client=socketClientsOfUsers.get(userId);
@@ -33,6 +33,14 @@ public class ChatManager {
             return null;
         }
         return socketClientsOfUsers.get(userId);
+    }
+    public void removeSocketClientByUserId(String username){
+        User user=userRepository.findByNickName(username);
+        if(user==null){
+            return ;
+        }
+        Long userId=user.getId();
+        socketClientsOfUsers.remove(userId);
     }
 
 }
