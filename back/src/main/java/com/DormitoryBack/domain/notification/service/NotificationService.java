@@ -8,6 +8,7 @@ import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entitiy.Notification;
 import com.DormitoryBack.domain.notification.enums.EntityType;
@@ -27,14 +28,13 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private GroupRepository groupRepository;
+    private ArticleRepository articleRepository;
     @Autowired
     private CommentRepository commentRepository;
     @Autowired
-    private ArticleRepository articleRepository;
-
+    private GroupRepository groupRepository;
+    @Autowired
+    private UserRepository userRepository;
     public List<NotificationDto> getAllNotifications() {
         List<Notification> notifications=notificationRepository.findAll();
         List<NotificationDto> dtoList=makeDtoList(notifications);
@@ -53,6 +53,12 @@ public class NotificationService {
         if(notification==null){
             throw new RuntimeException("NotificationNotFound");
         }
+        String subject=stringifyEntity(notification.getSubjectId(),notification.getSubjectType());
+        String trigger=stringifyEntity(notification.getTriggerId(),notification.getTriggerType());
+        if(subject==null || trigger==null) {
+            notificationRepository.delete(notification);
+            throw new RuntimeException("NotificationNotFound");
+        }
         notification.setIsConfirmed(true);
         notificationRepository.save(notification);
     }
@@ -61,13 +67,28 @@ public class NotificationService {
         Iterator<Notification> iterator=notifications.iterator();
         while(iterator.hasNext()){
             Notification notification=iterator.next();
-            EntityType sbjType=notification.getSubjectType();
-            EntityType trgType=notification.getTriggerType();
+            String subjectString=stringifyEntity(notification.getSubjectId(),notification.getSubjectType());
+            String triggerString=stringifyEntity(notification.getTriggerId(),notification.getTriggerType());
+            if(subjectString==null || triggerString==null){
+                notificationRepository.delete(notification);
+                continue;
+            }
+
+            Notifiable subject=Notifiable.builder()
+                    .entityType(notification.getSubjectType())
+                    .entityId(notification.getSubjectId())
+                    .stringifiedEntity(subjectString)
+                    .build();
+
+            Notifiable trigger=Notifiable.builder()
+                    .entityType(notification.getTriggerType())
+                    .entityId(notification.getTriggerId())
+                    .stringifiedEntity(triggerString)
+                    .build();
+
             NotificationDto dto=NotificationDto.builder()
-                    .subjectType(sbjType)
-                    .subject(stringifyEntity(notification.getSubjectId(),sbjType))
-                    .triggerType(trgType)
-                    .trigger(stringifyEntity(notification.getTriggerId(),trgType))
+                    .subject(subject)
+                    .trigger(trigger)
                     .build();
 
             dtoList.add(dto);
