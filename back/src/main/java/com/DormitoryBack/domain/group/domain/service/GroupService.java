@@ -17,6 +17,9 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.dto.Notifiable;
+import com.DormitoryBack.domain.notification.enums.EntityType;
+import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +37,8 @@ import java.util.stream.Collectors;
 @Service
 public class GroupService {
     @Autowired
+    private NotificationServiceExternal notificationService;
+    @Autowired
     private GroupRepository groupRepository;
     @Autowired
     private ArticleRepository articleRepository;
@@ -45,6 +50,7 @@ public class GroupService {
 
     @Autowired
     public TokenProvider tokenProvider;
+
     @Autowired
     public GroupService(RedisTemplate<String,Long> redisTemplate,SocketService socketService){
         this.redisTemplate=redisTemplate;
@@ -277,7 +283,20 @@ public class GroupService {
                 .id(user.getId())
                 .build();
 
+        Notifiable subject=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(targetGroup.toJsonString())
+                .build();
+
+        Notifiable trigger=Notifiable.builder()
+                .entityType(EntityType.USER)
+                .entityId(userId)
+                .stringifiedEntity(targetGroup.toJsonString())
+                .build();
+
         socketService.saveInfoMessage(String.format(Constants.MEMBER_ENTER_GROUP,user.getNickName()),groupId.toString());
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.MEMBER_ENTER_GROUP_KOR,user.getNickName()));
 
         GroupChangedDto responseDto=GroupChangedDto.builder()
                 .mode("join")
@@ -313,7 +332,20 @@ public class GroupService {
         hashOperations.delete("userBelong",userId);
         User user=userRepository.findById(userId).orElse(null);
 
+        Notifiable subject=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(targetGroup.toJsonString())
+                .build();
+
+        Notifiable trigger=Notifiable.builder()
+                .entityType(EntityType.USER)
+                .entityId(userId)
+                .stringifiedEntity(targetGroup.toJsonString())
+                .build();
+
         socketService.saveInfoMessage(String.format(Constants.MEMBER_LEFT,user.getNickName()),groupId.toString());
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.MEMBER_LEFT_KOR,user.getNickName()));
 
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(user.getEMail())
@@ -356,8 +388,22 @@ public class GroupService {
             throw new RuntimeException("MemberIsNotBelongToGroupToBeExpelledFrom");
         }
 
+        Notifiable subject=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(group.toJsonString())
+                .build();
+
+        Notifiable trigger=Notifiable.builder()
+                .entityType(EntityType.USER)
+                .entityId(userId)
+                .stringifiedEntity(group.toJsonString())
+                .build();
+
+
         User expelledUser=userRepository.findById(targetUserId).orElse(null);
         socketService.saveInfoMessage(String.format(Constants.MEMBER_EXPELLED,expelledUser.getNickName()),groupId.toString());
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.MEMBER_LEFT_KOR,expelledUser.getNickName()));
 
         setOperations.add(String.valueOf("expelledFrom"+groupId),targetUserId);
         setOperations.remove(String.valueOf(groupId),targetUserId);
@@ -415,7 +461,19 @@ public class GroupService {
             hashOperations.delete("userBelong",memberId);
         }
 
+        Notifiable subject=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(group.toJsonString())
+                .build();
 
+        Notifiable trigger=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(group.toJsonString())
+                .build();
+
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.GROUP_FINISHED_KOR,groupId));
 
         redisTemplate.delete(String.valueOf("expelledFrom"+groupId));
         group.close();
@@ -443,6 +501,20 @@ public class GroupService {
 
         socketService.saveInfoMessage(String.format(Constants.GROUP_CLOSED,groupId.toString()),groupId.toString());
 
+        Notifiable subject=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(group.toJsonString())
+                .build();
+
+        Notifiable trigger=Notifiable.builder()
+                .entityType(EntityType.GROUP)
+                .entityId(groupId)
+                .stringifiedEntity(group.toJsonString())
+                .build();
+
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.GROUP_CLOSED_KOR,groupId));
+
         group.close();
         Group saved=groupRepository.save(group);
 
@@ -459,7 +531,7 @@ public class GroupService {
         Long memberId= tokenProvider.getUserIdFromToken(token);
         //둘다 타입은 Long이지만 ==로 판단하면 false가 나옴
         //단, memberId가 host인 경우에 true가 나옴
-        //자세하게 파봐야됨
+        //자세하게 알아봐야됨
         if(groupId.equals(hashOperations.get("userBelong",memberId))){
             return true;
         }
