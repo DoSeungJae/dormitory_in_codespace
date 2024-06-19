@@ -1,23 +1,11 @@
 package com.DormitoryBack.domain.notification.service;
 
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
-import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
-import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
-import com.DormitoryBack.domain.group.domain.entitiy.Group;
-import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
-import com.DormitoryBack.domain.member.entity.User;
-import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entitiy.Notification;
-import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
-//import com.DormitoryBack.global.model.Notifiable;
 import com.DormitoryBack.infrastructure.kafka.notification.KafkaProducerNotification;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
