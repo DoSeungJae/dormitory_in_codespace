@@ -14,9 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MessageService {
     private final MessageRepository messageRepository;
-    private final GroupRepository groupRepository;
-    private final NotificationServiceExternal notificationService;
-
     public List<Message> getMessages(String room){
         return messageRepository.findAllByRoom(room);
     }
