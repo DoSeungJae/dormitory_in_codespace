@@ -2,7 +2,7 @@ package com.DormitoryBack.domain.notification.constant;
 
 import java.util.HashMap;
 
-public class Constants {
+public class NotificationConstants {
     public static final String MEMBER_ENTER_GROUP_KOR="%s님이 그룹에 참여했어요.:%s"; //%s <- username %s <-messageCode (in,userId)
     public static final String MEMBER_EXPELLED_KOR="%S님이 그룹에서 추방됐어요."; // %s <- username %s <- messageCode (expelled, userId)
     public static final String MEMBER_LEFT_KOR="%s님이 그룹을 떠났어요."; // %s <- username %s <- messageCode ()
