@@ -1,10 +1,8 @@
 package com.DormitoryBack.domain.group.domain.service;
 
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.chat.domain.constant.Constants;
-import com.DormitoryBack.domain.group.chat.domain.module.SocketModule;
 import com.DormitoryBack.domain.group.chat.domain.service.SocketService;
 import com.DormitoryBack.domain.group.domain.dto.request.GroupCreateDto;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupChangedDto;
@@ -17,6 +15,7 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
@@ -296,7 +295,8 @@ public class GroupService {
                 .build();
 
         socketService.saveInfoMessage(String.format(Constants.MEMBER_ENTER_GROUP,user.getNickName()),groupId.toString());
-        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.MEMBER_ENTER_GROUP_KOR,user.getNickName()));
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.MEMBER_ENTER_GROUP_KOR,user.getNickName()));
+
 
         GroupChangedDto responseDto=GroupChangedDto.builder()
                 .mode("join")
@@ -345,7 +345,7 @@ public class GroupService {
                 .build();
 
         socketService.saveInfoMessage(String.format(Constants.MEMBER_LEFT,user.getNickName()),groupId.toString());
-        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.MEMBER_LEFT_KOR,user.getNickName()));
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.MEMBER_LEFT_KOR,user.getNickName()));
 
         UserResponseDTO userChanges=UserResponseDTO.builder()
                 .eMail(user.getEMail())
@@ -403,7 +403,8 @@ public class GroupService {
 
         User expelledUser=userRepository.findById(targetUserId).orElse(null);
         socketService.saveInfoMessage(String.format(Constants.MEMBER_EXPELLED,expelledUser.getNickName()),groupId.toString());
-        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.MEMBER_LEFT_KOR,expelledUser.getNickName()));
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.MEMBER_LEFT_KOR,expelledUser.getNickName()));
+
 
         setOperations.add(String.valueOf("expelledFrom"+groupId),targetUserId);
         setOperations.remove(String.valueOf(groupId),targetUserId);
@@ -473,7 +474,7 @@ public class GroupService {
                 .stringifiedEntity(group.toJsonString())
                 .build();
 
-        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.GROUP_FINISHED_KOR,groupId));
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.GROUP_FINISHED_KOR,groupId));
 
         redisTemplate.delete(String.valueOf("expelledFrom"+groupId));
         group.close();
@@ -513,7 +514,7 @@ public class GroupService {
                 .stringifiedEntity(group.toJsonString())
                 .build();
 
-        notificationService.saveAndPublishNotification(subject,trigger,String.format(Constants.GROUP_CLOSED_KOR,groupId));
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.GROUP_CLOSED_KOR,groupId));
 
         group.close();
         Group saved=groupRepository.save(group);
