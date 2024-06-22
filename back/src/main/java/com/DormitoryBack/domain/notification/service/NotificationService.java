@@ -7,6 +7,7 @@ import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.group.domain.service.GroupServiceExternal;
+import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
@@ -42,6 +43,8 @@ public class NotificationService {
     @Autowired
     private ObjectMapper objectMapper;
     private GroupServiceExternal groupService;
+    private TokenProvider tokenProvider;
+
     public List<NotificationDto> getAllNotifications() {
         List<Notification> notifications=notificationRepository.findAll();
         List<NotificationDto> dtoList=makeDtoList(notifications);
@@ -66,7 +69,81 @@ public class NotificationService {
         notification.setIsConfirmed(true);
         notificationRepository.save(notification);
     }
-    public List<NotificationDto> makeDtoList(List<Notification> notifications){
+
+    public List<NotificationDto> getMyNotifications(String token) {
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        List<Notification> notifications=notificationRepository.findAliveNotifications();
+        List<NotificationDto> myDtoList=new ArrayList<>();
+        Iterator<Notification> iterator=notifications.iterator();
+        while(iterator.hasNext()){
+            Notification notification= iterator.next();
+            Long subjectUserId=getEntityUserId(notification.getSubjectId(),notification.getSubjectType());
+            Long triggerUserId=getEntityUserId(notification.getTriggerId(),notification.getTriggerType());
+            if(notification.getSubjectType()==EntityType.GROUP){
+                Long groupId;
+                try{
+                    groupId=objectMapper
+                            .readTree(getStringifiedEntity(notification.getSubjectId(),EntityType.GROUP))
+                            .get("id")
+                            .asLong();
+                }catch(Exception e){
+                    throw new RuntimeException(e.getMessage());
+                }
+
+                if(groupService.isMember(groupId,userId) && userId!=triggerUserId){
+                    String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
+                    String triggerString=getStringifiedEntity(notification.getTriggerId(),notification.getTriggerType());
+                    Notifiable subject=Notifiable.builder()
+                            .entityType(notification.getSubjectType())
+                            .entityId(notification.getSubjectId())
+                            .stringifiedEntity(subjectString)
+                            .build();
+
+                    Notifiable trigger=Notifiable.builder()
+                            .entityType(notification.getTriggerType())
+                            .entityId(notification.getTriggerId())
+                            .stringifiedEntity(triggerString)
+                            .build();
+
+                    NotificationDto dto=NotificationDto.builder()
+                            .subject(subject)
+                            .trigger(trigger)
+                            .content(notification.getTriggerContent())
+                            .build();
+
+                    myDtoList.add(dto);
+                }
+            }
+            else{
+                if(userId==subjectUserId && userId!=triggerUserId){
+                    String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
+                    String triggerString=getStringifiedEntity(notification.getTriggerId(),notification.getTriggerType());
+                    Notifiable subject=Notifiable.builder()
+                            .entityType(notification.getSubjectType())
+                            .entityId(notification.getSubjectId())
+                            .stringifiedEntity(subjectString)
+                            .build();
+
+                    Notifiable trigger=Notifiable.builder()
+                            .entityType(notification.getTriggerType())
+                            .entityId(notification.getTriggerId())
+                            .stringifiedEntity(triggerString)
+                            .build();
+
+                    NotificationDto dto=NotificationDto.builder()
+                            .subject(subject)
+                            .trigger(trigger)
+                            .content(notification.getTriggerContent())
+                            .build();
+
+                    myDtoList.add(dto);
+                }
+            }
+        }
+
+        return myDtoList;
+    }
+    private List<NotificationDto> makeDtoList(List<Notification> notifications){
         List<NotificationDto> dtoList=new ArrayList<>();
         Iterator<Notification> iterator=notifications.iterator();
         while(iterator.hasNext()){
@@ -167,7 +244,7 @@ public class NotificationService {
     }
 
 
-    public String getStringifiedEntity(Long targetId, EntityType type){
+    private String getStringifiedEntity(Long targetId, EntityType type){
         String entity;
         if(type==EntityType.ARTICLE){
             Article article=articleRepository.findById(targetId).orElse(null);
@@ -188,5 +265,27 @@ public class NotificationService {
 
         return entity;
     }
+
+    private Long getEntityUserId(Long entityId,EntityType type){
+        Long userId;
+        if(type==EntityType.ARTICLE){
+            Article article=articleRepository.findById(entityId).orElse(null);
+            userId=article.getUserId();
+        }
+        else if(type==EntityType.COMMENT){
+            Comment comment=commentRepository.findById(entityId).orElse(null);
+            userId=comment.getUser().getId();
+        }
+        else if(type==EntityType.GROUP){
+            Group group=groupRepository.findById(entityId).orElse(null);
+            userId=group.getHostId();
+        }
+        else{//USER
+            User user=userRepository.findById(entityId).orElse(null);
+            userId=user.getId();
+        }
+        return userId;
+    }
+
 
 }
