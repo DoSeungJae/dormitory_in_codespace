@@ -31,6 +31,11 @@ public class NotificationApi {
         List<NotificationDto> notifications=notificationService.getAliveNotifications();
         return ResponseEntity.status(HttpStatus.OK).body(notifications);
     }
+    @GetMapping("/myNotifications")
+    public ResponseEntity myNotifications(@RequestHeader("Authorization") String token){
+        List<NotificationDto> myNotifications=notificationService.getMyNotifications(token);
+        return ResponseEntity.status(HttpStatus.OK).body(myNotifications);
+    }
     @PatchMapping("/confirm/{notificationId}")
     public ResponseEntity confirm(@PathVariable("notificationId") Long notificationId){
         notificationService.confirmNotification(notificationId);
