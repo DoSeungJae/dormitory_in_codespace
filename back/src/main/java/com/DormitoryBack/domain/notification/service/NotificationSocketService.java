@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class NotificationSocketService {
     private final NotificationSocketManager socketManager;
     private final ObjectMapper objectMapper=new ObjectMapper();
@@ -31,7 +33,6 @@ public class NotificationSocketService {
         String subjectType;
         Long subjectUserId;
         Long triggerUserId;
-
         try{
             JsonNode messageNode=objectMapper.readTree(message);
             subjectType=messageNode.get("subject").get("entityType").asText();
@@ -48,12 +49,13 @@ public class NotificationSocketService {
             try{
                 JsonNode messageNode=objectMapper.readTree(message);
                 groupId=messageNode.get("subject").get("stringifiedEntity").get("id").asText();
-
+                log.info("1"); //이 코드가 실행된다면 정상적으로 실행된다는 의미. <- ??
             }catch(JsonProcessingException e){
                 throw new RuntimeException(e.getMessage());
             }catch(Exception e){
                 throw new RuntimeException(e.getMessage());
             }
+
             SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
             Set<Long> membersId=setOperations.members(groupId);
             Iterator<Long> iterator=membersId.iterator();
@@ -89,10 +91,6 @@ public class NotificationSocketService {
                 break;
             case "USER":
                 userId=entity.get("id").asLong();
-                break;
-            case "MESSAGE":
-                String userName=entity.get("username").asText();
-                userId=userRepository.findByNickName(userName).getId();
                 break;
             default:
                 userId=null;
