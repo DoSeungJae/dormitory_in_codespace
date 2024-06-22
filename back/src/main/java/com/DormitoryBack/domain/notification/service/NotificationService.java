@@ -6,8 +6,10 @@ import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
+import com.DormitoryBack.domain.group.domain.service.GroupServiceExternal;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entitiy.Notification;
@@ -39,6 +41,7 @@ public class NotificationService {
     private UserRepository userRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    private GroupServiceExternal groupService;
     public List<NotificationDto> getAllNotifications() {
         List<Notification> notifications=notificationRepository.findAll();
         List<NotificationDto> dtoList=makeDtoList(notifications);
@@ -71,16 +74,16 @@ public class NotificationService {
             if(!checkExistenceOfSubjectAndTriggerWithLazyCascade(notification)){
                 continue;
             }
-            String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
-            String triggerString=getStringifiedEntity(notification.getTriggerId(),notification.getTriggerType());
-            /*
+
             if(notification.getSubjectType()==EntityType.GROUP){
-                if(!isGroupNotificationValid(notification.getTriggerType())){
+                if(!isGroupNotificationValid(notification)){
+                    notificationRepository.delete(notification);
                     continue;
                 }
             }
-             */
 
+            String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
+            String triggerString=getStringifiedEntity(notification.getTriggerId(),notification.getTriggerType());
             Notifiable subject=Notifiable.builder()
                     .entityType(notification.getSubjectType())
                     .entityId(notification.getSubjectId())
@@ -104,6 +107,7 @@ public class NotificationService {
         return dtoList;
     }
 
+    @Transactional
     private Boolean checkExistenceOfSubjectAndTriggerWithLazyCascade(Notification notification){
         String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
         String triggerString=getStringifiedEntity(notification.getTriggerId(),notification.getTriggerType());
@@ -114,23 +118,53 @@ public class NotificationService {
         return true;
     }
 
-    /*
-    private Boolean isGroupNotificationValid(EntityType triggerType){
+    private Boolean isGroupNotificationValid(Notification notification){
         //group noti의 content부터 정의되어야 작성할 수 있음.
+        EntityType triggerType=notification.getTriggerType();
+        String triggerContent=notification.getTriggerContent();
+
         switch (triggerType){
             case GROUP:
+                if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.GROUP_FINISHED_KOR){ //-2L
+                    //현재 그룹의 상태가 종료된 상태라면 유효한 알림
+                    if(groupService.getGroupState(notification.getSubjectId())==-2L){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                else if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.GROUP_CLOSED_KOR){ //-1L
+                    //현재 그룹의 상태가 마감된 상태라면 유효한 알림
+                    if(groupService.getGroupState(notification.getSubjectId())==-1L){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
                 break;
             case USER:
-                break;
-            case MESSAGE:
+                //trigger id == user id
+                if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.MEMBER_EXPELLED_KOR){
+                    //triggerUserId가 해당 group에 속하지 않았다면 유효한 알림
+                    return !groupService.isMember(notification.getSubjectId(),notification.getTriggerId());
+                }
+                else if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.MEMBER_ENTER_GROUP_KOR){
+                    //triggerUserId가 해당 group에 속한 상태라면 유효한 알림
+                    return groupService.isMember(notification.getSubjectId(),notification.getTriggerId());
+                }
+                else if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.MEMBER_LEFT_KOR){
+                    //triggerUserId가 해당 group에 속하지 않았다면 유효한 알림
+                    return !groupService.isMember(notification.getSubjectId(),notification.getTriggerId());
+                }
                 break;
             default:
                 break;
 
         }
+        return false;
     }
-
-     */
 
 
     public String getStringifiedEntity(Long targetId, EntityType type){
