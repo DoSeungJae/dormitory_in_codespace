@@ -120,23 +120,23 @@ public class CommentService {
                 .isUpdated(false)
                 .build();
 
-        Comment saved=commentRepository.save(newComment);
+        Comment savedComment=commentRepository.save(newComment);
 
         Notifiable subject=Notifiable.builder()
                 .entityType(EntityType.ARTICLE)
                 .entityId(article.getId())
-                .stringifiedEntity(saved.toJsonString())
+                .stringifiedEntity(article.toJsonString())
                 .build();
 
         Notifiable trigger=Notifiable.builder()
                 .entityType(EntityType.COMMENT)
-                .entityId(saved.getId())
-                .stringifiedEntity(saved.toJsonString())
+                .entityId(savedComment.getId())
+                .stringifiedEntity(savedComment.toJsonString())
                 .build();
 
-        notificationService.saveAndPublishNotification(subject,trigger,saved.getContent());
+        notificationService.saveAndPublishNotification(subject,trigger,savedComment.getContent());
 
-        return saved;
+        return savedComment;
 
     }
 
@@ -169,7 +169,7 @@ public class CommentService {
 
 
         rootComment.addReplyComment(newReply);
-        Comment saved=commentRepository.save(newReply);
+        Comment savedComment=commentRepository.save(newReply);
 
        Notifiable subject=Notifiable.builder()
                .entityType(EntityType.COMMENT)
@@ -179,16 +179,16 @@ public class CommentService {
 
        Notifiable trigger=Notifiable.builder()
                .entityType(EntityType.COMMENT)
-               .entityId(saved.getId())
-               .stringifiedEntity(rootComment.toJsonString())
+               .entityId(savedComment.getId())
+               .stringifiedEntity(savedComment.toJsonString())
                .build();
 
-       notificationService.saveAndPublishNotification(subject,trigger,saved.getContent());
+       notificationService.saveAndPublishNotification(subject,trigger,savedComment.getContent());
 
         CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
-                .content(saved.getContent())
-                .time(saved.getCreatedTime())
-                .rootCommentId(saved.getRootComment().getId())
+                .content(savedComment.getContent())
+                .time(savedComment.getCreatedTime())
+                .rootCommentId(savedComment.getRootComment().getId())
                 .build();
 
         return commentResponseDTO;
