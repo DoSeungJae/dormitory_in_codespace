@@ -24,10 +24,7 @@ import java.util.Set;
 public class NotificationSocketService {
     private final NotificationSocketManager socketManager;
     private final ObjectMapper objectMapper=new ObjectMapper();
-    private final UserRepository userRepository;
-
     private final RedisTemplate<String,Long> redisTemplate;
-
     public void sendNotification(String message){
         //subjectType이 group인 경우 member 모두에게 알림 전송
         String subjectType;
@@ -49,7 +46,6 @@ public class NotificationSocketService {
             try{
                 JsonNode messageNode=objectMapper.readTree(message);
                 groupId=messageNode.get("subject").get("stringifiedEntity").get("id").asText();
-                log.info("1"); //이 코드가 실행된다면 정상적으로 실행된다는 의미. <- ??
             }catch(JsonProcessingException e){
                 throw new RuntimeException(e.getMessage());
             }catch(Exception e){
@@ -71,115 +67,45 @@ public class NotificationSocketService {
             }
             SocketIOClient targetSocketClient=socketManager.getSocketClientByUserId(subjectUserId);
             targetSocketClient.sendEvent("notification",message);
-
         }
     }
-
     private Long getUserIdFromEntity(JsonNode entityNode){
         String entityType=entityNode.get("entityType").asText();
         JsonNode entity=entityNode.get("stringifiedEntity");
-        Long userId;
-        switch (entityType){
-            case "ARTICLE":
-                userId=entity.get("userId").asLong();
-                break;
-            case "COMMENT":
-                userId=entity.get("user").get("id").asLong();
-                break;
-            case "GROUP":
-                userId=entity.get("hostId").asLong();
-                break;
-            case "USER":
-                userId=entity.get("id").asLong();
-                break;
-            default:
-                userId=null;
-                break;
+        log.info("{}",entity);
+        if(entity.isTextual()){
+            try{
+                log.info("12");
+                entity=objectMapper.readTree(entity.asText());
+            }catch (Exception e){
+                log.info(e.getMessage());
+            }
         }
-        if(userId==null){
-            throw new RuntimeException("WrongEntity");
+        Long userId=-1L;
+        try{
+            switch (entityType){
+                case "ARTICLE":
+                    userId=entity.get("userId").asLong();
+                    break;
+                case "COMMENT":
+                    userId=entity.get("user").get("id").asLong();
+                    break;
+                case "GROUP":
+                    userId=entity.get("hostId").asLong();
+                    break;
+                case "USER":
+                    userId=entity.get("id").asLong();
+                    break;
+                default:
+                    userId=-1L;
+                    break;
+            }
+            if(userId==-1L){
+                throw new RuntimeException("WrongEntity");
+            }
+        }catch(Exception e){
+            log.info(e.getMessage());
         }
         return userId;
-
     }
-
-    /*
-    public void verifyAndSendNotification(String message){
-        String subjectType;
-        String triggerType;
-        try{
-            JsonNode messageNode=objectMapper.readTree(message);
-            subjectType=messageNode.get("subject").get("entityType").asText();
-            triggerType=messageNode.get("trigger").get("entityType").asText();
-
-        }catch(JsonProcessingException e){
-            throw new RuntimeException(e.getMessage());
-        }catch(Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-        Boolean isValid=verifyNotification(message,subjectType,triggerType);
-        if(!isValid){
-            return ;
-        }
-        //sendNotification(message);
-    }
-
-
-
-
-
-
-    private Boolean verifyNotification(String message,String sbjType, String trgType){
-        try{
-            JsonNode messageNode=objectMapper.readTree(message);
-        }catch(JsonProcessingException e){
-            throw new RuntimeException(e.getMessage());
-        }catch(Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-
-        if(sbjType=="ARTICLE" && trgType=="COMMENT"){
-
-        }
-        else if(sbjType=="COMMENT" && trgType=="COMMENT"){
-
-        }
-        else if(sbjType=="GROUP" && trgType=="GROUP"){
-
-        }
-        else if(sbjType=="GROUP" && trgType=="USER"){
-
-        }
-        else if(sbjType=="GROUP" && trgType=="MESSAGE"){
-
-        }
-        return true;
-    }
-
-     */
-
-
-    /*
-    private HashMap<String,Long> getIdsOfTargets(String message){
-        HashMap<String,Long> IdsOfTargets=new HashMap<>();
-        try{
-            JsonNode messageNode=objectMapper.readTree(message);
-            JsonNode subject=messageNode.get("subject");
-            JsonNode trigger=messageNode.get("trigger");
-            Long subjectUserId=getUserIdFromEntity(subject);
-            Long triggerUserId=getUserIdFromEntity(trigger);
-            IdsOfTargets.put("subject",subjectUserId);
-            IdsOfTargets.put("trigger",triggerUserId);
-
-        }catch(JsonProcessingException e){
-            throw new RuntimeException(e.getMessage());
-        }catch(Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-        return IdsOfTargets;
-    }
-     */
-
-
-
 }
