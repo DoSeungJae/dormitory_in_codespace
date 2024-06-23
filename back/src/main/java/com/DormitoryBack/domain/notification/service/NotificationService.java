@@ -41,7 +41,7 @@ public class NotificationService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper=new ObjectMapper();
     private GroupServiceExternal groupService;
     private TokenProvider tokenProvider;
 
@@ -286,6 +286,7 @@ public class NotificationService {
         }
         return userId;
     }
+
 
 
 }
