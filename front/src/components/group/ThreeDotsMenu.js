@@ -7,7 +7,6 @@ import HomeSelectContext from '../home/HomeSelectContext';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { closeGroup, handleSWalGroupClose } from '../../modules/group/groupModule';
-import { useSocket } from '../../hooks/group/useSocket';
 
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
