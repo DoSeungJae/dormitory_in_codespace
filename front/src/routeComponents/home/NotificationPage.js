@@ -4,7 +4,7 @@ import BackButton from '../../components/home/BackButton';
 function NotificationPage(){
 
     return (
-        <header className='App-alarmPage-header'>
+        <header className='App-notificationPage-header'>
             <BackButton></BackButton>
         </header>
     );

@@ -527,7 +527,7 @@
   text-align: center;
 }
 
-.App-alarmPage-header{
+.App-notificationPage-header{
   display:flex;
   justify-content:space-between;
   /*align-items:center;*/
