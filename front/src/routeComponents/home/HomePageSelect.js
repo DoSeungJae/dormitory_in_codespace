@@ -2,7 +2,7 @@ import {React,useState,useContext,useEffect} from 'react';
 import axios from 'axios';
 import PostingPage from './PostingPage.js';
 import MyWritingPage from './MyWritingPage.js';
-import AlarmPage from './AlarmPage.js';
+import NotificationPage from './NotificationPage.js';
 import HomePage from './HomePage.js';
 import FooterMenu from '../../components/home/FooterMenu.js';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
@@ -68,7 +68,7 @@ return (
           <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
           <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
-          <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><AlarmPage/></div>
+          <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><NotificationPage/></div>
           <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>
           {selectComponentIndex==5 && <ArticlePage/>}
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>

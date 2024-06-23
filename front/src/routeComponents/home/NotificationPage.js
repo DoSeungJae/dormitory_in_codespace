@@ -1,7 +1,7 @@
 import {React} from 'react'
 import BackButton from '../../components/home/BackButton';
 
-function AlarmPage(){
+function NotificationPage(){
 
     return (
         <header className='App-alarmPage-header'>
@@ -11,4 +11,4 @@ function AlarmPage(){
 
 }
 
-export default AlarmPage;
+export default NotificationPage;
