@@ -42,8 +42,10 @@ public class NotificationService {
     private UserRepository userRepository;
     @Autowired
     private ObjectMapper objectMapper=new ObjectMapper();
+    @Autowired
     private GroupServiceExternal groupService;
-    private TokenProvider tokenProvider;
+    @Autowired
+    private TokenProvider tokenProvider; //Autowired 안 넣으면 초기화가 안된다?
 
     public List<NotificationDto> getAllNotifications() {
         List<Notification> notifications=notificationRepository.findAll();
@@ -52,7 +54,7 @@ public class NotificationService {
     }
 
     public List<NotificationDto> getAliveNotifications() {
-        List<Notification> notifications=notificationRepository.findAliveNotifications();
+        List<Notification> notifications=notificationRepository.findUnconfirmedNotifications();
         List<NotificationDto> dtoList=makeDtoList(notifications);
         return dtoList;
     }
@@ -72,14 +74,22 @@ public class NotificationService {
 
     public List<NotificationDto> getMyNotifications(String token) {
         Long userId=tokenProvider.getUserIdFromToken(token);
-        List<Notification> notifications=notificationRepository.findAliveNotifications();
+        List<Notification> notifications=notificationRepository.findUnconfirmedNotifications();
         List<NotificationDto> myDtoList=new ArrayList<>();
         Iterator<Notification> iterator=notifications.iterator();
         while(iterator.hasNext()){
             Notification notification= iterator.next();
+            if(!checkExistenceOfSubjectAndTriggerWithLazyCascade(notification)){
+                continue;
+            }
             Long subjectUserId=getEntityUserId(notification.getSubjectId(),notification.getSubjectType());
             Long triggerUserId=getEntityUserId(notification.getTriggerId(),notification.getTriggerType());
+
             if(notification.getSubjectType()==EntityType.GROUP){
+                if(!isGroupNotificationValid(notification)){
+                    notificationRepository.delete(notification);
+                    continue;
+                }
                 Long groupId;
                 try{
                     groupId=objectMapper
@@ -248,40 +258,66 @@ public class NotificationService {
         String entity;
         if(type==EntityType.ARTICLE){
             Article article=articleRepository.findById(targetId).orElse(null);
+            if(article==null){
+                return null;
+            }
             entity=article.toJsonString();
         }
         else if(type==EntityType.COMMENT){
             Comment comment=commentRepository.findById(targetId).orElse(null);
+            if(comment==null){
+                return null;
+            }
             entity=comment.toJsonString();
         }
         else if(type==EntityType.GROUP){
             Group group=groupRepository.findById(targetId).orElse(null);
+            if(group==null){
+                return null;
+            }
             entity=group.toJsonString();
         }
         else{//USER
             User user=userRepository.findById(targetId).orElse(null);
+            if(user==null){
+                return null;
+            }
             entity=user.toJsonString();
         }
+
 
         return entity;
     }
 
     private Long getEntityUserId(Long entityId,EntityType type){
         Long userId;
+        
         if(type==EntityType.ARTICLE){
             Article article=articleRepository.findById(entityId).orElse(null);
+            if(article==null){
+                return null;
+            }
             userId=article.getUserId();
         }
         else if(type==EntityType.COMMENT){
             Comment comment=commentRepository.findById(entityId).orElse(null);
+            if(comment==null){
+                return null;
+            }
             userId=comment.getUser().getId();
         }
         else if(type==EntityType.GROUP){
             Group group=groupRepository.findById(entityId).orElse(null);
+            if(group==null){
+                return null;
+            }
             userId=group.getHostId();
         }
         else{//USER
             User user=userRepository.findById(entityId).orElse(null);
+            if(user==null){
+                return null;
+            }
             userId=user.getId();
         }
         return userId;
