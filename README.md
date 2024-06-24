@@ -5,7 +5,7 @@ MOBILE    -  ReactNative (planned)
 
 FrontEnd  -  React.js(HTML(JSX), CSS, JavaScript)
 
-BackEnd   -  SpringBoot(Java)
+BackEnd   -  SpringBoot(Java), JPA(Java)
 
 DataBase  -  MySQL, Redis, MongoDB
 
