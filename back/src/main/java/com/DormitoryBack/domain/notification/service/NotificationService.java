@@ -74,7 +74,7 @@ public class NotificationService {
 
     public List<NotificationDto> getMyNotifications(String token) {
         Long userId=tokenProvider.getUserIdFromToken(token);
-        List<Notification> notifications=notificationRepository.findUnconfirmedNotifications();
+        List<Notification> notifications=notificationRepository.findAll();
         List<NotificationDto> myDtoList=new ArrayList<>();
         Iterator<Notification> iterator=notifications.iterator();
         while(iterator.hasNext()){
@@ -291,7 +291,7 @@ public class NotificationService {
 
     private Long getEntityUserId(Long entityId,EntityType type){
         Long userId;
-        
+
         if(type==EntityType.ARTICLE){
             Article article=articleRepository.findById(entityId).orElse(null);
             if(article==null){
