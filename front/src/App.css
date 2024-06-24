@@ -537,3 +537,14 @@
   padding-right:2vw;
 }
 
+.App-notificationPage-main{
+  padding-top:1vh;
+  padding-right: 4vw;
+  padding-left: 4vw;
+}
+
+.notificationPage-main-text{
+  font-size:3vh;
+  padding-bottom:1vh;
+}
+
