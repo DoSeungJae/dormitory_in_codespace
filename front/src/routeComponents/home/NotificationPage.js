@@ -2,6 +2,7 @@ import {React, useContext, useEffect, useState} from 'react'
 import BackButton from '../../components/home/BackButton';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
+import NotiPreview from '../../components/notification/NotiPreview';
 
 function NotificationPage(){
     const [notiList,setNotiList]=useState([]);
@@ -33,9 +34,8 @@ function NotificationPage(){
         }
         getNotifications();
     })    
-    useEffect(()=>{
-        console.log(notiList);
-    },[notiList]);
+
+    
 
     return (
         <div className="App">
@@ -46,6 +46,7 @@ function NotificationPage(){
                 <div className='notificationPage-main-text'>
                     알림
                 </div>
+                <NotiPreview notiList={notiList}/>
             </div>
         </div>
 
