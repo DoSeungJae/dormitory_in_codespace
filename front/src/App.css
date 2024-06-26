@@ -548,3 +548,25 @@
   padding-bottom:1vh;
 }
 
+
+.noti-item{
+  display: flex;
+  align-items: center;
+  padding: 2vh 0vw;
+}
+
+.noti-item-icon{
+  margin-right:3vw;
+}
+
+.noti-item-main {
+  flex-grow: 1; /* 남은 공간을 차지 */
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 2줄로 제한 */
+  -webkit-box-orient: vertical;
+  line-clamp: 2; /* 최대 2줄로 제한 */
+  box-orient: vertical;
+  text-overflow: ellipsis; /* 넘치는 텍스트를 '...'으로 표시 */
+  word-wrap: break-word; /* 단어가 너무 길면 줄 바꿈 */
+}
