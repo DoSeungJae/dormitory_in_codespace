@@ -8,6 +8,8 @@ public class NotificationConstants {
     public static final String MEMBER_LEFT_KOR="%s님이 그룹을 떠났어요."; // %s <- username %s <- messageCode ()
     public static final String GROUP_CLOSED_KOR="참여하신 그룹(%s)이 마감되었어요. "; // %s <- room
     public static final String GROUP_FINISHED_KOR="참여하신 그룹(%s)이 종료되었어요."; // %s <- room
+    public static final String NEW_COMMENT="새로운 댓글이 달렸어요: %s";
+    public static final String NEW_REPLY="새로운 대댓글이 달렸어요: %s";
 
     private static final HashMap<String, String> reverseLookupMap = new HashMap<>();
 
