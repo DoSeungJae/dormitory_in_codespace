@@ -5,9 +5,11 @@ import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
+import com.DormitoryBack.domain.group.chat.domain.constant.Constants;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
@@ -134,7 +136,7 @@ public class CommentService {
                 .stringifiedEntity(savedComment.toJsonString())
                 .build();
 
-        notificationService.saveAndPublishNotification(subject,trigger,savedComment.getContent());
+        notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.NEW_COMMENT,savedComment.getContent()));
 
         return savedComment;
 
@@ -159,6 +161,7 @@ public class CommentService {
         if(rootArticle==null){
             throw new RuntimeException("ArticleNotFound");
         }
+
         Comment newReply=Comment.builder()
                 .article(rootArticle)
                 .user(userData)
@@ -169,7 +172,7 @@ public class CommentService {
 
 
         rootComment.addReplyComment(newReply);
-        Comment savedComment=commentRepository.save(newReply);
+        Comment savedReply=commentRepository.save(newReply);
 
        Notifiable subject=Notifiable.builder()
                .entityType(EntityType.COMMENT)
@@ -179,19 +182,19 @@ public class CommentService {
 
        Notifiable trigger=Notifiable.builder()
                .entityType(EntityType.COMMENT)
-               .entityId(savedComment.getId())
-               .stringifiedEntity(savedComment.toJsonString())
+               .entityId(savedReply.getId())
+               .stringifiedEntity(savedReply.toJsonString())
                .build();
 
-       notificationService.saveAndPublishNotification(subject,trigger,savedComment.getContent());
+       notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()));
 
-        CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
-                .content(savedComment.getContent())
-                .time(savedComment.getCreatedTime())
-                .rootCommentId(savedComment.getRootComment().getId())
+       CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
+                .content(String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()))
+                .time(savedReply.getCreatedTime())
+                .rootCommentId(savedReply.getRootComment().getId())
                 .build();
 
-        return commentResponseDTO;
+       return commentResponseDTO;
     }
 
     @Transactional
