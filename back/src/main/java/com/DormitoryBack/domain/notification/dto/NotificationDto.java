@@ -10,12 +10,12 @@ import lombok.Setter;
 
 @Builder
 @Getter
-@Setter
 public class NotificationDto {
-
+    private Long id;
     private Notifiable subject;
     private Notifiable trigger;
     private String content;
+    private Boolean isConfirmed;
 
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -29,6 +29,4 @@ public class NotificationDto {
         }
         return jsonString;
     }
-
-
 }
