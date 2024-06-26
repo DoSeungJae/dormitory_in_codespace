@@ -74,7 +74,7 @@ public class NotificationService {
 
     public List<NotificationDto> getMyNotifications(String token) {
         Long userId=tokenProvider.getUserIdFromToken(token);
-        List<Notification> notifications=notificationRepository.findAll();
+        List<Notification> notifications=notificationRepository.findAllOrderByTriggeredDateDESC();
         List<NotificationDto> myDtoList=new ArrayList<>();
         Iterator<Notification> iterator=notifications.iterator();
         while(iterator.hasNext()){

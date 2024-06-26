@@ -12,4 +12,7 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
 
     @Query(value="SELECT * FROM NOTIFICATION WHERE is_confirmed=0", nativeQuery = true)
     List<Notification> findUnconfirmedNotifications();
+
+    @Query(value="SELECT * FROM notification ORDER BY triggered_date DESC",nativeQuery = true)
+    List<Notification> findAllOrderByTriggeredDateDESC();
 }
