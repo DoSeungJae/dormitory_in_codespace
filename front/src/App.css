@@ -539,27 +539,29 @@
 
 .App-notificationPage-main{
   padding-top:1vh;
-  padding-right: 4.5vw;
-  padding-left: 4vw;
 }
 
 .notificationPage-main-text{
   font-size:3vh;
   padding-bottom:1vh;
+  padding-left:4vw;
 }
 
 
 .noti-item{
   display: flex;
   align-items: center;
-  padding: 2vh 0vw;
+  padding-top: 2vh;
+  padding-right:4.5vw;
+  padding-left:4vw;
 }
+
 
 .noti-item-icon{
   margin-right:3vw;
 }
 
-.noti-item-main {
+.noti-item-content {
   flex-grow: 1; /* 남은 공간을 차지 */
   overflow: hidden; /* 넘치는 텍스트를 숨김 */
   display: -webkit-box;
@@ -569,4 +571,12 @@
   box-orient: vertical;
   text-overflow: ellipsis; /* 넘치는 텍스트를 '...'으로 표시 */
   word-wrap: break-word; /* 단어가 너무 길면 줄 바꿈 */
+  word-break: break-all; 
+}
+
+.noti-item-time {
+  margin-top: 0.5vh; /* 필요에 따라 조정 */
+  font-size: 0.9em; /* 필요에 따라 조정 */
+  
+  color: #888; /* 필요에 따라 조정 */
 }
