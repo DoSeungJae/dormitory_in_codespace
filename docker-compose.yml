@@ -1,0 +1,80 @@
+
+services:
+  mysql:
+    image: mysql:8.0.34
+    container_name: mysql-container  
+    environment:
+      MYSQL_ROOT_PASSWORD: root  
+      MYSQL_DATABASE: mydb  
+      MYSQL_USER: user  
+      MYSQL_PASSWORD: password  
+    ports:
+      - "3306:3306"  
+    volumes:
+      - mysql_data:/var/lib/mysql 
+    networks:
+      - my-network  
+
+  redis:
+    image: redis
+    container_name: redis-container
+    ports:
+      - "6379:6379"  
+    volumes:
+      - /var/lib/docker/volumes/codespaces-blank_redis_data/_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - my-network  
+
+  mongodb:
+    image: bitnami/mongodb:7.0.9  
+    container_name: mongodb-container
+    environment:
+      MONGODB_ROOT_PASSWORD: rootpassword 
+      MONGODB_DATABASE: mydb  
+      MONGODB_USERNAME: user  
+      MONGODB_PASSWORD: userpassword 
+    ports:
+      - "27017:27017"  
+    volumes:
+      - mongodb_data:/bitnami/mongodb  
+    networks:
+      - my-network  
+
+  zookeeper:
+    image: bitnami/zookeeper:3.9.2
+    container_name: zookeeper-container
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - '2181:2181'
+    networks:
+      - my-network  
+
+  kafka:
+    image: bitnami/kafka:3.7.0
+    container_name: kafka-container
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_ENABLE_KRAFT: no
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper-container:2181
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-container:9092,EXTERNAL://localhost:9094
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+    ports:
+      - '9094:9094'
+    depends_on:
+      - zookeeper
+    networks:
+      - my-network  
+
+volumes:
+  mysql_data:  
+  redis_data:  
+  mongodb_data:  
+  kafka_data:  
+
+networks:
+  my-network:
