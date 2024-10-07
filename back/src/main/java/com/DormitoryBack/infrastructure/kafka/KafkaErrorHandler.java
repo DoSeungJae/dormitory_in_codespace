@@ -15,6 +15,8 @@ public class KafkaErrorHandler implements KafkaListenerErrorHandler {
     public Object handleError(Message<?> message, ListenerExecutionFailedException e){
         ConsumerRecord<?,?> record=(ConsumerRecord<?, ?>) message.getHeaders().get(KafkaHeaders.RECEIVED_KEY);
         log.info(record.value().toString());
+
+        
         return null;
     }
 }
