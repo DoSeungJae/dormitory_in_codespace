@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### docker compose 등 config 파일 ###
+../docker-compose.yml
+../redis.conf
