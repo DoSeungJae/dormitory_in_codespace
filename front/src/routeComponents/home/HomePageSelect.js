@@ -7,7 +7,7 @@ import HomePage from './HomePage.js';
 import FooterMenu from '../../components/home/FooterMenu.js';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import ArticlePage from '../article/ArticlePage.js';
-import SignInPage from '../signIn/SignInPage.js';
+//import SignInPage from '../signIn/signInPage.js';
 import LogInPage from '../logIn/LogInPage.js';
 import { toast } from 'react-toastify';
 import MyGroupPage from './MyGroupPage.js';
@@ -19,7 +19,6 @@ function HomePageSelect() {
   const [isEndPage,setIsEndPage]=useState(false);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   const token=localStorage.getItem('token');
-
 
   useEffect(()=>{
     const idx=parseInt(localStorage.getItem("index"));
@@ -72,7 +71,7 @@ return (
           <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>
           {selectComponentIndex==5 && <ArticlePage/>}
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
-          <div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>
+          {/*<div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>*/}
           <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
       </div>
     {
