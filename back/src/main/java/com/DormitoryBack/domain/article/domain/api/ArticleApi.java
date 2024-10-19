@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin(origins="http://localhost:3000")
+@CrossOrigin(origins="https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev")
 @RestController
 @RequestMapping("api/v1/article")
 @Slf4j

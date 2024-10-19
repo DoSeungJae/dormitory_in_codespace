@@ -48,7 +48,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       })
     }
 
-    const path=`http://localhost:8080/api/v1/group/numMembers?groupId=${article.id}`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/numMembers?groupId=${article.id}`;
     try{
       const response=await axios.get(path);
       if(response.data>1){
@@ -102,7 +102,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
 
   const reportArticle = async (reportReason) => {
     try {
-      const path = `http://localhost:8080/api/v1/report/new`;
+      const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/report/new`;
       let data={};
       if(article){
         data = {
@@ -139,11 +139,11 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
     let path="";
     let isArticle=0;
     if(article){
-      path=`http://localhost:8080/api/v1/article/${article.id}`;
+      path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${article.id}`;
       isArticle=1;
     }
     else{
-      path=`http://localhost:8080/api/v1/comment/${comment.id}`
+      path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/${comment.id}`
     }
     try {
       const response = await axios.delete(path, {

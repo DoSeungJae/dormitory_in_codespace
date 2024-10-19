@@ -30,7 +30,7 @@ function HomePageSelect() {
   
   const selectMenu = async (item) => {
     try {
-        const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
+        const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/validate', {
             headers: {
                 'Authorization': `${token}`
             }

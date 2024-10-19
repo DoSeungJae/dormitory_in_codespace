@@ -10,12 +10,12 @@ export const goArticlePage = async (article,dorId,
     
     
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
+      const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/validate', {
           headers: {
               'Authorization': `${token}`
           }
       });
-      const isArticlePath=`http://localhost:8080/api/v1/article/isArticle/${article.id}`;
+      const isArticlePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/isArticle/${article.id}`;
       const isArticleResponse=await axios.get(isArticlePath);
       const isArticle=isArticleResponse.data;
       if(!isArticle){
@@ -50,7 +50,7 @@ export const goArticlePage = async (article,dorId,
 export const goToPostingPage = async (selectComponentIndex,setSelectComponentIndex) => {
   const token=localStorage.getItem("token");
   try{
-    const response = await axios.get('http://localhost:8080/api/v1/article/validate', {
+    const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/validate', {
       headers: {
           'Authorization': `${token}`
       }

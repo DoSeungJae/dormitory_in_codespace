@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 
 export const checkGroupState = async (groupId,setGroupState) => {
-  const path=`http://localhost:8080/api/v1/group/${groupId}`; //
+  const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/${groupId}`; //
   try{
     const response=await axios.get(path);
     const isProceeding=response.data.isProceeding;
@@ -27,7 +27,7 @@ export const checkGroupState = async (groupId,setGroupState) => {
 }
 
 export const closeGroup = async (groupId,setGroupState) => {
-    const path=`http://localhost:8080/api/v1/group/close/${groupId}`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/close/${groupId}`;
     const token=localStorage.getItem("token");
     const headers={
         'Authorization':`${token}`

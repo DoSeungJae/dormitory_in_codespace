@@ -48,7 +48,7 @@ function ArticlePage(){
     }
 
     const getComments = async () => {
-      const path=`http://localhost:8080/api/v1/comment/article/${article.id}`;
+      const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/article/${article.id}`;
       try{
         const response=await axios.get(path);
         const rootCommentList=response.data.rootComments.map(item => JSON.parse(item));
@@ -92,7 +92,7 @@ function ArticlePage(){
 
     const isSame = async (token) => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/token/userId', {
+        const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/token/userId', {
             headers: {
                 'Authorization': `${token}`
             }
@@ -129,7 +129,7 @@ function ArticlePage(){
         setWriterNickName("init");
       }
         try{
-          const response = await axios.get(`http://localhost:8080/api/v1/user/${article.userId}`, {
+          const response = await axios.get(`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/${article.userId}`, {
         });
         const nickName=response.data.nickName;
         setWriterNickName(nickName);

@@ -27,7 +27,7 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
  
     const isSame = async (token) => {
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/token/userId', {
+        const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/token/userId', {
             headers: {
                 'Authorization': `${token}`
             }

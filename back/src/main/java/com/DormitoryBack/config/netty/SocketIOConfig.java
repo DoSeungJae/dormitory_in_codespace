@@ -21,7 +21,7 @@ public class SocketIOConfig { //SocketIOConfigChat 으로 변경 필요
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
         config.setHostname(host);
         config.setPort(port);
-        config.setOrigin("http://localhost:3000");
+        config.setOrigin("https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev");
 
         return new SocketIOServer(config);
     }

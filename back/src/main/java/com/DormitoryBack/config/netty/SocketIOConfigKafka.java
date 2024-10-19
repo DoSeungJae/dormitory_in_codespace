@@ -19,7 +19,7 @@ public class SocketIOConfigKafka {
         com.corundumstudio.socketio.Configuration kafkaConfig=new com.corundumstudio.socketio.Configuration();
         kafkaConfig.setHostname(host);
         kafkaConfig.setPort(port);
-        kafkaConfig.setOrigin("http://localhost:3000");
+        kafkaConfig.setOrigin("https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev/");
 
         return new SocketIOServer(kafkaConfig);
     }

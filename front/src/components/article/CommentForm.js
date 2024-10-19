@@ -18,7 +18,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
       inputRef.current.focus();
     }
     else{
-      const path = `http://localhost:8080/api/v1/comment/newReply`;
+      const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/newReply`;
       const data={
         rootCommentId:rootCommentId,
         content:comment,
@@ -55,7 +55,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
       toast.warn("내용을 입력해주세요!");
       return 
     }
-    const fullPath = `http://localhost:8080/api/v1/comment/new`;
+    const fullPath = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/new`;
     const data = {
       articleId:article_Id,
       content:comment,

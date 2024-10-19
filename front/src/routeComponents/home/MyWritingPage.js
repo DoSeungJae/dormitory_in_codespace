@@ -68,10 +68,10 @@ function MyWritingPage(){
         let path;
         //mode: my or cmt
         if(mode==='my'){
-            path=`http://localhost:8080/api/v1/article/filter/user?page=${page}`;
+            path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/filter/user?page=${page}`;
         }
         else{
-            path=`http://localhost:8080/api/v1/article/filter/userComment?page=${page}`;
+            path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/filter/userComment?page=${page}`;
         }
         try{
             const response=await axios.get(path,{

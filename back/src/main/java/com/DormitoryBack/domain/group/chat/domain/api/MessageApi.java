@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev")
 @RequestMapping("/api/v1/chat")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MessageApi {

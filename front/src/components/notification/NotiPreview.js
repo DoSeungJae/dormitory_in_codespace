@@ -33,7 +33,7 @@ const NotiPreview = ({notiList}) => {
     }
 
     const confirmNotification = async (notiId) => {
-        const path=`http://localhost:8080/api/v1/notification/confirm/${notiId}`; 
+        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/notification/confirm/${notiId}`; 
         try{
             const response=await axios.patch(path,{},{});
             console.log(response.data);

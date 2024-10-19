@@ -243,7 +243,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
 
 
   const report = async (targetType,id,reportReason) => {
-    const path = `http://localhost:8080/api/v1/report/new`;
+    const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/report/new`;
     const body={
       reportType:targetType,
       targetId:id,
@@ -269,7 +269,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
   
   const quitGroup = async () => {
-    const path=`http://localhost:8080/api/v1/group/quit?groupId=${group.id}`; 
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/quit?groupId=${group.id}`; 
     const headers = {
         'Authorization':`${token}`
     };
@@ -285,7 +285,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     }
   }
   const goToArticlePage = async () => {
-    const path=`http://localhost:8080/api/v1/article/${group.id}`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${group.id}`;
     try{
       const response=await axios.get(path);
       const article=(response.data);
@@ -358,7 +358,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
 
   const expelMember = async (memberToBeExpelled) => {
-    const path=`http://localhost:8080/api/v1/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
     const headers = {
       'Authorization':`${token}`
     };
@@ -375,7 +375,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
 
   const applyMemberChange = async (nickName,mode) => { //-1 : 멤버 제거, 1 : 멤버 추가
-    const path=`http://localhost:8080/api/v1/user/findByNick/${nickName}`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/findByNick/${nickName}`;
     try{
       const response=await axios.get(path);
       const user=(response.data);

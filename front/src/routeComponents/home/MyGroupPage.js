@@ -113,7 +113,7 @@ function MyGroupPage(){
     if(token==null){
       return ;
     }
-    const path=`http://localhost:8080/api/v1/user/NickName`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/NickName`;
     const headers={
       'Authorization' : `${token}`
     };
@@ -130,7 +130,7 @@ function MyGroupPage(){
     if(token==null){
       return ;
     }
-    const path=`http://localhost:8080/api/v1/group/userBelongsTo`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/userBelongsTo`;
     const headers={
       'Authorization' : `${token}`
     };
@@ -147,7 +147,7 @@ function MyGroupPage(){
     if(groupId==0){
       return ;
     }
-    const path=`http://localhost:8080/api/v1/group/host/${groupId}`;
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/host/${groupId}`;
     try{
       const response=await axios.get(path);
       setHostNickName(response.data.nickName);

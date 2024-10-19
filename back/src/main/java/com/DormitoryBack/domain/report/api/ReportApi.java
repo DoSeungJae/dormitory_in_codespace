@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@CrossOrigin(origins="http://localhost:3000")
+@CrossOrigin(origins="https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev")
 @RestController
 @RequestMapping("api/v1/report")
 @Slf4j
