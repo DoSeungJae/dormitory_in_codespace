@@ -145,6 +145,7 @@ public class CommentService {
 
     @Transactional
     public CommentReplyResponseDTO newReply(CommentReplyDTO dto, String token) {
+
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
@@ -174,19 +175,27 @@ public class CommentService {
         rootComment.addReplyComment(newReply);
         Comment savedReply=commentRepository.save(newReply);
 
-       Notifiable subject=Notifiable.builder()
+        Notifiable commentSubject=Notifiable.builder()
                .entityType(EntityType.COMMENT)
                .entityId(rootComment.getId())
                .stringifiedEntity(rootComment.toJsonString())
                .build();
+        
+        Article article=articleRepository.findById(rootComment.getArticleId()).orElse(null);
+        Notifiable articleSubject=Notifiable.builder()
+            .entityType(EntityType.ARTICLE)
+            .entityId(rootComment.getArticleId())
+            .stringifiedEntity(article.toJsonString())
+            .build();
 
-       Notifiable trigger=Notifiable.builder()
+        Notifiable trigger=Notifiable.builder()
                .entityType(EntityType.COMMENT)
                .entityId(savedReply.getId())
                .stringifiedEntity(savedReply.toJsonString())
                .build();
 
-       notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()));
+       notificationService.saveAndPublishNotification(commentSubject,trigger,String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()));
+       notificationService.saveAndPublishNotification(articleSubject,trigger,String.format(NotificationConstants.NEW_COMMENT,savedReply.getContent()));
 
        CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
                 .content(String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()))
