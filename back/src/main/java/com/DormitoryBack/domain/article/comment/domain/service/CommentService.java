@@ -195,7 +195,12 @@ public class CommentService {
                .build();
 
        notificationService.saveAndPublishNotification(commentSubject,trigger,String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()));
-       notificationService.saveAndPublishNotification(articleSubject,trigger,String.format(NotificationConstants.NEW_COMMENT,savedReply.getContent()));
+       
+       //중복 검사 이후 문제 없으면 article에 notification trigger
+       if(rootComment.getUser().getId()!=article.getUserId()){
+            notificationService.saveAndPublishNotification(articleSubject,trigger,String.format(NotificationConstants.NEW_COMMENT,savedReply.getContent()));
+       }
+       
 
        CommentReplyResponseDTO commentResponseDTO= CommentReplyResponseDTO.builder()
                 .content(String.format(NotificationConstants.NEW_REPLY,savedReply.getContent()))
