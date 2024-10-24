@@ -75,7 +75,6 @@ public class NotificationSocketService {
         log.info("{}",entity);
         if(entity.isTextual()){
             try{
-                log.info("12");
                 entity=objectMapper.readTree(entity.asText());
             }catch (Exception e){
                 log.info(e.getMessage());
