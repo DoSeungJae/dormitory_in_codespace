@@ -33,13 +33,16 @@ public class NotificationServiceExternal {
                 .build();
 
         notificationRepository.save(notification);
+        
+        /* 
         NotificationDto dto=NotificationDto.builder()
                 .subject(subject)
                 .trigger(trigger)
                 .content(content)
                 .build();
-
-        producer.send(dto);
+        */
+        //producer.send(dto); <- send를 하지 않으면 실시간 알림 기능이 작동하지 않음.
+        //실시간 알림 기능은 추후에 구현 예정
     }
 
 
