@@ -6,6 +6,8 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
@@ -14,7 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class GroupServiceExternal {
 
+    @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
     private RedisTemplate<String,Long> redisTemplate;
 
     public Long getGroupState(Long groupId){
