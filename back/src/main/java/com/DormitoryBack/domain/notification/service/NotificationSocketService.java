@@ -25,6 +25,7 @@ public class NotificationSocketService {
     private final NotificationSocketManager socketManager;
     private final ObjectMapper objectMapper=new ObjectMapper();
     private final RedisTemplate<String,Long> redisTemplate;
+    
     public void sendNotification(String message){
         //subjectType이 group인 경우 member 모두에게 알림 전송
         String subjectType;
