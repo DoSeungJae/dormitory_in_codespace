@@ -1,5 +1,13 @@
 package com.DormitoryBack.domain.notification.service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
@@ -16,16 +24,9 @@ import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entitiy.Notification;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -167,6 +168,7 @@ public class NotificationService {
 
             if(notification.getSubjectType()==EntityType.GROUP){
                 if(!isGroupNotificationValid(notification)){
+
                     notificationRepository.delete(notification);
                     continue;
                 }
@@ -213,10 +215,9 @@ public class NotificationService {
         //group noti의 content부터 정의되어야 작성할 수 있음.
         EntityType triggerType=notification.getTriggerType();
         String triggerContent=notification.getTriggerContent();
-
         switch (triggerType){
             case GROUP:
-                if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.GROUP_FINISHED_KOR){ //-2L
+                if(NotificationConstants.getConstantName(triggerContent).equals("GROUP_FINISHED_KOR")){ //-2L
                     //현재 그룹의 상태가 종료된 상태라면 유효한 알림
                     if(groupService.getGroupState(notification.getSubjectId())==-2L){
                         return true;
@@ -225,7 +226,7 @@ public class NotificationService {
                         return false;
                     }
                 }
-                else if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.GROUP_CLOSED_KOR){ //-1L
+                else if(NotificationConstants.getConstantName(triggerContent).equals("GROUP_CLOSED_KOR")){ //-1L
                     //현재 그룹의 상태가 마감된 상태라면 유효한 알림
                     if(groupService.getGroupState(notification.getSubjectId())==-1L){
                         return true;
@@ -236,16 +237,16 @@ public class NotificationService {
                 }
                 break;
             case USER:
-                //trigger id == user id
-                if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.MEMBER_EXPELLED_KOR){
+                //triggerId는 userId를 의미함
+                if(NotificationConstants.getConstantName(triggerContent).equals("MEMBER_EXPELLED_KOR")){
                     //triggerUserId가 해당 group에 속하지 않았다면 유효한 알림
                     return !groupService.isMember(notification.getSubjectId(),notification.getTriggerId());
                 }
-                else if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.MEMBER_ENTER_GROUP_KOR){
+                else if(NotificationConstants.getConstantName(triggerContent).equals("MEMBER_ENTER_GROUP_KOR")){
                     //triggerUserId가 해당 group에 속한 상태라면 유효한 알림
                     return groupService.isMember(notification.getSubjectId(),notification.getTriggerId());
                 }
-                else if(NotificationConstants.getConstantName(triggerContent)==NotificationConstants.MEMBER_LEFT_KOR){
+                else if(NotificationConstants.getConstantName(triggerContent).equals("MEMBER_LEFT_KOR")){
                     //triggerUserId가 해당 group에 속하지 않았다면 유효한 알림
                     return !groupService.isMember(notification.getSubjectId(),notification.getTriggerId());
                 }
