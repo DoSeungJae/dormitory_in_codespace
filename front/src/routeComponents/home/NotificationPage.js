@@ -6,7 +6,6 @@ import NotiPreview from '../../components/notification/NotiPreview';
 
 function NotificationPage(){
     const [notiList,setNotiList]=useState([]);
-    const [isFetched,setIsFetched]=useState(0);
     const token=localStorage.getItem("token");
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
@@ -19,7 +18,6 @@ function NotificationPage(){
             const response=await axios.get(path,{headers});
             const data=response.data;
             setNotiList((prev)=>[...prev,...data]);
-            setIsFetched(1);
         }catch(error){
             console.error(error);
         }
@@ -29,11 +27,13 @@ function NotificationPage(){
         if(selectComponentIndex!=3){
             return ;
         }
-        if(isFetched==1){
-            return ;
-        }
+        setNotiList([]);
         getNotifications();
-    })    
+    },[selectComponentIndex])    
+
+    useEffect(()=>{
+        console.log(selectComponentIndex);
+    })
 
     
 
