@@ -1,10 +1,10 @@
 package com.DormitoryBack.domain.notification.service;
 
 import com.DormitoryBack.domain.notification.dto.Notifiable;
-import com.DormitoryBack.domain.notification.dto.NotificationDto;
+//import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entitiy.Notification;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
-import com.DormitoryBack.infrastructure.kafka.notification.KafkaProducerNotification;
+//import com.DormitoryBack.infrastructure.kafka.notification.KafkaProducerNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +15,9 @@ import java.time.LocalDateTime;
 public class NotificationServiceExternal {
     @Autowired
     private NotificationRepository notificationRepository;
-    @Autowired
-    private KafkaProducerNotification producer;
+
+    //@Autowired
+    //private KafkaProducerNotification producer;
 
 
     @Transactional

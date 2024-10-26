@@ -1,5 +1,6 @@
 package com.DormitoryBack.infrastructure.kafka;
 
+/*
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.listener.KafkaListenerErrorHandler;
@@ -20,3 +21,4 @@ public class KafkaErrorHandler implements KafkaListenerErrorHandler {
         return null;
     }
 }
+*/

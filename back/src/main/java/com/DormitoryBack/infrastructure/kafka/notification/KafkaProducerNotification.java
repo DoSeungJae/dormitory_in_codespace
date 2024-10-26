@@ -1,5 +1,6 @@
 package com.DormitoryBack.infrastructure.kafka.notification;
 
+/*
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,3 +17,4 @@ public class KafkaProducerNotification {
         kafkaTemplate.send(topic,dto.toJsonString());
     }
 }
+ */

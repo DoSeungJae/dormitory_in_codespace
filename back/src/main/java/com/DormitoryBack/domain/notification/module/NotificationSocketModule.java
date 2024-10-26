@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.notification.module;
 
+/*
 import com.DormitoryBack.domain.notification.service.NotificationSocketService;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -46,3 +47,4 @@ public class NotificationSocketModule {
     }
 
 }
+ */

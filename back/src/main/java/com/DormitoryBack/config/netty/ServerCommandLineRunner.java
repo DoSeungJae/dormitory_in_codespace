@@ -10,19 +10,19 @@ import com.corundumstudio.socketio.SocketIOServer;
 public class ServerCommandLineRunner implements CommandLineRunner {
 
     private final SocketIOServer chatServer;
-    private final SocketIOServer kafkaServer;
+    //private final SocketIOServer kafkaServer;
 
     public ServerCommandLineRunner(
-            @Qualifier("socketIOServer") SocketIOServer chatServer,
-            @Qualifier("socketIOServerKafka") SocketIOServer kafkaServer){
+            @Qualifier("socketIOServer") SocketIOServer chatServer){
+            // ,@Qualifier("socketIOServerKafka") SocketIOServer kafkaServer){
 
         this.chatServer=chatServer;
-        this.kafkaServer=kafkaServer;
+        //this.kafkaServer=kafkaServer;
     }
 
     @Override
     public void run(String... args) throws Exception {
         chatServer.start();
-        kafkaServer.start();
+        //kafkaServer.start();
     }
 }

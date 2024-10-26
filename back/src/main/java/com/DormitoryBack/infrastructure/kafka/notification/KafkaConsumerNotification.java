@@ -1,5 +1,6 @@
 package com.DormitoryBack.infrastructure.kafka.notification;
 
+/*
 import com.DormitoryBack.domain.notification.service.NotificationSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,3 +16,4 @@ public class KafkaConsumerNotification {
       notificationSocketService.sendNotification(message);
     }
 }
+ */
