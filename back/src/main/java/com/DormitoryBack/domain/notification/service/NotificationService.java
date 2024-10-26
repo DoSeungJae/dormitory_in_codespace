@@ -122,6 +122,7 @@ public class NotificationService {
                             .trigger(trigger)
                             .content(notification.getTriggerContent())
                             .isConfirmed(notification.getIsConfirmed())
+                            .triggeredDate(notification.getTriggeredDate())
                             .build();
 
                     myDtoList.add(dto);
@@ -144,10 +145,12 @@ public class NotificationService {
                             .build();
 
                     NotificationDto dto=NotificationDto.builder()
+                            .id(notification.getId())
                             .subject(subject)
                             .trigger(trigger)
                             .content(notification.getTriggerContent())
                             .isConfirmed(notification.getIsConfirmed())
+                            .triggeredDate(notification.getTriggeredDate())
                             .build();
 
                     myDtoList.add(dto);
@@ -193,6 +196,7 @@ public class NotificationService {
                     .trigger(trigger)
                     .content(notification.getTriggerContent())
                     .isConfirmed(notification.getIsConfirmed())
+                    .triggeredDate(notification.getTriggeredDate())
                     .build();
 
             dtoList.add(dto);
