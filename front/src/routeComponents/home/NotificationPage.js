@@ -31,11 +31,6 @@ function NotificationPage(){
         getNotifications();
     },[selectComponentIndex])    
 
-    useEffect(()=>{
-        console.log(selectComponentIndex);
-    })
-
-    
 
     return (
         <div className="App">
