@@ -1,7 +1,6 @@
 import {React, useContext, useEffect, useState} from 'react'
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
-import BackButton from '../../components/home/BackButton';
 import { ThemeProvider } from '@mui/material';
 import theme from '../group/theme';
 import ChatRoom from '../../views/group/ChatRoom';
@@ -9,6 +8,7 @@ import ThreeDotsMenu from '../../components/group/ThreeDotsMenu';
 import { checkGroupState, mapGroupStateText } from '../../modules/group/groupModule';
 import { useSocket } from '../../hooks/group/useSocket';
 import { toast } from 'react-toastify';
+import BackButton from '../../components/group/BackButton';
 
 
 function MyGroupPage(){
