@@ -4,8 +4,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
 import axios from 'axios';
 import { throttle } from '../../modules/common/clickHandleModule';
+import { useContext, useEffect } from 'react';
+import HomeSelectContext from '../home/HomeSelectContext';
+import { toast } from 'react-toastify';
 
 const NotiPreview = ({notiList}) => {
+    
+    const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
     const triggerIcon={
         "ARTICLE":<ArticleOutlinedIcon fontSize='large'/>,
@@ -14,30 +19,35 @@ const NotiPreview = ({notiList}) => {
         "USER":<PersonIcon fontSize='large'/>
     }
 
-    const getFormattedDate = (timeArr) => {
-        const curYear=new Date().getFullYear();
-        const year=timeArr[0]
-        const month=timeArr[1].toString().padStart(2,'0');
-        const day=timeArr[2].toString().padStart(2,'0');
-        const hour=timeArr[3].toString().padStart(2,'0');
-        const minute=timeArr[4].toString().padStart(2,'0');
-        let formattedDate;
-        if(year==curYear){
-            formattedDate=`${month}/${day} ${hour}:${minute}`;
-        }
-        else{
-            formattedDate = `${year}/${month}/${day} ${hour}:${minute}`;
-        }
-
-        return formattedDate;
+    const getFormattedDate = (dateString) => {
+        const date = new Date(dateString);
+        return [
+            date.getFullYear(),    
+            date.getMonth() + 1,   
+            date.getDate(),        
+            date.getHours(),      
+            date.getMinutes(),     
+            date.getSeconds(),     
+        ];
     }
 
-    const confirmNotification = async (notiId) => {
-        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/notification/confirm/${notiId}`; 
+    const confirmNotification = async (noti) => {
+        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/notification/confirm/${noti.id}`; 
         try{
             const response=await axios.patch(path,{},{});
-            console.log(response.data);
 
+            const subjectType=noti.subject.entityType;
+            if(subjectType==="ARTICLE"){
+                goToArticlePage(JSON.parse(noti.subject.stringifiedEntity));
+            }
+            else if(subjectType==="COMMENT"){
+                const articleId=JSON.parse(noti.subject.stringifiedEntity).articleId;
+                getArticle(articleId).then(result=>goToArticlePage(result));
+            }
+            else{
+                localStorage.setItem("nextIndex",selectComponentIndex);
+                setSelectComponentIndex(4);
+            }
         }catch(error){
             const errMsg=error.response.data;
             console.error(errMsg);
@@ -45,11 +55,29 @@ const NotiPreview = ({notiList}) => {
       }
 
     const handleClick = (noti) => {
-        //confirmNotification(noti.id);
-        console.log(noti);
+        confirmNotification(noti);
     }
 
     const throttledHandleClick=throttle(handleClick,500);
+
+    const goToArticlePage = async (article) => {
+
+        localStorage.setItem("article",JSON.stringify(article));
+        localStorage.setItem("nextIndex",selectComponentIndex);
+        setSelectComponentIndex(5);
+    }
+
+    const getArticle = async (articleId) => {
+        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+        try{
+            const response=await axios.get(path);
+            return response.data;
+        }
+        catch(error){
+            console.error(error);
+            return null;
+        }
+    }
 
     return (
         <div className="preview" style={{maxHeight:"80vh"}}>
@@ -60,7 +88,7 @@ const NotiPreview = ({notiList}) => {
                     <div className='noti-item-icon'>{triggerIcon[noti.trigger.entityType]}</div>
                     <div className='noti-item-content-wrapper'>
                         <div className='noti-item-content'>{noti.content}</div>
-                        <div className='noti-item-time'>{getFormattedDate(JSON.parse(noti.trigger.stringifiedEntity).createdTime)}</div>
+                        {<div className='noti-item-time'>{getFormattedDate(noti.triggeredDate)}</div>}
                     </div>
                     
                 </div>
