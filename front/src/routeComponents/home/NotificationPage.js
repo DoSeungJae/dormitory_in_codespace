@@ -43,11 +43,7 @@ function NotificationPage(){
                 </div>
                 <NotiPreview notiList={notiList}/>
             </div>
-        </div>
-
-        
+        </div>  
     );
-
 }
-
 export default NotificationPage;
