@@ -9,6 +9,7 @@ import CommentMenu from '../../components/article/CommentMenu';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import ParticipateButton from '../../components/article/ParticipateButton';
 import GroupStartButton from '../../components/article/GroupStartButton';
+import { getRelativeTime } from '../../modules/common/timeModule';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -143,6 +144,7 @@ function ArticlePage(){
       if(selectComponentIndex!==5){
         return ;
       }
+
       getWriterNickName();
       isSame(token).then(result=>setIsWriter(result));
     },[selectComponentIndex]);
@@ -158,21 +160,6 @@ function ArticlePage(){
 
     },[selectComponentIndex])
 
-
-    function formatCreateTime(createTime) {
-      const currentYear = new Date().getFullYear();
-
-      const year = createTime[0];
-      const month = createTime[1];
-      const day = createTime[2];
-      const hours = createTime[3];
-      const minutes = createTime[4];
-
-      return currentYear === year 
-        ? `${month}/${day} ${hours}:${minutes}` 
-        : `${year}/${month}/${day} ${hours}:${minutes}`;
-    }
-    
     return (
         <div className="App"
               onTouchStart={handleTouchStart}
@@ -188,7 +175,7 @@ function ArticlePage(){
                 <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
                   <div className="article-info-detail">
                     <p>{writerNickName}</p>
-                    <p>{formatCreateTime(article.createTime)}</p>
+                    <p>{getRelativeTime(article.createTime)}</p>
                   </div>
                 <div className='article-info-right'>
                   {isWriter === 1 ? <GroupStartButton articleId={article.id}/> 
@@ -225,6 +212,7 @@ function ArticlePage(){
                       </CommentMenu>
                     </div>
                     <p className="comment-item-content">{comment.content}</p>
+                    <p>{getRelativeTime(comment.createdTime)}</p>
                     {comment.replyComments && comment.replyComments.map((reply, replyIndex) => (
                     <div key={replyIndex} className="comment-item reply">
                         <div className="comment-item-header">
@@ -233,11 +221,11 @@ function ArticlePage(){
                               isForReply={1}
                               writerId={reply.user.id}
                               commentParam={reply}
-
                                 >
                             </CommentMenu>
                         </div>
                         <p className="comment-item-content">{reply.content}</p>
+                        <p>{getRelativeTime(reply.createdTime)}</p>
                     </div>
                     ))}
                   </div>

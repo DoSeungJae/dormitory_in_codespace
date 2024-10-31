@@ -6,10 +6,11 @@ import axios from 'axios';
 import { throttle } from '../../modules/common/clickHandleModule';
 import { useContext, useEffect } from 'react';
 import HomeSelectContext from '../home/HomeSelectContext';
-import { toast } from 'react-toastify';
+import { getRelativeTime } from '../../modules/common/timeModule';
 
 const NotiPreview = ({notiList}) => {
-    
+    /* noti에 동적 스타일링을 하지 않는 이유는 클릭했을 때 다른 컴포넌트로 이동하고
+    backButton을 통해 notiPage로 돌아오면 Noti들을 다시 fetch하기 때문 */
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
     const triggerIcon={
@@ -19,23 +20,13 @@ const NotiPreview = ({notiList}) => {
         "USER":<PersonIcon fontSize='large'/>
     }
 
-    const getFormattedDate = (dateString) => {
-        const date = new Date(dateString);
-        return [
-            date.getFullYear(),    
-            date.getMonth() + 1,   
-            date.getDate(),        
-            date.getHours(),      
-            date.getMinutes(),     
-            date.getSeconds(),     
-        ];
-    }
+
 
     const confirmNotification = async (noti) => {
         const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/notification/confirm/${noti.id}`; 
         try{
             const response=await axios.patch(path,{},{});
-
+            
             const subjectType=noti.subject.entityType;
             if(subjectType==="ARTICLE"){
                 goToArticlePage(JSON.parse(noti.subject.stringifiedEntity));
@@ -88,7 +79,7 @@ const NotiPreview = ({notiList}) => {
                     <div className='noti-item-icon'>{triggerIcon[noti.trigger.entityType]}</div>
                     <div className='noti-item-content-wrapper'>
                         <div className='noti-item-content'>{noti.content}</div>
-                        {<div className='noti-item-time'>{getFormattedDate(noti.triggeredDate)}</div>}
+                        {<div className='noti-item-time'>{getRelativeTime(noti.triggeredDate)}</div>}
                     </div>
                     
                 </div>
