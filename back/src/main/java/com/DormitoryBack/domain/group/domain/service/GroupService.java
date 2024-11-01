@@ -19,6 +19,8 @@ import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
+import com.DormitoryBack.module.TimeOptimizer;
+
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +88,8 @@ public class GroupService {
                 .dormId(article.getDorId())
                 .hostId(hostId)
                 .maxCapacity(requestDto.getMaxCapacity())
-                .createdTime(LocalDateTime.now())
+                //.createdTime(LocalDateTime.now())
+                .createdTime(TimeOptimizer.now())
                 .category(article.getCategory())
                 .isProceeding(true)
                 .build();

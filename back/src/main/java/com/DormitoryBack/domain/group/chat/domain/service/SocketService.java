@@ -5,6 +5,7 @@ import com.DormitoryBack.domain.group.chat.domain.enums.MessageType;
 import com.DormitoryBack.domain.group.chat.domain.module.ChatManager;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
+import com.DormitoryBack.module.TimeOptimizer;
 import com.corundumstudio.socketio.SocketIOClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,8 @@ public class SocketService {
                         .message(message.getMessage())
                         .room(message.getRoom())
                         .username(message.getUsername())
-                        .createdTime(LocalDateTime.now())
+                        //.createdTime(LocalDateTime.now())
+                        .createdTime(TimeOptimizer.now())
                         .build()
         );
         storedMessage.setCreatedTime(null);
@@ -57,7 +59,8 @@ public class SocketService {
                         .messageType(MessageType.SERVER)
                         .message(message)
                         .room(room)
-                        .createdTime(LocalDateTime.now())
+                        //.createdTime(LocalDateTime.now())
+                        .createdTime(TimeOptimizer.now())
                         .build()
         );
         storedMessage.setCreatedTime(null);

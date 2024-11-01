@@ -4,6 +4,8 @@ import com.DormitoryBack.domain.notification.dto.Notifiable;
 //import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entitiy.Notification;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
+import com.DormitoryBack.module.TimeOptimizer;
+
 //import com.DormitoryBack.infrastructure.kafka.notification.KafkaProducerNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,8 @@ public class NotificationServiceExternal {
                 .triggerType(trigger.getEntityType())
                 .triggerId(trigger.getEntityId())
                 .triggerContent(content)
-                .triggeredDate(LocalDateTime.now())
+                //.triggeredDate(LocalDateTime.now())
+                .triggeredDate(TimeOptimizer.now())
                 .isConfirmed(false)
                 .build();
 

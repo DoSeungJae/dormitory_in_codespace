@@ -13,6 +13,8 @@ import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
+import com.DormitoryBack.module.TimeOptimizer;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +120,8 @@ public class CommentService {
                 .article(article)
                 .user(userData)
                 .content(dto.getContent())
-                .createdTime(LocalDateTime.now())
+                //.createdTime(LocalDateTime.now())
+                .createdTime(TimeOptimizer.now())
                 .isUpdated(false)
                 .build();
 
@@ -167,7 +170,8 @@ public class CommentService {
                 .article(rootArticle)
                 .user(userData)
                 .content(dto.getContent())
-                .createdTime(LocalDateTime.now())
+                //.createdTime(LocalDateTime.now())
+                .createdTime(TimeOptimizer.now())
                 .build();
 
 

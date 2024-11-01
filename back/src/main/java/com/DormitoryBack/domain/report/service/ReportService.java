@@ -10,6 +10,8 @@ import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.domain.report.dto.ReportDTO;
 import com.DormitoryBack.domain.report.entity.Report;
 import com.DormitoryBack.domain.report.repository.ReportRepository;
+import com.DormitoryBack.module.TimeOptimizer;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +92,8 @@ public class ReportService {
                 .reporter(user)
                 .targetId(dto.getTargetId())
                 .reportType(dto.getReportType())
-                .time(LocalDateTime.now())
+                //.time(LocalDateTime.now())
+                .time(TimeOptimizer.now())
                 .reason(dto.getReason())
                 .build();
 

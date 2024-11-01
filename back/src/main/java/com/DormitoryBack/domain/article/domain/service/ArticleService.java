@@ -9,6 +9,8 @@ import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.module.TimeOptimizer;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,12 +52,14 @@ public class ArticleService {
         Long usrId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(usrId).orElse(null);
 
+        
         Article newOne = Article.builder()
                 .dorId(dto.getDorId())
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .category(dto.getCategory())
-                .createTime(dto.getCreateTime())
+                //.createTime(LocalDateTime.now())
+                .createTime(TimeOptimizer.now())
                 .appointedTime(null)
                 .usrId(user)
                 .build();
