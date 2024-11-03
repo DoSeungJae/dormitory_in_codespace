@@ -73,6 +73,13 @@ public class CommentApi {
                 .status(HttpStatus.OK)
                 .body(responseDTO);
     }
+
+    @GetMapping("/numComments")
+    public ResponseEntity numberOfComments(@RequestParam(name="articleId", defaultValue = "-1") Long articleId){
+        Long number=commentService.getNumberOfComments(articleId);
+        return ResponseEntity.status(HttpStatus.OK).body(number);
+    }
+    
     @PostMapping("/new")
     public ResponseEntity newComment(@RequestBody CommentDTO dto, @RequestHeader("Authorization") String token){
         Comment comment=commentService.newComment(dto,token);

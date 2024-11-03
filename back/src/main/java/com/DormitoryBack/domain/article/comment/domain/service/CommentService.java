@@ -98,6 +98,13 @@ public class CommentService {
         return responseDTO;
 
     }
+
+    public Long getNumberOfComments(Long articleId){
+        CommentResponseDTO dto=this.getArticleComments(articleId);
+        Long number=Long.valueOf(dto.getReplyComments().size()+dto.getRootComments().size());
+        return number;
+    }
+    
     public List<String> listStringify(List<Comment> commentList){
         List<String> stringifiedCommentList=commentList.stream()
                 .map(Comment::toJsonString)
