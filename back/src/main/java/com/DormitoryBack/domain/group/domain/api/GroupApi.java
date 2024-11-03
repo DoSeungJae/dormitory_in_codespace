@@ -82,7 +82,18 @@ public class GroupApi {
 
         Long groupState=groupService.getGroupStateFromExternalView(groupId,token);
         return ResponseEntity.status(HttpStatus.OK).body(groupState);
+    }
 
+    @GetMapping("/isGroupProceeding/{groupId}")
+    public ResponseEntity checkProceeding(@PathVariable("groupId") Long groupId){
+        Boolean isGroupProceeding=groupService.checkGroupProceeding(groupId);
+        return ResponseEntity.status(HttpStatus.OK).body(isGroupProceeding);
+    }
+
+    @GetMapping("/groupMaxCapacity/{groupId}")
+    public ResponseEntity groupMaxCapacity(@PathVariable("groupId") Long groupId){
+        Long maxCapacity=groupService.getMaxCapacity(groupId);
+        return ResponseEntity.status(HttpStatus.OK).body(maxCapacity);
     }
 
     @PostMapping("/new")

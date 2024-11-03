@@ -248,6 +248,22 @@ public class GroupService {
         return num;
     }
 
+    public Boolean checkGroupProceeding(Long groupId){
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        return group.getIsProceeding();
+    }
+    public Long getMaxCapacity(Long groupId){
+        Group group=groupRepository.findById(groupId).orElse(null);
+        if(group==null){
+            throw new RuntimeException("GroupNotFound");
+        }
+        Long maxCapacity=group.getMaxCapacity();
+        return maxCapacity;        
+    }
+
     public GroupChangedDto participateInGroup(Long groupId, String token) {
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
