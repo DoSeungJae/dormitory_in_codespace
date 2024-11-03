@@ -1,6 +1,8 @@
 import {React,useContext} from 'react';
 import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
+import commentImage from '../../images/comment.png';
+import groupImage from '../../images/group.png';
 
 function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightStyle}){
                           
@@ -33,6 +35,19 @@ function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightS
               style={calculateDorItemStyle(dorId-1,article.dorId-1)}>
               {dorIdToDorName[article.dorId]}
             </div>
+          </div>
+
+          <div className='article-item-details'>
+            <div className='article-item-details-comment'>
+              <img src={commentImage} className="image-comment"alt="Comment"/>
+              <div className='comment-num'>n</div>
+            </div>
+            <div className='article-item-details-group'>
+              <img src={groupImage} className="image-group"alt="Group"/>
+              <div className='group-num'>n/n</div>
+            </div>
+            <div className='article-item-details-time'>n분 전</div>
+            <div className='article-item-details-nickName'>닉네임</div>
           </div>
         </div>
       ))}

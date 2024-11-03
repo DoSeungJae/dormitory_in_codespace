@@ -73,10 +73,11 @@
 }
 
 .article-item {
+  position : relative;
   text-align: left;
   border-bottom: 1px solid #000000;
   padding: 0.5vh 0;
-  padding-bottom:5vh;
+  padding-bottom:5.5vh;
 
   display: flex; /* Flexbox 레이아웃을 활성화 */
   justify-content: space-between; /* 자식 요소들을 양 끝으로 정렬 */
@@ -110,6 +111,72 @@
     white-space:normal;
 
 }
+
+.article-item-details{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    padding-left:0.5vw;
+    padding-bottom:1.15vh;
+
+    display: flex;
+    flex-direction: row; 
+    align-items: center; 
+}
+
+.article-item-details > *:not(:last-child) {
+  padding-right: 1vw;
+}
+
+.article-item-details > *:not(:last-child)::after {
+  content: "|";
+  margin-left: 1vw; 
+}
+
+.article-item-details * {
+  display: flex;
+  flex-direction: row; 
+  align-items: center; 
+}
+
+.image-comment {
+  width:1.5vh;
+  height:1.5vh;
+}
+
+.comment-num {
+  font-size: 1.4vh; 
+  padding-left:1vw;
+}
+
+.image-group {
+  width:1.9vh;
+  height:1.9vh;
+}
+
+.article-item-details-group {
+  display: flex;
+  align-items: center; /* 세로 정렬을 중앙으로 맞춤 */
+}
+
+.group-num {
+  font-size: 1.4vh; 
+  padding-left:1vw;
+}
+
+.article-item-details-time{
+  margin-left: -1vw;
+  font-size: 1.4vh; 
+  padding-left:1vw;
+}
+
+.article-item-details-nickName{
+  margin-left: -1vw;
+  font-size: 1.4vh; 
+  padding-left:1vw;
+}
+
 
 #article-item-title{
   font-size: 3vh;
@@ -375,6 +442,7 @@
   object-fit: cover;  /* 이미지 비율을 유지하면서 프레임에 맞게 조절합니다 */
   border:1px solid #000;
 }
+
 
 .article-info{
   display:flex;
