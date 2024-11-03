@@ -125,7 +125,7 @@ return (
               onClick={() =>{
                 const dorNum=buttonToPath[item.toLowerCase()];
                 setDorId(dorNum);
-                if(dorNum==dorId){//현재 기숙사 번호와 선택한 기숙사 버튼이 같은 경우 => dorMode를 종료함 => dorId를 0으로 셋
+                if(dorNum==dorId){ //현재 기숙사 번호와 선택한 기숙사 버튼이 같은 경우 => dorMode를 종료함 => dorId를 0으로 셋
                   setDorId(0);
                 }
                 setArticleList([]);
