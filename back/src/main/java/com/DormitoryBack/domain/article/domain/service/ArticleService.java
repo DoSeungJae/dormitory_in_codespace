@@ -7,8 +7,10 @@ import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.service.UserService;
 import com.DormitoryBack.module.TimeOptimizer;
 
 import io.jsonwebtoken.JwtException;
@@ -36,6 +38,10 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private TokenProvider tokenProvider;
 
@@ -202,6 +208,17 @@ public class ArticleService {
         }
         return commentedUserArticles;
 
+    }
+
+    public String getWriterNickName(Long articleId){
+        Article article=articleRepository.findById(articleId).orElse(null);
+        if(article==null){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        Long userId=article.getUserId();
+        String nickName=userService.getUser(userId).getNickName();
+        //userService에서 만약 exception이 throw된다면 어떻게 될까?
+        return nickName;
     }
 
 

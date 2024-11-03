@@ -130,6 +130,12 @@ public class ArticleApi {
                 .body(article.toJsonString());
     }
 
+    @GetMapping("/writerNickName/{articleId}")
+    public ResponseEntity writerNickName(@PathVariable("articleId") Long articleId){
+        String userNickName=articleService.getWriterNickName(articleId);
+        return ResponseEntity.status(HttpStatus.OK).body(userNickName);
+    }
+
     @PostMapping("/new")
     public ResponseEntity newArticle(@RequestBody ArticleDTO dto, @RequestHeader("Authorization") String token){
         Article article=articleService.newArticle(dto,token);
