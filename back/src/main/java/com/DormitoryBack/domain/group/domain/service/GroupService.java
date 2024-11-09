@@ -85,7 +85,7 @@ public class GroupService {
 
         Group newGroup=Group.builder()
                 .id(article.getId())
-                .dormId(article.getDorId())
+                .dormId(article.getDormId())
                 .hostId(hostId)
                 .maxCapacity(requestDto.getMaxCapacity())
                 //.createdTime(LocalDateTime.now())
