@@ -1,14 +1,17 @@
-import {React,useContext} from 'react';
+import {React,useContext, useState} from 'react';
 import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
 import commentImage from '../../images/comment.png';
 import groupImage from '../../images/group.png';
 
 function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightStyle}){
-                          
+  //detailList 파라미터로 받기 
+  
   const token=localStorage.getItem('token');
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-    
+  
+  //commentNum, memberNum, maxCapacity, time, nickName
+
     return (
         <div className="preview" style={heightStyle} ref={articleListRef}>
               
@@ -46,7 +49,7 @@ function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightS
               <img src={groupImage} className="image-group"alt="Group"/>
               <div className='group-num'>n/n</div>
             </div>
-            <div className='article-item-details-time'>n분 전</div>
+            <div className='article-item-details-time '>n분 전</div>
             <div className='article-item-details-nickName'>닉네임</div>
           </div>
         </div>
