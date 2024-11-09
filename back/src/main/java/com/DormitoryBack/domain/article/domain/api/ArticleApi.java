@@ -1,7 +1,8 @@
 package com.DormitoryBack.domain.article.domain.api;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
+import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
+import com.DormitoryBack.domain.article.domain.dto.ArticlePreviewDTO;
 import com.DormitoryBack.domain.article.domain.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class ArticleApi {
                 .body(articleService.pageStringify(articles));
     }
 
+
     @GetMapping("/filter/user")
     public ResponseEntity articlesByUser(@RequestParam(defaultValue = "0")int page,
                                          @RequestParam(defaultValue = "10")int size,
@@ -52,6 +54,7 @@ public class ArticleApi {
 
     }
 
+    /*
     @GetMapping("/filter/userComment")
     public ResponseEntity articlesCommentedFromUser(@RequestParam(defaultValue = "0")int page,
                                                     @RequestParam(defaultValue = "100")int size,
@@ -62,7 +65,7 @@ public class ArticleApi {
                 .status(HttpStatus.OK)
                 .body(articleService.pageStringify(articles));
     }
-
+ */
 
     @GetMapping("/range")
     public ResponseEntity allArticleRangePage
@@ -77,6 +80,7 @@ public class ArticleApi {
                 .status(HttpStatus.OK)
                 .body(articleService.pageStringify(articleRangePage));
     }
+
 
     /*
     @GetMapping("/dor/{dorId}")
@@ -136,9 +140,11 @@ public class ArticleApi {
         return ResponseEntity.status(HttpStatus.OK).body(userNickName);
     }
 
+    
+
     @PostMapping("/new")
-    public ResponseEntity newArticle(@RequestBody ArticleDTO dto, @RequestHeader("Authorization") String token){
-        Article article=articleService.newArticle(dto,token);
+    public ResponseEntity newArticle(@RequestBody NewArticleDTO dto, @RequestHeader("Authorization") String token){
+        Article article=articleService.saveNewArticle(dto,token);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -146,7 +152,7 @@ public class ArticleApi {
     }
 
     @PatchMapping("/{articleId}")
-    public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody ArticleDTO dto,@RequestHeader("Authorization") String token) {
+    public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody NewArticleDTO dto,@RequestHeader("Authorization") String token) {
         Article updatedArticle=articleService.updateArticle(dto,articleId,token);
         return ResponseEntity
                 .status(HttpStatus.OK)
