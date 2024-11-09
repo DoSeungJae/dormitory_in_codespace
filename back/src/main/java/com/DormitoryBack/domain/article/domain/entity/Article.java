@@ -1,7 +1,5 @@
 package com.DormitoryBack.domain.article.domain.entity;
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
-import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
-import com.DormitoryBack.domain.group.domain.entitiy.Group;
+import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,11 +7,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 
@@ -23,15 +18,26 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name="article")
+@Document(collection = "articles")
 public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
 
-    @Column(nullable=false,name="dor_id")
-    private Long dorId ;
+    @Transient
+    public static final String SEQUENCE_NAME = "articleid";
+    
+    @Id
+    private Long id;
+    //id sequence 설정 필요 
+
+    private Long dormId ; //FRONT에서 주의 (dorId -> dormId로 변경.)
+
+    private String title;
+
+    private String contentHTML;
+
+    private LocalDateTime createdTime; //FRONT에서 주의 (createTime -> createdTime으로 변경.)
+
+    private String category;
+
 
     @JsonIgnore
     @ManyToOne
@@ -43,42 +49,13 @@ public class Article {
         return usrId.getId();
     }
 
-    @Column(nullable=false,name="title")
-    private String title;
-    @Column(nullable=false,name="content")
-    private String content;
+    private String userNickName;
 
-    @CreatedDate
-    @Column(nullable=false,name="create_time")
-    private LocalDateTime createTime;
-    @Column(name="category")
-    private String category;
-    @Column(name="appointed_time") //추후에 설정.
-    private LocalDateTime appointedTime;
-
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "article")
-    private Set<Comment> comments=new HashSet<>();
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="gathering_id")
-    private Group group;
-
-    public void update(ArticleDTO dto){
-        this.dorId=dto.getDorId();
+    public void update(NewArticleDTO dto){
+        this.dormId=dto.getDormId();
         this.title=dto.getTitle();
-        this.content=dto.getContent();
+        this.contentHTML=dto.getContentHTML();
         this.category=dto.getCategory();
-        //this.createTime=dto.getCreateTime();
-        //this.appointedTime=dto.getAppointedTime();
-    }
-
-    @Override
-    public String toString(){
-        return "articleId:"+this.id+", dormitoryId:"+this.dorId+", userId:"+this.usrId.getId()+", title:"+title+", content:"+content+", createTime:"+createTime+
-                ", category:"+category+", appointedTime:"+appointedTime;
     }
 
     public String toJsonString(){
