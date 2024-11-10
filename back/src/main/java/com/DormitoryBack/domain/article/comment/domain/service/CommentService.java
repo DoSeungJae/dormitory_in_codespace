@@ -36,12 +36,16 @@ import java.util.stream.Collectors;
 public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private TokenProvider tokenProvider;
+
     @Autowired
     private NotificationServiceExternal notificationService;
 
@@ -103,6 +107,11 @@ public class CommentService {
         CommentResponseDTO dto=this.getArticleComments(articleId);
         Long number=Long.valueOf(dto.getReplyComments().size()+dto.getRootComments().size());
         return number;
+    }
+
+    public List<Long> getUserCommentedArticleIds(Long userId){
+        List<Long> ids=commentRepository.findDistinctArticleIdsByUserId(userId);
+        return ids;
     }
     
     public List<String> listStringify(List<Comment> commentList){
