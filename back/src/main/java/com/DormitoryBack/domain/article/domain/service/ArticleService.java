@@ -1,11 +1,29 @@
 package com.DormitoryBack.domain.article.domain.service;
 
-import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
+import com.DormitoryBack.domain.article.domain.dto.ArticlePreviewDTO;
+import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
+import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.entity.User;
@@ -16,26 +34,15 @@ import com.DormitoryBack.module.TimeOptimizer;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
-    @Autowired
-    private CommentRepository commentRepository;
+
     @Autowired
     private ArticleRepository articleRepository;
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -45,11 +52,18 @@ public class ArticleService {
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private GroupService groupService;
+
     private final RedisTemplate<String,Long> redisTemplate;
 
     private final GroupRepository groupRepository;
+
     @Transactional
-    public Article newArticle(ArticleDTO dto, String token) {
+    public Article saveNewArticle(NewArticleDTO dto, String token) {
 
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
@@ -58,31 +72,45 @@ public class ArticleService {
         Long usrId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(usrId).orElse(null);
 
-        
-        Article newOne = Article.builder()
-                .dorId(dto.getDorId())
+        Article newArticle = Article.builder()
+                .dormId(dto.getDormId())
                 .title(dto.getTitle())
-                .content(dto.getContent())
+                .contentHTML(dto.getContentHTML())
                 .category(dto.getCategory())
-                //.createTime(LocalDateTime.now())
-                .createTime(TimeOptimizer.now())
-                .appointedTime(null)
+                .createdTime(TimeOptimizer.now())
                 .usrId(user)
                 .build();
 
-        Article saved = articleRepository.save(newOne);
+        Article saved = articleRepository.save(newArticle);
         return saved;
-
     }
 
-    public Article getArticle(Long articleId){
+    public ArticleDTO getArticle(Long articleId){
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
         }
-        return article;
 
+        User user=userRepository.findById(article.getUserId()).orElse(null);
+        UserResponseDTO userDTO=UserResponseDTO.builder()
+            .id(user.getId())
+            .eMail(user.getEMail())
+            .nickName(user.getNickName())
+            .build();
+
+        ArticleDTO articleDTO=ArticleDTO.builder()
+            .id(article.getId())
+            .title(article.getTitle())
+            .contentHTML(article.getContentHTML())
+            .dormId(article.getDormId())
+            .category(article.getCategory())
+            .user(userDTO)
+            .createdTime(article.getCreatedTime())
+            .build();
+        
+        return articleDTO;
     }
+    
     public Boolean checkArticleExist(Long articleId) {
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
@@ -90,17 +118,9 @@ public class ArticleService {
         }
         return true;
     }
-    public List<Article> getAllArticles(){
-        List<Article> articles=articleRepository.findAll();
-        if(articles.isEmpty()){
-            throw new RuntimeException("글이 존재하지 않습니다.");
-        }
-        return articles;
 
-    }
-
-    public Page<Article> getAllArticlesWithinPage(int page, int size){
-        Pageable pageable= PageRequest.of(page,size, Sort.by("createTime").descending());
+    public List<ArticlePreviewDTO> getAllArticlesWithinPage(int page, int size){
+        Pageable pageable= PageRequest.of(page,size, Sort.by("createdTime").descending());
         Page<Article> articlePage=articleRepository.findAll(pageable);
         if(articlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
@@ -108,123 +128,77 @@ public class ArticleService {
         else if(articlePage.isEmpty()){
             throw new RuntimeException("NoMoreArticlePage");
         }
-        return articlePage;
+        List<ArticlePreviewDTO> articlePreviewList=this.makeArticlePreviewDTOList(articlePage);
+        return articlePreviewList;
     }
 
-    public Page<Article> getAllArticlesWithinRangePage(int startPage, int endPage, int size){
-        List<Article> concatenatedPagesAsList=new ArrayList<>();
-        for(int page=startPage;page<endPage+1;page++){
-            Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
-            Page<Article> articlePage=articleRepository.findAll(pageable);
-            if(articlePage.isEmpty()){
-                throw new RuntimeException("ExceededPage");
-            }
-            concatenatedPagesAsList.addAll(articlePage.getContent());
-        }
-        Page<Article> articleRangePage=new PageImpl<>(
-                concatenatedPagesAsList,
-                PageRequest.of(0,concatenatedPagesAsList.size()),
-                concatenatedPagesAsList.size()
-        );
-
-        return articleRangePage;
-    }
-
-    /*
-    public List<Article> getDorArticles(Long dorId){
-        List<Article> dorArticles=articleRepository.findAllByDorId(dorId);
-        if(dorArticles.isEmpty()){
-            throw new RuntimeException("유효하지 않는 기숙사 번호이거나 글이 존재하지 않습니다.");
-        }
-        return dorArticles;
-    }
-
-     */
-
-    public Page<Article> getDorArticlesPerPage(Long dorId,int page,int size){
-        Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
-        Page<Article> articlePage=articleRepository.findAllByDorId(dorId,pageable);
+    public List<ArticlePreviewDTO> getDormArticlesWithinPage(Long dorId,int page,int size){
+        Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
+        Page<Article> articlePage=articleRepository.findAllByDormId(dorId,pageable);
         if(articlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
         }
         else if(articlePage.isEmpty()){
             throw new RuntimeException("NoMoreArticlePage");
         }
-        return articlePage;
+        List<ArticlePreviewDTO> articlePreviewListGroupByDorm=this.makeArticlePreviewDTOList(articlePage);
+        return articlePreviewListGroupByDorm;
     }
 
-    public Page<Article> getDorArticlesWithinRangePage(Long dorId, int startPage, int endPage, int size){
-        List<Article> concatenatedPagesAsList=new ArrayList<>();
-        for(int page=startPage;page<endPage+1;page++){
-            Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
-            Page<Article> articlePage=articleRepository.findAllByDorId(dorId,pageable);
-            if(articlePage.isEmpty() && page==0){
-                throw new RuntimeException("ArticleNotFound");
-            }
-            else if(articlePage.isEmpty()){
-                throw new RuntimeException("ExceededPage");
-            }
-            concatenatedPagesAsList.addAll(articlePage.getContent());
-        }
-        Page<Article> rangePage=new PageImpl<>(
-                concatenatedPagesAsList,
-                PageRequest.of(0,concatenatedPagesAsList.size()),
-                concatenatedPagesAsList.size()
-        );
-        return rangePage;
-    }
-
-    public Page<Article> getArticlesByUser(int page, int size, String token) {
+    public List<ArticlePreviewDTO> getUserArticlesWithinPage(int page, int size, String token) {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(userId).orElse(null);
-        Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
-        Page<Article> userArticles=articleRepository.findAllByUsrId(user,pageable);
-        if(userArticles.isEmpty() && page==0){
+        Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
+        Page<Article> userArticlePage=articleRepository.findAllByUsrId(user,pageable);
+        if(userArticlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
         }
-        else if(userArticles.isEmpty()){
+        else if(userArticlePage.isEmpty()){
             throw new RuntimeException("ExceededPage");
         }
-        return userArticles;
+        List<ArticlePreviewDTO> userArticlePreviewList=this.makeArticlePreviewDTOList(userArticlePage);
+        return userArticlePreviewList;
     }
 
-    public Page<Article> getArticlesCommentedFromUser(int page, int size, String token) {
+    public List<ArticlePreviewDTO> getUserCommentedArticlesWithinPage(int page, int size, String token) {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        User user=userRepository.findById(userId).orElse(null);
-        Pageable pageable=PageRequest.of(page,size,Sort.by("createTime").descending());
-        Page<Article> commentedUserArticles=articleRepository.
-                findAllArticlesByCommentedUsrId(userId,pageable);
-        if(commentedUserArticles.isEmpty() && page==0){
-            throw new RuntimeException("ArticleNotFound");
-        }
-        else if(commentedUserArticles.isEmpty()){
+        List<Long> idList=commentService.getUserCommentedArticleIds(userId);
+        Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
+        List<Article> articleList=articleRepository.findAllById(idList);
+
+        int start=(int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), articleList.size());
+        if(start>end){ //start와 end가 같은 경우?
             throw new RuntimeException("ExceededPage");
         }
-        return commentedUserArticles;
-
+        List<Article> pagedArticleList = articleList.subList(start,end);
+        if(pagedArticleList.isEmpty() && page==0){
+            throw new RuntimeException("ArticleNotFound");
+        }
+        Page<Article> userCommentedArticlePage=new PageImpl<>(pagedArticleList, pageable, pagedArticleList.size()); 
+        List<ArticlePreviewDTO> userCommentedArticlePreviewList=this.makeArticlePreviewDTOList(userCommentedArticlePage);
+        return userCommentedArticlePreviewList;
     }
+
 
     public String getWriterNickName(Long articleId){
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        Long userId=article.getUserId();
-        String nickName=userService.getUser(userId).getNickName();
+        String nickName=article.getUsrId().getNickName();
         //userService에서 만약 exception이 throw된다면 어떻게 될까?
         return nickName;
     }
 
-
-
     @Transactional
-    public Article updateArticle(ArticleDTO dto,Long articleId,String token){
+    public Article updateArticle(NewArticleDTO dto,Long articleId,String token){
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
@@ -238,6 +212,7 @@ public class ArticleService {
         }
         return saved;
     }
+    //필수적이진 않으나 수정 필요 
 
     @Transactional
     public void deleteArticle(Long articleId,String token){
@@ -272,6 +247,52 @@ public class ArticleService {
 
         return stringifiedArticleList;
     }
+
+    private List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage){
+
+        List<ArticlePreviewDTO> articleList= new ArrayList<>(); 
+        for (Article article : articlePage.getContent()){
+            ArticlePreviewDTO articlePreviewDTO=this.makeArticlePreviewDTO(article);
+            articleList.add(articlePreviewDTO);
+        }
+        return articleList;
+    }
+    
+    private ArticlePreviewDTO makeArticlePreviewDTO(Article article){
+        Long articleId=article.getId();
+        Long numComments=commentService.getNumberOfComments(articleId);
+        Long groupNumMembers=groupService.getNumberOfMembers(articleId);
+        Long groupMaxCapacity;
+        try{
+            groupMaxCapacity=groupService.getMaxCapacity(articleId);
+        }catch(RuntimeException e){
+            if("GroupNotFound".equals(e.getMessage())){
+                groupMaxCapacity=0L;
+            }else{
+                throw e;
+            }
+        }
+        
+        log.info(article.toJsonString());
+
+        ArticlePreviewDTO articlePreviewDTO=ArticlePreviewDTO.builder()
+            .id(articleId)
+            .title(article.getTitle())
+            .contentText(article.getContentHTML()) 
+            //contentHTML을 contentText로 변환하는 메서드 필요
+            //현재는 contentHTML도 모두 text로 이뤄져있기 때문에 그냥 사용
+            .userNickName(article.getUsrId().getNickName())
+            .dormId(article.getDormId())
+            .numComments(numComments)
+            .groupNumMembers(groupNumMembers)
+            .groupMaxCapacity(groupMaxCapacity)
+            .createdTime(article.getCreatedTime())
+            .build();
+
+        return articlePreviewDTO;
+    }
+
+    
 
 
 

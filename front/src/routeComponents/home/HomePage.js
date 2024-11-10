@@ -3,9 +3,21 @@ import axios from 'axios';
 import ArticlePreview from '../../components/article/ArticlePreview.js';
 import { calculateDorItemStyle } from '../../components/home/HomeUtils.js';
 import WriteButton from '../../components/home/WriteButton.js';
+import { getRelativeTime } from '../../modules/common/timeModule.js';
 
 function HomePage() {
   const [articleList,setArticleList]=useState([]);
+  const [detailsList,setDetailsList]=useState([]);
+  /*
+  const [details, setDetails] = useState({
+    commentNum: 0,
+    memberNum: 0,
+    maxCapacity: 0,
+    time: "",
+    nickName: ""
+    });
+  */
+
   const[page,setPage]=useState(0);
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
