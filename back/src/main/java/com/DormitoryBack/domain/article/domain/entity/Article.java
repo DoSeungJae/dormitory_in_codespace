@@ -1,4 +1,5 @@
 package com.DormitoryBack.domain.article.domain.entity;
+
 import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -49,8 +50,6 @@ public class Article {
         return usrId.getId();
     }
 
-    private String userNickName;
-
     public void update(NewArticleDTO dto){
         this.dormId=dto.getDormId();
         this.title=dto.getTitle();
@@ -70,4 +69,6 @@ public class Article {
         }
         return jsonString;
     }
+
+
 }
