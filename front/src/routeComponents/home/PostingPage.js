@@ -169,7 +169,7 @@ function PostingPage() {
           category:cateSelect,
           title:title,
           content:content,
-          createTime:curTime
+          createTimed:curTime
         };
 
         if(targetId!=0){
@@ -205,7 +205,7 @@ function PostingPage() {
         category:cateSelect,
         title:title,
         content:content,
-        createTime:curTime
+        createTimed:curTime
       };
       console.log(data);
       const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${targetId}`;
