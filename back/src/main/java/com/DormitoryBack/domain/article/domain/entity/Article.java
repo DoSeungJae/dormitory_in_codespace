@@ -27,18 +27,16 @@ public class Article {
     
     @Id
     private Long id;
-    //id sequence 설정 필요 
 
-    private Long dormId ; //FRONT에서 주의 (dorId -> dormId로 변경.)
+    private Long dormId ; 
 
     private String title;
 
-    private String contentHTML;
+    private String contentHTML; //PreviewDTO에선 이 HTML 데이터에서 text만 저장하므로 text만 추출하는 메서드가 필요함
 
-    private LocalDateTime createdTime; //FRONT에서 주의 (createTime -> createdTime으로 변경.)
+    private LocalDateTime createdTime; 
 
     private String category;
-
 
     @JsonIgnore
     @ManyToOne
