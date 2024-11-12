@@ -71,7 +71,7 @@ function MyWritingPage(){
             path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/filter/user?page=${page}`;
         }
         else{
-            path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/filter/userComment?page=${page}`;
+            path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/filter/userCommented?page=${page}`;
         }
         try{
             const response=await axios.get(path,{
@@ -79,7 +79,7 @@ function MyWritingPage(){
                     'Authorization' : `${token}`
                 }
             });
-            const data=response.data.map(item=>JSON.parse(item));
+            const data=response.data;
             if(mode==='cmt'){
                 setCommentedArticleList((prev)=>[...prev,...data]);
                 setDoLoadCmtPage(0);

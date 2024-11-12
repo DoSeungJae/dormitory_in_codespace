@@ -7,17 +7,6 @@ import { getRelativeTime } from '../../modules/common/timeModule.js';
 
 function HomePage() {
   const [articleList,setArticleList]=useState([]);
-  const [detailsList,setDetailsList]=useState([]);
-  /*
-  const [details, setDetails] = useState({
-    commentNum: 0,
-    memberNum: 0,
-    maxCapacity: 0,
-    time: "",
-    nickName: ""
-    });
-  */
-
   const[page,setPage]=useState(0);
   const articleListRef=useRef(null);
   const [doLoadPage,setDoLoadPage]=useState(0);
@@ -28,12 +17,13 @@ function HomePage() {
   }
   
   const getArticlesPerPage = async (page) => {
+    console.log(page);
     if(!(dorId>=1 || dorId<=7)){
       return;
     }
     let path;
     if(dorId!=0){
-     path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/dor/${dorId}?page=${page}`;
+     path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/dorm/${dorId}?page=${page}`;
      
     } 
     else{
@@ -43,13 +33,13 @@ function HomePage() {
     try{
       const response = await axios.get(path, {
     });
-      const data=response.data.map(item => JSON.parse(item));
-      setArticleList((prevItems)=>[...prevItems,...data]);
+      const result=response.data;
+      setArticleList((prevItems)=>[...prevItems,...result]);
       setDoLoadPage(0);
     }
     catch(error){
       const errMsg=error.response.data;
-      if(errMsg==='NoMoreArticlePage'){
+      if(errMsg==='NoMoreArticlePage' || errMsg==="ExceededPage"){
         setDoLoadPage(1);
         setIsEndPage(1);
       }
@@ -58,6 +48,7 @@ function HomePage() {
       }
     }
   };
+
 
   useEffect(()=>{
     if(page===0){
