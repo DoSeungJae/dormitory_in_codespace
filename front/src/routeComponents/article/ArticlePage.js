@@ -175,7 +175,7 @@ function ArticlePage(){
                 <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
                   <div className="article-info-detail">
                     <p>{writerNickName}</p>
-                    <p>{getRelativeTime(article.createTime)}</p>
+                    <p>{getRelativeTime(article.createdTime)}</p>
                   </div>
                 <div className='article-info-right'>
                   {isWriter === 1 ? <GroupStartButton articleId={article.id}/> 
