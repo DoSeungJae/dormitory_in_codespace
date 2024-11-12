@@ -232,22 +232,6 @@ public class ArticleService {
         articleRepository.delete(target);
     }
 
-    public List<String> listStringify(List<Article> articleList){
-        List<String> stringifiedArticleList=articleList.stream()
-                .map(Article::toJsonString)
-                .collect(Collectors.toList());
-
-        return stringifiedArticleList;
-    }
-    public List<String> pageStringify(Page<Article> articlePage){
-        List<String> stringifiedArticleList=articlePage.getContent()
-                .stream()
-                .map(Article::toJsonString)
-                .collect(Collectors.toList());
-
-        return stringifiedArticleList;
-    }
-
     private List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage){
 
         List<ArticlePreviewDTO> articleList= new ArrayList<>(); 
@@ -272,8 +256,6 @@ public class ArticleService {
                 throw e;
             }
         }
-        
-        log.info(article.toJsonString());
 
         ArticlePreviewDTO articlePreviewDTO=ArticlePreviewDTO.builder()
             .id(articleId)
