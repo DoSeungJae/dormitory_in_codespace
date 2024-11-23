@@ -32,7 +32,7 @@ public class Article {
 
     private String title;
 
-    private String contentHTML; //PreviewDTO에선 이 HTML 데이터에서 text만 저장하므로 text만 추출하는 메서드가 필요함
+    private String contentHTML; //PreviewDTO에선 text만 저장하므로 HTML에서 text만 추출하는 메서드가 필요함
 
     private LocalDateTime createdTime; 
 
