@@ -3,11 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
-export const goArticlePage = async (article,dorId,
-                                    isEndPage,page,token
-                                    ,setSelectComponentIndex
-                                    ,selectComponentIndex) => {
-    
+export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,setSelectComponentIndex ,selectComponentIndex, setArticle) => {
     
     try {
       const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/validate', {
@@ -15,7 +11,7 @@ export const goArticlePage = async (article,dorId,
               'Authorization': `${token}`
           }
       });
-      const isArticlePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/isArticle/${article.id}`;
+      const isArticlePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/isArticle/${articlePreview.id}`;
       const isArticleResponse=await axios.get(isArticlePath);
       const isArticle=isArticleResponse.data;
       if(!isArticle){
@@ -31,7 +27,19 @@ export const goArticlePage = async (article,dorId,
         return ;
       }
       if (response.data === true) {
-        localStorage.setItem('article',JSON.stringify(article));
+        //localStorage.setItem('article',JSON.stringify(articlePreview)); //이 과정은 더이상 필요 없음. article을 가져와 articlePage에 set하는 것이 중요함.
+
+        try{
+          const articlePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articlePreview.id}`;
+          const response=await axios.get(articlePath);
+          setArticle(response.data);
+        }catch(error){
+          console.error("에러 : ",error);
+        }
+
+        //setArticle을 하면 ArticlePage 컴포넌트가 렌더링 돼 정보를 set한 후 ArticlePage로 이동하기.
+        //ArticlePage 내 initPage 함수 다시 작성할 필요 있음.
+
         localStorage.setItem("nextIndex",selectComponentIndex);
         setSelectComponentIndex(5);
 
