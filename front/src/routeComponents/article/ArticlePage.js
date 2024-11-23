@@ -10,6 +10,7 @@ import HomeSelectContext from '../../components/home/HomeSelectContext';
 import ParticipateButton from '../../components/article/ParticipateButton';
 import GroupStartButton from '../../components/article/GroupStartButton';
 import { getRelativeTime } from '../../modules/common/timeModule';
+import ArticleContext from '../../components/article/ArticleContext';
 
 function ArticlePage(){
     const[writerNickName,setWriterNickName]=useState("");
@@ -20,14 +21,13 @@ function ArticlePage(){
     const[commentId,setCommentId]=useState(-1);
     const[touchY,setTouchY]=useState(-1);
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-
+    const {article,setArticle}=useContext(ArticleContext);
     const token=localStorage.getItem('token');
-    const article = JSON.parse(localStorage.getItem("article"));
+    
     const inputRef=useRef();
     const commentListRef=useRef(null);
 
     const pageInit = () =>{
-      setWriterNickName("");
       setCommentList([]);
       setFormPlaceHolder("댓글을 입력하세요");
       setIsReply(0);
@@ -41,6 +41,7 @@ function ArticlePage(){
         setSelectComponentIndex(parseInt(prevPage));
         localStorage.removeItem("nextIndex");
       }
+      setArticle({}); //주의!
     }
 
     const handleTouchStart = (e) => {
@@ -125,27 +126,10 @@ function ArticlePage(){
       return mappingDict[num] || "Invalid input";
     }
 
-    const getWriterNickName = async () => {
-      if(token=='init'){
-        setWriterNickName("init");
-      }
-        try{
-          const response = await axios.get(`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/${article.userId}`, {
-        });
-        const nickName=response.data.nickName;
-        setWriterNickName(nickName);
-        }
-        catch(error){
-          console.log('an error occurred:',error);
-        }
-      }
-
     useEffect(()=>{
       if(selectComponentIndex!==5){
         return ;
       }
-
-      getWriterNickName();
       isSame(token).then(result=>setIsWriter(result));
     },[selectComponentIndex]);
 
@@ -174,7 +158,7 @@ function ArticlePage(){
               <div className="article-info">
                 <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
                   <div className="article-info-detail">
-                    <p>{writerNickName}</p>
+                    <p>{article.user.nickName}</p>
                     <p>{getRelativeTime(article.createdTime)}</p>
                   </div>
                 <div className='article-info-right'>
@@ -187,12 +171,11 @@ function ArticlePage(){
               <p className='article-title'>{article.title}</p>
                 <div className="article-meta">
                   <p className="article-category">{article.category}</p>
-                  <p className="article-appointedTime">{article.appointedTime}</p>
-                  <p className="article-dormitory">{convertDorIdToString(article.dorId)}</p>
+                  <p className="article-dormitory">{convertDorIdToString(article.dormId)}</p>
                 </div>
 
                 <div className='article-content' ref={commentListRef} >
-                  {article.content}
+                  {article.contentHTML}
                   <div className="comment-list" >
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
