@@ -9,5 +9,4 @@ public class DormitoryBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DormitoryBackApplication.class, args);
 	}
-
 }
