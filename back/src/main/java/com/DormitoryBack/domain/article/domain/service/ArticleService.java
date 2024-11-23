@@ -2,8 +2,6 @@ package com.DormitoryBack.domain.article.domain.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,23 +12,18 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.article.domain.dto.ArticlePreviewDTO;
 import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
-import com.DormitoryBack.domain.group.domain.entitiy.Group;
-import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
-import com.DormitoryBack.domain.member.service.UserService;
 import com.DormitoryBack.module.TimeOptimizer;
-
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +40,6 @@ public class ArticleService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private TokenProvider tokenProvider;
 
     @Autowired
@@ -59,8 +49,6 @@ public class ArticleService {
     private GroupService groupService;
 
     private final RedisTemplate<String,Long> redisTemplate;
-
-    private final GroupRepository groupRepository;
 
     @Transactional
     public Article saveNewArticle(NewArticleDTO dto, String token) {
@@ -224,11 +212,11 @@ public class ArticleService {
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }
-        Group mappedGroup=groupRepository.findById(articleId).orElse(null);
+
         SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
         if(setOperations.size(String.valueOf(articleId))>0){
             throw new RuntimeException("ArticleWithAProceedingGroupCannotBeDeleted");
-        }
+        } 
         articleRepository.delete(target);
     }
 
@@ -273,9 +261,4 @@ public class ArticleService {
 
         return articlePreviewDTO;
     }
-
-    
-
-
-
 }
