@@ -162,14 +162,12 @@ function PostingPage() {
     }
 
     const postArticle = async () => {
-        const curTime=nowLocalDateTime();
         const fullPath = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/new`;
         const data = {
-          dorId: dorSelect,
+          dormId: dorSelect,
           category:cateSelect,
           title:title,
-          content:content,
-          createTimed:curTime
+          contentHTML:content
         };
 
         if(targetId!=0){
@@ -199,13 +197,11 @@ function PostingPage() {
     const patchArticle = async () => {
       console.log(dorSelect);
       console.log(cateSelect);
-      const curTime=nowLocalDateTime();
       const data = {
-        dorId: dorSelect,
+        dormId: dorSelect,
         category:cateSelect,
         title:title,
-        content:content,
-        createTimed:curTime
+        contentHTML:content
       };
       console.log(data);
       const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${targetId}`;
@@ -223,18 +219,6 @@ function PostingPage() {
           setSelectComponentIndex(8);
         }
       }
-    }
-    
-    const nowLocalDateTime=()=>{
-        const now=new Date();
-        const localDateTime = now.getFullYear() + '-' +
-        String(now.getMonth() + 1).padStart(2, '0') + '-' +
-        String(now.getDate()).padStart(2, '0') + 'T' +
-        String(now.getHours()).padStart(2, '0') + ':' +
-        String(now.getMinutes()).padStart(2, '0') + ':' +
-        String(now.getSeconds()).padStart(2, '0');
-        
-        return localDateTime;
     }
     
     return (
