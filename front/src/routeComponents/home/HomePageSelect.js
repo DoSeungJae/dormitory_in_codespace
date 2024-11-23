@@ -11,13 +11,15 @@ import ArticlePage from '../article/ArticlePage.js';
 import LogInPage from '../logIn/LogInPage.js';
 import { toast } from 'react-toastify';
 import MyGroupPage from './MyGroupPage.js';
+import ArticleContext from '../../components/article/ArticleContext.js';
 
 function HomePageSelect() {
-  const[page,setPage]=useState(0);
+  const [page,setPage]=useState(0);
   const [dorId,setDorId]=useState(0);
   const [scrollPosition,setScrollPosition]=useState(0);
   const [isEndPage,setIsEndPage]=useState(false);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+  const [article,setArticle]=useState({});
   const token=localStorage.getItem('token');
 
   useEffect(()=>{
@@ -64,12 +66,17 @@ return (
   <div className="App">
     
       <div className='App-component-switcher'>
-          <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
+
           <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><NotificationPage/></div>
           <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>
-          {selectComponentIndex==5 && <ArticlePage/>}
+
+          <ArticleContext.Provider value={{article,setArticle}}>
+            <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
+            <div> {selectComponentIndex==5 && <ArticlePage/>} </div>
+          </ArticleContext.Provider>
+
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
           {/*<div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>*/}
           <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
