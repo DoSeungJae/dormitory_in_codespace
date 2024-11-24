@@ -12,11 +12,13 @@ function PostingPage() {
     const [content, setContent] = useState("");
     const [dorSelect, setDorSelect] = useState("기숙사");
     const [cateSelect, setCateSelect]=useState("카테고리");
+
     const [targetId,setTargetId]=useState(0);
-    const [limitedPatch,setLimitedPatch]=useState(0);
-    const [article,setArticle]=useState({});
     //수정해야할 article의 id를 나타냄, targetId가 0이라는 것은 patch mode가 아니라 posting mode임을 의미함
     //useEffecf에 toBePatchedArticleId가 존재한다면 그 값을 targetId에 저장하고 해당 변수를 localStorage에서 즉시 삭제
+    
+    const [limitedPatch,setLimitedPatch]=useState(0);
+    const [article,setArticle]=useState({});
     const [buttonText,setButtonText]=useState("다음"); 
     const token=localStorage.getItem('token');
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -164,10 +166,10 @@ function PostingPage() {
     const postArticle = async () => {
         const fullPath = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/new`;
         const data = {
-          dormId: dorSelect,
-          category:cateSelect,
           title:title,
-          contentHTML:content
+          contentHTML:content,
+          dormId: dorSelect,
+          category:cateSelect
         };
 
         if(targetId!=0){
@@ -176,6 +178,7 @@ function PostingPage() {
         }
       
         try {
+        console.log(data);
         const response = await axios.post(fullPath, data, {
             headers: {
             'Authorization':`${token}`,
@@ -188,6 +191,7 @@ function PostingPage() {
                 toast.error("회원 정보가 유효하지 않아요! 로그인해주세요.");
                 setSelectComponentIndex(8);   
             }
+            console.error(error);
         }finally{
           setCateSelect("카테고리");
           setDorSelect("기숙사");
