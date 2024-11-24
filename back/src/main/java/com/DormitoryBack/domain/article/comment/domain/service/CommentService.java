@@ -81,7 +81,7 @@ public class CommentService {
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        List<Comment> commentList=commentRepository.findAllByArticle(article);
+        List<Comment> commentList=commentRepository.findAllByArticleId(article.getId());
         List<Comment> rootComments=new ArrayList<>();
         List<Comment> replyComments=new ArrayList<>();
         Iterator<Comment> iterator=commentList.iterator();
@@ -121,6 +121,7 @@ public class CommentService {
 
         return stringifiedCommentList;
     }
+
     @Transactional
     public Comment newComment(CommentDTO dto,String token){
         if (!tokenProvider.validateToken(token)) {
@@ -131,9 +132,8 @@ public class CommentService {
         User userData=userRepository.findById(userId).orElse(null);
         Article article=articleRepository.findById(dto.getArticleId()).orElse(null);
 
-
         Comment newComment=Comment.builder()
-                .article(article)
+                .articleId(article.getId())
                 .user(userData)
                 .content(dto.getContent())
                 //.createdTime(LocalDateTime.now())
@@ -183,7 +183,7 @@ public class CommentService {
         }
 
         Comment newReply=Comment.builder()
-                .article(rootArticle)
+                .articleId(rootArticle.getId())
                 .user(userData)
                 .content(dto.getContent())
                 //.createdTime(LocalDateTime.now())
