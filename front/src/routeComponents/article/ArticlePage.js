@@ -99,7 +99,7 @@ function ArticlePage(){
                 'Authorization': `${token}`
             }
         });
-        if(response.data===article.userId){
+        if(response.data===article.user.id){
           return 1;
         }
         else{
