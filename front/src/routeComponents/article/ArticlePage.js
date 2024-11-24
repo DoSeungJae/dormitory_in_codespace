@@ -13,13 +13,13 @@ import { getRelativeTime } from '../../modules/common/timeModule';
 import ArticleContext from '../../components/article/ArticleContext';
 
 function ArticlePage(){
-    const[writerNickName,setWriterNickName]=useState("");
     const[commentList,setCommentList]=useState([]);
     const[isWriter,setIsWriter]=useState(1);
     const[isReply,setIsReply]=useState(0);
     const[formPlaceHolder,setFormPlaceHolder]=useState("댓글을 입력하세요.");
     const[commentId,setCommentId]=useState(-1);
     const[touchY,setTouchY]=useState(-1);
+    const [commentsAltered,setCommentsAltered]=useState(0);
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {article,setArticle}=useContext(ArticleContext);
     const token=localStorage.getItem('token');
@@ -50,46 +50,21 @@ function ArticlePage(){
     }
 
     const getComments = async () => {
-      const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/article/${article.id}`;
-      try{
-        const response=await axios.get(path);
-        const rootCommentList=response.data.rootComments.map(item => JSON.parse(item));
-        const replyCommentList=response.data.replyComments.map(item => JSON.parse(item));
-        
-        const combinedComments = rootCommentList.map(rootComment => {
-          const repliesToRoot = replyCommentList.filter(reply => reply.rootCommentId === rootComment.id);
-          const unrelatedReplies = replyCommentList.filter(reply => 
-            !rootCommentList.some(rootComment => rootComment.id === reply.rootCommentId));
-          if(!unrelatedReplies.length>0){
-            return {...rootComment, replyComments: repliesToRoot};
-          }
-          let updatedComments=[...commentList];
-          for(let replyIndex=0;replyIndex<unrelatedReplies.length;replyIndex++){
-            const curReply=unrelatedReplies.at(replyIndex);
-            for(let rootCommentIndex=0;rootCommentIndex<updatedComments.length;rootCommentIndex++){
-              const target=updatedComments[rootCommentIndex]
-              if(curReply.rootCommentId===target.id){
-                const isDuplicate = target.replyComments.some(reply => reply.id === curReply.id);
-                if(isDuplicate){
-                  return ;
-                }
-                target.replyComments=target.replyComments.concat(curReply);
-              }
-            }
-          }
-          setCommentList(updatedComments);
-          setCommentList((prev)=>[...prev,...rootCommentList]);
-          return;
+      const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/article/${article.id}`;
+      try {
+          const response = await axios.get(path);
+          const rootCommentList = response.data.rootComments.map(item => JSON.parse(item));
+          const replyCommentList = response.data.replyComments.map(item => JSON.parse(item));
+          const combinedComments = rootCommentList.map(rootComment => {
+              const repliesToRoot = replyCommentList.filter(reply => reply.rootCommentId === rootComment.id);
+              return { ...rootComment, replyComments: repliesToRoot };
           });
-        const update=combinedComments;
-        if(update.at(0)!==undefined){
-          setCommentList((prev)=>[...prev,...update]);
-        }
-      } 
-      catch(error){
-        console.error(error);
+          setCommentList(combinedComments);
+      } catch (error) {
+          console.error(error);
       }
-    }
+  };
+  
 
 
     const isSame = async (token) => {
@@ -137,12 +112,25 @@ function ArticlePage(){
       if(selectComponentIndex!==5){
         return ;
       }
+      if(commentsAltered===1){
+        return ;
+      }
       async function fetchData(){
         await getComments();
       }
       fetchData();
-
     },[selectComponentIndex])
+
+    useEffect(()=>{
+      if(commentsAltered===0){
+        return ;
+      }
+      setCommentsAltered(0);
+      async function fetchData(){
+        await getComments();
+      }
+      fetchData();
+    },[commentsAltered])
 
     return (
         <div className="App"
@@ -227,7 +215,8 @@ function ArticlePage(){
                 inputRef={inputRef}
                 article_Id={article.id}
                 isReply={isReply} 
-                setIsReply={setIsReply}>
+                setIsReply={setIsReply}
+                setCommentsAltered={setCommentsAltered}>
               </CommentForm>
             </div>
         </div>
