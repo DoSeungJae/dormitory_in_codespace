@@ -32,21 +32,13 @@ public class Comment {
     @Column(name="id")
     private Long id;
 
-    @JsonIgnore
-    @ManyToOne
     @JoinColumn(name="article_id")
-    private Article article;
-
-    @JsonProperty
-    public Long getArticleId(){
-        return article ==null? null : article.getId();
-    }
+    private Long articleId;
 
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
-    //JsonProperty가 필요하지 않을까?
 
     @JsonProperty
     public User getUser(){return user;}
@@ -64,7 +56,7 @@ public class Comment {
     @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="root_comment_id")
-    private Comment rootComment=null;
+    private Comment rootComment;
 
     @JsonProperty
     public Long getRootCommentId(){
