@@ -5,12 +5,14 @@ import axios from 'axios';
 import {toast} from 'react-toastify';
 import Swal from 'sweetalert2';
 import HomeSelectContext from '../home/HomeSelectContext';
+import ArticleContext from './ArticleContext';
 
-function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply}) {
+function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply,setCommentsAltered}) {
   const [comment, setComment] = useState('');
   const token=localStorage.getItem('token');
   const formRef=useRef(null);
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+  const {article, setArticle}=useContext(ArticleContext);
 
   const sendReply = async () => {
     if(comment===""){
@@ -67,8 +69,10 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
         'Authorization':`${token}`,
         }
     });
-    localStorage.setItem("index",5);
-    window.location.reload();
+
+    setCommentsAltered(1);
+    setComment("");
+
     } catch (error) {
         if(error.response.data==="유효하지 않은 토큰입니다."){
             localStorage.setItem("nextIndex",5);
@@ -76,7 +80,39 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
             toast.error("회원 정보가 유요하지 않아요! 로그인해주세요.");
         }
     }
-}
+  }
+
+  const getArticle = async (articleId) => {
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+    try{
+        const response=await axios.get(path);
+        return response.data;
+    }
+    catch(error){
+        console.error(error);
+        return null;
+    }
+  }
+
+  const goToArticlePage = async (articleId) => { //수정 필요 
+    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+    try{
+      const response=await axios.get(path);
+      const article=(response.data);
+      localStorage.setItem("article",JSON.stringify(article));
+      localStorage.setItem("nextIndex",selectComponentIndex);
+      setSelectComponentIndex(5);
+    }catch(error){
+      console.error(error);
+      setSelectComponentIndex(8);
+      localStorage.setItem("nextIndex",5);
+      toast.error('회원 정보가 유효하지 않아요! 다시 로그인해주세요.');
+      
+    }
+
+
+  }
+
 
 const handleBlur = () => {
   const rect=formRef.current.getBoundingClientRect();
