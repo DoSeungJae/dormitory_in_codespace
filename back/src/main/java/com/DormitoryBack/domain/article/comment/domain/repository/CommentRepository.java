@@ -23,6 +23,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Long> findDistinctArticleIdsByUserId(@Param("userId") Long userId);
 
     List<Comment> findAllByUser(User user);
-    List<Comment> findAllByArticle(Article article);
+    List<Comment> findAllByArticleId(Long articleId);
 
 }
