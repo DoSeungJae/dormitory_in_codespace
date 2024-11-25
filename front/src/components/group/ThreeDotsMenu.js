@@ -7,6 +7,7 @@ import HomeSelectContext from '../home/HomeSelectContext';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { closeGroup, handleSWalGroupClose } from '../../modules/group/groupModule';
+import ArticleContext from '../article/ArticleContext';
 
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -30,7 +31,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   const [initial,setInitial]=useState(0);
   const token=localStorage.getItem("token");
-  
+  const {article, setArticle}=useContext(ArticleContext);
   const dormIdToDormName = {
     1:"오름1",
     2:"오름2",
@@ -65,6 +66,12 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
       };
       setDynamicMenuItems(updatedMenuItems[isHost]); 
     }, [memberList,isHost]); 
+
+    useEffect(()=>{
+      if(Object.keys(article).length !==0){
+          setSelectComponentIndex(5);
+      }
+    },[article])
   
     return (
       <>
@@ -212,7 +219,6 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     });
   }
 
-
   const handleSwalReportMember=async (memberId) => {
     Swal.fire({
       confirmButtonColor:"#FF8C00",
@@ -284,23 +290,20 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
         }
     }
   }
-  const goToArticlePage = async () => {
+
+  const goToArticlePage = async () => { //수정 중
     const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${group.id}`;
     try{
       const response=await axios.get(path);
-      const article=(response.data);
-      localStorage.setItem("article",JSON.stringify(article));
+      const article1=(response.data);
+      setArticle(article1);
       localStorage.setItem("nextIndex",selectComponentIndex);
-      setSelectComponentIndex(5);
-    }catch(error){
+    }catch(error){ //아래 코드 블록도 수정해야함
       console.error(error);
       setSelectComponentIndex(8);
       localStorage.setItem("nextIndex",5);
-      toast.error('회원 정보가 유효하지 않아요! 다시 로그인해주세요.');
-      
+      toast.error('회원 정보가 유효하지 않아요! 다시 로그인해주세요.'); 
     }
-
-
   }
   
   const handleNickName = (nick) => {
@@ -401,7 +404,6 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     </Dropdown>
   );
     
-
 };
 
 export default ThreeDotsMenu;
