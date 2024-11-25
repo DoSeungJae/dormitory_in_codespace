@@ -132,6 +132,9 @@ function ArticlePage(){
       fetchData();
     },[commentsAltered])
 
+    if(selectComponentIndex!==5){
+      return null;
+    }
     return (
         <div className="App"
               onTouchStart={handleTouchStart}
