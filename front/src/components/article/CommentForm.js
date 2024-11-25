@@ -32,9 +32,11 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
           }
           
         });
-      localStorage.setItem("index",5);
-      window.location.reload();
-      setSelectComponentIndex(5);
+        setCommentsAltered(1);
+        setComment("");
+        setIsReply(0);
+        setPlaceHolder("댓글을 입력하세요.");
+    
 
       }catch(error){
         console.error(error);
@@ -44,9 +46,6 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
           toast.error("회원 정보가 유요하지 않아요! 로그인해주세요.");
       }
       }
-      setIsReply(0);
-      setPlaceHolder("댓글을 입력하세요");
-      setComment("");
     }
 
   }
