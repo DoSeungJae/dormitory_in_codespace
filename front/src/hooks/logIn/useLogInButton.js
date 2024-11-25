@@ -6,6 +6,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 import axios from 'axios';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import { toast } from 'react-toastify';
+import ArticleContext from '../../components/article/ArticleContext.js';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
@@ -13,7 +14,24 @@ function UseLogInButton() {
     const [idError,setIdError]=useState(false);
     const [pwError,setPwError]=useState(false);
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
-    
+    const {article,setArticle}=useContext(ArticleContext);
+
+    useEffect(()=>{
+      if(Object.keys(article).length !==0){
+          setSelectComponentIndex(5);
+      }
+    },[article])
+
+    const getArticle = async (articleId) => {
+      const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+      try{
+        const response=await axios.get(path);
+        return response.data;
+      }catch(error){
+        console.error(error);
+      }
+    }
+
     const buttonPressed = () => {
       if(id===''){
         setIdError(true);
@@ -35,11 +53,24 @@ function UseLogInButton() {
           }
           else{
             const requiredIndex=parseInt(localStorage.getItem("nextIndex"));
-            localStorage.setItem("index",requiredIndex);
-            window.location.reload();
-            localStorage.removeItem("nextIndex");
+            if(requiredIndex!==5){
+              localStorage.setItem("index",requiredIndex);
+              window.location.reload();
+              localStorage.removeItem("nextIndex");
+            }
+            else{
+              window.location.reload();
+            }
+            /*
+            else{
+              const articleId=localStorage.getItem("articleId");
+              localStorage.removeItem("articleId");
+              getArticle(articleId).then(article=>setArticle(article));
+            }
+              article 리다이렉트 기능은 구현이 어려우므로 나중에(아마도?) 구현
+              */
+
           }
-          
           
         })
         .catch(error => {
