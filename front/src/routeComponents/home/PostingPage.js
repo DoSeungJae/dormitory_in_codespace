@@ -178,7 +178,6 @@ function PostingPage() {
         }
       
         try {
-        console.log(data);
         const response = await axios.post(fullPath, data, {
             headers: {
             'Authorization':`${token}`,
