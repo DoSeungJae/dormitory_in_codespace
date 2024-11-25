@@ -66,20 +66,21 @@ return (
   <div className="App">
     
       <div className='App-component-switcher'>
-
+          <ArticleContext.Provider value={{article,setArticle}}>
           <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><NotificationPage/></div>
           <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>
 
-          <ArticleContext.Provider value={{article,setArticle}}>
-            <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
-            <div> {selectComponentIndex==5 && <ArticlePage/>} </div>
-          </ArticleContext.Provider>
+
+          <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
+          <div style={{display : selectComponentIndex==5 ? 'block' : 'none'}}><ArticlePage/></div>
+          
 
           <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
           {/*<div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>*/}
           <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
+          </ArticleContext.Provider>
       </div>
     {
       (selectComponentIndex!=8 && selectComponentIndex!=7 && selectComponentIndex!=5 && selectComponentIndex!=4) &&
