@@ -648,3 +648,23 @@
   
   color: #888; /* 필요에 따라 조정 */
 }
+
+.myPage-profile {
+  display: flex;
+  align-items: center;
+}
+
+.profile-image {
+  margin-right: 20px; /* 이미지와 디테일 사이의 간격 조절 */
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.details-nickName,
+.details-dormitory {
+  margin-bottom: 10px; /* 닉네임과 기숙사 사이의 간격 조절 */
+}
+
