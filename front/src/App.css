@@ -23,11 +23,15 @@
 }
 */
 
+
 .App-header,
 .App-main {
+  
     padding-left: 2.4vw;
     padding-right: 2.4vw;
 }
+
+
 
 .App-home-header {
   background-color : F5F5F5;
@@ -289,7 +293,6 @@
 /* 반응형 디자인을 위한 코드, 테스트 필요 */
 @media only screen and (max-width : 600px){
   .App-header, .App-footer {
-
   }
 }
 
@@ -350,8 +353,6 @@
   border: 1px solid #333333;
   border-radius: 10px;
 }
-
-
 
 .app-article-header{
   display:flex;
@@ -645,26 +646,56 @@
 .noti-item-time {
   margin-top: 0.5vh; /* 필요에 따라 조정 */
   font-size: 0.9em; /* 필요에 따라 조정 */
-  
   color: #888; /* 필요에 따라 조정 */
 }
 
+
+
 .myPage-profile {
+  padding-top: 10vh;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
 .profile-image {
-  margin-right: 20px; /* 이미지와 디테일 사이의 간격 조절 */
+  left: 25%; /* x축 중앙 정렬 */
+  transform: translateX(-50%); /* 요소의 중앙을 기준으로 정렬 */
 }
+
+.profile-image img {
+  width:20vw;
+  height: auto;
+}
+
 
 .profile-details {
+  left: 75%;
+  transform: translateX(-50%); /* 요소의 중앙을 기준으로 정렬 */
+}
+
+.details-nickName, .details-dormitory {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 4vw; /* 원하는 글자 크기로 설정 */
+}
+
+.App-header-myPage{
+  padding-top: 2vh;
+  padding-right: 2vw;
+  padding-left: 2vw;
+}
+
+.App-main-myPage{
+  padding-right:5vw;
+  padding-left:5vw;
+}
+
+.info-writings {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between; /* 자식 요소를 양옆 끝에 배치 */
+  align-items: center; /* 자식 요소를 세로로 중앙 정렬 */
 }
 
-.details-nickName,
-.details-dormitory {
-  margin-bottom: 10px; /* 닉네임과 기숙사 사이의 간격 조절 */
+.info-writings > div {
 }
-
