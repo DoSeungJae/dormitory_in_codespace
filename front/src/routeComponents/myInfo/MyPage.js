@@ -1,10 +1,37 @@
 
 import userDefault from '../../images/userDefault.png';
 import BackButton from "../../components/home/BackButton";
-import RightArrowIcon from '@mui/icons-material/ArrowForwardIos';
 import ForwardButton from '../../components/myInfo/ForwardButton';
+import { useContext, useEffect, useState } from 'react';
+import HomeSelectContext from '../../components/home/HomeSelectContext';
+import axios from 'axios';
 
 const MyPage = () => {
+    const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+    const [user,setUser]=useState({});
+    const token=localStorage.getItem("token");
+
+    const getUser = async () => {
+        const pathUserId=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/token/userId`;
+        try {
+            const response = await axios.get(pathUserId, {headers: {'Authorization': `${token}`}});
+            const userId=response.data;
+            try{
+                const pathUser=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/${userId}`;
+                const response2=await axios.get(pathUser);
+                setUser(response2.data);
+            }catch(error){
+                console.error(error);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    
+    useEffect(()=>{
+        getUser();
+    },[])
+
     return (
         <div className="App">
             <div className="App-header-myPage">
@@ -14,25 +41,20 @@ const MyPage = () => {
                 <div className="myPage-profile">
                     <div className="profile-image"><img src={userDefault} alt="description" /></div>
                     <div className="profile-details">
-                        <div className="details-nickName">닉네임</div>
-                        <div className="details-dormitory">기숙사</div>
+                        <div className="details-nickName">{user.nickName}</div>
+                        <div className="details-dormitory">{user.dormId ? null : "?"}</div>
                     </div>
                 </div>
                 <div className="myPage-info">
-                    <div className="info-writings">
+                    <div className="info-writings" onClick={() => setSelectComponentIndex(11)}>
                         <div>내 글</div>
-                        <div><ForwardButton destIndex={11}/></div>
-                        {/* 주의 */}
+                        <div><ForwardButton/></div>
                     </div>
                     <div className="info-account">
                         <div className='info-title'>계정</div>
                         <div className="account-id">
-                            <div>아이디</div>
-                            <div>값</div>
-                        </div>
-                        <div className="account-eMail">
-                            <div>이메일</div>
-                            <div>값</div>
+                            <div>아이디(이메일)</div>
+                            <div>{user.email}</div>
                         </div>
                         <div className="account-changePassWord">
                             <div>비밀번호 바꾸기</div>
