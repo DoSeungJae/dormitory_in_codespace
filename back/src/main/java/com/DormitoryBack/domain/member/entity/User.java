@@ -21,16 +21,23 @@ import java.util.List;
 @Getter
 @Table(name="user")
 public class User {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable=false, unique = true)
     private String eMail;
+
     @Column(nullable = false)
     @JsonIgnore
     private String passWord;
+
     @Column
     private String nickName;
+
+    @Column
+    private Long dormId;
 
     @JsonIgnore
     @OneToMany(mappedBy = "usrId")

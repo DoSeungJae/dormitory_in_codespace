@@ -14,6 +14,7 @@ public class UserResponseDTO {
     private Long id;
     private String eMail;
     private String nickName;
+    private Long dormId;
 
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();

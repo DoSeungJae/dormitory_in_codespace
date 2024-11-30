@@ -36,7 +36,7 @@ public class UserService {
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
         List<UserResponseDTO> responseDTO = users.stream()
-                .map(user -> new UserResponseDTO(user.getId(),user.getEMail(), user.getNickName()))
+                .map(user -> new UserResponseDTO(user.getId(),user.getEMail(), user.getNickName(),user.getDormId()))
                 .collect(Collectors.toList());
 
         return responseDTO;
