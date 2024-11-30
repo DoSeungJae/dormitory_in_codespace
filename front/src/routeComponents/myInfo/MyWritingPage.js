@@ -1,5 +1,5 @@
 import {React, useEffect, useRef,useState} from 'react';
-import BackButton from '../../components/home/BackButton';
+import BackButton from '../../components/myInfo/BackButton';
 import ArticlePreview from '../../components/article/ArticlePreview';
 import axios from 'axios';
 
