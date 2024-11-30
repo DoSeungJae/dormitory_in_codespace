@@ -1,6 +1,8 @@
 
 import userDefault from '../../images/userDefault.png';
 import BackButton from "../../components/home/BackButton";
+import RightArrowIcon from '@mui/icons-material/ArrowForwardIos';
+import ForwardButton from '../../components/myInfo/ForwardButton';
 
 const MyPage = () => {
     return (
@@ -19,7 +21,8 @@ const MyPage = () => {
                 <div className="myPage-info">
                     <div className="info-writings">
                         <div>내 글</div>
-                        <div>버튼</div>
+                        <div><ForwardButton destIndex={11}/></div>
+                        {/* 주의 */}
                     </div>
                     <div className="info-account">
                         <div className='info-title'>계정</div>
