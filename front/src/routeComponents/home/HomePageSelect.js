@@ -12,6 +12,7 @@ import LogInPage from '../logIn/LogInPage.js';
 import { toast } from 'react-toastify';
 import MyGroupPage from './MyGroupPage.js';
 import ArticleContext from '../../components/article/ArticleContext.js';
+import MyPage from '../myInfo/MyPage.js';
 
 function HomePageSelect() {
   const [page,setPage]=useState(0);
@@ -56,7 +57,7 @@ function HomePageSelect() {
 
   const menuToIndex={
     '홈':0,
-    '내 글':1,
+    '내 정보':1,
     '글쓰기':2,
     '알림':3,
     '내 그룹':4,
@@ -64,10 +65,12 @@ function HomePageSelect() {
 
 return (
   <div className="App">
-    
+      
       <div className='App-component-switcher'>
           <ArticleContext.Provider value={{article,setArticle}}>
-          <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>
+          {/*<div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>*/}
+          <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}}><MyPage/></div>
+
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
           <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><NotificationPage/></div>
           <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>

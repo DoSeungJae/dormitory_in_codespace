@@ -7,14 +7,14 @@ function FooterMenu ({selectMenu,saveScrollState,isEndPage,dorId,scrollPosition,
                         selectComponentIndex,setSelectComponentIndex}){
     const iconMap = {
         '홈': <HomeIcon fontSize='medium'/>,
-        '내 글': <NotesIcon fontSize='medium'/>,
+        '내 정보': <NotesIcon fontSize='medium'/>,
         '알림': <NotificationsNoneOutlinedIcon fontSize='medium'/>,
         '내 그룹':<GroupsIcon fontSize="medium"/>,
       };
     return (
         <div className='App'>
             <div className="bottom-menu">
-                {['홈','내 그룹','내 글', '알림'].map((item, i) => (
+                {['홈','내 그룹','내 정보', '알림'].map((item, i) => (
                 <div 
                     key={i}
                     className="menu-item"
