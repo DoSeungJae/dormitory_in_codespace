@@ -68,7 +68,8 @@ return (
       
       <div className='App-component-switcher'>
           <ArticleContext.Provider value={{article,setArticle}}>
-          {/*<div style={{display : selectComponentIndex==1 ? 'block' : 'none'}} ><MyWritingPage/></div>*/}
+            
+          {<div style={{display : selectComponentIndex==11 ? 'block' : 'none'}} ><MyWritingPage/></div>}
           <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}}><MyPage/></div>
 
           <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
