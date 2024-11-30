@@ -290,7 +290,7 @@
   text-align : right;
 }
 
-/* 반응형 디자인을 위한 코드, 테스트 필요 */
+/* 반응형 디자인을 위한 코드  테스트 필요 */
 @media only screen and (max-width : 600px){
   .App-header, .App-footer {
   }
@@ -616,7 +616,6 @@
   padding-left:4vw;
 }
 
-
 .noti-item{
   display: flex;
   align-items: center;
@@ -624,7 +623,6 @@
   padding-right:4.5vw;
   padding-left:4vw;
 }
-
 
 .noti-item-icon{
   margin-right:3vw;
@@ -649,34 +647,31 @@
   color: #888; /* 필요에 따라 조정 */
 }
 
-
-
 .myPage-profile {
-  padding-top: 10vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-bottom: 3vh;
 }
 
 .profile-image {
-  left: 25%; /* x축 중앙 정렬 */
+  padding-left:25vw;
   transform: translateX(-50%); /* 요소의 중앙을 기준으로 정렬 */
 }
 
 .profile-image img {
-  width:20vw;
+  width:25vw;
   height: auto;
 }
 
-
 .profile-details {
-  left: 75%;
-  transform: translateX(-50%); /* 요소의 중앙을 기준으로 정렬 */
+  display:flex;
+  flex-direction: column;
+  gap:3vh;
 }
 
 .details-nickName, .details-dormitory {
   text-align: center;
-  margin-bottom: 10px;
   font-size: 4vw; /* 원하는 글자 크기로 설정 */
 }
 
@@ -691,11 +686,36 @@
   padding-left:5vw;
 }
 
-.info-writings {
-  display: flex;
-  justify-content: space-between; /* 자식 요소를 양옆 끝에 배치 */
-  align-items: center; /* 자식 요소를 세로로 중앙 정렬 */
+.myPage-info > div {
+  border-top: 1px solid #000;
+  padding-bottom: 1.5vh;
+  padding-top:1.5vh;
 }
 
-.info-writings > div {
+.account-id,
+.account-eMail,
+.account-changePassWord,
+.community-restrictionDetails,
+.community-guide,
+.etc-inquiry,
+.etc-logOut,
+.etc-deleteAccount,
+.account-changeDormitory
+ {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5vh;
 }
+
+.info-writings{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-title{
+  font-size: 6vw;
+}
+
+

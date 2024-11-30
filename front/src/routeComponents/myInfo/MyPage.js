@@ -10,7 +10,7 @@ const MyPage = () => {
             </div>
             <div className="App-main-myPage">
                 <div className="myPage-profile">
-                    <div className="profile-image"><img src={userDefault} alt="description" className='rounded-image'/></div>
+                    <div className="profile-image"><img src={userDefault} alt="description" /></div>
                     <div className="profile-details">
                         <div className="details-nickName">닉네임</div>
                         <div className="details-dormitory">기숙사</div>
@@ -22,18 +22,42 @@ const MyPage = () => {
                         <div>버튼</div>
                     </div>
                     <div className="info-account">
-                        <div className="account-id"></div>
-                        <div className="account-eMail"></div>
-                        <div className="account-changePassWord"></div>
+                        <div className='info-title'>계정</div>
+                        <div className="account-id">
+                            <div>아이디</div>
+                            <div>값</div>
+                        </div>
+                        <div className="account-eMail">
+                            <div>이메일</div>
+                            <div>값</div>
+                        </div>
+                        <div className="account-changePassWord">
+                            <div>비밀번호 바꾸기</div>
+                        </div>
+                        <div className="account-changeDormitory">
+                            <div>기숙사 바꾸기</div>
+                        </div>
                     </div>
                     <div className="info-community">
-                        <div className="community-restrictionDetails"></div>
-                        <div className="community-guide"></div>
+                    <div className='info-title'>커뮤니티</div>
+                        <div className="community-restrictionDetails">
+                            <div>커뮤니티 이용 제한사항</div>
+                        </div>
+                        <div className="community-guide">
+                            <div>커뮤니티 이용 수칙</div>
+                        </div>
                     </div>
                     <div className="etc">
-                        <div className="etc-inquiry"></div>
-                        <div className="etc-logOut"></div>
-                        <div className="etc-deleteAccount"></div>
+                    <div className='info-title'>기타</div>
+                        <div className="etc-inquiry">
+                            <div>문의하기</div>
+                        </div>
+                        <div className="etc-logOut">
+                            <div>로그아웃 하기</div>
+                        </div>
+                        <div className="etc-deleteAccount">
+                            <div>계정 탈퇴하기</div>
+                        </div>
                     </div>
                 </div>
             </div>
