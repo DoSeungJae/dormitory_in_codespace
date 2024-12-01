@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.member.entity;
 import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.member.dto.UserDTO;
+import com.DormitoryBack.domain.member.dto.NewUserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +58,7 @@ public class User {
         this.nickName=nickName;
     }
 
-    public void update(UserDTO dto){
+    public void update(NewUserDTO dto){
         this.eMail=dto.getEMail();
         this.nickName=dto.getNickName();
         this.passWord=dto.getPassWord();
