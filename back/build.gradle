@@ -52,6 +52,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 	//implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '3.2.0'
+
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 tasks.named('test') {
 	useJUnitPlatform()
