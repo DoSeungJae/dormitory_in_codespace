@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.member.api;
 
-import com.DormitoryBack.domain.member.dto.UserDTO;
+import com.DormitoryBack.domain.member.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.service.UserService;
@@ -58,7 +58,7 @@ public class UserApi {
     public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
         log.info(dto.toString());
         try{
-            String token=userService.logInNoSecurity(dto.getEMail(),dto.getPassWord());
+            String token=userService.logIn(dto);
             log.info("로그인 성공");
 
             return ResponseEntity
@@ -75,19 +75,21 @@ public class UserApi {
 
 
     @PostMapping("/join")
-    public ResponseEntity signUp(@RequestBody UserDTO dto) {
+    public ResponseEntity signUp(@RequestBody UserRequestDTO dto) {
         log.info(dto.toString());
 
-        UserResponseDTO responseDTO = userService.signUp(dto.getEMail(), dto.getPassWord(), dto.getNickName());
+        UserResponseDTO responseDTO = userService.makeNewUser(dto);
         return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + responseDTO.toString());
     }
 
+    //토큰 인증 필요
     @PatchMapping("/{usrId}")
-    public ResponseEntity updateUser(@PathVariable("usrId") Long usrId, @RequestBody UserDTO dto){
+    public ResponseEntity updateUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
         UserResponseDTO responseDTO=userService.updateUser(usrId,dto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
+    //토큰 인증 필요
     @DeleteMapping("/{usrId}")
     public ResponseEntity deleteUser(@PathVariable("usrId") Long usrId){
         userService.deleteUser(usrId);
