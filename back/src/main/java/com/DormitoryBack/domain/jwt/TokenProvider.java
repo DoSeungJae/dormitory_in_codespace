@@ -84,7 +84,7 @@ public class  TokenProvider implements InitializingBean {
         }
     }
 
-    public String createTokenNoSecurity(User user){ //With no Spring Security
+    public String createToken(User user){ //With no Spring Security
 
         Date now=new Date();
         Date validity=new Date(now.getTime()+this.tokenValidityMilliseconds);
