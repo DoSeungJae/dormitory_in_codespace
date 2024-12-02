@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.member.entity;
 import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.member.dto.NewUserDTO;
+import com.DormitoryBack.domain.member.dto.UserRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,16 +52,19 @@ public class User {
     //}
 
 
+    /*
     public User(String eMail, String passWord, String nickName){
         this.eMail=eMail;
         this.passWord=passWord;
         this.nickName=nickName;
     }
+    */
 
-    public void update(NewUserDTO dto){
-        this.eMail=dto.getEMail();
+    public void update(UserRequestDTO dto){
+        this.eMail=dto.getMail();
         this.nickName=dto.getNickName();
         this.passWord=dto.getPassWord();
+        this.dormId=dto.getDormId();
     }
 
     @Override
@@ -81,14 +84,5 @@ public class User {
         }
         return jsonString;
     }
-
-    /*
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-
-        return new BCryptPasswordEncoder();
-    }
-
-     */
 
 }
