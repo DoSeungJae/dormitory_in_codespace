@@ -93,14 +93,17 @@ public class UserService {
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
-        String decryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
-        log.info(decryptedPassword);
-        String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
-        log.info(encryptedEmail);
+
 
         user.update(dto);
-        user.setEMail(encryptedEmail);
-        user.setPassWord(decryptedPassword);
+        if(dto.getMail()!=null){
+            String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
+            user.setEMail(encryptedEmail);
+        }
+        if(dto.getPassWord()!=null){
+            String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
+            user.setPassWord(encryptedPassword);
+        }
         User saved=userRepository.save(user);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
@@ -116,8 +119,7 @@ public class UserService {
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
         User existingUserMail = this.findUserByeMail(dto.getMail());
         User existingUserNick = userRepository.findByNickName(dto.getNickName());
-
-
+        
         if (existingUserMail != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
         }
@@ -126,12 +128,12 @@ public class UserService {
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
         }
 
-        String decryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
+        String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
         String encryptedEmail=emailEncryptor.decryptEmail(dto.getMail());
         
         User user = User.builder()
                 .eMail(encryptedEmail) 
-                .passWord(decryptedPassword) 
+                .passWord(encryptedPassword) 
                 .nickName(dto.getNickName())
                 .dormId(dto.getDormId())
                 .build();
@@ -139,7 +141,7 @@ public class UserService {
         User saved=userRepository.save(user);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                //.eMail(emailEncryptor.decryptEmail(saved.getMail()))
+                .eMail(emailEncryptor.decryptEmail(saved.getEMail()))
                 .nickName(saved.getNickName())
                 .dormId(saved.getDormId())
                 .build();
