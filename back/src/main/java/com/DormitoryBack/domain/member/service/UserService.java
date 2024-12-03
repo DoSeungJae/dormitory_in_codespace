@@ -1,6 +1,7 @@
 package com.DormitoryBack.domain.member.service;
 
 
+import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.dto.UserRequestDTO;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //Spring Security
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,7 +114,7 @@ public class UserService {
     }
 
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
-        User existingUserMail = userRepository.findByeMail(dto.getMail());
+        User existingUserMail = this.findUserByeMail(dto.getMail());
         User existingUserNick = userRepository.findByNickName(dto.getNickName());
 
 
@@ -146,10 +148,8 @@ public class UserService {
     }
 
     public String logIn(UserLogInDTO dto){
-        //String email=emailEncryptor.encryptEmail(dto.getEMail());
         String email=dto.getEMail();
-        log.info(email);
-        User user=userRepository.findByeMail(email);
+        User user=this.findUserByeMail(email);
         if(user==null){
             throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
         }
@@ -165,6 +165,18 @@ public class UserService {
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
         userRepository.delete(target);
+    }
+
+    private User findUserByeMail(String eMail){
+        List<User> userList=userRepository.findAll();
+        Iterator<User> iterator=userList.iterator();
+        while(iterator.hasNext()){
+            User user=iterator.next();
+            if((emailEncryptor.decryptEmail(user.getEMail())).equals(eMail)){
+                return user;
+            }
+        }
+        return null;
     }
 
 
