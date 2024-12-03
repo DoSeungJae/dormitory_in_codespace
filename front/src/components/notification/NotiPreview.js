@@ -17,7 +17,6 @@ const NotiPreview = ({notiList}) => {
 
     useEffect(()=>{
         if(Object.keys(article).length !==0){
-            console.log(article);
             setSelectComponentIndex(5);
         }
     },[article])
@@ -70,7 +69,6 @@ const NotiPreview = ({notiList}) => {
         const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
         try{
             const response=await axios.get(path);
-            console.log("article:",response.data);
             return response.data;
         }
         catch(error){
