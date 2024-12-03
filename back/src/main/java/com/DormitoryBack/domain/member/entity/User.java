@@ -44,33 +44,14 @@ public class User {
     private List<Article> articles;
     //DB에 반영되지 않음.
 
-
-    //private PasswordEncoder passwordEncoder;
-
-    //public void setPassWord(String passWord){
-        //this.passWord=new BCryptPasswordEncoder().encode(passWord);
-    //}
-
-
-    /*
-    public User(String eMail, String passWord, String nickName){
-        this.eMail=eMail;
-        this.passWord=passWord;
-        this.nickName=nickName;
-    }
-    */
-
     public void update(UserRequestDTO dto){
-        this.eMail=dto.getMail();
-        this.nickName=dto.getNickName();
-        this.passWord=dto.getPassWord();
-        this.dormId=dto.getDormId();
+        if(dto.getMail()!=null){this.eMail=dto.getMail();}  //사실상 필요 없는 코드 
+        if(dto.getPassWord()!=null){this.passWord=dto.getPassWord();} //사실상 필요 없는 코드  
+        if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 
+        if(dto.getDormId()!=null){this.dormId=dto.getDormId();}
     }
 
-    @Override
-    public String toString(){
-        return this.id+" "+this.eMail+" "+this.nickName;
-    }
+
 
     public String toJsonString(){
         ObjectMapper objectMapper=new ObjectMapper();
