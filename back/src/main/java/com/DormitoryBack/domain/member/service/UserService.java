@@ -2,9 +2,12 @@ package com.DormitoryBack.domain.member.service;
 
 
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.dto.UserDTO;
+import com.DormitoryBack.domain.member.dto.UserLogInDTO;
+import com.DormitoryBack.domain.member.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.module.crypt.EmailEncryptor;
+import com.DormitoryBack.module.crypt.PasswordEncryptor;
 import com.DormitoryBack.domain.member.entity.User;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +23,18 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    @Autowired
 
+    @Autowired
+    private final EmailEncryptor emailEncryptor;
+
+    @Autowired
+    private final PasswordEncryptor passwordEncryptor;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
-
-    //@Autowired
-    //private AuthenticationManager authenticationManager1;
 
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
@@ -36,7 +42,7 @@ public class UserService {
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
         List<UserResponseDTO> responseDTO = users.stream()
-                .map(user -> new UserResponseDTO(user.getId(),user.getEMail(), user.getNickName(),user.getDormId()))
+                .map(user -> new UserResponseDTO(user.getId(),emailEncryptor.decryptEmail(user.getEMail()), user.getNickName(),user.getDormId()))
                 .collect(Collectors.toList());
 
         return responseDTO;
@@ -48,8 +54,9 @@ public class UserService {
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(user.getEMail())
+                .eMail(emailEncryptor.decryptEmail(user.getEMail()))
                 .nickName(user.getNickName())
+                .dormId(user.getDormId())
                 .build();
 
         return responseDTO;
@@ -61,9 +68,9 @@ public class UserService {
             throw new RuntimeException("UserNotFound");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(user.getEMail())
+                .eMail(emailEncryptor.decryptEmail(user.getEMail()))
                 .nickName(nickName)
-                .id(user.getId())
+                .dormId(user.getDormId())
                 .build();
 
         return responseDTO;
@@ -79,25 +86,35 @@ public class UserService {
     }
 
 
-    public UserResponseDTO updateUser(Long usrId, UserDTO dto){
+    public UserResponseDTO updateUser(Long usrId, UserRequestDTO dto){
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
+        String decryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
+        log.info(decryptedPassword);
+        String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
+        log.info(encryptedEmail);
+
         user.update(dto);
+        user.setEMail(encryptedEmail);
+        user.setPassWord(decryptedPassword);
         User saved=userRepository.save(user);
+
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(saved.getEMail())
+                .eMail(emailEncryptor.decryptEmail(saved.getEMail()))
                 .nickName(saved.getNickName())
+                .dormId(user.getDormId())
                 .build();
 
         return responseDTO;
 
     }
 
-    public UserResponseDTO signUp(String eMail, String passWord, String nickName) {
-        User existingUserMail = userRepository.findByeMail(eMail);
-        User existingUserNick = userRepository.findByNickName(nickName);
+    public UserResponseDTO makeNewUser(UserRequestDTO dto) {
+        User existingUserMail = userRepository.findByeMail(dto.getMail());
+        User existingUserNick = userRepository.findByNickName(dto.getNickName());
+
 
         if (existingUserMail != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
@@ -107,35 +124,39 @@ public class UserService {
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
         }
 
+        String decryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
+        String encryptedEmail=emailEncryptor.decryptEmail(dto.getMail());
+        
         User user = User.builder()
-                .eMail(eMail)
-                .passWord(passWord)
-                .nickName(nickName)
+                .eMail(encryptedEmail) 
+                .passWord(decryptedPassword) 
+                .nickName(dto.getNickName())
+                .dormId(dto.getDormId())
                 .build();
 
         User saved=userRepository.save(user);
+
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(saved.getEMail())
+                //.eMail(emailEncryptor.decryptEmail(saved.getMail()))
                 .nickName(saved.getNickName())
+                .dormId(saved.getDormId())
                 .build();
 
         return responseDTO;
-
     }
 
-    public String logInNoSecurity(String eMail, String passWord){
-        User user=userRepository.findByeMail(eMail);
+    public String logIn(UserLogInDTO dto){
+        //String email=emailEncryptor.encryptEmail(dto.getEMail());
+        String email=dto.getEMail();
+        log.info(email);
+        User user=userRepository.findByeMail(email);
         if(user==null){
             throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
         }
-
-        else if(!user.getPassWord().equals(passWord)){
+        else if(!passwordEncryptor.matchesPassword(dto.getPassWord(), user.getPassWord())){
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
-
-        return tokenProvider.createTokenNoSecurity(user);
-
-
+        return tokenProvider.createToken(user);
     }
 
     public void deleteUser(Long usrId){
@@ -145,7 +166,6 @@ public class UserService {
         }
         userRepository.delete(target);
     }
-
 
 
 }
