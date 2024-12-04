@@ -3,9 +3,9 @@ Project - 기숙사 내에서 공동주문을 할 수 있도록 돕는 웹앱
 
 MOBILE    -  ReactNative (planned)
 
-FrontEnd  -  React.js(HTML(JSX), CSS, JavaScript)
+FrontEnd  -  React.js
 
-BackEnd   -  SpringBoot(Java), JPA(Java)
+BackEnd   -  Spring Boot, Spring Security, JPA, webSocket(Netty)
 
 DataBase  -  MySQL, Redis, MongoDB
 
