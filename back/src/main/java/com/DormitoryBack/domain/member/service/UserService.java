@@ -1,7 +1,5 @@
 package com.DormitoryBack.domain.member.service;
 
-
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.dto.UserRequestDTO;
@@ -93,8 +91,13 @@ public class UserService {
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
-
-
+        String confirm=dto.getConfirmPassword();
+        if(confirm==null){
+            throw new RuntimeException("ConfirmPasswordNotCorrect");
+        }
+        if(!passwordEncryptor.matchesPassword(confirm, user.getPassWord())){
+            throw new RuntimeException("ConfirmPasswordNotCorrect");
+        }
         user.update(dto);
         if(dto.getMail()!=null){
             String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
