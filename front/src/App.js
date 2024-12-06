@@ -12,7 +12,11 @@ function App() {
   const [selectComponentIndex,setSelectComponentIndex]=useState(0);
   const [isOpen, setIsOpen]=useState(false);
   const [content,setContent]=useState({});
+  
   const openModal = (modalContent) => {
+    if(isOpen){
+      return ;
+    }
     setContent(modalContent);
     setIsOpen(true);
   };
