@@ -5,11 +5,18 @@ import ForwardButton from '../../components/myInfo/ForwardButton';
 import { useContext, useEffect, useState } from 'react';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
-
+import { dorIdToDorName } from '../../components/home/HomeUtils';
+import Modal from '../../components/common/Modal';
+import ModalContext from '../../components/common/ModalContext';
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
+    const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const [user,setUser]=useState({});
     const token=localStorage.getItem("token");
+
+    const changePassword = () => {
+        openModal();
+    }
 
     const getUser = async () => {
         const pathUserId=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/token/userId`;
@@ -42,7 +49,7 @@ const MyPage = () => {
                     <div className="profile-image"><img src={userDefault} alt="description" /></div>
                     <div className="profile-details">
                         <div className="details-nickName">{user.nickName}</div>
-                        <div className="details-dormitory">{user.dormId ? null : "?"}</div>
+                        <div className="details-dormitory">{user.dormId ? dorIdToDorName[user.dormId] : "?"}</div>
                     </div>
                 </div>
                 <div className="myPage-info">
@@ -56,8 +63,10 @@ const MyPage = () => {
                             <div>아이디(이메일)</div>
                             <div>{user.email}</div>
                         </div>
-                        <div className="account-changePassWord">
+                        <div className="account-changePassWord" onClick={()=>changePassword()}>
                             <div>비밀번호 바꾸기</div>
+                            <div><Modal isOpen={isOpen} openModal={openModal} closeModal={closeModal}/></div>
+                            {/* Modal 창 다시 생각해보자 */}
                         </div>
                         <div className="account-changeDormitory">
                             <div>기숙사 바꾸기</div>
