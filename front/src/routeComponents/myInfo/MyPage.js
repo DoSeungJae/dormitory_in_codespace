@@ -65,7 +65,7 @@ const MyPage = () => {
                         </div>
                         <div className="account-changePassWord" onClick={()=>changePassword()}>
                             <div>비밀번호 바꾸기</div>
-                            <div><Modal isOpen={isOpen} openModal={openModal} closeModal={closeModal}/></div>
+                            <div><Modal/></div>
                             {/* Modal 창 다시 생각해보자 */}
                         </div>
                         <div className="account-changeDormitory">
