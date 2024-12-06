@@ -8,19 +8,17 @@ import './App.css';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import ModalContext from './components/common/ModalContext';
 
-
-
-
 function App() {
   const [selectComponentIndex,setSelectComponentIndex]=useState(0);
   const [isOpen, setIsOpen]=useState(false);
-
-  const openModal = () => {
-      setIsOpen(true);
+  const [content,setContent]=useState({});
+  const openModal = (modalContent) => {
+    setContent(modalContent);
+    setIsOpen(true);
   };
   const closeModal = () => {
-      setIsOpen(false);
-      console.log(123);
+    setIsOpen(false);
+    setContent({});
   };
 
   return (
@@ -32,7 +30,7 @@ function App() {
           position='top-center'/>
 
         <HomeSelectContext.Provider value={{selectComponentIndex,setSelectComponentIndex}}>
-        <ModalContext.Provider value={{isOpen,openModal,closeModal}}>
+        <ModalContext.Provider value={{isOpen,openModal,closeModal,content,setContent}}>
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<HomePageSelect/>}></Route> 

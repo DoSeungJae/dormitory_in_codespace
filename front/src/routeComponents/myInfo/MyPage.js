@@ -14,8 +14,12 @@ const MyPage = () => {
     const [user,setUser]=useState({});
     const token=localStorage.getItem("token");
 
-    const changePassword = () => {
-        openModal();
+    const changePassword = (modalContent) => {
+        openModal(modalContent);
+    }
+
+    const changeDormitory = (modalContent) => {
+        openModal(modalContent);
     }
 
     const getUser = async () => {
@@ -63,12 +67,11 @@ const MyPage = () => {
                             <div>아이디(이메일)</div>
                             <div>{user.email}</div>
                         </div>
-                        <div className="account-changePassWord" onClick={()=>changePassword()}>
+                        <div className="account-changePassWord" onClick={()=>changePassword(<>비밀번호 바꾸기</>)}>
                             <div>비밀번호 바꾸기</div>
                             <div><Modal/></div>
-                            {/* Modal 창 다시 생각해보자 */}
                         </div>
-                        <div className="account-changeDormitory">
+                        <div className="account-changeDormitory" onClick={()=>changeDormitory(<>기숙사 바꾸기</>)}>
                             <div>기숙사 바꾸기</div>
                         </div>
                     </div>

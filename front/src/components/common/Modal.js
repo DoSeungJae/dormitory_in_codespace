@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ModalContext from "./ModalContext";
 
 function Modal(){
-    const {isOpen, openModal, closeModal}=useContext(ModalContext);
+    const {isOpen, openModal, closeModal,content,setContent}=useContext(ModalContext);
 
     return (
         <div>
@@ -10,7 +10,7 @@ function Modal(){
                 <div className="modal" >
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <span className="closeBtn" onClick={closeModal}>&times;</span> {/* &times -> "x" */}
-                        <p>{"123"}</p>
+                        <p>{content}</p>
                     </div>
                 </div>)}
         </div>
