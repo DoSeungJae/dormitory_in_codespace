@@ -8,6 +8,9 @@ import axios from 'axios';
 import { dorIdToDorName } from '../../components/home/HomeUtils';
 import Modal from '../../components/common/Modal';
 import ModalContext from '../../components/common/ModalContext';
+import PasswordChangeForm from '../../components/common/modalForms/myInfo/PasswordChangeForm';
+import DormitoryChangeForm from '../../components/common/modalForms/myInfo/DormitoryChangeForm';
+
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
@@ -67,11 +70,11 @@ const MyPage = () => {
                             <div>아이디(이메일)</div>
                             <div>{user.email}</div>
                         </div>
-                        <div className="account-changePassWord" onClick={()=>changePassword(<>비밀번호 바꾸기</>)}>
+                        <div className="account-changePassWord" onClick={()=>changePassword(<PasswordChangeForm/>)}>
                             <div>비밀번호 바꾸기</div>
                             <div><Modal/></div>
                         </div>
-                        <div className="account-changeDormitory" onClick={()=>changeDormitory(<>기숙사 바꾸기</>)}>
+                        <div className="account-changeDormitory" onClick={()=>changeDormitory(<DormitoryChangeForm/>)}>
                             <div>기숙사 바꾸기</div>
                         </div>
                     </div>
