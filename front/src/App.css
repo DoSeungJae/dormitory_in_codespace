@@ -761,4 +761,22 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.modal-title{
+  font-size:28px;
+  padding-bottom: 1vh;
+}
+.modal-main{
+
+}
+
+.modal-container{
+  display:flex;
+  flex-direction: column;
+  padding-bottom: 1vh;
+  gap:0.5vh;
+}
+.modal-container-title{
+  font-size: 13px;
+}
 /* ~ 모달 관련 스타일 */
