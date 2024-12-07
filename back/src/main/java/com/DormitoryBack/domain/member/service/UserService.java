@@ -54,6 +54,7 @@ public class UserService {
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
+                .id(usrId)
                 .eMail(emailEncryptor.decryptEmail(user.getEMail()))
                 .nickName(user.getNickName())
                 .dormId(user.getDormId())
