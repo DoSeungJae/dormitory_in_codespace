@@ -57,8 +57,8 @@ public class ArticleService {
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
 
-        Long usrId=tokenProvider.getUserIdFromToken(token);
-        User user=userRepository.findById(usrId).orElse(null);
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        User user=userRepository.findById(userId).orElse(null);
 
         Article newArticle = Article.builder()
                 .dormId(dto.getDormId())
@@ -67,6 +67,7 @@ public class ArticleService {
                 .category(dto.getCategory())
                 .createdTime(TimeOptimizer.now())
                 .usrId(user)
+                .userId(user.getId())
                 .build();
 
         Article saved = articleRepository.save(newArticle);
@@ -138,9 +139,8 @@ public class ArticleService {
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        User user=userRepository.findById(userId).orElse(null);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        Page<Article> userArticlePage=articleRepository.findAllByUsrId(user,pageable);
+        Page<Article> userArticlePage=articleRepository.findAllByUserId(userId,pageable);
         if(userArticlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
         }
