@@ -32,7 +32,7 @@ public class Article {
 
     private String title;
 
-    private String contentHTML; //PreviewDTO에선 text만 저장하므로 HTML에서 text만 추출하는 메서드가 필요함
+    private String contentHTML; //PreviewDTO에선 text만 저장하므로 HTML에서 text만 추출하는 메서드가 필요함 <- ?? (24.12.11)
 
     private LocalDateTime createdTime; 
 
@@ -40,14 +40,16 @@ public class Article {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="usr_id") //테스트 이후 외래키 설정 필요. (외래키 설정 이전에 jwt 인증)
-    private User usrId;
+    @JoinColumn(name="usr_id") 
+    private User usrId; //데이터 필드 이름을 user로 바꿔야할 수도 있음. -> front가 이 변경에 의존적일 것임.
 
     @JsonProperty("userId")
     public Long getUserId(){
         return usrId.getId();
     }
 
+    private Long userId;
+    
     public void update(NewArticleDTO dto){
         this.dormId=dto.getDormId();
         this.title=dto.getTitle();
