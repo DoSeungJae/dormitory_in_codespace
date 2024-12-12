@@ -10,6 +10,7 @@ import Modal from '../../components/common/Modal';
 import ModalContext from '../../components/common/ModalContext';
 import PasswordChangeForm from '../../components/common/modalForms/myInfo/PasswordChangeForm';
 import DormitoryChangeForm from '../../components/common/modalForms/myInfo/DormitoryChangeForm';
+import InquireForm from '../../components/common/modalForms/myInfo/InquireForm';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -22,6 +23,10 @@ const MyPage = () => {
     }
 
     const changeDormitory = (modalContent) => {
+        openModal(modalContent);
+    }
+
+    const makeInquiry = (modalContent) => {
         openModal(modalContent);
     }
 
@@ -70,11 +75,11 @@ const MyPage = () => {
                             <div>아이디(이메일)</div>
                             <div>{user.email}</div>
                         </div>
-                        <div className="account-changePassWord" onClick={()=>changePassword(<PasswordChangeForm/>)}>
+                        <div className="account-changePassWord" onClick={()=>changePassword(<PasswordChangeForm userId={user.id}/>)}>
                             <div>비밀번호 바꾸기</div>
                             <div><Modal/></div>
                         </div>
-                        <div className="account-changeDormitory" onClick={()=>changeDormitory(<DormitoryChangeForm/>)}>
+                        <div className="account-changeDormitory" onClick={()=>changeDormitory(<DormitoryChangeForm userId={user.id}/>)}>
                             <div>기숙사 바꾸기</div>
                         </div>
                     </div>
@@ -89,7 +94,7 @@ const MyPage = () => {
                     </div>
                     <div className="etc">
                     <div className='info-title'>기타</div>
-                        <div className="etc-inquiry">
+                        <div className="etc-inquiry" onClick={()=>makeInquiry(<InquireForm/>)}>
                             <div>문의하기</div>
                         </div>
                         <div className="etc-logOut">
