@@ -1,7 +1,5 @@
 package com.DormitoryBack.domain.report.repository;
 
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
-import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.report.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
