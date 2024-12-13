@@ -173,8 +173,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
         else{
           toast.error("글을 삭제하지 못했어요! 다시 시도해주세요.");
         }
-
-
     }
   }
 
@@ -193,10 +191,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       { type : 'item', eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
     ].filter(Boolean),
   };
-
-
-
-
 
   const handleToggle = () => {
     setIsWriter(isWriterParam === 1 ? 1 : 0); // 상태 토글
