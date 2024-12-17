@@ -33,7 +33,9 @@ function PasswordChangeForm({userId}) {
             toast.success("변경 사항을 반영했어요!");
             closeModal();
         }catch(error){
-            console.error(error);
+            if(error.response.data==="ConfirmPasswordNotCorrect"){
+                toast.error("확인 비밀번호가 올바르지 않아요.");
+            }
         }
     }
 
