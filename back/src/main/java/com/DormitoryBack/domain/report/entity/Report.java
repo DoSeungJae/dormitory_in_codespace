@@ -28,15 +28,19 @@ public class Report {
     @GeneratedValue
     @Column(name="id")
     private Long id;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="reporter_id")
     private User reporter;
+
     @JsonProperty
     public Long getUserId(){return reporter.getId();}
+    
     @Column(name = "target_type")
     @Enumerated(EnumType.STRING)
     private ReportType reportType;
+
     @Column(name = "target_id")
     private Long targetId;
 
@@ -46,7 +50,10 @@ public class Report {
 
     @Column(name="reason")
     private String reason;
-    //도배글, 음란물, 상업적글, 정치글, 노쇼, 욕설, 비하
+    //도배글, 음란물, 상업적글, 정치글, 노쇼, 욕설, 비하, 문의 등 
+
+    @Column(name="inquire_content")
+    private String inquireContent;
 
     public String toJsonString(){
         ObjectMapper objectMapper=new ObjectMapper();
