@@ -105,3 +105,13 @@ export const dorIdToDorName={
     6:"푸름3",
     7:"푸름4"
   };
+
+export const dormNameToDormId ={
+  "오름1":1,
+  "오름2":2,
+  "오름3":3,
+  "푸름1":4,
+  "푸름2":5,
+  "푸름3":6,
+  "푸름4":7
+};
