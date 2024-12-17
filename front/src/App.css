@@ -812,3 +812,5 @@
   border-color: rgba(149, 149, 173, 0.6) !important ;
   width: 100%;
 }
+
+textarea::-webkit-scrollbar { display: none; }

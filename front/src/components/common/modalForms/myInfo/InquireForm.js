@@ -13,7 +13,7 @@ function InquireForm(){
         <form >
             <div className="modal-container">
                 <div className="modal-container-title">문의할 내용</div>
-                <input
+                <textarea
                     class="form-control form-control-sm "       
                     type="text"
                     placeholder="어떤 점이 불편하셨나요?"
