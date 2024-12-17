@@ -26,7 +26,6 @@
 
 .App-header,
 .App-main {
-  
     padding-left: 2.4vw;
     padding-right: 2.4vw;
 }
@@ -783,6 +782,17 @@
   font-size: 13px;
 }
 
+.modal-alternative-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5vw;
+}
+
+.modal-alternative-buttons button {
+  flex: 1;
+}
+
 
 /* ~ 모달 관련 스타일 */
 
@@ -794,5 +804,11 @@
 .btn-primary{
   background-color: #FF8C00 !important ;
   border-color: rgba(255, 140, 92, 0.6) !important ;
+  width: 100%;
+}
+
+.btn-secondary{
+  background-color: #808080 !important;
+  border-color: rgba(149, 149, 173, 0.6) !important ;
   width: 100%;
 }
