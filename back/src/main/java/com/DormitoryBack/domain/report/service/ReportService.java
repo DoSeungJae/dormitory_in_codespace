@@ -7,8 +7,10 @@ import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.entity.User;
 import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.report.dto.InquireDTO;
 import com.DormitoryBack.domain.report.dto.ReportDTO;
 import com.DormitoryBack.domain.report.entity.Report;
+import com.DormitoryBack.domain.report.enums.ReportType;
 import com.DormitoryBack.domain.report.repository.ReportRepository;
 import com.DormitoryBack.module.TimeOptimizer;
 
@@ -99,6 +101,26 @@ public class ReportService {
 
         Report saved=reportRepository.save(newReport);
         return saved;
+    }
+
+    @Transactional
+    public Report newInquire(InquireDTO dto, String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("InvalidToken");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        User user=userRepository.findById(userId).orElse(null);
+        Report newInquire=Report.builder()
+            .reporter(user)
+            .targetId(null)
+            .reportType(ReportType.INQUIRE)
+            .time(TimeOptimizer.now())
+            .reason(null) //현재는 null로 지정
+            .inquireContent(dto.getInquireContent())
+            .build();
+
+        Report saved=reportRepository.save(newInquire);
+        return saved;    
     }
 
     @Transactional
