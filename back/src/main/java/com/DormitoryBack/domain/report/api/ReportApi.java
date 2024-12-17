@@ -1,6 +1,7 @@
 package com.DormitoryBack.domain.report.api;
 
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.report.dto.InquireDTO;
 import com.DormitoryBack.domain.report.dto.ReportDTO;
 import com.DormitoryBack.domain.report.entity.Report;
 import com.DormitoryBack.domain.report.service.ReportService;
@@ -65,11 +66,13 @@ public class ReportApi {
                 .body(report.toJsonString());
     }
 
+    @PostMapping("newInquire")
+    public ResponseEntity newInquire(@RequestBody InquireDTO dto, @RequestHeader("Authorization") String token){
+        Report report=reportService.newInquire(dto, token);
+        return ResponseEntity.status(HttpStatus.OK).body(report);
+    }
     //신고를 처리하는 마이크로 서비스를 따로 만들기(ML,NLP,Python)
     //ML을 위한 학습 데이터를 어디서 구하지? <- 인터넷에서 긁어온다고 하더라도
     //현재 맥락에 100% 적합하다고 볼 수는 없음.
-
-
-
 
 }
