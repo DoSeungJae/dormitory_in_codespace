@@ -89,11 +89,10 @@ public class UserApi {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
-    //토큰 인증 필요
     @DeleteMapping("/{usrId}")
-    public ResponseEntity deleteUser(@PathVariable("usrId") Long usrId){
-        userService.deleteUser(usrId);
-        return ResponseEntity.status(HttpStatus.OK).body("USER DELETED");
+    public ResponseEntity deleteUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
+        userService.deleteUser(usrId, dto);
+        return ResponseEntity.status(HttpStatus.OK).body("UserDeleted");
     }
 
 }
