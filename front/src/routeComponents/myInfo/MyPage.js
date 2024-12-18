@@ -12,6 +12,7 @@ import PasswordChangeForm from '../../components/common/modalForms/myInfo/Passwo
 import DormitoryChangeForm from '../../components/common/modalForms/myInfo/DormitoryChangeForm';
 import InquireForm from '../../components/common/modalForms/myInfo/InquireForm';
 import LogoutForm from '../../components/common/modalForms/myInfo/LogoutForm';
+import UserDeletionForm from '../../components/common/modalForms/myInfo/UserDeletionForm';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -105,7 +106,7 @@ const MyPage = () => {
                         <div className="etc-logOut" onClick={()=>logout(<LogoutForm/>)}>
                             <div>로그아웃 하기</div>
                         </div>
-                        <div className="etc-deleteAccount">
+                        <div className="etc-deleteAccount" onClick={()=>openModal(<UserDeletionForm userId={user.id}/>)}>
                             <div>계정 탈퇴하기</div>
                         </div>
                     </div>
