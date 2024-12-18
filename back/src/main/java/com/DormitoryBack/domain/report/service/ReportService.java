@@ -113,9 +113,9 @@ public class ReportService {
         Report newInquire=Report.builder()
             .reporter(user)
             .targetId(null)
-            .reportType(ReportType.INQUIRE)
+            .reportType(null)
             .time(TimeOptimizer.now())
-            .reason(null) //현재는 null로 지정
+            .reason("INQUIRE") //현재는 null로 지정
             .inquireContent(dto.getInquireContent())
             .build();
 
