@@ -599,6 +599,16 @@ public class GroupService {
         return createdDtoList;
     }
 
-
+    public Boolean isBelongToAnywhere(Long userId){
+        SetOperations<String,Long> setOperations=redisTemplate.opsForSet();
+        Long notBelongToAnywhere=setOperations.add("groupGlobal",userId);
+        if(notBelongToAnywhere==0L){
+            return true;
+        }
+        else{
+            setOperations.remove("groupGlobal",userId);
+            return false;
+        }
+    }
 
 }
