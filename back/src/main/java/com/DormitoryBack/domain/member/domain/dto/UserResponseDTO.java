@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.member.dto;
+package com.DormitoryBack.domain.member.domain.dto;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

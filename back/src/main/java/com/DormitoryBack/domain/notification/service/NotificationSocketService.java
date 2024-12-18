@@ -2,7 +2,7 @@ package com.DormitoryBack.domain.notification.service;
 
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
-import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.notification.module.NotificationSocketManager;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.member.dto;
+package com.DormitoryBack.domain.member.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

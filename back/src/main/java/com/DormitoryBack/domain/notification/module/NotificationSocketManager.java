@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.notification.module;
 
-import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.corundumstudio.socketio.SocketIOClient;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;

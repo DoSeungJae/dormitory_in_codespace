@@ -1,14 +1,15 @@
-package com.DormitoryBack.domain.member.service;
+package com.DormitoryBack.domain.member.domain.service;
 
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.dto.UserLogInDTO;
-import com.DormitoryBack.domain.member.dto.UserRequestDTO;
-import com.DormitoryBack.domain.member.dto.UserResponseDTO;
-import com.DormitoryBack.domain.member.repository.UserRepository;
 import com.DormitoryBack.module.crypt.EmailEncryptor;
 import com.DormitoryBack.module.crypt.PasswordEncryptor;
-import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

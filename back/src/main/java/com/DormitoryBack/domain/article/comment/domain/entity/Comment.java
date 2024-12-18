@@ -2,7 +2,7 @@ package com.DormitoryBack.domain.article.comment.domain.entity;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.member.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;

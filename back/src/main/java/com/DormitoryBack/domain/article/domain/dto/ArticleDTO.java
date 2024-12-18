@@ -2,7 +2,7 @@ package com.DormitoryBack.domain.article.domain.dto;
 
 import java.time.LocalDateTime;
 
-import com.DormitoryBack.domain.member.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 
 import lombok.Builder;
 import lombok.Getter;

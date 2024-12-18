@@ -1,6 +1,6 @@
-package com.DormitoryBack.domain.member.entity;
+package com.DormitoryBack.domain.member.domain.entity;
 import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.member.dto.UserRequestDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

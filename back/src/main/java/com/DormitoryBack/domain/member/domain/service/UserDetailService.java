@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.member.service;
+package com.DormitoryBack.domain.member.domain.service;
 /*
 import com.taxiWithBack.domain.member.entity.User;
 import com.taxiWithBack.domain.member.repository.UserRepository;

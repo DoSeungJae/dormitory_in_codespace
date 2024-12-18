@@ -5,8 +5,8 @@ import com.DormitoryBack.domain.article.comment.domain.repository.CommentReposit
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.entity.User;
-import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.report.dto.InquireDTO;
 import com.DormitoryBack.domain.report.dto.ReportDTO;
 import com.DormitoryBack.domain.report.entity.Report;

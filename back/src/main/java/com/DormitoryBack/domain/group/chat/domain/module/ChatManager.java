@@ -1,8 +1,8 @@
 package com.DormitoryBack.domain.group.chat.domain.module;
 
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
-import com.DormitoryBack.domain.member.entity.User;
-import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.corundumstudio.socketio.SocketIOClient;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

@@ -1,9 +1,10 @@
-package com.DormitoryBack.domain.member.api;
+package com.DormitoryBack.domain.member.domain.api;
 
-import com.DormitoryBack.domain.member.dto.UserRequestDTO;
-import com.DormitoryBack.domain.member.dto.UserLogInDTO;
-import com.DormitoryBack.domain.member.dto.UserResponseDTO;
-import com.DormitoryBack.domain.member.service.UserService;
+import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.service.UserService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

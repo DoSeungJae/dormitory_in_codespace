@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.report.repository;
 
-import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.report.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 

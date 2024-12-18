@@ -3,7 +3,7 @@ package com.DormitoryBack.domain.group.domain.entitiy;
 
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.group.domain.dto.response.GroupCreatedDto;
-import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.member.domain.entity.User;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

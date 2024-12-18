@@ -3,7 +3,7 @@ package com.DormitoryBack.domain.report.entity;
 
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.member.entity.User;
+import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.report.enums.ReportType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

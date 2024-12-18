@@ -1,6 +1,7 @@
 package com.DormitoryBack.domain.group.domain.dto.response;
 
-import com.DormitoryBack.domain.member.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+
 import lombok.Builder;
 import lombok.Getter;
 

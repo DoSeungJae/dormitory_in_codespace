@@ -3,8 +3,9 @@ package com.DormitoryBack.domain.group.domain.service;
 import com.DormitoryBack.domain.group.domain.entitiy.Group;
 import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.entity.User;
-import com.DormitoryBack.domain.member.repository.UserRepository;
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+
 import io.jsonwebtoken.JwtException;
 
 import org.springframework.beans.factory.annotation.Autowired;
