@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.member.service;
 
+import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.dto.UserRequestDTO;
@@ -35,6 +36,9 @@ public class UserService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private GroupService groupService;
 
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
@@ -131,9 +135,10 @@ public class UserService {
         if(existingUserNick != null){
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
         }
-
+        log.info(dto.getPassWord());
+        log.info(dto.getMail());
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
-        String encryptedEmail=emailEncryptor.decryptEmail(dto.getMail());
+        String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
         
         User user = User.builder()
                 .eMail(encryptedEmail) 
@@ -165,10 +170,16 @@ public class UserService {
         return tokenProvider.createToken(user);
     }
 
-    public void deleteUser(Long usrId){
+    public void deleteUser(Long usrId, UserRequestDTO dto){
         User target=userRepository.findById(usrId).orElse(null);
         if(target==null){
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
+        else if(!passwordEncryptor.matchesPassword(dto.getConfirmPassword(), target.getPassWord())){
+            throw new RuntimeException("ConfirmPasswordNotCorrect");
+        }
+        else if(groupService.isBelongToAnywhere(usrId)){
+            throw new RuntimeException("CannotDeleteUserWhileGrouping");
         }
         userRepository.delete(target);
     }
