@@ -4,3 +4,4 @@ redis.conf
 
 ### redis 덤프 파일 ###
 redisDump
+.vscode/settings.json
