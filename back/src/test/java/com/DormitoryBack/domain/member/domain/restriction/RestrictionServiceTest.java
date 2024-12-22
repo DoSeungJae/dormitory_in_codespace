@@ -2,15 +2,22 @@ package com.DormitoryBack.domain.member.domain.restriction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.intThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +46,9 @@ public class RestrictionServiceTest {
     @InjectMocks
     private RestrictionService restrictionService;
 
+    @Captor
+    private ArgumentCaptor<Restriction> restirctionCaptor;
+
     private Restriction restriction;
 
     private RestrictionRequestDTO requestDTO;
@@ -65,7 +75,7 @@ public class RestrictionServiceTest {
 
     @Test
     public void testMakeDTO(){
-        LocalDateTime now= LocalDateTime.of(2024,12,31,0,0,1);
+        LocalDateTime now= LocalDateTime.of(2024,12,31,0,0,0);
         try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
             mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
 
@@ -79,5 +89,36 @@ public class RestrictionServiceTest {
         }    
     }
 
+    @Test
+    public void testRestrict(){
+        LocalDateTime now=LocalDateTime.of(2024,12,21,0,0);
+        try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
+            mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
+            
+            given(restrictionRepository.save(restirctionCaptor.capture())).willReturn(restriction);
+            RestrictionResponseDTO responseDTO=restrictionService.restrict(requestDTO);
+
+            assertEquals(responseDTO.getUserId(),requestDTO.getUserId());
+            assertEquals(responseDTO.getReason(),requestDTO.getReason());
+            assertEquals(responseDTO.getExpireTime(),TimeOptimizer.now().plusDays(requestDTO.getDurationDays()));
+            assertFalse(responseDTO.getIsExpired());
+
+            verify(restrictionRepository,times(1)).save(restirctionCaptor.capture());
+            Restriction capturedRestriction=restirctionCaptor.getValue();
+            assertEquals(restriction.getUserId(),capturedRestriction.getUserId());
+            assertEquals(restriction.getReason(),capturedRestriction.getReason());
+            assertEquals(restriction.getDurationDays(),capturedRestriction.getDurationDays());
+            assertEquals(restriction.getTriggeredTime(),capturedRestriction.getTriggeredTime());
+        }
+    }
+
+    @Test
+    public void testRestrictWithInvalidKey(){
+        requestDTO.setAccessKey("wrongKey");
+
+        assertThrows(RuntimeException.class, () -> {
+            restrictionService.restrict(requestDTO);
+        });
+    }
 
 }
