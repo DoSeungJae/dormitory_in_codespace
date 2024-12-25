@@ -1,7 +1,9 @@
 package com.DormitoryBack.domain.member.restriction.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.notification.enums.EntityType;
@@ -37,7 +39,7 @@ public class Restriction {
     private LocalDateTime triggeredTime;
 
     @Column(nullable = false)
-    private Long suspensionDays;
+    private Long durationDays;
 
     @Column(nullable = false)
     private int suspendedFunctions;
@@ -46,12 +48,25 @@ public class Restriction {
         return (suspendedFunctions & function.getValue()) != 0;
     }
 
-    public void suspendFunction(Function functions){
-        suspendedFunctions |= functions.getValue();
+    public void suspendFunction(Function function){
+        suspendedFunctions |= function.getValue();
     }
 
-    public void releaseFunction(Function functions){
-        suspendedFunctions &= ~functions.getValue();
+    public void releaseFunction(Function function){
+        suspendedFunctions &= ~function.getValue();
+    }
+
+    public List<String> getSuspendedFunctionsAsStringList() { 
+        List<Function> functions = new ArrayList<>(); 
+        for (Function function : Function.values()) { 
+            if ((suspendedFunctions & function.getValue()) != 0) { 
+                functions.add(function); 
+            } 
+        } 
+        return functions
+                .stream()
+                .map(Function::name)
+                .collect(Collectors.toList()); 
     }
 
 
