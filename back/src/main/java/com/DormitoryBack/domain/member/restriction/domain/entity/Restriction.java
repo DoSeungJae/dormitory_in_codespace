@@ -14,8 +14,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -23,6 +25,8 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name="restriction")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Restriction {
 
     @Id
@@ -38,7 +42,7 @@ public class Restriction {
     @Column(nullable = false, name = "triggered_time")
     private LocalDateTime triggeredTime;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name="duration_days")
     private Long durationDays;
 
     @Column(nullable = false)
