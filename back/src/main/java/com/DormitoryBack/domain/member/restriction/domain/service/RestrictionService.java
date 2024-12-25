@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionRequestDTO;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTO;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTOList;
@@ -26,6 +28,9 @@ public class RestrictionService {
     private RestrictionRepository restrictionRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TokenProvider tokenProvider;
 
     public RestrictionResponseDTOList getMyRestrictions(String token){
@@ -40,6 +45,10 @@ public class RestrictionService {
     public RestrictionResponseDTO restrict(RestrictionRequestDTO dto){
         if(!key.equals(dto.getAccessKey())){
             throw new RuntimeException("KeyNotCorrect");
+        }
+        User user=userRepository.findById(dto.getUserId()).orElse(null);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
         }
         Restriction restriction=Restriction.builder()
             .userId(dto.getUserId())
