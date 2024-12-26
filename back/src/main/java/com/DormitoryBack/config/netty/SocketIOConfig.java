@@ -22,6 +22,7 @@ public class SocketIOConfig { //SocketIOConfigChat 으로 변경 필요
         config.setHostname(host);
         config.setPort(port);
         config.setOrigin("https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev");
+        config.setOrigin("https://turbo-chainsaw-rpvvwx9pp5c5p55-3000.app.github.dev");
 
         return new SocketIOServer(config);
     }
