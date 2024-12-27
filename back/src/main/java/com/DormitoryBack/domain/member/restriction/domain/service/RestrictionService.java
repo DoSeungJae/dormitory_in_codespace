@@ -95,7 +95,6 @@ public class RestrictionService {
         LocalDateTime now=TimeOptimizer.now();
         Boolean isExpired=now.isAfter(expireDate) || now.equals(expireDate);
         
-
         RestrictionResponseDTO dto=RestrictionResponseDTO.builder()
             .userId(restriction.getUserId())
             .expireTime(expireDate)
@@ -105,6 +104,29 @@ public class RestrictionService {
             .build();
         
         return dto;
+    }
+
+    public Boolean getIsRestricted(Function function, Long userId){
+        List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId);
+        Iterator<Restriction> iterator=restrictions.iterator();
+        Boolean isRestricted=false;
+        while(iterator.hasNext()){
+            Restriction restriction=iterator.next();
+            Boolean functionSuspended=restriction.isSuspended(function); //제제가 지정된 기능에 대한 제제인지 확인.
+            if(!functionSuspended){ 
+                continue; //지정된 기능에 대한 제제가 아니라면 고려할 필요 없으므로 넘어감; not restricted
+            }
+            LocalDateTime expireDate=restriction.getTriggeredTime().plusDays(restriction.getDurationDays());
+            LocalDateTime now=TimeOptimizer.now();
+            Boolean isExpired=now.isAfter(expireDate) || now.equals(expireDate);
+            if(isExpired){ //제제가 만료되었는지 확인, 만료된 제제라면 고려할 필요 없음; not restricted
+                continue;  
+            }
+            //지정된 기능에 대한 제제이며 아직 유효한 제제 -> restricted 판정. 이런 것이 "하나라도 있으면" 해당 기능은 제제된 것임.
+            isRestricted=true;
+            break;
+        }
+        return isRestricted;
     }
     
     
