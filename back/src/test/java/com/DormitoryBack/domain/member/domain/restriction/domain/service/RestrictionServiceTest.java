@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.intThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.BDDMockito.given;
@@ -31,6 +32,7 @@ import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionRequest
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTO;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTOList;
 import com.DormitoryBack.domain.member.restriction.domain.entity.Restriction;
+import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.repository.RestrictionRepository;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.TimeOptimizer;
@@ -60,6 +62,16 @@ public class RestrictionServiceTest {
 
     private Restriction restriction3;
 
+
+    private Restriction r1;
+
+    private Restriction r2;
+
+    private Restriction r3;
+
+    private Restriction r4;
+
+    
     private RestrictionResponseDTOList expectedResponseDTOList;
 
     private RestrictionRequestDTO requestDTO;
@@ -113,6 +125,7 @@ public class RestrictionServiceTest {
             .suspendedFunctions(7)
             .build();
 
+
         expectedDTOList=new ArrayList<>();
         expectedDTOList.add(restrictionService.makeDTO(restriction1));
         expectedDTOList.add(restrictionService.makeDTO(restriction2));
@@ -147,6 +160,7 @@ public class RestrictionServiceTest {
 
             given(restrictionRepository.save(restirctionCaptor.capture())).willReturn(restriction);
             RestrictionResponseDTO responseDTO=restrictionService.restrict(requestDTO);
+            //testGetIsRestricted 코드 작성 이후 위 코드에서 exception thrown
 
             //assertEquals(responseDTO.getUserId(),requestDTO.getUserId());
             //assertEquals(responseDTO.getReason(),requestDTO.getReason());
@@ -195,5 +209,100 @@ public class RestrictionServiceTest {
             assertEquals(expectedDTO.getReason(),responseDTO.getReason(),"제제 이유 일치 필요");
             assertEquals(expectedDTO.getSuspendedFunctions(),responseDTO.getSuspendedFunctions(),"제제 기능 일치 필요");
         }
+    }
+
+
+    @Test
+    public void testGetIsRestricted(){
+        LocalDateTime now;
+
+        Restriction r1=Restriction.builder()
+            .userId(1L)
+            .reason("reason1")
+            .durationDays(15L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(1)
+            .build();
+
+        Restriction r2=Restriction.builder()
+            .userId(1L)
+            .reason("reason2")
+            .durationDays(10L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(3)
+            .build();
+
+        Restriction r3=Restriction.builder()
+            .userId(1L)
+            .reason("reason3")
+            .durationDays(5L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(7)
+            .build();
+
+        Restriction r4=Restriction.builder()
+            .userId(1L)
+            .reason("reason4")
+            .durationDays(1L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(15)
+            .build();
+
+        
+        // *데이터 넣기
+
+        Long userId=1L;
+        List<Restriction> expectedRestrictions=new ArrayList<>();
+        expectedRestrictions.add(r1);
+        expectedRestrictions.add(r2);
+        expectedRestrictions.add(r3);
+        expectedRestrictions.add(r4);
+
+        given(restrictionRepository.findAllByUserId(userId)).willReturn(expectedRestrictions);
+        // *데이터 넣기 
+
+
+        //제제 시점을 기준으로 14일 뒤(1), 9일 뒤(2), 4일 뒤(3)와 정확히 제제당한 시점(4)에서 테스트 진행
+        // (1) 제제 : LOGIN
+        now=LocalDateTime.of(2024,12,21,0,0).plusDays(14);
+        try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
+            mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
+            assertFalse(restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertFalse(restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertFalse(restrictionService.getIsRestricted(Function.GROUP,userId));
+        }
+        // (2) 제제 : LOGIN, ARTICLE
+        now=LocalDateTime.of(2024,12,21,0,0).plusDays(9);
+        try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
+            mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertFalse(restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertFalse(restrictionService.getIsRestricted(Function.GROUP,userId));
+        }
+
+        // (3) 제제 : LOGIN, ARTICLE, COMMENT
+        now=LocalDateTime.of(2024,12,21,0,0).plusDays(4);
+        try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
+            mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertFalse(restrictionService.getIsRestricted(Function.GROUP,userId));
+        }
+
+        // (4) 제제 : LOGIN, ARTICLE, COMMENT, GROUP
+        now=LocalDateTime.of(2024,12,21,0,0);
+        try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
+            mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.GROUP,userId));
+        }
+        
+
+
     }
 }
