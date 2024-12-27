@@ -23,6 +23,8 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
+import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.TimeOptimizer;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +50,9 @@ public class ArticleService {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private RestrictionService restrictionService;
+
     private final RedisTemplate<String,Long> redisTemplate;
 
     @Transactional
@@ -56,9 +61,9 @@ public class ArticleService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
-
         Long userId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(userId).orElse(null);
+        checkRestricted(userId);
 
         Article newArticle = Article.builder()
                 .dormId(dto.getDormId())
@@ -190,6 +195,8 @@ public class ArticleService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        checkRestricted(userId);
 
         Article article=articleRepository.findById(articleId).orElse(null);
         article.update(dto);
@@ -261,4 +268,11 @@ public class ArticleService {
 
         return articlePreviewDTO;
     }
+
+    public void checkRestricted(Long userId){
+        if(restrictionService.getIsRestricted(Function.ARTICLE, userId)){
+            throw new RuntimeException("ArticleFunctionRestricted");
+        }
+    }
+    
 }
