@@ -5,16 +5,16 @@ import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
-import com.DormitoryBack.domain.group.chat.domain.constant.Constants;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
+import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
 import com.DormitoryBack.module.TimeOptimizer;
-
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +47,9 @@ public class CommentService {
     @Autowired
     private NotificationServiceExternal notificationService;
 
+    @Autowired
+    private RestrictionService restrictionService;
+    
 
     public Comment getComment(Long commentId){
         Comment comment=commentRepository.findById(commentId).orElse(null);
@@ -129,6 +130,7 @@ public class CommentService {
         }
 
         Long userId=tokenProvider.getUserIdFromToken(token);
+        checkRestricted(userId);
         User userData=userRepository.findById(userId).orElse(null);
         Article article=articleRepository.findById(dto.getArticleId()).orElse(null);
 
@@ -169,6 +171,7 @@ public class CommentService {
             throw new JwtException("InvalidToken");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
+        checkRestricted(userId);
         User userData=userRepository.findById(userId).orElse(null);
         Comment rootComment=commentRepository.findById(dto.getRootCommentId()).orElse(null);
         Article rootArticle=articleRepository.findById(rootComment.getArticleId()).orElse(null);
@@ -236,6 +239,8 @@ public class CommentService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        checkRestricted(userId);
         Comment comment=commentRepository.findById(commentId).orElse(null);
         if(comment==null){
             throw new IllegalArgumentException("CommentNotFound");
@@ -272,6 +277,12 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         return stringifiedCommentList;
+    }
+
+    public void checkRestricted(Long userId){
+        if((Boolean)restrictionService.getIsRestricted(Function.COMMENT, userId)){
+            throw new RuntimeException("CommentFunctionRestricted");
+        }
     }
 
 
