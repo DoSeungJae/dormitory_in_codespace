@@ -9,6 +9,8 @@ import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
+import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,9 @@ public class UserService {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private RestrictionService restrictionService;
 
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
@@ -168,6 +173,13 @@ public class UserService {
         else if(!passwordEncryptor.matchesPassword(dto.getPassWord(), user.getPassWord())){
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
+        Object result=restrictionService.getIsRestricted(Function.LOGIN, user.getId());
+        if(result instanceof String){ //String 반환 시 이미 isRestricted는 true
+            String message=(String)result;
+            throw new RuntimeException(message);
+        }
+
+        //result가 String 타입이 아닐 시 Boolean 타입이며 값은 false임. 즉 제제가 없다는 의미이므로 로그인에 문제가 없음.
         return tokenProvider.createToken(user);
     }
 
@@ -196,6 +208,5 @@ public class UserService {
         }
         return null;
     }
-
-
+    
 }
