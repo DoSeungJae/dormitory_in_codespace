@@ -39,3 +39,5 @@ out/
 ### docker compose 등 config 파일 ###
 ../docker-compose.yml
 ../redis.conf
+
+/workspaces/codespaces-blank/dormitory/back/src/main/resources/application.properties
