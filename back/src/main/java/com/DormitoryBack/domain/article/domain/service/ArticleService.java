@@ -270,7 +270,7 @@ public class ArticleService {
     }
 
     public void checkRestricted(Long userId){
-        if(restrictionService.getIsRestricted(Function.ARTICLE, userId)){
+        if((Boolean)restrictionService.getIsRestricted(Function.ARTICLE, userId)){
             throw new RuntimeException("ArticleFunctionRestricted");
         }
     }
