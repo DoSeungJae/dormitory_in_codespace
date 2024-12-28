@@ -23,8 +23,7 @@ function DormitoryChangeForm({userId}) {
     };
 
     const changeDormitory = async () => {
-        console.log(11);
-        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/${userId}`;
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/user/${userId}`;
         const body={
             confirmPassword:password,
             dormId: dormNameToDormId[dormitory]
@@ -36,8 +35,7 @@ function DormitoryChangeForm({userId}) {
         }catch(error){
             if(error.response.data==="ConfirmPasswordNotCorrect"){
                 toast.error("확인 비밀번호가 올바르지 않아요.");
-            }
-            
+            }       
         }
     }
 

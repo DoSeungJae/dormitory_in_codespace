@@ -64,7 +64,7 @@ function PostingPage() {
 
 
     const setArticleState = async () => {
-      const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${targetId}`
+      const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${targetId}`
       try{
         const response=await axios.get(path);
         setTitle(response.data.title);
@@ -164,7 +164,7 @@ function PostingPage() {
     }
 
     const postArticle = async () => {
-        const fullPath = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/new`;
+        const fullPath = `${process.env.REACT_APP_HTTP_API_URL}/article/new`;
         const data = {
           title:title,
           contentHTML:content,
@@ -207,7 +207,7 @@ function PostingPage() {
         contentHTML:content
       };
       console.log(data);
-      const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${targetId}`;
+      const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${targetId}`;
       try{
         const response= await axios.patch(path,data,{
           headers:{

@@ -50,7 +50,7 @@ function ArticlePage(){
     }
 
     const getComments = async () => {
-      const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/article/${article.id}`;
+      const path = `${process.env.REACT_APP_HTTP_API_URL}/comment/article/${article.id}`;
       try {
           const response = await axios.get(path);
           const rootCommentList = response.data.rootComments.map(item => JSON.parse(item));
@@ -69,7 +69,7 @@ function ArticlePage(){
 
     const isSame = async (token) => {
       try {
-        const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/token/userId', {
+        const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/token/userId`, {
             headers: {
                 'Authorization': `${token}`
             }

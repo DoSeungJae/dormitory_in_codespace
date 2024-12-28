@@ -21,11 +21,11 @@ function HomePage() {
     }
     let path;
     if(dorId!=0){
-     path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/dorm/${dorId}?page=${page}`;
+     path=`${process.env.REACT_APP_HTTP_API_URL}/article/dorm/${dorId}?page=${page}`;
      
     } 
     else{
-      path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article?page=${page}`;
+      path=`${process.env.REACT_APP_HTTP_API_URL}/article?page=${page}`;
     }
     
     try{

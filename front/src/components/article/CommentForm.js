@@ -20,7 +20,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
       inputRef.current.focus();
     }
     else{
-      const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/newReply`;
+      const path = `${process.env.REACT_APP_HTTP_API_URL}/comment/newReply`;
       const data={
         rootCommentId:rootCommentId,
         content:comment,
@@ -56,7 +56,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
       toast.warn("내용을 입력해주세요!");
       return 
     }
-    const fullPath = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/comment/new`;
+    const fullPath = `${process.env.REACT_APP_HTTP_API_URL}/comment/new`;
     const data = {
       articleId:article_Id,
       content:comment,
@@ -82,7 +82,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
   }
 
   const getArticle = async (articleId) => {
-    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${articleId}`;
     try{
         const response=await axios.get(path);
         return response.data;
@@ -94,7 +94,7 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
   }
 
   const goToArticlePage = async (articleId) => { //수정 필요 
-    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${articleId}`;
     try{
       const response=await axios.get(path);
       const article=(response.data);

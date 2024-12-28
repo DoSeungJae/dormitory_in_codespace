@@ -11,7 +11,7 @@ function UserDeletionForm ({userId}) {
         if(password==""){
             toast.warn("비밀번호를 입력해주세요.");
         }
-        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/${userId}`;
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/user/${userId}`;
         const body={
             confirmPassword : password
         };

@@ -68,7 +68,7 @@ const GroupStartButton = ({articleId}) => {
       showCancelButton: true
       }).then((result)=>{
         if(result.isConfirmed){
-          const forcePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/finish/${articleId}?force=1`;
+          const forcePath=`${process.env.REACT_APP_HTTP_API_URL}/group/finish/${articleId}?force=1`;
           finishGroup(forcePath);
         }
       })
@@ -80,7 +80,7 @@ const GroupStartButton = ({articleId}) => {
       path=forcePath;
     }
     else{
-      path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/finish/${articleId}`;
+      path=`${process.env.REACT_APP_HTTP_API_URL}/group/finish/${articleId}`;
     }
     console.log(path);
     const headers={
@@ -102,7 +102,7 @@ const GroupStartButton = ({articleId}) => {
   }
 
     const makeGroup = async (maxCapacity) => {
-        const path="https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/new";
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/group/new`;
         const body={
             articleId:articleId,
             maxCapacity:maxCapacity

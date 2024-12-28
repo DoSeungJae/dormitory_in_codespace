@@ -37,12 +37,12 @@ const MyPage = () => {
     }
 
     const getUser = async () => {
-        const pathUserId=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/token/userId`;
+        const pathUserId=`${process.env.REACT_APP_HTTP_API_URL}/token/userId`;
         try {
             const response = await axios.get(pathUserId, {headers: {'Authorization': `${token}`}});
             const userId=response.data;
             try{
-                const pathUser=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/${userId}`;
+                const pathUser=`${process.env.REACT_APP_HTTP_API_URL}/user/${userId}`;
                 const response2=await axios.get(pathUser);
                 setUser(response2.data);
             }catch(error){

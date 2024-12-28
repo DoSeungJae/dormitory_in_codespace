@@ -10,7 +10,7 @@ function NotificationPage(){
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
 
     const getNotifications= async () => {
-        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/notification/myNotifications`;
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/notification/myNotifications`;
         const headers={
             'Authorization':`${token}`
         };

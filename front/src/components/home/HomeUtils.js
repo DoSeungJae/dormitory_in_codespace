@@ -6,12 +6,12 @@ import Swal from 'sweetalert2';
 export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,setSelectComponentIndex ,selectComponentIndex, setArticle) => {
     
     try {
-      const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/validate', {
+      const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/article/validate`, {
           headers: {
               'Authorization': `${token}`
           }
       });
-      const isArticlePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/isArticle/${articlePreview.id}`;
+      const isArticlePath=`${process.env.REACT_APP_HTTP_API_URL}/article/isArticle/${articlePreview.id}`;
       const isArticleResponse=await axios.get(isArticlePath);
       const isArticle=isArticleResponse.data;
       if(!isArticle){
@@ -30,7 +30,7 @@ export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,se
         //localStorage.setItem('article',JSON.stringify(articlePreview)); //이 과정은 더이상 필요 없음. article을 가져와 articlePage에 set하는 것이 중요함.
 
         try{
-          const articlePath=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articlePreview.id}`;
+          const articlePath=`${process.env.REACT_APP_HTTP_API_URL}/article/${articlePreview.id}`;
           const response=await axios.get(articlePath);
           setArticle(response.data);
         }catch(error){
@@ -59,7 +59,7 @@ export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,se
 export const goToPostingPage = async (selectComponentIndex,setSelectComponentIndex) => {
   const token=localStorage.getItem("token");
   try{
-    const response = await axios.get('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/validate', {
+    const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/article/validate`, {
       headers: {
           'Authorization': `${token}`
       }

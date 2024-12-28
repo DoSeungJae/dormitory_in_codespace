@@ -40,7 +40,7 @@ const UseSignInButton = () => {
         rex_tel.test(tel) &&
         rex_nick.test(nick)
         ){
-            axios.post('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/join',
+            axios.post(`${process.env.REACT_APP_HTTP_API_URL}/user/join`,
             {email:eMail,passWord:pw,nickName:nick})
             .then(response => {
               console.log(response.data);

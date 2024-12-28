@@ -31,7 +31,7 @@ const NotiPreview = ({notiList}) => {
 
 
     const confirmNotification = async (noti) => {
-        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/notification/confirm/${noti.id}`; 
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/notification/confirm/${noti.id}`; 
         try{
             const response=await axios.patch(path,{},{});
             
@@ -66,7 +66,7 @@ const NotiPreview = ({notiList}) => {
     }
 
     const getArticle = async (articleId) => {
-        const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${articleId}`;
         try{
             const response=await axios.get(path);
             return response.data;

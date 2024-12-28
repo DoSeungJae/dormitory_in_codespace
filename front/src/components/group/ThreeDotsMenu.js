@@ -249,7 +249,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
 
 
   const report = async (targetType,id,reportReason) => {
-    const path = `https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/report/new`;
+    const path = `${process.env.REACT_APP_HTTP_API_URL}/report/new`;
     const body={
       reportType:targetType,
       targetId:id,
@@ -275,7 +275,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
   
   const quitGroup = async () => {
-    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/quit?groupId=${group.id}`; 
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/group/quit?groupId=${group.id}`; 
     const headers = {
         'Authorization':`${token}`
     };
@@ -292,7 +292,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
 
   const goToArticlePage = async () => { //수정 중
-    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${group.id}`;
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${group.id}`;
     try{
       const response=await axios.get(path);
       const article1=(response.data);
@@ -361,7 +361,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
 
   const expelMember = async (memberToBeExpelled) => {
-    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/group/expel?groupId=${group.id}&targetId=${memberToBeExpelled.id}`;
     const headers = {
       'Authorization':`${token}`
     };
@@ -378,7 +378,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
   }
 
   const applyMemberChange = async (nickName,mode) => { //-1 : 멤버 제거, 1 : 멤버 추가
-    const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/findByNick/${nickName}`;
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/user/findByNick/${nickName}`;
     try{
       const response=await axios.get(path);
       const user=(response.data);

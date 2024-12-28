@@ -23,7 +23,7 @@ function UseLogInButton() {
     },[article])
 
     const getArticle = async (articleId) => {
-      const path=`https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/article/${articleId}`;
+      const path=`${process.env.REACT_APP_HTTP_API_URL}/article/${articleId}`;
       try{
         const response=await axios.get(path);
         return response.data;
@@ -42,7 +42,7 @@ function UseLogInButton() {
       }
 
       else{
-        axios.post('https://improved-space-tribble-vjvwrwx956jh69w4-8080.app.github.dev/api/v1/user/logIn',
+        axios.post(`${process.env.REACT_APP_HTTP_API_URL}/user/logIn`,
         {email:id,passWord:pw})
         .then(response => {
           console.log(response.data);

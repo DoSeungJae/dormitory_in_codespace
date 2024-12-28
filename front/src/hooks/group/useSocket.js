@@ -22,7 +22,7 @@ export const useSocket = (room, username) => {
     }, [socket, room]);
 
     useEffect(() => {
-        const socketBaseUrl = 'https://improved-space-tribble-vjvwrwx956jh69w4-8085.app.github.dev';
+        const socketBaseUrl = `${process.env.REACT_APP_SOCKET_URL}`;
         const s = io(socketBaseUrl, {
             query: `username=${username}&room=${room}`
         });
