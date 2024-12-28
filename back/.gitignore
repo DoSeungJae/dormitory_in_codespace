@@ -40,4 +40,6 @@ out/
 ../docker-compose.yml
 ../redis.conf
 
+./src/main/resources/application.properties
+src/main/resources/application.properties
 /workspaces/codespaces-blank/dormitory/back/src/main/resources/application.properties
