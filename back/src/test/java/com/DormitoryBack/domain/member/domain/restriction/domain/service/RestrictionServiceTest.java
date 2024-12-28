@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionRequestDTO;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTO;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTOList;
@@ -48,11 +51,16 @@ public class RestrictionServiceTest {
     @Mock
     private RestrictionRepository restrictionRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private RestrictionService restrictionService;
 
     @Captor
     private ArgumentCaptor<Restriction> restirctionCaptor;
+
+    private User user;
 
     private Restriction restriction;
 
@@ -155,22 +163,21 @@ public class RestrictionServiceTest {
     @Test
     public void testRestrict(){
         LocalDateTime now=LocalDateTime.of(2024,12,21,0,0);
+        user=User.builder()
+            .id(1L)
+            .eMail("email")
+            .passWord("passWord")
+            .nickName("nickName")
+            .dormId(1L)
+            .build();
+
         try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
             mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
 
             given(restrictionRepository.save(restirctionCaptor.capture())).willReturn(restriction);
+            given(userRepository.findById(1L)).willReturn(Optional.of(user));
             RestrictionResponseDTO responseDTO=restrictionService.restrict(requestDTO);
-            //testGetIsRestricted 코드 작성 이후 위 코드에서 exception thrown
-
-            //assertEquals(responseDTO.getUserId(),requestDTO.getUserId());
-            //assertEquals(responseDTO.getReason(),requestDTO.getReason());
-            //assertEquals(responseDTO.getExpireTime(),TimeOptimizer.now().plusDays(requestDTO.getDurationDays()));
-            //assertFalse(responseDTO.getIsExpired());
             
-            //assertEquals(3,restriction.getSuspendedFunctions());
-            //assertEquals(requestDTO.getSuspendedFunctions(),responseDTO.getSuspendedFunctions());
-
-
             verify(restrictionRepository,times(1)).save(restirctionCaptor.capture());
             Restriction capturedRestriction=restirctionCaptor.getValue();
             assertEquals(requestDTO.getUserId(),capturedRestriction.getUserId());
@@ -267,42 +274,98 @@ public class RestrictionServiceTest {
         now=LocalDateTime.of(2024,12,21,0,0).plusDays(14);
         try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
             mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
-            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
-            assertFalse(restrictionService.getIsRestricted(Function.ARTICLE,userId));
-            assertFalse(restrictionService.getIsRestricted(Function.COMMENT,userId));
-            assertFalse(restrictionService.getIsRestricted(Function.GROUP,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN, userId) instanceof String);
+            assertFalse((Boolean)restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertFalse((Boolean)restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertFalse((Boolean)restrictionService.getIsRestricted(Function.GROUP,userId));
         }
         // (2) 제제 : LOGIN, ARTICLE
         now=LocalDateTime.of(2024,12,21,0,0).plusDays(9);
         try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
             mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
-            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
-            assertTrue(restrictionService.getIsRestricted(Function.ARTICLE,userId));
-            assertFalse(restrictionService.getIsRestricted(Function.COMMENT,userId));
-            assertFalse(restrictionService.getIsRestricted(Function.GROUP,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN, userId) instanceof String);
+            assertTrue((Boolean)restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertFalse((Boolean)restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertFalse((Boolean)restrictionService.getIsRestricted(Function.GROUP,userId));
         }
 
         // (3) 제제 : LOGIN, ARTICLE, COMMENT
         now=LocalDateTime.of(2024,12,21,0,0).plusDays(4);
         try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
             mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
-            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
-            assertTrue(restrictionService.getIsRestricted(Function.ARTICLE,userId));
-            assertTrue(restrictionService.getIsRestricted(Function.COMMENT,userId));
-            assertFalse(restrictionService.getIsRestricted(Function.GROUP,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN, userId) instanceof String);
+            assertTrue((Boolean)restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertTrue((Boolean)restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertFalse((Boolean)restrictionService.getIsRestricted(Function.GROUP,userId));
         }
 
         // (4) 제제 : LOGIN, ARTICLE, COMMENT, GROUP
         now=LocalDateTime.of(2024,12,21,0,0);
         try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
             mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
-            assertTrue(restrictionService.getIsRestricted(Function.LOGIN,userId));
-            assertTrue(restrictionService.getIsRestricted(Function.ARTICLE,userId));
-            assertTrue(restrictionService.getIsRestricted(Function.COMMENT,userId));
-            assertTrue(restrictionService.getIsRestricted(Function.GROUP,userId));
+            assertTrue(restrictionService.getIsRestricted(Function.LOGIN, userId) instanceof String);
+            assertTrue((Boolean)restrictionService.getIsRestricted(Function.ARTICLE,userId));
+            assertTrue((Boolean)restrictionService.getIsRestricted(Function.COMMENT,userId));
+            assertTrue((Boolean)restrictionService.getIsRestricted(Function.GROUP,userId));
         }
+    }
+
+    @Test
+    public void testMakeLoginRestrictionDetail(){
+        Restriction r1=Restriction.builder()
+        .userId(1L)
+        .reason("reason1")
+        .durationDays(15L)
+        .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+        .suspendedFunctions(1)
+        .build();
+
+        Restriction r2=Restriction.builder()
+            .userId(1L)
+            .reason("reason2")
+            .durationDays(10L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(3)
+            .build();
+
+        Restriction r3=Restriction.builder()
+            .userId(1L)
+            .reason("reason3")
+            .durationDays(5L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(7)
+            .build();
+
+        Restriction r4=Restriction.builder()
+            .userId(1L)
+            .reason("reason4")
+            .durationDays(1L)
+            .triggeredTime(LocalDateTime.of(2024,12,21,0,0))
+            .suspendedFunctions(15)
+            .build();
+
+        Long userId=1L;
+        List<Restriction> restrictions=new ArrayList<>();
+        restrictions.add(r1);
+        restrictions.add(r2);
+        restrictions.add(r3);
+        restrictions.add(r4);
+    
+        given(restrictionRepository.findAllByUserId(userId)).willReturn(restrictions);
+        LocalDateTime now=LocalDateTime.of(2024,12,21,0,0);
+        try (var mockedTimeOptimizer = mockStatic(TimeOptimizer.class)){
+            mockedTimeOptimizer.when(TimeOptimizer::now).thenReturn(now);
+            Object result=restrictionService.makeLoginRestrictionDetail(userId);
+            assertTrue(result instanceof String);
+            assertEquals("LoginFunctionRestricted:expiredAt:2025-01-05T00:00", (String)result);
+        } 
+
+    
+        
         
 
-
     }
+
+
+  
 }
