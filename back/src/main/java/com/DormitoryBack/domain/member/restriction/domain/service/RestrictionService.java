@@ -106,7 +106,7 @@ public class RestrictionService {
         return dto;
     }
 
-    public Boolean getIsRestricted(Function function, Long userId){
+    public Object getIsRestricted(Function function, Long userId){
         List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId);
         Iterator<Restriction> iterator=restrictions.iterator();
         Boolean isRestricted=false;
@@ -126,7 +126,35 @@ public class RestrictionService {
             isRestricted=true;
             break;
         }
+
+        if(function==Function.LOGIN && isRestricted){
+            return makeLoginRestrictionDetail(userId);
+        }
         return isRestricted;
+    }
+
+    //!
+    public String makeLoginRestrictionDetail(Long userId){
+        String message="LoginFunctionRestricted:expiredAt:";
+        LocalDateTime expiredTime=getExpiredTime(userId,Function.LOGIN);
+        message=message+expiredTime.toString();
+
+        return message;
+    }
+
+    //!
+    public LocalDateTime getExpiredTime(Long userId, Function function){
+        List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId);
+        Iterator<Restriction> iterator=restrictions.iterator();
+        LocalDateTime entireExpieredTime=TimeOptimizer.now();
+        while(iterator.hasNext()){
+            Restriction restriction=iterator.next();
+            LocalDateTime expiredTime=restriction.getTriggeredTime().plusDays(restriction.getDurationDays());
+            if(expiredTime.isAfter(entireExpieredTime)){
+                entireExpieredTime=expiredTime;
+            }
+        }
+        return entireExpieredTime;
     }
     
     
