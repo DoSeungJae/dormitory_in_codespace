@@ -15,6 +15,8 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
+import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
@@ -50,7 +52,10 @@ public class GroupService {
     private UserRepository userRepository;
 
     @Autowired
-    public TokenProvider tokenProvider;
+    private RestrictionService restrictionService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @Autowired
     public GroupService(RedisTemplate<String,Long> redisTemplate,SocketService socketService){
@@ -64,6 +69,9 @@ public class GroupService {
         HashOperations<String,Long,Long> hashOperations=redisTemplate.opsForHash();
 
         Long articleId=requestDto.getArticleId();
+        Article article=articleRepository.findById(articleId).orElse(null);
+        Long hostId=article.getUserId();
+        checkRestricted(hostId);
         if(requestDto.getMaxCapacity()==null){
             requestDto.setMaxCapacity(4L);
         }
@@ -73,11 +81,10 @@ public class GroupService {
         else if(requestDto.getMaxCapacity()>10L){
             throw new RuntimeException("MaxCapacityCannotExceed10");
         }
-        Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        Long hostId=article.getUserId();
+        
         Long NotBelongToAnywhere=setOperations.add("groupGlobal",hostId);
         if(NotBelongToAnywhere==0L){
             throw new RuntimeException("DuplicatedParticipation");
@@ -274,6 +281,7 @@ public class GroupService {
             throw new RuntimeException("GroupIdNotGiven");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
+        checkRestricted(userId);
         Long numBeforeAdding=setOperations.size(String.valueOf(groupId));
         Group targetGroup=groupRepository.findById(groupId).orElse(null);
         Boolean isMemberOfTargetGroup=setOperations.isMember(String.valueOf(targetGroup.getId()),userId);
@@ -608,6 +616,12 @@ public class GroupService {
         else{
             setOperations.remove("groupGlobal",userId);
             return false;
+        }
+    }
+
+    public void checkRestricted(Long userId){
+        if((Boolean)restrictionService.getIsRestricted(Function.GROUP, userId)){
+            throw new RuntimeException("CommentFunctionRestricted");
         }
     }
 
