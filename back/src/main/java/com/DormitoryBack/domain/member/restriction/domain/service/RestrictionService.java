@@ -23,6 +23,7 @@ public class RestrictionService {
 
     //@Value("${administrator.key}") //value 어노테이션을 사용하면 test 환경에서 exception이 thorwn.
     private final String key="20220393-2470011192"; //런타임에서도 Value 어노테이션이 동작하지 않는지 확인하기
+    //임시 코드, 수정 반드시 필요함.
 
     @Autowired
     private RestrictionRepository restrictionRepository;
