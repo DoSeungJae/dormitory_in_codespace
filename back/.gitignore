@@ -43,3 +43,6 @@ out/
 ./src/main/resources/application.properties
 src/main/resources/application.properties
 /workspaces/codespaces-blank/dormitory/back/src/main/resources/application.properties
+
+./src/main/resources/application.yml
+/workspaces/codespaces-blank/dormitory/back/src/main/resources/application.yml
