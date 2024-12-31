@@ -39,6 +39,14 @@ public class User {
     @Column
     private Long dormId;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
+
     @JsonIgnore
     @OneToMany(mappedBy = "usrId")
     private List<Article> articles;
@@ -49,6 +57,12 @@ public class User {
         if(dto.getPassWord()!=null){this.passWord=dto.getPassWord();} //사실상 필요 없는 코드  
         if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 
         if(dto.getDormId()!=null){this.dormId=dto.getDormId();}
+    }
+
+    public User update2(String nickname){
+        this.nickName=nickname;
+        //this.picture=picture;
+        return this;
     }
 
 
