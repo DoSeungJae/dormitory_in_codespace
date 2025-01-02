@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,8 +13,11 @@ root.render(
   </React.StrictMode>
    strictMode는 기본적으로 (모든) 컴포넌트들이 중복(2번)으로 렌더링되므로 사용하지 않음 
   */ 
- 
-  <App/>
+  <GoogleOAuthProvider clientId='272109241394-9qcdekfl9dhmh8ke5dtjod0hmlaf5t73.apps.googleusercontent.com'>
+    <App/>
+  </GoogleOAuthProvider>
+
+
 );
 
 
