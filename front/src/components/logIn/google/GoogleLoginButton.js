@@ -1,5 +1,5 @@
 import React from 'react';
-import {GoogleLogin} from '@react-oauth/google';
+import {GoogleLogin, useGoogleLogin} from '@react-oauth/google';
 
 const GoogleLoginButton = () => {
     const responseMessage = (response) => {
@@ -16,9 +16,12 @@ const GoogleLoginButton = () => {
                 className="sign"
                 onSuccess={credentialResponse => {console.log(credentialResponse);}}
                 onError={() => {console.log('Login Failed');}}
+                useOneTap
+                redirectUri="https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev"
             />    
         </div>
     );
 };
 
 export default GoogleLoginButton;
+
