@@ -59,13 +59,12 @@ public class User {
         if(dto.getDormId()!=null){this.dormId=dto.getDormId();}
     }
 
+    //사실상 필요 없음
     public User update2(String nickname){
         this.nickName=nickname;
         //this.picture=picture;
         return this;
     }
-
-
 
     public String toJsonString(){
         ObjectMapper objectMapper=new ObjectMapper();
