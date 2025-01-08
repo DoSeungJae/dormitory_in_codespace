@@ -1,5 +1,7 @@
 package com.DormitoryBack.domain.member.domain.dto;
 
+import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ public class UserRequestDTO {
     String nickName;
     Long dormId;
     String confirmPassword; //유저 수정의 경우에만 사용됨.
+    ProviderType provier; //OAuth2를 통해 회원가입을 하는 경우에만 해당.
 
     public UserRequestDTO(String mail, String passWord, String nickName, Long dormId){
         this.mail=mail;
