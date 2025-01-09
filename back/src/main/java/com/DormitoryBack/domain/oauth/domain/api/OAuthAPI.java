@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.DormitoryBack.domain.oauth.domain.dto.GoogleRequestDTO;
+import com.DormitoryBack.domain.oauth.domain.dto.GoogleResponseDTO;
 import com.DormitoryBack.domain.oauth.domain.service.OAuthService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,9 @@ public class OAuthAPI {
     @Autowired
     private OAuthService authService;
 
-    @PostMapping("/google")
-    public ResponseEntity googleAuth(@RequestBody GoogleRequestDTO dto){
-        String email=authService.signUpWithGoogle(dto); //임시 로직
-        return ResponseEntity.status(HttpStatus.OK).body(email);
+    @PostMapping("/google") 
+    public ResponseEntity googleAuth(@RequestBody GoogleRequestDTO requestDTO){
+        GoogleResponseDTO responseDTO=authService.verifyGoogleToken(requestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }
