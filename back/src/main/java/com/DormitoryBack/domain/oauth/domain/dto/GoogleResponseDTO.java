@@ -8,8 +8,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class GoogleResponseDTO {
-
-    private Boolean isValid;
     
     private ProviderType provider;
 
