@@ -7,6 +7,7 @@ import com.DormitoryBack.module.crypt.PasswordEncryptor;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.entity.RoleType;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
@@ -136,13 +137,13 @@ public class UserService {
         
         if (existingUserMail != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
+            //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
         }
 
         if(existingUserNick != null){
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
+            //throw new IllegalArgumentException("DuplicatedNickname"); <- 이 코드로 변경 필요 
         }
-        log.info(dto.getPassWord());
-        log.info(dto.getMail());
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
         String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
         
@@ -151,7 +152,9 @@ public class UserService {
                 .passWord(encryptedPassword) 
                 .nickName(dto.getNickName())
                 .dormId(dto.getDormId())
-                .build();
+                .provider(dto.getProvier())
+                .role(RoleType.ROLE_USER)
+                .build();  
 
         User saved=userRepository.save(user);
 
