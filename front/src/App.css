@@ -49,8 +49,11 @@
   display : flex;
   overflow-x : auto;
   padding-bottom:1vh;
-  border-bottom : 0.5px solid #000000;
+  gap:2vw;
+  overflow-x:auto;
 }
+
+.no_scroll::-webkit-scrollbar {display: none !important; }
 
 .write-button {
   position: absolute;
@@ -210,9 +213,8 @@
   border-radius:10px;
 }
 
-.dor-icon{
+.dorm-text{
   font-size:3.7vw;
-  border-radius:10px;
   padding:0.5vh;
   margin-right:2vw;
   flex: 0 0 auto;
