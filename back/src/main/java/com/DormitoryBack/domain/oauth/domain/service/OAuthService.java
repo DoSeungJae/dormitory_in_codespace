@@ -5,7 +5,10 @@ import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import com.DormitoryBack.domain.oauth.domain.dto.GoogleRequestDTO;
+import com.DormitoryBack.domain.oauth.domain.dto.GoogleResponseDTO;
+import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
@@ -27,13 +30,13 @@ public class OAuthService {
 
     private GsonFactory gsonFactory=GsonFactory.getDefaultInstance();
 
-    public String signUpWithGoogle(GoogleRequestDTO dto){
+    public GoogleResponseDTO verifyGoogleToken(GoogleRequestDTO requestDTO){
         String email;
         Boolean emailVerified;
         GoogleIdTokenVerifier verifier=new GoogleIdTokenVerifier.Builder(transport, gsonFactory)
             .setAudience(Arrays.asList(clientId))
             .build();
-        String accessToken=dto.getToken();
+        String accessToken=requestDTO.getToken();
 
         try{
             GoogleIdToken idToken=verifier.verify(accessToken);
@@ -54,8 +57,12 @@ public class OAuthService {
             throw new RuntimeException("IOException");
         }
 
-        return email;
+        GoogleResponseDTO responseDTO=GoogleResponseDTO.builder()
+            .email(email)
+            .provider(ProviderType.GOOGLE)
+            .build();
 
+        return responseDTO;
     }
 
 
