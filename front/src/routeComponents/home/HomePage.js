@@ -115,7 +115,7 @@ return (
     </header>
     
     <main className="App-main">
-      <div className="slide-menu">
+      <div className="slide-menu no_scroll">
         {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
           const dorItemStyle=calculateDorItemStyle(dorId-1,i);
           return (
