@@ -210,14 +210,16 @@
   flex: 0 0 auto;
   margin-right:0.7vh;
   padding:1vh;
-  border-radius:10px;
+  border-radius:15px;
 }
 
 .dorm-text{
-  font-size:3.7vw;
-  padding:0.5vh;
-  margin-right:2vw;
   flex: 0 0 auto;
+  font-size:3.5vw;
+  text-align: center;
+  padding-top: 0.75vh;
+  padding-bottom: 0.75vh;
+  border-radius:15px;
 }
 
 .bottom-menu{
