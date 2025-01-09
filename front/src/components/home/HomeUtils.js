@@ -54,7 +54,7 @@ export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,se
       console.error('An error occurred:', error);
   }
     
-  };
+};
 
 export const goToPostingPage = async (selectComponentIndex,setSelectComponentIndex) => {
   const token=localStorage.getItem("token");
@@ -81,18 +81,20 @@ export const goToPostingPage = async (selectComponentIndex,setSelectComponentInd
 
 export function calculateDorItemStyle(selectedIdx, idx) {
     const isSelected = idx === selectedIdx;
-    let color;
-    const item = ['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'][idx];
-    if (item.startsWith('오름')) {
-      color = `hsl(120, 39%, ${55 - (idx * 6)}%)`;
-    } else {
-      color = `hsl(197, 71%, ${70 - (idx - 3) * 10}%)`;
-    }
-    const border = `2px solid ${color}`;
+    const color='#FF8C00';
+    const borderColor='#f8f8f8'
     return {
-      background: isSelected ? color : 'none',
+      background: isSelected ? color : '#f8f8f8',
       color: isSelected ? '#fff' : 'black',
-      border: border,
+      border: borderColor
+    };
+  }
+
+export function calculateArticlePreviewDorm(selectedIdx, idx) {
+    const isSelected = idx === selectedIdx;
+    return {
+      background:'#f8f8f8',
+      display: isSelected ? 'none' : 'block'
     };
   }
 

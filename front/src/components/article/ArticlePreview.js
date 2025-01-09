@@ -1,5 +1,5 @@
 import {React,useContext, useState} from 'react';
-import { goArticlePage,calculateDorItemStyle,dorIdToDorName } from '../home/HomeUtils';
+import { goArticlePage,calculateDorItemStyle,dorIdToDorName, calculateArticlePreviewDorm } from '../home/HomeUtils';
 import HomeSelectContext from '../home/HomeSelectContext';
 import commentImage from '../../images/comment.png';
 import groupImage from '../../images/group.png';
@@ -35,8 +35,7 @@ function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightS
             </div>
           </div>
           <div className='article-item-icons'>
-            <div className='dor-icon'
-              style={calculateDorItemStyle(dorId-1,articlePreview.dormId-1)}>
+            <div className='dorm-text' style={calculateArticlePreviewDorm(dorId-1,articlePreview.dormId-1)}>
               {dorIdToDorName[articlePreview.dormId]}
             </div>
           </div>
