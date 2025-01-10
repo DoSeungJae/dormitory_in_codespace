@@ -57,17 +57,31 @@
 
 .write-button {
   position: absolute;
-  right:-7%;
-  bottom:7%;
+  right:-13%;
+  bottom:8%;
   transform: translate(-50%, -50%);
   z-index: 10;
   background-color: #FF8C00;
   color: white;
   border: none;
-  padding: 1vh 6vw;
+  padding: 0.5vh;
+  padding-right: 5.5vw;
   cursor: pointer;
   border-radius: 15px;
+
+  display: flex;
+  justify-content: space-between;
 }
+
+.write-button-icon{
+  padding-left:2.5vw;
+  padding-right: 1vw;
+}
+
+.write-button-text{
+
+}
+
 
 .group-start-button, .group-participate-button {
   border: none;
