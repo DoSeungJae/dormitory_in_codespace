@@ -16,8 +16,8 @@ root.render(
   */ 
   <GoogleOAuthProvider clientId='272109241394-9qcdekfl9dhmh8ke5dtjod0hmlaf5t73.apps.googleusercontent.com' >
     
-    <GoogleLoginButton/>
-    {/*<App/>*/}
+    {/*<GoogleLoginButton/>*/}
+    <App/>
   </GoogleOAuthProvider>
 
 
