@@ -794,6 +794,16 @@
 }
 
 
+.modal-restriction-entry{
+  font-size: 1.5vh;
+}
+
+.scrollable{
+  max-height: 50vh; 
+  overflow-x: hidden; 
+  overflow-y: auto;
+}
+
 /* ~ 모달 관련 스타일 */
 
 .form-control:focus {
