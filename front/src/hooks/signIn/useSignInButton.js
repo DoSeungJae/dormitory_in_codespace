@@ -160,7 +160,7 @@ const UseSignInButton = () => {
         
 
         <div className="row mt-5">
-            <Button onClick={buttonPressed}>회원가입</Button>
+            <div onClick={buttonPressed} className="btn big btn-primary btn-sm">회원가입</div>
         </div>
 
       </div>

@@ -8,8 +8,8 @@ const LogInContainer = () => {
 
     return (
         <div className="LogInPage">
-            <div className="container pb-4  ">
-                <Title title="Title"/>
+            <div className="container text-center">
+                <Title title="로그인"/>
             </div>
 
             <UseLogInButton/>

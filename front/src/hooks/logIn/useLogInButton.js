@@ -83,8 +83,9 @@ function UseLogInButton() {
   
     return (
       <div className="container">
-        <div className="row mt-5">
+        <div className="row mt-3">
           <InputForm
+            className="form-control form-control-sm"
             type="text"
             placeholder="아이디"
             value={id}
@@ -95,6 +96,7 @@ function UseLogInButton() {
         </div>
         <div className="row mt-3">
           <InputForm
+            className="form-control form-control-sm"
             type="password"
             placeholder="비밀번호"
             value={pw}
@@ -104,7 +106,7 @@ function UseLogInButton() {
         </div>
   
         <div className="d-grid mt-4 pb-4">
-          <Button onClick={buttonPressed}>로그인</Button>
+          <div onClick={buttonPressed} className="btn big btn-primary btn-sm">로그인</div>
         </div>
       </div>
     );
