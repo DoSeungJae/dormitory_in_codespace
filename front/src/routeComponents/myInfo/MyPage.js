@@ -13,6 +13,7 @@ import DormitoryChangeForm from '../../components/common/modalForms/myInfo/Dormi
 import InquireForm from '../../components/common/modalForms/myInfo/InquireForm';
 import LogoutForm from '../../components/common/modalForms/myInfo/LogoutForm';
 import UserDeletionForm from '../../components/common/modalForms/myInfo/UserDeletionForm';
+import RestrictionForm from '../../components/common/modalForms/myInfo/RestrictionForm';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -91,7 +92,7 @@ const MyPage = () => {
                     </div>
                     <div className="info-community">
                     <div className='info-title'>커뮤니티</div>
-                        <div className="community-restrictionDetails">
+                        <div className="community-restrictionDetails" onClick={()=>openModal(<RestrictionForm/>)}>
                             <div>커뮤니티 이용 제한사항</div>
                         </div>
                         <div className="community-guide">
