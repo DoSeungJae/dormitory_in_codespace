@@ -81,7 +81,7 @@ export const goToPostingPage = async (selectComponentIndex,setSelectComponentInd
 
 export function calculateDorItemStyle(selectedIdx, idx) {
     const isSelected = idx === selectedIdx;
-    const color='#FF8C00';
+    const color='#ff7b00';
     const borderColor='#f8f8f8'
     return {
       background: isSelected ? color : '#f8f8f8',
