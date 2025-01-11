@@ -68,7 +68,7 @@ function PostingPage() {
       try{
         const response=await axios.get(path);
         setTitle(response.data.title);
-        setContent(response.data.content);
+        setContent(response.data.contentHTML);
         setArticle(response.data);
 
       }catch(error){
