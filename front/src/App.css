@@ -61,7 +61,7 @@
   bottom:8%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  background-color: #FF8C00;
+  background-color: #ff7b00;
   color: white;
   border: none;
   padding: 0.5vh;
@@ -95,7 +95,7 @@
 .article-item {
   position : relative;
   text-align: left;
-  border-bottom: 1px solid #D2B48C;
+  border-bottom: 1px solid #B3B3B3;
   padding: 0.5vh 0;
   padding-bottom:5.5vh;
 
