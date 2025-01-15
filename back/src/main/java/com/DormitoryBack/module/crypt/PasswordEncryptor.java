@@ -16,10 +16,6 @@ public class PasswordEncryptor {
         return passwordEncoder.encode(password);
     }
 
-    public String hashifyEmail(String email){
-        return passwordEncoder.encode(email);
-    }
-
     public boolean matchesPassword(String rawPassword, String encodedPassword){
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
