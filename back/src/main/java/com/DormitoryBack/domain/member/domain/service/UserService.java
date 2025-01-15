@@ -1,9 +1,16 @@
 package com.DormitoryBack.domain.member.domain.service;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+//Spring Security
+import org.springframework.stereotype.Service;
+
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.module.crypt.EmailEncryptor;
-import com.DormitoryBack.module.crypt.PasswordEncryptor;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
@@ -13,25 +20,17 @@ import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
+import com.DormitoryBack.module.crypt.EmailEncryptor;
+import com.DormitoryBack.module.crypt.PasswordEncryptor;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-//Spring Security
-import org.springframework.stereotype.Service;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    @Autowired
-    private final EmailEncryptor emailEncryptor;
 
     @Autowired
     private final PasswordEncryptor passwordEncryptor;
@@ -48,13 +47,19 @@ public class UserService {
     @Autowired
     private RestrictionService restrictionService;
 
+    @Autowired
+    private EncryptedEmailService encryptedEmailService;
+
+    @Autowired
+    private EmailEncryptor emailEncryptor;
+
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
         if(users.isEmpty()){
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
         List<UserResponseDTO> responseDTO = users.stream()
-                .map(user -> new UserResponseDTO(user.getId(),emailEncryptor.decryptEmail(user.getEMail()), user.getNickName(),user.getDormId()))
+                .map(user -> new UserResponseDTO(user.getId(),encryptedEmailService.getOriginEmail(user.getEncryptedEmail()), user.getNickName(),user.getDormId()))
                 .collect(Collectors.toList());
 
         return responseDTO;
@@ -67,7 +72,7 @@ public class UserService {
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
                 .id(usrId)
-                .eMail(emailEncryptor.decryptEmail(user.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(user.getNickName())
                 .dormId(user.getDormId())
                 .build();
@@ -81,7 +86,7 @@ public class UserService {
             throw new RuntimeException("UserNotFound");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(emailEncryptor.decryptEmail(user.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(nickName)
                 .dormId(user.getDormId())
                 .build();
@@ -112,9 +117,14 @@ public class UserService {
             throw new RuntimeException("ConfirmPasswordNotCorrect");
         }
         user.update(dto);
+        String encryptedEmail;
         if(dto.getMail()!=null){
-            String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
-            user.setEMail(encryptedEmail);
+            try{
+                encryptedEmail=emailEncryptor.hashifyEmail(dto.getMail());    
+            }catch(NoSuchAlgorithmException e){
+                return null;
+            }
+            user.setEncryptedEmail(encryptedEmail);
         }
         if(dto.getPassWord()!=null){
             String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
@@ -123,7 +133,7 @@ public class UserService {
         User saved=userRepository.save(user);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(emailEncryptor.decryptEmail(saved.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(saved.getNickName())
                 .dormId(user.getDormId())
                 .build();
@@ -146,10 +156,15 @@ public class UserService {
             //throw new IllegalArgumentException("DuplicatedNickname"); <- 이 코드로 변경 필요 
         }
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
-        String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
+        String encryptedEmail;
+        try{
+            encryptedEmail=emailEncryptor.hashifyEmail(dto.getMail());
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
         
         User user = User.builder()
-                .eMail(encryptedEmail) 
+                .encryptedEmail(encryptedEmail)
                 .passWord(encryptedPassword) 
                 .nickName(dto.getNickName())
                 .dormId(dto.getDormId())
@@ -158,9 +173,10 @@ public class UserService {
                 .build();  
 
         User saved=userRepository.save(user);
+        encryptedEmailService.setNewEmailMap(dto.getMail());
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(emailEncryptor.decryptEmail(saved.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(saved.getEncryptedEmail()))
                 .nickName(saved.getNickName())
                 .dormId(saved.getDormId())
                 .build();
@@ -169,13 +185,14 @@ public class UserService {
     }
 
     public User getSocialAccount(ProviderType provider, String email){
+        //hash에 
         User user;
         return null;
     }
 
     public String logIn(UserLogInDTO dto){
         String email=dto.getEMail();
-        User user=this.findUserByeMail(email);
+        User user=this.findUserByeMail(email); //변경 필요 
         if(user==null){
             throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
         }
@@ -188,7 +205,7 @@ public class UserService {
             throw new RuntimeException(message);
         }
 
-        //result가 String 타입이 아닐 시 Boolean 타입이며 값은 false임. 즉 제제가 없다는 의미이므로 로그인에 문제가 없음.
+        //result가 String 타입이 아닐 시 Boolean 타입이며 값은 false임. 즉 제제가 없다는 의미이므로 로그인에 문제가 없음. <- 테스트 필요 
         return tokenProvider.createToken(user);
     }
 
@@ -206,12 +223,17 @@ public class UserService {
         userRepository.delete(target);
     }
 
+    //to be deleted, replaced by repository method 
     private User findUserByeMail(String eMail){
         List<User> userList=userRepository.findAll();
         Iterator<User> iterator=userList.iterator();
         while(iterator.hasNext()){
             User user=iterator.next();
-            if((emailEncryptor.decryptEmail(user.getEMail())).equals(eMail)){
+            String encryptedMail=encryptedEmailService.getOriginEmail(user.getEncryptedEmail());
+            if(encryptedMail==null){
+                continue;
+            }
+            if((encryptedMail.equals(eMail))){
                 return user;
             }
         }
