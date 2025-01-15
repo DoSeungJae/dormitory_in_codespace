@@ -32,7 +32,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,7 +94,6 @@ public class GroupService {
                 .dormId(article.getDormId())
                 .hostId(hostId)
                 .maxCapacity(requestDto.getMaxCapacity())
-                //.createdTime(LocalDateTime.now())
                 .createdTime(TimeOptimizer.now())
                 .category(article.getCategory())
                 .isProceeding(true)
@@ -195,7 +193,6 @@ public class GroupService {
         while(iterator.hasNext()){
             User member=userRepository.findById(iterator.next()).orElse(null);
             UserResponseDTO userDto=UserResponseDTO.builder()
-                    .eMail(member.getEMail())
                     .nickName(member.getNickName())
                     .id(member.getId())
                     .build();
@@ -227,7 +224,6 @@ public class GroupService {
         UserResponseDTO responseDto=UserResponseDTO.builder()
                 .id(host.getId())
                 .nickName(host.getNickName())
-                .eMail(host.getEMail())
                 .build();
 
         return responseDto;
@@ -304,7 +300,6 @@ public class GroupService {
 
         User user=userRepository.findById(userId).orElse(null);
         UserResponseDTO userChanges= UserResponseDTO.builder()
-                .eMail(user.getEMail())
                 .nickName(user.getNickName())
                 .id(user.getId())
                 .build();
@@ -375,7 +370,6 @@ public class GroupService {
         notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.MEMBER_LEFT_KOR,user.getNickName()));
 
         UserResponseDTO userChanges=UserResponseDTO.builder()
-                .eMail(user.getEMail())
                 .nickName(user.getNickName())
                 .id(userId)
                 .build();
@@ -442,7 +436,6 @@ public class GroupService {
 
 
         UserResponseDTO userChanges=UserResponseDTO.builder()
-                .eMail(expelledUser.getEMail())
                 .nickName(expelledUser.getNickName())
                 .id(targetUserId)
                 .build();

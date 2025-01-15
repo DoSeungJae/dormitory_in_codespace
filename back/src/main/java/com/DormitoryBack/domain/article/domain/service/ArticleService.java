@@ -88,7 +88,6 @@ public class ArticleService {
         User user=userRepository.findById(article.getUserId()).orElse(null);
         UserResponseDTO userDTO=UserResponseDTO.builder()
             .id(user.getId())
-            .eMail(user.getEMail())
             .nickName(user.getNickName())
             .build();
 
