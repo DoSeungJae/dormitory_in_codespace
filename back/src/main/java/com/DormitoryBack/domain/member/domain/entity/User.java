@@ -27,8 +27,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique = true)
-    private String eMail;
+    @Column(nullable=false, unique = true, name="email")
+    private String encryptedEmail;
 
     @Column(nullable = false)
     @JsonIgnore
@@ -54,8 +54,6 @@ public class User {
     //DB에 반영되지 않음.
 
     public void update(UserRequestDTO dto){
-        if(dto.getMail()!=null){this.eMail=dto.getMail();}  //사실상 필요 없는 코드 
-        if(dto.getPassWord()!=null){this.passWord=dto.getPassWord();} //사실상 필요 없는 코드  
         if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 
         if(dto.getDormId()!=null){this.dormId=dto.getDormId();}
     }
