@@ -105,6 +105,9 @@ public class UserService {
 
 
     public UserResponseDTO updateUser(Long usrId, UserRequestDTO dto){
+        if(dto.getMail()!=null){
+            throw new RuntimeException("EmailCannotBeChanged");
+        }
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
@@ -117,15 +120,6 @@ public class UserService {
             throw new RuntimeException("ConfirmPasswordNotCorrect");
         }
         user.update(dto);
-        String encryptedEmail;
-        if(dto.getMail()!=null){
-            try{
-                encryptedEmail=emailEncryptor.hashifyEmail(dto.getMail());    
-            }catch(NoSuchAlgorithmException e){
-                return null;
-            }
-            user.setEncryptedEmail(encryptedEmail);
-        }
         if(dto.getPassWord()!=null){
             String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
             user.setPassWord(encryptedPassword);
@@ -133,7 +127,7 @@ public class UserService {
         User saved=userRepository.save(user);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
+                //.eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(saved.getNickName())
                 .dormId(user.getDormId())
                 .build();
@@ -143,7 +137,13 @@ public class UserService {
     }
 
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
-        User existingUserMail = this.findUserByeMail(dto.getMail());
+        String encryptedEmail;
+        try{
+            encryptedEmail=emailEncryptor.hashifyEmail(dto.getMail());
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        User existingUserMail = userRepository.findByEncryptedEmail(encryptedEmail);
         User existingUserNick = userRepository.findByNickName(dto.getNickName());
         
         if (existingUserMail != null) {
@@ -156,13 +156,7 @@ public class UserService {
             //throw new IllegalArgumentException("DuplicatedNickname"); <- 이 코드로 변경 필요 
         }
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
-        String encryptedEmail;
-        try{
-            encryptedEmail=emailEncryptor.hashifyEmail(dto.getMail());
-        }catch(NoSuchAlgorithmException e){
-            return null;
-        }
-        
+
         User user = User.builder()
                 .encryptedEmail(encryptedEmail)
                 .passWord(encryptedPassword) 
@@ -191,13 +185,18 @@ public class UserService {
     }
 
     public String logIn(UserLogInDTO dto){
-        String email=dto.getEMail();
-        User user=this.findUserByeMail(email); //변경 필요 
+        String encryptedEmail;
+        try{
+            encryptedEmail=emailEncryptor.hashifyEmail(dto.getEMail());
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        User user=userRepository.findByEncryptedEmail(encryptedEmail); 
         if(user==null){
-            throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다."); // IllegalArgumentException -> Run
         }
         else if(!passwordEncryptor.matchesPassword(dto.getPassWord(), user.getPassWord())){
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다.");
         }
         Object result=restrictionService.getIsRestricted(Function.LOGIN, user.getId());
         if(result instanceof String){ //String 반환 시 이미 isRestricted는 true
@@ -222,22 +221,4 @@ public class UserService {
         }
         userRepository.delete(target);
     }
-
-    //to be deleted, replaced by repository method 
-    private User findUserByeMail(String eMail){
-        List<User> userList=userRepository.findAll();
-        Iterator<User> iterator=userList.iterator();
-        while(iterator.hasNext()){
-            User user=iterator.next();
-            String encryptedMail=encryptedEmailService.getOriginEmail(user.getEncryptedEmail());
-            if(encryptedMail==null){
-                continue;
-            }
-            if((encryptedMail.equals(eMail))){
-                return user;
-            }
-        }
-        return null;
-    }
-    
 }
