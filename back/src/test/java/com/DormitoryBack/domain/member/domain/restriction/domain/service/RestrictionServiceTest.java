@@ -165,7 +165,7 @@ public class RestrictionServiceTest {
         LocalDateTime now=LocalDateTime.of(2024,12,21,0,0);
         user=User.builder()
             .id(1L)
-            .eMail("email")
+            //.eMail("email")
             .passWord("passWord")
             .nickName("nickName")
             .dormId(1L)
