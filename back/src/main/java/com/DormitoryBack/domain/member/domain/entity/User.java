@@ -30,6 +30,9 @@ public class User {
     @Column(nullable=false, unique = true, name="email")
     private String encryptedEmail;
 
+    @Column(nullable=false, unique = true, name="phone_num")
+    private String encryptedPhoneNum;
+
     @Column(nullable = false)
     @JsonIgnore
     private String passWord;
@@ -40,6 +43,8 @@ public class User {
     @Column
     private Long dormId;
 
+
+
     @Column
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
@@ -48,10 +53,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "usrId")
-    private List<Article> articles;
-    //DB에 반영되지 않음.
 
     public void update(UserRequestDTO dto){
         if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 

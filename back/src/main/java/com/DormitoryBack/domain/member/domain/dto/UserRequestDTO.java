@@ -15,6 +15,7 @@ public class UserRequestDTO {
     String mail;
     String passWord;
     String nickName;
+    String phoneNum;
     Long dormId;
     String confirmPassword; //유저 수정의 경우에만 사용됨.
     ProviderType provier; //OAuth2를 통해 회원가입을 하는 경우에만 해당.

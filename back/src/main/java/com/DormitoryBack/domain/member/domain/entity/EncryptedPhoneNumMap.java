@@ -23,7 +23,7 @@ public class EncryptedPhoneNumMap {
     @Column 
     private String numberHash; 
 
-    @Column(name = "email_aes256")
+    @Column(name = "number_aes256")
     private String numberAES256;
 
 }

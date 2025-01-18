@@ -20,7 +20,7 @@ import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
-import com.DormitoryBack.module.crypt.EmailEncryptor;
+import com.DormitoryBack.module.crypt.PIEncryptor;
 import com.DormitoryBack.module.crypt.PasswordEncryptor;
 
 import io.jsonwebtoken.JwtException;
@@ -51,19 +51,25 @@ public class UserService {
     private EncryptedEmailService encryptedEmailService;
 
     @Autowired
-    private EmailEncryptor emailEncryptor;
+    private EncryptedPhoneNumService encryptedPhoneNumService;
 
+    @Autowired
+    private PIEncryptor piEncryptor;
+
+    /*    
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
         if(users.isEmpty()){
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
         List<UserResponseDTO> responseDTO = users.stream()
-                .map(user -> new UserResponseDTO(user.getId(),encryptedEmailService.getOriginEmail(user.getEncryptedEmail()), user.getNickName(),user.getDormId()))
+                .map(user -> new UserResponseDTO(user.getId(),encryptedEmailService.getOriginEmail(user.getEncryptedEmail()), user.getNickName(),user.getDormId(),user.getPhoneNum()))
                 .collect(Collectors.toList());
 
         return responseDTO;
     }
+    */
+
 
     public UserResponseDTO getUser(Long usrId){
         User user=userRepository.findById(usrId).orElse(null);
@@ -75,6 +81,7 @@ public class UserService {
                 .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(user.getNickName())
                 .dormId(user.getDormId())
+                .phoneNum(encryptedPhoneNumService.getOriginPhoneNumber(user.getEncryptedPhoneNum()))
                 .build();
 
         return responseDTO;
@@ -86,7 +93,7 @@ public class UserService {
             throw new RuntimeException("UserNotFound");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절
                 .nickName(nickName)
                 .dormId(user.getDormId())
                 .build();
@@ -107,6 +114,9 @@ public class UserService {
     public UserResponseDTO updateUser(Long usrId, UserRequestDTO dto){
         if(dto.getMail()!=null){
             throw new RuntimeException("EmailCannotBeChanged");
+        }
+        if(dto.getPhoneNum()!=null){
+            throw new RuntimeException("PhoneNumberCannotBeChanged");
         }
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
@@ -137,28 +147,41 @@ public class UserService {
     }
 
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
-        String encryptedEmail;
+        String encryptedEmail,encrpytedPhoneNum;
+        String email=dto.getMail();
+        String phoneNum=dto.getPhoneNum();
+        
+        if(email==null){
+            throw new IllegalArgumentException("EmailOmitted");
+        }
+        if(phoneNum==null){
+            throw new IllegalArgumentException("PhoneNumOmitted");
+        }
         try{
-            encryptedEmail=emailEncryptor.hashifyEmail(dto.getMail());
+            encryptedEmail=piEncryptor.hashify(dto.getMail());
+            encrpytedPhoneNum=piEncryptor.hashify(dto.getPhoneNum());
         }catch(NoSuchAlgorithmException e){
             return null;
         }
         User existingUserMail = userRepository.findByEncryptedEmail(encryptedEmail);
         User existingUserNick = userRepository.findByNickName(dto.getNickName());
-        
+        User existingUserPhoneNum= userRepository.findByEncryptedPhoneNum(encrpytedPhoneNum);
         if (existingUserMail != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
             //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
         }
-
         if(existingUserNick != null){
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
             //throw new IllegalArgumentException("DuplicatedNickname"); <- 이 코드로 변경 필요 
         }
+        if(existingUserPhoneNum!=null){
+            throw new IllegalArgumentException("DuplicatedPhoneNumber");
+        }
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
-
+        
         User user = User.builder()
                 .encryptedEmail(encryptedEmail)
+                .encryptedPhoneNum(encrpytedPhoneNum)
                 .passWord(encryptedPassword) 
                 .nickName(dto.getNickName())
                 .dormId(dto.getDormId())
@@ -167,10 +190,12 @@ public class UserService {
                 .build();  
 
         User saved=userRepository.save(user);
-        encryptedEmailService.setNewEmailMap(dto.getMail());
+        encryptedEmailService.setNewEmailMap(dto.getMail(),encryptedEmail);
+        encryptedPhoneNumService.setNewNumberMap(dto.getPhoneNum(),encrpytedPhoneNum);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(encryptedEmailService.getOriginEmail(saved.getEncryptedEmail()))
+                .eMail(encryptedEmailService.getOriginEmail(saved.getEncryptedEmail())) //숨김 처리 필요?
+                .phoneNum(encryptedPhoneNumService.getOriginPhoneNumber(saved.getEncryptedPhoneNum())) //숨김 처리 필요?
                 .nickName(saved.getNickName())
                 .dormId(saved.getDormId())
                 .build();
@@ -179,7 +204,7 @@ public class UserService {
     }
 
     public User getSocialAccount(ProviderType provider, String email){
-        //hash에 
+        //전화번호 기능 완성 후에 구현
         User user;
         return null;
     }
@@ -187,7 +212,7 @@ public class UserService {
     public String logIn(UserLogInDTO dto){
         String encryptedEmail;
         try{
-            encryptedEmail=emailEncryptor.hashifyEmail(dto.getEMail());
+            encryptedEmail=piEncryptor.hashify(dto.getEMail());
         }catch(NoSuchAlgorithmException e){
             return null;
         }
