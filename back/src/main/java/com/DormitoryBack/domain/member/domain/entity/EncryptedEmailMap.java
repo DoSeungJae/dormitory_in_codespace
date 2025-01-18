@@ -22,7 +22,7 @@ public class EncryptedEmailMap {
     private Long id;
 
     @Column 
-    private String emailHash; //사실상 FK
+    private String emailHash;
 
     @Column(name = "email_aes256")
     private String emailAES256;
