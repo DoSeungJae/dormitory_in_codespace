@@ -26,7 +26,7 @@ public class OAuthAPI {
 
     @PostMapping("/google") 
     public ResponseEntity googleAuth(@RequestBody GoogleRequestDTO requestDTO){
-        GoogleResponseDTO responseDTO=authService.verifyGoogleToken(requestDTO);
+        GoogleResponseDTO responseDTO=authService.googleLogin(requestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

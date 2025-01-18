@@ -12,6 +12,7 @@ import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
+import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -165,6 +166,11 @@ public class UserService {
                 .build();
 
         return responseDTO;
+    }
+
+    public User getSocialAccount(ProviderType provider, String email){
+        User user;
+        return null;
     }
 
     public String logIn(UserLogInDTO dto){

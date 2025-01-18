@@ -7,6 +7,7 @@ import {React,useState} from 'react';
 import './App.css';
 import {Routes,Route,BrowserRouter} from "react-router-dom";
 import ModalContext from './components/common/ModalContext';
+import { StyledToastContainer } from './modules/common/Toast';
 
 function App() {
   const [selectComponentIndex,setSelectComponentIndex]=useState(0);
@@ -25,13 +26,24 @@ function App() {
     setContent({});
   };
 
+  
+  
+
   return (
     <div className="App">
       {
       <div>
+        {/* 
         <ToastContainer
           className="toast-position"
           position='top-center'/>
+        */}
+
+        <StyledToastContainer
+          position='top-center'
+          closeOnClick={true}
+          limit={5}
+        />
 
         <HomeSelectContext.Provider value={{selectComponentIndex,setSelectComponentIndex}}>
         <ModalContext.Provider value={{isOpen,openModal,closeModal,content,setContent}}>

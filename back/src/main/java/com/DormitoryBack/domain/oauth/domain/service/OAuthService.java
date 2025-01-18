@@ -3,12 +3,18 @@ package com.DormitoryBack.domain.oauth.domain.service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.service.UserService;
 import com.DormitoryBack.domain.oauth.domain.dto.GoogleRequestDTO;
 import com.DormitoryBack.domain.oauth.domain.dto.GoogleResponseDTO;
 import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.oauth.domain.enums.StateType;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
@@ -30,9 +36,16 @@ public class OAuthService {
 
     private GsonFactory gsonFactory=GsonFactory.getDefaultInstance();
 
-    public GoogleResponseDTO verifyGoogleToken(GoogleRequestDTO requestDTO){
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    public GoogleResponseDTO googleLogin(GoogleRequestDTO requestDTO){
         String email;
         Boolean emailVerified;
+        GoogleResponseDTO responseDTO;
         GoogleIdTokenVerifier verifier=new GoogleIdTokenVerifier.Builder(transport, gsonFactory)
             .setAudience(Arrays.asList(clientId))
             .build();
@@ -57,11 +70,24 @@ public class OAuthService {
             throw new RuntimeException("IOException");
         }
 
-        GoogleResponseDTO responseDTO=GoogleResponseDTO.builder()
-            .email(email)
-            .provider(ProviderType.GOOGLE)
-            .build();
+        User socialAccount=userService.getSocialAccount(ProviderType.GOOGLE,email); //메서드 미구현 상태 
+        if(socialAccount!=null){
+            String token=tokenProvider.createToken(socialAccount);
+            responseDTO=GoogleResponseDTO.builder()
+                .state(StateType.LOGINED)
+                .token(token)
+                .build();
+        }else{
+            responseDTO=GoogleResponseDTO.builder()
+                .state(StateType.SIGNUP_NEEDED)
+                .email(email)
+                .provider(ProviderType.GOOGLE)
+                .build();
+        }
 
+        //"google provider"에 해당 계정이 있는지 확인
+        //계정이 없다면 회원가입 필요 -> 추가 정보 요청을 필요로 하는 헤더(?) 반환
+        //계정이 있다면 로그인 처리 -> jwt 토큰 반환
         return responseDTO;
     }
 
