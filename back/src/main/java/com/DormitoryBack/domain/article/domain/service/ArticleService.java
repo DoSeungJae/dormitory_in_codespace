@@ -8,6 +8,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
@@ -54,6 +58,9 @@ public class ArticleService {
     private RestrictionService restrictionService;
 
     private final RedisTemplate<String,Long> redisTemplate;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Transactional
     public Article saveNewArticle(NewArticleDTO dto, String token) {
@@ -198,15 +205,13 @@ public class ArticleService {
         checkRestricted(userId);
 
         Article article=articleRepository.findById(articleId).orElse(null);
-        article.update(dto);
-        Article saved=articleRepository.save(article);
-
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }
-        return saved;
+        this.update(articleId,dto);
+        Article updated=articleRepository.findById(articleId).orElse(null);
+        return updated;
     }
-    //필수적이진 않으나 수정 필요 
 
     @Transactional
     public void deleteArticle(Long articleId,String token){
@@ -272,6 +277,18 @@ public class ArticleService {
         if((Boolean)restrictionService.getIsRestricted(Function.ARTICLE, userId)){
             throw new RuntimeException("ArticleFunctionRestricted");
         }
+    }
+
+    public void update(Long articleId, NewArticleDTO dto){
+        String id=String.valueOf(articleId);
+        log.info(id);
+        Query query=new Query(Criteria.where("_id").is(id));
+        Update update=Update.update("dormId",dto.getDormId())
+            .update("title", dto.getTitle())
+            .update("contentHTML",dto.getContentHTML())
+            .update("category",dto.getCategory());
+
+        mongoTemplate.updateFirst(query, update, Article.class);
     }
     
 }
