@@ -32,5 +32,10 @@ public class EncryptedEmailService {
         
         encryptedEmailRepository.save(emailMap);
     }
+
+    public void deleteEmailMap(String hashEmail){
+        EncryptedEmailMap emailMap=encryptedEmailRepository.findByEmailHash(hashEmail);
+        encryptedEmailRepository.delete(emailMap);
+    }
     
 }

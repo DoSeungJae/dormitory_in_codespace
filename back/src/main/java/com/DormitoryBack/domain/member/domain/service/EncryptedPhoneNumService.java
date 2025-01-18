@@ -31,4 +31,9 @@ public class EncryptedPhoneNumService {
 
         encryptedPhoneNumRepository.save(numberMap);
     }
+
+    public void deleteNumberMap(String numberHash){
+        EncryptedPhoneNumMap numberMap=encryptedPhoneNumRepository.findByNumberHash(numberHash);
+        encryptedPhoneNumRepository.delete(numberMap);
+    }
 }
