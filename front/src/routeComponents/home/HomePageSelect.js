@@ -7,7 +7,7 @@ import HomePage from './HomePage.js';
 import FooterMenu from '../../components/home/FooterMenu.js';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import ArticlePage from '../article/ArticlePage.js';
-//import SignInPage from '../signIn/signInPage.js';
+import SignInPage from '../signIn/signInPage.js';
 import LogInPage from '../logIn/LogInPage.js';
 import { toast } from 'react-toastify';
 import MyGroupPage from './MyGroupPage.js';
@@ -69,25 +69,25 @@ return (
       <div className='App-component-switcher'>
           <ArticleContext.Provider value={{article,setArticle}}>
             
-          {<div style={{display : selectComponentIndex==11 ? 'block' : 'none'}} ><MyWritingPage/></div>}
-          <div style={{display : selectComponentIndex==1 ? 'block' : 'none'}}><MyPage/></div>
+          {<div style={{display : selectComponentIndex===11 ? 'block' : 'none'}} ><MyWritingPage/></div>}
+          <div style={{display : selectComponentIndex===1 ? 'block' : 'none'}}><MyPage/></div>
 
-          <div style={{display : selectComponentIndex==2 ? 'block' : 'none'}}><PostingPage/></div>
-          <div style={{display : selectComponentIndex==3 ? 'block' : 'none'}}><NotificationPage/></div>
-          <div style={{display : selectComponentIndex==4 ? 'block' : 'none'}}><MyGroupPage/></div>
+          <div style={{display : selectComponentIndex===2 ? 'block' : 'none'}}><PostingPage/></div>
+          <div style={{display : selectComponentIndex===3 ? 'block' : 'none'}}><NotificationPage/></div>
+          <div style={{display : selectComponentIndex===4 ? 'block' : 'none'}}><MyGroupPage/></div>
 
 
-          <div style={{display : selectComponentIndex==0 ? 'block' : 'none'}}><HomePage/></div>
-          <div style={{display : selectComponentIndex==5 ? 'block' : 'none'}}><ArticlePage/></div>
+          <div style={{display : selectComponentIndex===0 ? 'block' : 'none'}}><HomePage/></div>
+          <div style={{display : selectComponentIndex===5 ? 'block' : 'none'}}><ArticlePage/></div>
           
 
-          <div style={{display : selectComponentIndex==6 ? 'block' : 'none'}}><PostingPage/></div>
-          {/*<div style={{display : selectComponentIndex==7 ? 'block' : 'none'}}><SignInPage/></div>*/}
-          <div style={{display : selectComponentIndex==8 ? 'block' : 'none'}}><LogInPage/></div>
+          <div style={{display : selectComponentIndex===6 ? 'block' : 'none'}}><PostingPage/></div>
+          <div style={{display : selectComponentIndex===7 ? 'block' : 'none'}}><SignInPage/></div>
+          <div style={{display : selectComponentIndex===8 ? 'block' : 'none'}}><LogInPage/></div>
           </ArticleContext.Provider>
       </div>
     {
-      (selectComponentIndex!=8 && selectComponentIndex!=7 && selectComponentIndex!=5 && selectComponentIndex!=4) &&
+      (selectComponentIndex!==8 && selectComponentIndex!==7 && selectComponentIndex!==5 && selectComponentIndex!==4) &&
       <footer className="App-footer">
               <FooterMenu
                 selectMenu={selectMenu}

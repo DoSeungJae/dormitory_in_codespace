@@ -307,6 +307,18 @@
   text-align : right;
 }
 
+.text-center {
+  text-align : center;
+}
+
+.options-row {
+  display : flex;
+  padding-left : 3vw;
+  padding-right : 3vw;
+  flex-direction : row;
+  gap: 3vw;
+}
+
 /* 반응형 디자인을 위한 코드  테스트 필요 */
 @media only screen and (max-width : 600px){
   .App-header, .App-footer {
@@ -835,10 +847,19 @@
   width: 100%;
 }
 
+.btn-primary.big{
+  font-size: 2.5vh;
+}
+
 .btn-secondary{
   background-color: #808080 !important;
   border-color: rgba(149, 149, 173, 0.6) !important ;
   width: 100%;
+}
+
+.google-login-wrapper{
+  padding-left: 3vw;
+  padding-right: 3vw;
 }
 
 textarea::-webkit-scrollbar { display: none; }

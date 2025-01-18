@@ -22,8 +22,7 @@ const GoogleLoginButton = () => {
     }
 
     return (
-        <div className='App' >
-          <h2>React Google Sign-In</h2>
+        <div className='google-login-wrapper' >
             <GoogleLogin
                 className="sign"
                 onSuccess={credentialResponse => {verifyToken(credentialResponse);}}
