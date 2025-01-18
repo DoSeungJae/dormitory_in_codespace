@@ -30,12 +30,14 @@ public class UserApi {
         return "12";
     }
 
+    /*
     @GetMapping("")
     public ResponseEntity allUsers(){
         List<UserResponseDTO> users=userService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(users);
 
     }
+    */
 
     @GetMapping("/{usrId}")
     public ResponseEntity user(@PathVariable("usrId") Long usrId){
