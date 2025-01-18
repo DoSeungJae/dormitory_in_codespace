@@ -70,7 +70,7 @@ public class OAuthService {
             throw new RuntimeException("IOException");
         }
 
-        User socialAccount=userService.getSocialAccount(ProviderType.GOOGLE,email); //메서드 미구현 상태 
+        User socialAccount=userService.getSocialAccount(ProviderType.GOOGLE, email); //메서드 테스트 필요 <- 현재는 저장된 소셜 계정이 없어서 안됨, 지금은 return값 항상 null 
         if(socialAccount!=null){
             String token=tokenProvider.createToken(socialAccount);
             responseDTO=GoogleResponseDTO.builder()

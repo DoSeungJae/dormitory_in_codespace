@@ -204,9 +204,14 @@ public class UserService {
     }
 
     public User getSocialAccount(ProviderType provider, String email){
-        //전화번호 기능 완성 후에 구현
-        User user;
-        return null;
+        String encryptedEmail;
+        try{
+            encryptedEmail=piEncryptor.hashify(email);
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        User socialAccount=userRepository.findByProviderAndEncryptedEmail(provider, encryptedEmail); //암호화된 이메일로 조회해야함 hashify
+        return socialAccount;
     }
 
     public String logIn(UserLogInDTO dto){
