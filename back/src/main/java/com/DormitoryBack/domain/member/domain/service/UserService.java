@@ -163,8 +163,7 @@ public class UserService {
         }catch(NoSuchAlgorithmException e){
             return null;
         }
-        User existingUserMail = userRepository.findByEncryptedEmail(encryptedEmail);
-        //User existingUserMail = userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
+        User existingUserMail = userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
         //바로 위 코드로 변경하기, 테스트 필요 
         
         User existingUserNick = userRepository.findByNickName(dto.getNickName());
@@ -224,10 +223,8 @@ public class UserService {
         }catch(NoSuchAlgorithmException e){
             return null;
         }
-        User user=userRepository.findByEncryptedEmail(encryptedEmail); 
-        //User user=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
+        User user=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
         //바로 위 코드로 변경하기, 테스트 필요 
-
         if(user==null){
             throw new RuntimeException("로그인 정보가 올바르지 않습니다."); // IllegalArgumentException -> Run
         }
