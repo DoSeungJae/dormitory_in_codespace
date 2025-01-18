@@ -170,44 +170,43 @@ function MyGroupPage(){
 
 
 
-    return (
-        <div className='App-myGroupPage'>
-            <header className='App-myGroupPage-header'>
-                <BackButton></BackButton>
-                {(groupState != -2 && groupState!=0)  ? (
-                <>
-                    {title}
-                    <ThreeDotsMenu
-                        isHostParam={isHost}
-                        groupParam={group}
-                        hostNickNameParam={hostNickName}
-                        myNickName={nickName}
-                        groupState={groupState}
-                        setGroupState={setGroupState}
-                        socketResponse={socketResponse}
-                    />
-                </>
-            ) : null}
-
-            </header>
-            <div className='App-myGroupPage-main'>  
-                {(groupId!=0 && nickName!="" && groupState!=-2 && groupState!=0) ?
-                    (
-                    <ThemeProvider theme={theme}>
-                        <ChatRoom
-                            username={nickName}
-                            room={groupId}
-                            socketResponse={socketResponse}
-                            sendData={sendData}
-                        />
-                    </ThemeProvider>
-                    ) :(
-                        <><h6>그룹을 만들거나 진행중인 그룹에 참여하세요!</h6></>
-                    )
-                }
-            </div>
-        </div>
-    );
+  return (
+    <div className='App-myGroupPage'>
+      <header className='App-myGroupPage-header'>
+        <BackButton></BackButton>
+        {(groupState != -2 && groupState!=0)  ? (
+        <>
+            {title}
+            <ThreeDotsMenu
+                isHostParam={isHost}
+                groupParam={group}
+                hostNickNameParam={hostNickName}
+                myNickName={nickName}
+                groupState={groupState}
+                setGroupState={setGroupState}
+                socketResponse={socketResponse}
+            />
+        </>
+      ) : null}
+      </header>
+      <div className='App-myGroupPage-main'>  
+        {
+          (groupId!=0 && nickName!="" && groupState!=-2 && groupState!=0) ?
+          (
+            <ChatRoom
+                username={nickName}
+                room={groupId}
+                socketResponse={socketResponse}
+                sendData={sendData}
+            />
+          ) :
+          (
+            <><h6>그룹을 만들거나 진행중인 그룹에 참여하세요!</h6></>
+          )
+        }
+      </div>
+    </div>
+  );
 
 }
 

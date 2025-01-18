@@ -1,24 +1,15 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
-import { useSocket } from '../../../hooks/group/useSocket';
 import { getSocketResponse } from '../../../service/group/socket';
-import socket from 'socket.io-client/lib/socket';
-import { ConnectingAirportsOutlined } from '@mui/icons-material';
-import { toast } from 'react-toastify';
+import InputForm from '../../../components/common/InputForm';
+import Button from '../../../components/common/Button';
 
-function ChatRoom({ username, room,socketResponse,sendData }) {
+function ChatRoom({ username, room, socketResponse, sendData }) {
 
 
   const [messageInput, setMessageInput] = useState("");
   const [messageList, setMessageList] = useState([]);
-
-  const addMessageToList = (val) => {
-    if (val.room === "") return;
-    setMessageList([...messageList]);
-    fetchMessage();
-  }
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -27,39 +18,39 @@ function ChatRoom({ username, room,socketResponse,sendData }) {
         message: messageInput,
         createdAt: new Date()
       });
-      addMessageToList({
-        message: messageInput,
-        username: username,
-        createdAt: new Date(),
-        messageType: "CLIENT"
-      });
+      fetchMessage();
       setMessageInput("");
     }
   }
 
   const fetchMessage = () => {
     getSocketResponse(room)
-            .then((res) => {
-                setMessageList([...res]);
-            }).catch((err) => {
-                console.log(err);
-            });
+      .then((res) => {
+          setMessageList(res.filter((message) => {return message.messageType === 'CLIENT'}));
+      }).catch((err) => {
+          console.error(err);
+      });
   }
 
   useEffect(() => {
     fetchMessage();
-  }, []);
+  });
 
-  useEffect(() => {
-    addMessageToList(socketResponse);
-  }, [socketResponse]);
+
 
   return (
     <div className='App'>
       <div className='group-messages'>
         {
-          messageList.map((message) => {
-            if (message.messageType === 'CLIENT') {
+          messageList
+            .map((message, index) => {
+            return {
+              previousChatTime : (messageList[index-1]===undefined)?undefined:(messageList[index-1].createdTime),
+              nextChatTime : (messageList[index+1]===undefined)?undefined:(messageList[index+1].createdTime),
+              nextUsername : (messageList[index+1]===undefined)?undefined:(messageList[index+1].username),
+              ...message
+            }
+            }).map((message) => {
               return (
                 <ChatBubble
                   key={message.id} 
@@ -67,27 +58,21 @@ function ChatRoom({ username, room,socketResponse,sendData }) {
                   username={message.username}
                   message={message.message}
                   createdTime={message.createdTime}
+                  previousChatTime={message.previousChatTime}
+                  nextChatTime={message.nextChatTime}
+                  nextUsername={message.nextUsername}
                 />
               )
-            } 
-          })
+            })
         }
       </div>
       <div className='group-form'>
-        <TextField 
-          variant="standard"
+        <InputForm
           placeholder='메세지를 입력하세요.'
+          type="standard"
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
-          fullWidth
-          InputProps={{
-            disableUnderline: true,
-            sx: {
-            paddingX: '0.5rem'
-            }
-          }}
         />
-
         <Button onClick={(e) => sendMessage(e)}>전송</Button>
       </div>
     </div>
