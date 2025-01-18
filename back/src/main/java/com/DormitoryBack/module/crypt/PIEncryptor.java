@@ -11,7 +11,7 @@ import java.util.Base64;
 import javax.annotation.PostConstruct;
 
 @Component
-public class EmailEncryptor {
+public class PIEncryptor {
 
     @Value("${encryption.key}")
     private String encryptionKey;
@@ -24,17 +24,17 @@ public class EmailEncryptor {
         textEncryptor.setPassword(encryptionKey);
     }
 
-    public String encryptEmail(String email) {
-        return textEncryptor.encrypt(email);
+    public String encrypt_AES256(String pi) { //encryptEmail
+        return textEncryptor.encrypt(pi);
     }
 
-    public String decryptEmail(String encryptedEmail) {
-        return textEncryptor.decrypt(encryptedEmail);
+    public String decrypt_AES256(String encryptedPI) { //decryptEmail
+        return textEncryptor.decrypt(encryptedPI);
     }
 
-    public String hashifyEmail(String email) throws NoSuchAlgorithmException{
+    public String hashify(String pi) throws NoSuchAlgorithmException{ //hashifyEmail
         MessageDigest digest=MessageDigest.getInstance("SHA-256");
-        byte[] encodedHash=digest.digest(email.getBytes());
+        byte[] encodedHash=digest.digest(pi.getBytes());
         return Base64.getEncoder().encodeToString(encodedHash);
     }
 }
