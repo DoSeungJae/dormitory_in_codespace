@@ -1,7 +1,5 @@
 package com.DormitoryBack.domain.member.domain.service;
 
-import java.security.NoSuchAlgorithmException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
