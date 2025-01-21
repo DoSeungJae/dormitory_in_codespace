@@ -164,8 +164,6 @@ public class UserService {
             return null;
         }
         User existingUserMail = userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
-        //바로 위 코드로 변경하기, 테스트 필요 
-        
         User existingUserNick = userRepository.findByNickName(dto.getNickName());
         User existingUserPhoneNum= userRepository.findByEncryptedPhoneNum(encrpytedPhoneNum);
         if (existingUserMail != null) {
@@ -224,7 +222,6 @@ public class UserService {
             return null;
         }
         User user=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
-        //바로 위 코드로 변경하기, 테스트 필요 
         if(user==null){
             throw new RuntimeException("로그인 정보가 올바르지 않습니다."); // IllegalArgumentException -> Run
         }
