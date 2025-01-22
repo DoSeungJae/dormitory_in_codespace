@@ -16,16 +16,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EncryptedEmailMap {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column 
+    
+    @Column(name = "email_hash") 
     private String emailHash;
 
     @Column(name = "email_aes256")
     private String emailAES256;
-
        
 }
