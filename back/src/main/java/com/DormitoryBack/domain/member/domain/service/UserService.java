@@ -249,9 +249,9 @@ public class UserService {
         else if(groupService.isBelongToAnywhere(usrId)){
             throw new RuntimeException("CannotDeleteUserWhileGrouping");
         }
+        
+        userRepository.delete(target);
         encryptedEmailService.deleteEmailMap(target.getEncryptedEmail());
         encryptedPhoneNumService.deleteNumberMap(target.getEncryptedPhoneNum());
-
-        userRepository.delete(target);
     }
 }
