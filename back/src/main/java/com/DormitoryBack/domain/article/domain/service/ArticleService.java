@@ -208,7 +208,27 @@ public class ArticleService {
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }
-        this.update(articleId,dto);
+        
+        Query query=new Query(Criteria.where("_id").is(articleId));
+        Update update=new Update();
+
+        String newTitle=dto.getTitle();
+        if(newTitle!=null){
+            update.set("title", newTitle);
+        }
+        String newContentHTML=dto.getContentHTML();
+        if(newContentHTML!=null){
+            update.set("contentHTML",newContentHTML);
+        }
+        Long newDormId=dto.getDormId();
+        if(newDormId!=null){
+            update.set("dormId",newDormId);
+        }
+        String newCategory=dto.getCategory();
+        if(newCategory!=null){
+            update.set("category",newCategory);
+        }
+        mongoTemplate.updateFirst(query, update, Article.class);
         Article updated=articleRepository.findById(articleId).orElse(null);
         return updated;
     }
