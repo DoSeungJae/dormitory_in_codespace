@@ -35,6 +35,9 @@ public class EncryptedEmailService {
 
     public void deleteEmailMap(String hashEmail){
         EncryptedEmailMap emailMap=encryptedEmailRepository.findByEmailHash(hashEmail);
+        if(emailMap==null){
+            return ;
+        }
         encryptedEmailRepository.delete(emailMap);
     }
     
