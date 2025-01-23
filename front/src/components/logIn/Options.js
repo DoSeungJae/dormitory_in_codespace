@@ -10,14 +10,14 @@ const Options = () => {
     }
     return (
         <div className="continer options-container">
-            <div className="row mt-1">
-                <div className="col">
+            <div className="options-row mt-1">
+                <div className="text-center btn btn-secondary btn-sm">
                     <div onClick={handleTextClick}>회원가입</div>    
                 </div>
-                <div className="col">아이디 찾기</div>
-                <div className="col">비밀번호 찾기</div>
+                <div className="text-center btn btn-secondary btn-sm">아이디 찾기</div>
+                <div className="text-center btn btn-secondary btn-sm">비밀번호 변경</div>
             </div>
-            <div className="separator">혹은</div>
+            <div className="separator mt-4">혹은</div>
         </div> 
     );
 };
