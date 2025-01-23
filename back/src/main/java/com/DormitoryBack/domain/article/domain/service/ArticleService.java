@@ -299,16 +299,6 @@ public class ArticleService {
         }
     }
 
-    public void update(Long articleId, NewArticleDTO dto){
-        String id=String.valueOf(articleId);
-        log.info(id);
-        Query query=new Query(Criteria.where("_id").is(id));
-        Update update=Update.update("dormId",dto.getDormId())
-            .update("title", dto.getTitle())
-            .update("contentHTML",dto.getContentHTML())
-            .update("category",dto.getCategory());
 
-        mongoTemplate.updateFirst(query, update, Article.class);
-    }
     
 }
