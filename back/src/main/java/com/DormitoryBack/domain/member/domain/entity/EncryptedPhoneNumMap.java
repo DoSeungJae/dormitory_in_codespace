@@ -16,11 +16,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EncryptedPhoneNumMap {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column 
+    @Column(name = "number_hash")
     private String numberHash; 
 
     @Column(name = "number_aes256")
