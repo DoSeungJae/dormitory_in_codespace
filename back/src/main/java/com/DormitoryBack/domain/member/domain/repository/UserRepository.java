@@ -3,8 +3,8 @@ package com.DormitoryBack.domain.member.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.member.domain.entity.User;
-import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
 
 public interface UserRepository extends JpaRepository<User,Long> {
     User findByNickName(String nickName);

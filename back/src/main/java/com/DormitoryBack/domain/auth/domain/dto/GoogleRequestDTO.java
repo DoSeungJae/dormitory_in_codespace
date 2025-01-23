@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.oauth.domain.dto;
+package com.DormitoryBack.domain.auth.domain.dto;
 
 import lombok.Getter;
 
