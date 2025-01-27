@@ -91,11 +91,20 @@ public class ArticleService {
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
         }
-
         User user=userRepository.findById(article.getUserId()).orElse(null);
+        Long userId;
+        String userNickname;
+        if(user==null){
+            userId=null;
+            userNickname=null;
+        }
+        else{
+            userId=user.getId();
+            userNickname=user.getNickName();
+        }
         UserResponseDTO userDTO=UserResponseDTO.builder()
-            .id(user.getId())
-            .nickName(user.getNickName())
+            .id(userId)
+            .nickName(userNickname)
             .build();
 
         ArticleDTO articleDTO=ArticleDTO.builder()
@@ -191,9 +200,11 @@ public class ArticleService {
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        String nickName=article.getUsrId().getNickName();
+        Long userId=article.getUserId();
+        User user=userRepository.findById(userId).orElse(null);
+        String nickname=user.getNickName();
         //userService에서 만약 exception이 throw된다면 어떻게 될까?
-        return nickName;
+        return nickname;
     }
 
     @Transactional
@@ -275,14 +286,22 @@ public class ArticleService {
                 throw e;
             }
         }
-
+        Long userId=article.getUserId();
+        User user=userRepository.findById(userId).orElse(null);
+        String nickname;
+        if(user==null){
+            nickname=null;
+        }
+        else{
+            nickname=user.getNickName();
+        }
         ArticlePreviewDTO articlePreviewDTO=ArticlePreviewDTO.builder()
             .id(articleId)
             .title(article.getTitle())
             .contentText(article.getContentHTML()) 
             //contentHTML을 contentText로 변환하는 메서드 필요
             //현재는 contentHTML도 모두 text로 이뤄져있기 때문에 그냥 사용
-            .userNickName(article.getUsrId().getNickName())
+            .userNickName(nickname) //.getUsrId는 사실상 deprecated
             .dormId(article.getDormId())
             .numComments(numComments)
             .groupNumMembers(groupNumMembers)
