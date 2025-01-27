@@ -12,6 +12,11 @@
     padding-bottom: 0.5vh;
 }
 
+.server-chat{
+    text-align:center;
+    align-self:center;
+}
+
 .my-chat{
     text-align: right;
     align-self: flex-end;
@@ -47,6 +52,11 @@
     background-color: #f8f4f2;
 }
 
+.chat-bubble-message.server-chat{
+    background-color: #f8f4f2;
+    font-size: 0.9rem;
+}
+
 .chat-bubble-time{
     font-size: 0.8rem;
 }
@@ -56,7 +66,7 @@
     text-align: center;
     align-self: stretch;
     margin: 0.5vh 0 0.2vh;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
   
 .chat-new-day-line::before {
@@ -64,7 +74,7 @@
     position: absolute;
     top: 50%;
     left: 0;
-    right: calc(50% + 4rem);
+    right: calc(50% + 3rem);
     height: 1px;
     background: #777;
 }
@@ -73,10 +83,8 @@
     content: '';
     position: absolute;
     top: 50%;
-    left: calc(50% + 4rem);
+    left: calc(50% + 3rem);
     right: 0;
     height: 1px;
     background: #777;
 }
-
-

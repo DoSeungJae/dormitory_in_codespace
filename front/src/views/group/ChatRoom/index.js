@@ -1,15 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
 import { getSocketResponse } from '../../../service/group/socket';
-import InputForm from '../../../components/common/InputForm';
-import Button from '../../../components/common/Button';
 
 function ChatRoom({ username, room, socketResponse, sendData }) {
 
 
   const [messageInput, setMessageInput] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const messagesRef = useRef(null);
+
+  const dateEqual = function (time1, time2) {
+    const date1 = new Date(time1); 
+    const date2 = new Date(time2);
+    return (date1.getFullYear() === date2.getFullYear() 
+      && date1.getMonth() === date2.getMonth() 
+      && date1.getDate() === date2.getDate());
+  };
+
+  const minuteEqual = function (time1, time2) {
+    const date1 = new Date(time1);
+    const date2 = new Date(time2);
+    return (date1.getFullYear() === date2.getFullYear()
+      && date1.getMonth() === date2.getMonth()
+      && date1.getDate() === date2.getDate()
+      && date1.getHours() === date2.getHours()
+      && date1.getMinutes() === date2.getMinutes())
+  };
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -18,62 +36,89 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
         message: messageInput,
         createdAt: new Date()
       });
-      fetchMessage();
       setMessageInput("");
     }
   }
 
-  const fetchMessage = () => {
-    getSocketResponse(room)
-      .then((res) => {
-          setMessageList(res.filter((message) => {return message.messageType === 'CLIENT'}));
-      }).catch((err) => {
-          console.error(err);
-      });
-  }
+  const handleMessages = (initialMessages) => {
+    const messages = initialMessages.filter((message) => {
+      return (message.messageType === "CLIENT") || (message.message.startsWith("participatedInGroup:"))
+    });
+    return messages.map((currentMessage, index) => {
+      const isServerMessage = currentMessage.messageType === "SERVER";
+      const isSender = currentMessage.username === username;
+      const previousMessage = messages[index-1];
+      const nextMessage = messages[index+1];
+      const dateEqualWithPrevious = (previousMessage !== undefined) && dateEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const usernameEqualWithPrevious = (previousMessage !== undefined) && (currentMessage.username === previousMessage.username);
+      const minuteEqualWithPrevious = (previousMessage !== undefined) && minuteEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const minuteEqualWithNext = (nextMessage !== undefined) && minuteEqual(currentMessage.createdTime, nextMessage.createdTime);
+      const usernameEqualWithNext = (nextMessage !== undefined) && (currentMessage.username === nextMessage.username);
+      return {
+        ...currentMessage,
+        message: (isServerMessage)?(currentMessage.message.slice(20)+" 님이 참여하였습니다."):(currentMessage.message),
+        isSender: isSender,
+        showDate: !dateEqualWithPrevious,
+        showName: !(isSender || (usernameEqualWithPrevious && minuteEqualWithPrevious)),
+        showTime: !(isServerMessage || (usernameEqualWithNext && minuteEqualWithNext)),
+      }
+    })
+  };
 
+  // update messageList
   useEffect(() => {
-    fetchMessage();
+    getSocketResponse(room)
+    .then((res) => {
+      const previousMessageCount = messageList.length;
+      const { scrollTop, scrollHeight, clientHeight } = messagesRef.current;
+      const previouslyScrolled = scrollTop + clientHeight >= scrollHeight * (1-1/previousMessageCount);
+      const newMessageList = handleMessages(res);
+      setMessageList(newMessageList);
+      const existNewMessage = newMessageList.length > previousMessageCount;
+      if (previouslyScrolled && existNewMessage) { setShouldScroll(true); };
+    }).catch((err) => {
+        console.error(err);
+    });
   });
 
+  useEffect(() => {
+    if (shouldScroll) {
+      console.log("going to sroll!");
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+      setShouldScroll(false);
+    }
+  }, [shouldScroll])
 
 
   return (
     <div className='App'>
-      <div className='group-messages'>
+      <div className='group-messages' id='group-messages' ref={messagesRef}>
         {
-          messageList
-            .map((message, index) => {
-            return {
-              previousChatTime : (messageList[index-1]===undefined)?undefined:(messageList[index-1].createdTime),
-              nextChatTime : (messageList[index+1]===undefined)?undefined:(messageList[index+1].createdTime),
-              nextUsername : (messageList[index+1]===undefined)?undefined:(messageList[index+1].username),
-              ...message
-            }
-            }).map((message) => {
-              return (
-                <ChatBubble
-                  key={message.id} 
-                  isSender={message.username === username}
-                  username={message.username}
-                  message={message.message}
-                  createdTime={message.createdTime}
-                  previousChatTime={message.previousChatTime}
-                  nextChatTime={message.nextChatTime}
-                  nextUsername={message.nextUsername}
-                />
-              )
-            })
+          messageList.map(({id, isSender, username, messageType, message, createdTime, showDate, showName, showTime}) => {
+            return <ChatBubble
+              key={id} 
+              isSender={isSender}
+              messageType={messageType}
+              username={username}
+              message={message}
+              createdTime={createdTime}
+              showDate={showDate}
+              showName={showName}
+              showTime={showTime}
+            />
+          })
         }
       </div>
-      <div className='group-form'>
-        <InputForm
+      <div className='group-form' id='group-form'>
+        <input
+          type='text'
+          className="form-control group-form-input"
+          id = "group-form-input"
           placeholder='메세지를 입력하세요.'
-          type="standard"
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
         />
-        <Button onClick={(e) => sendMessage(e)}>전송</Button>
+        <div className="btn btn-primary" onClick={(e) => sendMessage(e)}> 전송 </div>
       </div>
     </div>
       
