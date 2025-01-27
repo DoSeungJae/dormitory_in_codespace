@@ -149,7 +149,7 @@ function ArticlePage(){
               <div className="article-info">
                 <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
                   <div className="article-info-detail">
-                    <p>{article.user.nickName}</p>
+                    <p>{article.user.nickName || "알 수 없음"}</p>
                     <p>{getRelativeTime(article.createdTime)}</p>
                   </div>
                 <div className='article-info-right'>
@@ -181,7 +181,7 @@ function ArticlePage(){
                         setIsReply={setIsReply}
                         writerId={comment.user.id}
                         commentParam={comment}
-                        >
+                      >
                         
                       </CommentMenu>
                     </div>
