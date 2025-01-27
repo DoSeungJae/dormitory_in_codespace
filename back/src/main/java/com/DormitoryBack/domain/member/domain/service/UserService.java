@@ -250,10 +250,14 @@ public class UserService {
             throw new RuntimeException("CannotDeleteUserWhileGrouping");
         }
 
-        userRepository.delete(target); //try - catch로 가능할 수도?
-        if(userRepository.findById(usrId)==null){
+        try{
+            userRepository.delete(target);
             encryptedEmailService.deleteEmailMap(target.getEncryptedEmail());
-            encryptedPhoneNumService.deleteNumberMap(target.getEncryptedPhoneNum());
+            encryptedPhoneNumService.deleteNumberMap(target.getEncryptedPhoneNum()); 
+        }catch(Exception e){
+            log.info(e.getMessage());
+        }finally{
+            target=null;
         }
     }
 }
