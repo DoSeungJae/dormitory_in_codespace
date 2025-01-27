@@ -1,24 +1,33 @@
-import { Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
-import { useSocket } from '../../../hooks/group/useSocket';
 import { getSocketResponse } from '../../../service/group/socket';
-import socket from 'socket.io-client/lib/socket';
-import { ConnectingAirportsOutlined } from '@mui/icons-material';
-import { toast } from 'react-toastify';
 
-function ChatRoom({ username, room,socketResponse,sendData }) {
+function ChatRoom({ username, room, socketResponse, sendData }) {
 
 
   const [messageInput, setMessageInput] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const messagesRef = useRef(null);
 
-  const addMessageToList = (val) => {
-    if (val.room === "") return;
-    setMessageList([...messageList]);
-    fetchMessage();
-  }
+  const dateEqual = function (time1, time2) {
+    const date1 = new Date(time1); 
+    const date2 = new Date(time2);
+    return (date1.getFullYear() === date2.getFullYear() 
+      && date1.getMonth() === date2.getMonth() 
+      && date1.getDate() === date2.getDate());
+  };
+
+  const minuteEqual = function (time1, time2) {
+    const date1 = new Date(time1);
+    const date2 = new Date(time2);
+    return (date1.getFullYear() === date2.getFullYear()
+      && date1.getMonth() === date2.getMonth()
+      && date1.getDate() === date2.getDate()
+      && date1.getHours() === date2.getHours()
+      && date1.getMinutes() === date2.getMinutes())
+  };
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -27,68 +36,89 @@ function ChatRoom({ username, room,socketResponse,sendData }) {
         message: messageInput,
         createdAt: new Date()
       });
-      addMessageToList({
-        message: messageInput,
-        username: username,
-        createdAt: new Date(),
-        messageType: "CLIENT"
-      });
       setMessageInput("");
     }
   }
 
-  const fetchMessage = () => {
+  const handleMessages = (initialMessages) => {
+    const messages = initialMessages.filter((message) => {
+      return (message.messageType === "CLIENT") || (message.message.startsWith("participatedInGroup:"))
+    });
+    return messages.map((currentMessage, index) => {
+      const isServerMessage = currentMessage.messageType === "SERVER";
+      const isSender = currentMessage.username === username;
+      const previousMessage = messages[index-1];
+      const nextMessage = messages[index+1];
+      const dateEqualWithPrevious = (previousMessage !== undefined) && dateEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const usernameEqualWithPrevious = (previousMessage !== undefined) && (currentMessage.username === previousMessage.username);
+      const minuteEqualWithPrevious = (previousMessage !== undefined) && minuteEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const minuteEqualWithNext = (nextMessage !== undefined) && minuteEqual(currentMessage.createdTime, nextMessage.createdTime);
+      const usernameEqualWithNext = (nextMessage !== undefined) && (currentMessage.username === nextMessage.username);
+      return {
+        ...currentMessage,
+        message: (isServerMessage)?(currentMessage.message.slice(20)+" 님이 참여하였습니다."):(currentMessage.message),
+        isSender: isSender,
+        showDate: !dateEqualWithPrevious,
+        showName: !(isSender || (usernameEqualWithPrevious && minuteEqualWithPrevious)),
+        showTime: !(isServerMessage || (usernameEqualWithNext && minuteEqualWithNext)),
+      }
+    })
+  };
+
+  // update messageList
+  useEffect(() => {
     getSocketResponse(room)
-            .then((res) => {
-                setMessageList([...res]);
-            }).catch((err) => {
-                console.log(err);
-            });
-  }
+    .then((res) => {
+      const previousMessageCount = messageList.length;
+      const { scrollTop, scrollHeight, clientHeight } = messagesRef.current;
+      const previouslyScrolled = scrollTop + clientHeight >= scrollHeight * (1-1/previousMessageCount);
+      const newMessageList = handleMessages(res);
+      setMessageList(newMessageList);
+      const existNewMessage = newMessageList.length > previousMessageCount;
+      if (previouslyScrolled && existNewMessage) { setShouldScroll(true); };
+    }).catch((err) => {
+        console.error(err);
+    });
+  });
 
   useEffect(() => {
-    fetchMessage();
-  }, []);
+    if (shouldScroll) {
+      console.log("going to sroll!");
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+      setShouldScroll(false);
+    }
+  }, [shouldScroll])
 
-  useEffect(() => {
-    addMessageToList(socketResponse);
-  }, [socketResponse]);
 
   return (
     <div className='App'>
-      <div className='group-messages'>
+      <div className='group-messages' id='group-messages' ref={messagesRef}>
         {
-          messageList.map((message) => {
-            if (message.messageType === 'CLIENT') {
-              return (
-                <ChatBubble
-                  key={message.id} 
-                  isSender={message.username === username}
-                  username={message.username}
-                  message={message.message}
-                  createdTime={message.createdTime}
-                />
-              )
-            } 
+          messageList.map(({id, isSender, username, messageType, message, createdTime, showDate, showName, showTime}) => {
+            return <ChatBubble
+              key={id} 
+              isSender={isSender}
+              messageType={messageType}
+              username={username}
+              message={message}
+              createdTime={createdTime}
+              showDate={showDate}
+              showName={showName}
+              showTime={showTime}
+            />
           })
         }
       </div>
-      <div className='group-form'>
-        <TextField 
-          variant="standard"
+      <div className='group-form' id='group-form'>
+        <input
+          type='text'
+          className="form-control group-form-input"
+          id = "group-form-input"
           placeholder='메세지를 입력하세요.'
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
-          fullWidth
-          InputProps={{
-            disableUnderline: true,
-            sx: {
-            paddingX: '0.5rem'
-            }
-          }}
         />
-
-        <Button onClick={(e) => sendMessage(e)}>전송</Button>
+        <div className="btn btn-primary" onClick={(e) => sendMessage(e)}> 전송 </div>
       </div>
     </div>
       
