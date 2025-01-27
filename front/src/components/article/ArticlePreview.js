@@ -55,7 +55,7 @@ function ArticlePreview({articleList,articleListRef,page,isEndPage,dorId,heightS
             )}
 
             <div className='article-item-details-time '>{getRelativeTime(articlePreview.createdTime)}</div>
-            <div className='article-item-details-nickName'>{articlePreview.userNickName}</div>
+            <div className='article-item-details-nickName'>{articlePreview.userNickName || "알 수 없음"}</div>
           </div>
         </div>
       ))}

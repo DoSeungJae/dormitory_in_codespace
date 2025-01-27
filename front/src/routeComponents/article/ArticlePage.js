@@ -149,7 +149,7 @@ function ArticlePage(){
               <div className="article-info">
                 <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
                   <div className="article-info-detail">
-                    <p>{article.user.nickName}</p>
+                    <p>{article.user.nickName || "알 수 없음"}</p>
                     <p>{getRelativeTime(article.createdTime)}</p>
                   </div>
                 <div className='article-info-right'>
@@ -171,7 +171,7 @@ function ArticlePage(){
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
                     <div className="comment-item-header">
-                      {comment.user.nickName}
+                      {comment.user ? comment.user.nickName : "알 수 없음"}
                       <CommentMenu
                         rootCommentId={comment.id}
                         setRootCommentId={setCommentId}
@@ -179,9 +179,9 @@ function ArticlePage(){
                         inputRef={inputRef}
                         isReply={isReply}
                         setIsReply={setIsReply}
-                        writerId={comment.user.id}
+                        writerId={comment.user ? comment.user.id : 0}
                         commentParam={comment}
-                        >
+                      >
                         
                       </CommentMenu>
                     </div>
@@ -190,10 +190,10 @@ function ArticlePage(){
                     {comment.replyComments && comment.replyComments.map((reply, replyIndex) => (
                     <div key={replyIndex} className="comment-item reply">
                         <div className="comment-item-header">
-                            {reply.user.nickName}
+                            {reply.user ? reply.user.nickName : "알 수 없음"}
                             <CommentMenu
                               isForReply={1}
-                              writerId={reply.user.id}
+                              writerId={reply.user ? reply.user.id : 0}
                               commentParam={reply}
                                 >
                             </CommentMenu>

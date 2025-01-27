@@ -1,9 +1,17 @@
 package com.DormitoryBack.domain.member.domain.service;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+//Spring Security
+import org.springframework.stereotype.Service;
+
+import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.module.crypt.EmailEncryptor;
-import com.DormitoryBack.module.crypt.PasswordEncryptor;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
@@ -12,26 +20,17 @@ import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
-import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
+import com.DormitoryBack.module.crypt.PIEncryptor;
+import com.DormitoryBack.module.crypt.PasswordEncryptor;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-//Spring Security
-import org.springframework.stereotype.Service;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    @Autowired
-    private final EmailEncryptor emailEncryptor;
 
     @Autowired
     private final PasswordEncryptor passwordEncryptor;
@@ -48,17 +47,29 @@ public class UserService {
     @Autowired
     private RestrictionService restrictionService;
 
+    @Autowired
+    private EncryptedEmailService encryptedEmailService;
+
+    @Autowired
+    private EncryptedPhoneNumService encryptedPhoneNumService;
+
+    @Autowired
+    private PIEncryptor piEncryptor;
+
+    /*    
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
         if(users.isEmpty()){
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
         List<UserResponseDTO> responseDTO = users.stream()
-                .map(user -> new UserResponseDTO(user.getId(),emailEncryptor.decryptEmail(user.getEMail()), user.getNickName(),user.getDormId()))
+                .map(user -> new UserResponseDTO(user.getId(),encryptedEmailService.getOriginEmail(user.getEncryptedEmail()), user.getNickName(),user.getDormId(),user.getPhoneNum()))
                 .collect(Collectors.toList());
 
         return responseDTO;
     }
+    */
+
 
     public UserResponseDTO getUser(Long usrId){
         User user=userRepository.findById(usrId).orElse(null);
@@ -67,9 +78,10 @@ public class UserService {
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
                 .id(usrId)
-                .eMail(emailEncryptor.decryptEmail(user.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(user.getNickName())
                 .dormId(user.getDormId())
+                .phoneNum(encryptedPhoneNumService.getOriginPhoneNumber(user.getEncryptedPhoneNum()))
                 .build();
 
         return responseDTO;
@@ -81,7 +93,7 @@ public class UserService {
             throw new RuntimeException("UserNotFound");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(emailEncryptor.decryptEmail(user.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절
                 .nickName(nickName)
                 .dormId(user.getDormId())
                 .build();
@@ -100,6 +112,12 @@ public class UserService {
 
 
     public UserResponseDTO updateUser(Long usrId, UserRequestDTO dto){
+        if(dto.getMail()!=null){
+            throw new RuntimeException("EmailCannotBeChanged");
+        }
+        if(dto.getPhoneNum()!=null){
+            throw new RuntimeException("PhoneNumberCannotBeChanged");
+        }
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
@@ -112,10 +130,6 @@ public class UserService {
             throw new RuntimeException("ConfirmPasswordNotCorrect");
         }
         user.update(dto);
-        if(dto.getMail()!=null){
-            String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
-            user.setEMail(encryptedEmail);
-        }
         if(dto.getPassWord()!=null){
             String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
             user.setPassWord(encryptedPassword);
@@ -123,7 +137,7 @@ public class UserService {
         User saved=userRepository.save(user);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(emailEncryptor.decryptEmail(saved.getEMail()))
+                //.eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(saved.getNickName())
                 .dormId(user.getDormId())
                 .build();
@@ -133,23 +147,41 @@ public class UserService {
     }
 
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
-        User existingUserMail = this.findUserByeMail(dto.getMail());
-        User existingUserNick = userRepository.findByNickName(dto.getNickName());
+        String encryptedEmail,encrpytedPhoneNum;
+        String email=dto.getMail();
+        String phoneNum=dto.getPhoneNum();
         
+        if(email==null){
+            throw new IllegalArgumentException("EmailOmitted");
+        }
+        if(phoneNum==null){
+            throw new IllegalArgumentException("PhoneNumOmitted");
+        }
+        try{
+            encryptedEmail=piEncryptor.hashify(dto.getMail());
+            encrpytedPhoneNum=piEncryptor.hashify(dto.getPhoneNum());
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        User existingUserMail = userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
+        User existingUserNick = userRepository.findByNickName(dto.getNickName());
+        User existingUserPhoneNum= userRepository.findByEncryptedPhoneNum(encrpytedPhoneNum);
         if (existingUserMail != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
             //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
         }
-
         if(existingUserNick != null){
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
             //throw new IllegalArgumentException("DuplicatedNickname"); <- 이 코드로 변경 필요 
         }
+        if(existingUserPhoneNum!=null){
+            throw new IllegalArgumentException("DuplicatedPhoneNumber");
+        }
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
-        String encryptedEmail=emailEncryptor.encryptEmail(dto.getMail());
         
         User user = User.builder()
-                .eMail(encryptedEmail) 
+                .encryptedEmail(encryptedEmail)
+                .encryptedPhoneNum(encrpytedPhoneNum)
                 .passWord(encryptedPassword) 
                 .nickName(dto.getNickName())
                 .dormId(dto.getDormId())
@@ -158,9 +190,12 @@ public class UserService {
                 .build();  
 
         User saved=userRepository.save(user);
+        encryptedEmailService.setNewEmailMap(dto.getMail(),encryptedEmail);
+        encryptedPhoneNumService.setNewNumberMap(dto.getPhoneNum(),encrpytedPhoneNum);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(emailEncryptor.decryptEmail(saved.getEMail()))
+                .eMail(encryptedEmailService.getOriginEmail(saved.getEncryptedEmail())) //숨김 처리 필요?
+                .phoneNum(encryptedPhoneNumService.getOriginPhoneNumber(saved.getEncryptedPhoneNum())) //숨김 처리 필요?
                 .nickName(saved.getNickName())
                 .dormId(saved.getDormId())
                 .build();
@@ -169,18 +204,29 @@ public class UserService {
     }
 
     public User getSocialAccount(ProviderType provider, String email){
-        User user;
-        return null;
+        String encryptedEmail;
+        try{
+            encryptedEmail=piEncryptor.hashify(email);
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        User socialAccount=userRepository.findByProviderAndEncryptedEmail(provider, encryptedEmail); //암호화된 이메일로 조회해야함 hashify
+        return socialAccount;
     }
 
     public String logIn(UserLogInDTO dto){
-        String email=dto.getEMail();
-        User user=this.findUserByeMail(email);
+        String encryptedEmail;
+        try{
+            encryptedEmail=piEncryptor.hashify(dto.getEMail());
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        User user=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
         if(user==null){
-            throw new RuntimeException("해당 이메일을 가진 사용자가 존재하지 않습니다."); // IllegalArgumentException -> Run
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다."); // IllegalArgumentException -> Run
         }
         else if(!passwordEncryptor.matchesPassword(dto.getPassWord(), user.getPassWord())){
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다.");
         }
         Object result=restrictionService.getIsRestricted(Function.LOGIN, user.getId());
         if(result instanceof String){ //String 반환 시 이미 isRestricted는 true
@@ -188,7 +234,7 @@ public class UserService {
             throw new RuntimeException(message);
         }
 
-        //result가 String 타입이 아닐 시 Boolean 타입이며 값은 false임. 즉 제제가 없다는 의미이므로 로그인에 문제가 없음.
+        //result가 String 타입이 아닐 시 Boolean 타입이며 값은 false임. 즉 제제가 없다는 의미이므로 로그인에 문제가 없음. <- 테스트 필요 
         return tokenProvider.createToken(user);
     }
 
@@ -203,19 +249,11 @@ public class UserService {
         else if(groupService.isBelongToAnywhere(usrId)){
             throw new RuntimeException("CannotDeleteUserWhileGrouping");
         }
-        userRepository.delete(target);
-    }
 
-    private User findUserByeMail(String eMail){
-        List<User> userList=userRepository.findAll();
-        Iterator<User> iterator=userList.iterator();
-        while(iterator.hasNext()){
-            User user=iterator.next();
-            if((emailEncryptor.decryptEmail(user.getEMail())).equals(eMail)){
-                return user;
-            }
+        userRepository.delete(target); //try - catch로 가능할 수도?
+        if(userRepository.findById(usrId)==null){
+            encryptedEmailService.deleteEmailMap(target.getEncryptedEmail());
+            encryptedPhoneNumService.deleteNumberMap(target.getEncryptedPhoneNum());
         }
-        return null;
     }
-    
 }

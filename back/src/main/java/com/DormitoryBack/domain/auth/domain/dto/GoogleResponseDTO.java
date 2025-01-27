@@ -1,7 +1,7 @@
-package com.DormitoryBack.domain.oauth.domain.dto;
+package com.DormitoryBack.domain.auth.domain.dto;
 
-import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
-import com.DormitoryBack.domain.oauth.domain.enums.StateType;
+import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.domain.enums.StateType;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.member.domain.article.domain.service;
+package com.DormitoryBack.domain.article.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

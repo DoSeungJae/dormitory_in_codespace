@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.oauth.domain.enums;
+package com.DormitoryBack.domain.auth.domain.enums;
 
 public enum StateType {
     LOGINED, SIGNUP_NEEDED

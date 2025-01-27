@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.oauth.domain.service;
+package com.DormitoryBack.domain.auth.domain.service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.DormitoryBack.domain.auth.domain.dto.GoogleRequestDTO;
+import com.DormitoryBack.domain.auth.domain.dto.GoogleResponseDTO;
+import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.domain.enums.StateType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.service.UserService;
-import com.DormitoryBack.domain.oauth.domain.dto.GoogleRequestDTO;
-import com.DormitoryBack.domain.oauth.domain.dto.GoogleResponseDTO;
-import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
-import com.DormitoryBack.domain.oauth.domain.enums.StateType;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
@@ -70,7 +70,7 @@ public class OAuthService {
             throw new RuntimeException("IOException");
         }
 
-        User socialAccount=userService.getSocialAccount(ProviderType.GOOGLE,email); //메서드 미구현 상태 
+        User socialAccount=userService.getSocialAccount(ProviderType.GOOGLE, email); //메서드 테스트 필요 <- 현재는 저장된 소셜 계정이 없어서 안됨, 지금은 return값 항상 null 
         if(socialAccount!=null){
             String token=tokenProvider.createToken(socialAccount);
             responseDTO=GoogleResponseDTO.builder()

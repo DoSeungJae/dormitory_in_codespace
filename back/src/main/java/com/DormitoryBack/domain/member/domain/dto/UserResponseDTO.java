@@ -12,10 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 public class UserResponseDTO {
     private Long id;
-    private String eMail;
     private String nickName;
     private Long dormId;
-
+    
+    private String eMail; //개인 정보이므로 특별한 경우 외에 null
+    private String phoneNum; //개인 정보이므로 특별한 경우 외에 null
+    
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

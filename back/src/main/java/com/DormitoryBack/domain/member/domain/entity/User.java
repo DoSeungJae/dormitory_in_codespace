@@ -1,7 +1,7 @@
 package com.DormitoryBack.domain.member.domain.entity;
 import com.DormitoryBack.domain.article.domain.entity.Article;
+import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
-import com.DormitoryBack.domain.oauth.domain.enums.ProviderType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +27,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique = true)
-    private String eMail;
+    @Column(nullable=false, unique = true, name="email")
+    private String encryptedEmail;
+
+    @Column(nullable=false, unique = true, name="phone_num")
+    private String encryptedPhoneNum;
 
     @Column(nullable = false)
     @JsonIgnore
@@ -40,6 +43,8 @@ public class User {
     @Column
     private Long dormId;
 
+
+
     @Column
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
@@ -48,23 +53,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "usrId")
-    private List<Article> articles;
-    //DB에 반영되지 않음.
 
     public void update(UserRequestDTO dto){
-        if(dto.getMail()!=null){this.eMail=dto.getMail();}  //사실상 필요 없는 코드 
-        if(dto.getPassWord()!=null){this.passWord=dto.getPassWord();} //사실상 필요 없는 코드  
         if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 
         if(dto.getDormId()!=null){this.dormId=dto.getDormId();}
-    }
-
-    //사실상 필요 없음
-    public User update2(String nickname){
-        this.nickName=nickname;
-        //this.picture=picture;
-        return this;
     }
 
     public String toJsonString(){

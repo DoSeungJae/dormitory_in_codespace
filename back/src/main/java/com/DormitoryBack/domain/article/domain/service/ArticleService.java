@@ -8,6 +8,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
@@ -55,6 +59,9 @@ public class ArticleService {
 
     private final RedisTemplate<String,Long> redisTemplate;
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     @Transactional
     public Article saveNewArticle(NewArticleDTO dto, String token) {
 
@@ -84,12 +91,20 @@ public class ArticleService {
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
         }
-
         User user=userRepository.findById(article.getUserId()).orElse(null);
+        Long userId;
+        String userNickname;
+        if(user==null){
+            userId=null;
+            userNickname=null;
+        }
+        else{
+            userId=user.getId();
+            userNickname=user.getNickName();
+        }
         UserResponseDTO userDTO=UserResponseDTO.builder()
-            .id(user.getId())
-            .eMail(user.getEMail())
-            .nickName(user.getNickName())
+            .id(userId)
+            .nickName(userNickname)
             .build();
 
         ArticleDTO articleDTO=ArticleDTO.builder()
@@ -185,9 +200,11 @@ public class ArticleService {
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        String nickName=article.getUsrId().getNickName();
+        Long userId=article.getUserId();
+        User user=userRepository.findById(userId).orElse(null);
+        String nickname=user.getNickName();
         //userService에서 만약 exception이 throw된다면 어떻게 될까?
-        return nickName;
+        return nickname;
     }
 
     @Transactional
@@ -199,15 +216,33 @@ public class ArticleService {
         checkRestricted(userId);
 
         Article article=articleRepository.findById(articleId).orElse(null);
-        article.update(dto);
-        Article saved=articleRepository.save(article);
-
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
         }
-        return saved;
+        
+        Query query=new Query(Criteria.where("_id").is(articleId));
+        Update update=new Update();
+
+        String newTitle=dto.getTitle();
+        if(newTitle!=null){
+            update.set("title", newTitle);
+        }
+        String newContentHTML=dto.getContentHTML();
+        if(newContentHTML!=null){
+            update.set("contentHTML",newContentHTML);
+        }
+        Long newDormId=dto.getDormId();
+        if(newDormId!=null){
+            update.set("dormId",newDormId);
+        }
+        String newCategory=dto.getCategory();
+        if(newCategory!=null){
+            update.set("category",newCategory);
+        }
+        mongoTemplate.updateFirst(query, update, Article.class);
+        Article updated=articleRepository.findById(articleId).orElse(null);
+        return updated;
     }
-    //필수적이진 않으나 수정 필요 
 
     @Transactional
     public void deleteArticle(Long articleId,String token){
@@ -251,14 +286,22 @@ public class ArticleService {
                 throw e;
             }
         }
-
+        Long userId=article.getUserId();
+        User user=userRepository.findById(userId).orElse(null);
+        String nickname;
+        if(user==null){
+            nickname=null;
+        }
+        else{
+            nickname=user.getNickName();
+        }
         ArticlePreviewDTO articlePreviewDTO=ArticlePreviewDTO.builder()
             .id(articleId)
             .title(article.getTitle())
             .contentText(article.getContentHTML()) 
             //contentHTML을 contentText로 변환하는 메서드 필요
             //현재는 contentHTML도 모두 text로 이뤄져있기 때문에 그냥 사용
-            .userNickName(article.getUsrId().getNickName())
+            .userNickName(nickname) //.getUsrId는 사실상 deprecated
             .dormId(article.getDormId())
             .numComments(numComments)
             .groupNumMembers(groupNumMembers)
@@ -274,5 +317,7 @@ public class ArticleService {
             throw new RuntimeException("ArticleFunctionRestricted");
         }
     }
+
+
     
 }

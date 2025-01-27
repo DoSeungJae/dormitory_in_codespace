@@ -30,12 +30,14 @@ public class UserApi {
         return "12";
     }
 
+    /*
     @GetMapping("")
     public ResponseEntity allUsers(){
         List<UserResponseDTO> users=userService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(users);
 
     }
+    */
 
     @GetMapping("/{usrId}")
     public ResponseEntity user(@PathVariable("usrId") Long usrId){
@@ -77,8 +79,6 @@ public class UserApi {
 
     @PostMapping("/join")
     public ResponseEntity signUp(@RequestBody UserRequestDTO dto) {
-        log.info(dto.toString());
-
         UserResponseDTO responseDTO = userService.makeNewUser(dto);
         return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다 " + responseDTO.toString());
     }
