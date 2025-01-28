@@ -22,12 +22,10 @@ function HomePage() {
     let path;
     if(dorId!=0){
      path=`${process.env.REACT_APP_HTTP_API_URL}/article/dorm/${dorId}?page=${page}`;
-     
     } 
     else{
       path=`${process.env.REACT_APP_HTTP_API_URL}/article?page=${page}`;
-    }
-    
+    } 
     try{
       const response = await axios.get(path, {
     });
