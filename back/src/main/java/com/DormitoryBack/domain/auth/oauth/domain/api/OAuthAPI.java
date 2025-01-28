@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.auth.domain.api;
+package com.DormitoryBack.domain.auth.oauth.domain.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.DormitoryBack.domain.auth.domain.dto.GoogleRequestDTO;
-import com.DormitoryBack.domain.auth.domain.dto.GoogleResponseDTO;
-import com.DormitoryBack.domain.auth.domain.service.OAuthService;
+import com.DormitoryBack.domain.auth.oauth.domain.dto.GoogleRequestDTO;
+import com.DormitoryBack.domain.auth.oauth.domain.dto.GoogleResponseDTO;
+import com.DormitoryBack.domain.auth.oauth.domain.service.OAuthService;
 
 import lombok.extern.slf4j.Slf4j;
 

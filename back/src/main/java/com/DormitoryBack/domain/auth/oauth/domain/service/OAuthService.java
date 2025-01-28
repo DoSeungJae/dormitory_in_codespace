@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.auth.domain.service;
+package com.DormitoryBack.domain.auth.oauth.domain.service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.DormitoryBack.domain.auth.domain.dto.GoogleRequestDTO;
-import com.DormitoryBack.domain.auth.domain.dto.GoogleResponseDTO;
-import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
-import com.DormitoryBack.domain.auth.domain.enums.StateType;
+import com.DormitoryBack.domain.auth.oauth.domain.dto.GoogleRequestDTO;
+import com.DormitoryBack.domain.auth.oauth.domain.dto.GoogleResponseDTO;
+import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.oauth.domain.enums.StateType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.service.UserService;

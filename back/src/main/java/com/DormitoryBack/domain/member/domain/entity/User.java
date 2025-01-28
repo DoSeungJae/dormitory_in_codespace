@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.member.domain.entity;
 import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;

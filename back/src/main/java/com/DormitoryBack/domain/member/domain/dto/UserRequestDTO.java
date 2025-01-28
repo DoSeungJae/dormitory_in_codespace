@@ -1,6 +1,6 @@
 package com.DormitoryBack.domain.member.domain.dto;
 
-import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

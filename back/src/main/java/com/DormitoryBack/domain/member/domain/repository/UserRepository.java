@@ -3,7 +3,7 @@ package com.DormitoryBack.domain.member.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.member.domain.entity.User;
 
 public interface UserRepository extends JpaRepository<User,Long> {

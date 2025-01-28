@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 //Spring Security
 import org.springframework.stereotype.Service;
 
-import com.DormitoryBack.domain.auth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
