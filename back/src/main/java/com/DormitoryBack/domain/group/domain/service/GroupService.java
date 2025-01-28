@@ -614,7 +614,7 @@ public class GroupService {
 
     public void checkRestricted(Long userId){
         if((Boolean)restrictionService.getIsRestricted(Function.GROUP, userId)){
-            throw new RuntimeException("CommentFunctionRestricted");
+            throw new RuntimeException("GroupFunctionRestricted");
         }
     }
 
