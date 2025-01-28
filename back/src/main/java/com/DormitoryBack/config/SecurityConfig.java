@@ -52,6 +52,8 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers("api/v1/oauth/**")
                 .permitAll()
+                .requestMatchers("api/v1/email/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
