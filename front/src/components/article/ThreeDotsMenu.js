@@ -20,7 +20,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   </h1>
 ));
 
-const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
+const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAltered}) => {
   const token=localStorage.getItem('token');
   const [isWriter,setIsWriter]=useState(0);
   const [article,setArticle]=useState("");
@@ -126,7 +126,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
       });
       if(response.status===200){
         toast.success("신고가 접수되었어요.");
-        console.log(response.data);
       } 
     } catch (error) {
         localStorage.setItem("nextIndex",5);
@@ -160,8 +159,7 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam}) => {
           window.location.reload();
         }
         else{
-          localStorage.setItem("index",5);
-          window.location.reload();
+          setCommentsAltered(1);
         }
  
       } 

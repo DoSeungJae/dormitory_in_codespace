@@ -63,10 +63,8 @@ function ArticlePage(){
       } catch (error) {
           console.error(error);
       }
-  };
+    };
   
-
-
     const isSame = async (token) => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/token/userId`, {
@@ -86,7 +84,6 @@ function ArticlePage(){
         return 0;
     }
     
-
     }
     const convertDorIdToString = (num) => {
       const mappingDict = {
@@ -122,15 +119,19 @@ function ArticlePage(){
     },[selectComponentIndex])
 
     useEffect(()=>{
-      if(commentsAltered===0){
-        return ;
-      }
-      setCommentsAltered(0);
       async function fetchData(){
         await getComments();
       }
-      fetchData();
+      if(commentsAltered===0){
+        return ;
+      }
+      if(commentsAltered===1){
+        fetchData();
+      }
+      setCommentsAltered(0);
     },[commentsAltered])
+
+
 
     if(selectComponentIndex!==5){
       return null;
@@ -153,8 +154,7 @@ function ArticlePage(){
                     <p>{getRelativeTime(article.createdTime)}</p>
                   </div>
                 <div className='article-info-right'>
-                  {isWriter === 1 ? <GroupStartButton articleId={article.id}/> 
-                                  : <ParticipateButton articleId={article.id}/>}
+                  {isWriter === 1 ? <GroupStartButton articleId={article.id}/> : <ParticipateButton articleId={article.id}/>}
                 </div>
               </div>
               
@@ -181,6 +181,7 @@ function ArticlePage(){
                         setIsReply={setIsReply}
                         writerId={comment.user ? comment.user.id : 0}
                         commentParam={comment}
+                        setCommentsAltered={setCommentsAltered}
                       >
                         
                       </CommentMenu>
@@ -195,6 +196,7 @@ function ArticlePage(){
                               isForReply={1}
                               writerId={reply.user ? reply.user.id : 0}
                               commentParam={reply}
+                              setCommentsAltered={setCommentsAltered}
                                 >
                             </CommentMenu>
                         </div>

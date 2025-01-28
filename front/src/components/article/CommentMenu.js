@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId,commentParam}){
+function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId,commentParam,setCommentsAltered}){
     const [width,setWidth]=useState(130);
     const [isWriter,setIswriter]=useState(0);
     const navigate=useNavigate();
@@ -39,9 +39,7 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
             return 0;
 
         }
-    
     } catch (error) {
-        //navigate('/logIn',{state:{from:"/article"}});
         console.error(error);
         return 0;
     }
@@ -104,6 +102,7 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
                 <ThreeDotsMenu isWriterParam={isWriter} 
                 isForReply={1}
                 commentParam={comment}
+                setCommentsAltered={setCommentsAltered}
                 >
                 </ThreeDotsMenu>
             </div>
