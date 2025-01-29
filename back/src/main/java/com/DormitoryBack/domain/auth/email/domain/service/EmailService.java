@@ -3,11 +3,15 @@ package com.DormitoryBack.domain.auth.email.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import com.DormitoryBack.domain.auth.email.domain.dto.EmailRequestDTO;
 import com.DormitoryBack.domain.auth.email.domain.dto.EmailResponseDTO;
 import com.DormitoryBack.domain.auth.email.domain.enums.CodeStateType;
+import com.DormitoryBack.module.crypt.PIEncryptor;
+
+import lombok.extern.slf4j.Slf4j;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -15,6 +19,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${spring.mail.host}")
@@ -42,6 +50,12 @@ public class EmailService {
     @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private String starttls;
 
+    @Value("${spring.mail.duration}")
+    private long codeDuration;
+
+    @Autowired
+    private PIEncryptor encryptor;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -54,6 +68,10 @@ public class EmailService {
 
         CompletableFuture.runAsync(() -> {
             try {
+                String to = request.getEmail();
+                if(to==null){
+                    throw new RuntimeException("NoEmail");
+                }
                 Properties props = new Properties();
                 props.put("mail.smtp.host", host);
                 props.put("mail.smtp.port", port);
@@ -69,7 +87,7 @@ public class EmailService {
                 String key = createKey();
                 String subject = "DeliveryBox 인증 코드";
                 String msg = "";
-                String to = request.getEmail();
+
 
                 msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">이메일 주소 확인</h1>";
                 msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">아래 확인 코드를 회원가입 화면에서 입력해주세요.</p>";
@@ -84,8 +102,7 @@ public class EmailService {
 
                 Transport.send(message);
 
-                // Transport.send()가 끝난 후 실행할 작업
-                postSendAction();
+                restoreExpirableKeyAfterSend(to,key);
 
 
             } catch (MessagingException e) {
@@ -96,9 +113,48 @@ public class EmailService {
         return CompletableFuture.completedFuture(response);
     }
 
-    private void postSendAction() {
-        // Transport.send()가 끝난 후 실행할 작업을 여기에 작성합니다.
-        System.out.println("Email sent successfully!");
+    private void restoreExpirableKeyAfterSend(String key, String value) {
+        ValueOperations<String, String> valueOperations=redisTemplate.opsForValue();
+        Duration expireDuration=Duration.ofSeconds(codeDuration);
+        String encryptedKey;
+        try{
+            encryptedKey=encryptor.hashify(key); //이메일 hashify
+        }catch(NoSuchAlgorithmException e){
+            return ;
+        }
+        String encryptedValue=encryptor.encrypt_AES256(value); //인증 코드 aes256으로 암호화
+        valueOperations.set(encryptedKey, encryptedValue, expireDuration);;
+    }
+
+    public EmailResponseDTO authenticateCode(EmailRequestDTO request){
+        String email=request.getEmail();
+        String code=request.getCode();
+        Boolean isCorrect=false;
+        if(email==null){
+            throw new RuntimeException("NoEmail");
+        }
+        if(code==null){
+            throw new RuntimeException("NoVerifyCode");
+        }
+        String encryptedKey;
+        try{
+            encryptedKey=encryptor.hashify(email); //이메일 hashify
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+        ValueOperations<String, String> valueOperations=redisTemplate.opsForValue();
+        String encryptedValue=valueOperations.get(encryptedKey);
+        String originValue=encryptor.decrypt_AES256(encryptedValue);
+        if(originValue.equals(code)){
+            isCorrect=true;
+            valueOperations.getAndDelete(encryptedKey);
+        }
+
+        EmailResponseDTO response=EmailResponseDTO.builder()
+            .stateType(isCorrect ? CodeStateType.MATCH : CodeStateType.MISMATCH)
+            .build();
+                    
+        return response;
     }
 
     public static String createKey() {

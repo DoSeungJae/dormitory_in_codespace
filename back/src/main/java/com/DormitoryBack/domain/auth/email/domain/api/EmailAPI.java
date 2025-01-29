@@ -25,11 +25,17 @@ public class EmailAPI {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/verifyCode")
+    @PostMapping("/sendVerifyCode")
     @Produces(MediaType.APPLICATION_JSON)
     public CompletableFuture<ResponseEntity<EmailResponseDTO>> verifyCode(@RequestBody EmailRequestDTO dto) throws Exception{
         return emailService.sendVerifyMail(dto)
             .thenApply(response -> ResponseEntity.status(HttpStatus.ACCEPTED).body(response))
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null));
+    }
+
+    @PostMapping("/authenticateCode")
+    public ResponseEntity authenticateCode(@RequestBody EmailRequestDTO request){
+        EmailResponseDTO response=emailService.authenticateCode(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
