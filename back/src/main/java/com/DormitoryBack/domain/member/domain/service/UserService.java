@@ -15,8 +15,8 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
-import com.DormitoryBack.domain.member.domain.entity.RoleType;
 import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.enums.RoleType;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
@@ -145,6 +145,8 @@ public class UserService {
         return responseDTO;
 
     }
+
+    public void saveProfileImage(){}
 
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
         String encryptedEmail,encrpytedPhoneNum;
