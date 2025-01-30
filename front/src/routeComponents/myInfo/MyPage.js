@@ -1,8 +1,7 @@
-
 import userDefault from '../../images/userDefault.png';
 import BackButton from "../../components/home/BackButton";
 import ForwardButton from '../../components/myInfo/ForwardButton';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
 import { dorIdToDorName } from '../../components/home/HomeUtils';
@@ -14,11 +13,13 @@ import InquireForm from '../../components/common/modalForms/myInfo/InquireForm';
 import LogoutForm from '../../components/common/modalForms/myInfo/LogoutForm';
 import UserDeletionForm from '../../components/common/modalForms/myInfo/UserDeletionForm';
 import RestrictionForm from '../../components/common/modalForms/myInfo/RestrictionForm';
+import ProfileChangeForm from '../../components/common/modalForms/myInfo/ProfileChangeForm';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const [user,setUser]=useState({});
+    const [profileImage,setProfileImage]=useState(userDefault);
     const token=localStorage.getItem("token");
 
     const changePassword = (modalContent) => {
@@ -37,6 +38,10 @@ const MyPage = () => {
         openModal(modalContent);
     }
 
+    const ChangeProfile = (modalContent) => {
+        openModal(modalContent)
+    }
+
     const getUser = async () => {
         const pathUserId=`${process.env.REACT_APP_HTTP_API_URL}/token/userId`;
         try {
@@ -53,10 +58,18 @@ const MyPage = () => {
             console.error(error);
         }
     }
+
     
     useEffect(()=>{
         getUser();
     },[])
+
+    useEffect(()=>{
+        if(profileImage!=null){
+            return ;
+        }
+        setProfileImage(userDefault);
+    },[profileImage])
 
     return (
         <div className="App">
@@ -65,7 +78,9 @@ const MyPage = () => {
             </div>
             <div className="App-main-myPage">
                 <div className="myPage-profile">
-                    <div className="profile-image"><img src={userDefault} alt="description" /></div>
+                    <div className="profile-image">
+                        <img src={profileImage} alt="description" onClick={()=>ChangeProfile(<ProfileChangeForm setProfileImage={setProfileImage} userId={user.id}/>)}/>
+                    </div>
                     <div className="profile-details">
                         <div className="details-nickName">{user.nickName}</div>
                         <div className="details-dormitory">{user.dormId ? dorIdToDorName[user.dormId] : "?"}</div>
