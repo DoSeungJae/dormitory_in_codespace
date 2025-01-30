@@ -1,36 +1,62 @@
 import React, { useContext, useEffect, useRef } from "react";
 import ModalContext from "../../ModalContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function ProfileChangeForm({setProfileImage, userId}){
 
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const inputRef=useRef(null);
+    const token=localStorage.getItem("token");
 
     const changeProfile = () => {
-        inputRef.current.click();
-        //서버에 요청;
-        closeModal();
+        inputRef.current.click(); 
     }
 
     const deleteProfile = () => {
         setProfileImage(null);
+        console.log(1);
         //서버에 요청
         closeModal();
     }
 
     const handleImageChange = (e) => {
         const file=e.target.files[0];
+        console.log(123);
         if(file){
             const reader=new FileReader();
             reader.onloadend = () => {
                 setProfileImage(reader.result);
             };
             reader.readAsDataURL(file);
+            closeModal();
+            saveImage(file);
+            
         }else{
             return ;
         }
     }
 
+    const saveImage = async (image) => {
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/user/image`;
+        const formData=new FormData();
+        formData.append("image",image);
+        formData.append("Authorization",token);
+        try{
+            const response=axios.post(path,formData,{headers:{'Content-Type':'multipart/form-data'}});
+        }
+        catch(error){
+            console.error(error);
+            if(error.response.data==="유효하지 않은 토큰입니다."){
+                toast.error("회원 정보가 유효하지 않아요, 다시 로그인해주세요.");
+            }
+        }
+    }
+
+    const deleteImage = async () => {
+        //const response=axios.delete(path,{headers:{'Authorization':`${token}`}});
+
+    }
 
     return (
         <div>
