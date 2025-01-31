@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.member.domain.restriction.domain.dto;
+package com.DormitoryBack.domain.member.restriction.domain.dto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.member.domain.restriction.domain.entity;
+package com.DormitoryBack.domain.member.restriction.domain.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
