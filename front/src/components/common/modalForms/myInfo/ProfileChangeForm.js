@@ -20,6 +20,7 @@ function ProfileChangeForm({setProfileImage, userId}){
         closeModal();
     }
 
+
     const handleImageChange = (e) => {
         const file=e.target.files[0];
         console.log(123);

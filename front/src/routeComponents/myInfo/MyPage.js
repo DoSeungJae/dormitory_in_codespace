@@ -14,6 +14,7 @@ import LogoutForm from '../../components/common/modalForms/myInfo/LogoutForm';
 import UserDeletionForm from '../../components/common/modalForms/myInfo/UserDeletionForm';
 import RestrictionForm from '../../components/common/modalForms/myInfo/RestrictionForm';
 import ProfileChangeForm from '../../components/common/modalForms/myInfo/ProfileChangeForm';
+import { toast } from 'react-toastify';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -59,6 +60,30 @@ const MyPage = () => {
         }
     }
 
+    /*
+    const getUserProfileImage = async (token) => {
+        try{
+            const headers={
+                responseType:'arraybuffer',
+            }; 
+            const response=await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/user/image?Authorization=${token}`,{headers});
+
+            const blob=new Blob([response.data], {type:'image/jpeg'});
+            const imageUrl=URL.createObjectURL(blob);
+            console.log(imageUrl);
+            setProfileImage(imageUrl);
+        }catch(error){
+            if(error.response.data==="UserHasNoProfileImage"){
+                return ;
+            }
+            else if(error.response.data==="InvalidToken"){
+                toast.error("회원 정보가 유효하지 않아요, 다시 로그인해주세요.");
+            }
+            console.error(error);
+        }
+    }
+    */
+
     
     useEffect(()=>{
         getUser();
@@ -71,6 +96,19 @@ const MyPage = () => {
         setProfileImage(userDefault);
     },[profileImage])
 
+    /*
+    useEffect(()=>{
+        if(profileImage!=userDefault){
+            return ;
+        }
+        if(token==null){
+            return ;
+        }
+        getUserProfileImage(token);
+    })
+        */
+
+
     return (
         <div className="App">
             <div className="App-header-myPage">
@@ -79,7 +117,7 @@ const MyPage = () => {
             <div className="App-main-myPage">
                 <div className="myPage-profile">
                     <div className="profile-image">
-                        <img src={profileImage} alt="description" onClick={()=>ChangeProfile(<ProfileChangeForm setProfileImage={setProfileImage} userId={user.id}/>)}/>
+                        <img src={profileImage} alt="description" onClick={()=>ChangeProfile(<ProfileChangeForm setProfileImage={setProfileImage}/>)}/>
                     </div>
                     <div className="profile-details">
                         <div className="details-nickName">{user.nickName}</div>
