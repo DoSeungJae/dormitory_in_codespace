@@ -28,8 +28,7 @@ function RestrictionForm () {
             만료 여부: {data.isExpired?"O":"X"}
             <hr></hr>
         </div>
-    )
-    ;
+    );
 
 
     const getRestriction = async () => {
@@ -43,7 +42,6 @@ function RestrictionForm () {
         } catch (error) {
             console.error(error);
         }
-        
     }
 
     useEffect(()=>{

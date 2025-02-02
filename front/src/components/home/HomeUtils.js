@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { checkRestriction } from '../../modules/common/restrictionModule';
 
 export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,setSelectComponentIndex ,selectComponentIndex, setArticle) => {
     
@@ -58,17 +59,18 @@ export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,se
 
 export const goToPostingPage = async (selectComponentIndex,setSelectComponentIndex) => {
   const token=localStorage.getItem("token");
+  const headers = {'Authorization':`${token}`};
   try{
-    const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/article/validate`, {
-      headers: {
-          'Authorization': `${token}`
-      }
-  });
+    const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/article/validate`, {headers});
+    const restricted = await checkRestriction("ARTICLE");
+    if (restricted) {
+      toast.error("글쓰기가 제재되었어요, 제한 내역을 확인하세요.");
+      return;
+    }
     if(response.data===true){
       localStorage.setItem("nextIndex",selectComponentIndex);
       setSelectComponentIndex(2);
-    }
-    else{
+    } else {
       setSelectComponentIndex(8);
       localStorage.setItem("nextIndex",2);
       toast.error("글을 쓰려면 로그인이 필요해요!");
