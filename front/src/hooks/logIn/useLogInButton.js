@@ -7,6 +7,7 @@ import axios from 'axios';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import { toast } from 'react-toastify';
 import ArticleContext from '../../components/article/ArticleContext.js';
+import { checkRestriction } from '../../modules/common/restrictionModule.js';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
@@ -70,6 +71,14 @@ function UseLogInButton() {
               article 리다이렉트 기능은 구현이 어려우므로 나중에(아마도?) 구현
               */
 
+          }
+          const { restricted, expireTime } = checkRestriction("LOGIN");
+          if (restricted) {
+            // 로그인 기능 제한 확인 시 즉시 로그아웃
+            localStorage.clear();
+            window.location.reload();
+            toast.error("계정이 제재되어 ${expireTime}까지 로그인할 수 없어요, 이메일을 확인하세요.");
+            return;
           }
           
         })

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getRelativeTime, latterTime } from './timeModule';
 
 //const suspendedFunctionName = (suspendedFunction) => {
 //    switch (suspendedFunction) {
@@ -15,10 +16,19 @@ export const checkRestriction = async (suspendedFunction) => {
     const headers = {'Authorization':`${token}`};
     try {
         const res = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/restriction/my`, {headers});
-        const restricted = (data) => {
+        const dataRestricted = (data) => {
             return !data.isExpired && data.suspendedFunctions.includes(suspendedFunction)
         };
-        return res.data.dtoList.some(restricted);
+        const restricted = res.data.dtoList.some(dataRestricted);
+        if (suspendedFunction==="LOGIN") { 
+            const expireTimes = res.data.dtoList.filter(dataRestricted).map((data)=>{return data.expireTime});
+            return {
+                restricted: restricted,
+                expireTime: getRelativeTime(expireTimes.reduce(latterTime))
+            }
+        } else {
+            return restricted
+        }
     } catch (error) {
         return false;
     }

@@ -32,6 +32,12 @@ export const getRelativeTime = (absTime) => {
 
 }
 
+export const latterTime = (time1, time2) => {
+  const t1 = dayjs(time1);
+  const t2 = dayjs(time2);
+  return time1 >= time2 ? time1 : time2;
+}
+
 
 const arrayToLocalDateTimeString = (timeArray) => {
   const [year, month, day, hour, minute, second, millisecond] = timeArray;
