@@ -1,13 +1,6 @@
 package com.DormitoryBack.domain.member.restriction.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
-import com.DormitoryBack.domain.notification.enums.EntityType;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,56 +35,7 @@ public class Restriction {
     @Column(nullable = false, name = "triggered_time")
     private LocalDateTime triggeredTime;
 
-    @Column(nullable = false, name="duration_days")
-    private Long durationDays;
+    @Column(nullable = true, name="duration_days")
+    private Long durationDays; //이 값이 null이면 "경고"로 간주.
 
-    @Column(nullable = false)
-    private int suspendedFunctions;
-
-    public boolean isSuspended(Function function){
-        return (suspendedFunctions & function.getValue()) != 0;
-    }
-
-    public void suspendFunction(Function function){
-        suspendedFunctions |= function.getValue();
-    }
-
-    public void releaseFunction(Function function){
-        suspendedFunctions &= ~function.getValue();
-    }
-
-    public List<String> getSuspendedFunctionsAsStringList() { 
-        List<Function> functions = new ArrayList<>(); 
-        for (Function function : Function.values()) { 
-            if ((suspendedFunctions & function.getValue()) != 0) { 
-                functions.add(function); 
-            } 
-        } 
-        return functions
-                .stream()
-                .map(Function::name)
-                .collect(Collectors.toList()); 
-    }
-
-
-    /* 사용 예시
-    Restriction restriction = new Restriction();
-        restriction.addRestriction(Restriction.USER);
-    restriction.addRestriction(Restriction.ARTICLE);
-
-    if (restriction.isRestricted(Functions.USER)) {
-        System.out.println("USER 기능이 제한되었습니다.");
-    }
-
-    if (!restriction.isRestricted(Functions.GROUP)) {
-        System.out.println("GROUP 기능은 제한되지 않았습니다.");
-    }
-
-
-    Restriction restriction = new Restriction();
-    restriction.suspendFunction(Function.LOGIN);
-    restriction.suspendFunction(Function.ARTICLE);
-
-    */
-    
 }
