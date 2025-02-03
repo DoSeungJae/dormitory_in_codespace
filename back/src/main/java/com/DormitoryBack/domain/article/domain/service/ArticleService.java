@@ -27,7 +27,6 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.TimeOptimizer;
 import io.jsonwebtoken.JwtException;
@@ -54,9 +53,6 @@ public class ArticleService {
     @Autowired
     private GroupService groupService;
 
-    @Autowired
-    private RestrictionService restrictionService;
-
     private final RedisTemplate<String,Long> redisTemplate;
 
     @Autowired
@@ -70,15 +66,13 @@ public class ArticleService {
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(userId).orElse(null);
-        checkRestricted(userId);
-
         Article newArticle = Article.builder()
                 .dormId(dto.getDormId())
                 .title(dto.getTitle())
                 .contentHTML(dto.getContentHTML())
                 .category(dto.getCategory())
                 .createdTime(TimeOptimizer.now())
-                .usrId(user)
+                .usrId(user) //리펙터링 필요하지 않나.
                 .userId(user.getId())
                 .build();
 
@@ -213,7 +207,6 @@ public class ArticleService {
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        checkRestricted(userId);
 
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
@@ -262,7 +255,7 @@ public class ArticleService {
         articleRepository.delete(target);
     }
 
-    private List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage){
+    public List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage){
 
         List<ArticlePreviewDTO> articleList= new ArrayList<>(); 
         for (Article article : articlePage.getContent()){
@@ -272,7 +265,7 @@ public class ArticleService {
         return articleList;
     }
     
-    private ArticlePreviewDTO makeArticlePreviewDTO(Article article){
+    public ArticlePreviewDTO makeArticlePreviewDTO(Article article){
         Long articleId=article.getId();
         Long numComments=commentService.getNumberOfComments(articleId);
         Long groupNumMembers=groupService.getNumberOfMembers(articleId);
@@ -311,13 +304,4 @@ public class ArticleService {
 
         return articlePreviewDTO;
     }
-
-    public void checkRestricted(Long userId){
-        if((Boolean)restrictionService.getIsRestricted(Function.ARTICLE, userId)){
-            throw new RuntimeException("ArticleFunctionRestricted");
-        }
-    }
-
-
-    
 }
