@@ -60,7 +60,7 @@ const MyPage = () => {
         }
     }
 
-    /*
+    //삭제 예정
     const getUserProfileImage = async (token) => {
         try{
             const headers={
@@ -82,7 +82,7 @@ const MyPage = () => {
             console.error(error);
         }
     }
-    */
+
 
     
     useEffect(()=>{

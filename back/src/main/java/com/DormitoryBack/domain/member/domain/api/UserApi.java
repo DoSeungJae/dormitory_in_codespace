@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.member.domain.api;
 
+import com.DormitoryBack.domain.member.domain.dto.ImageDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -57,6 +59,8 @@ public class UserApi {
         String userNickName=userService.getUserNickName(token);
         return ResponseEntity.status(HttpStatus.OK).body(userNickName);
     }
+
+    
     @PostMapping("/logIn")
     public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
         log.info(dto.toString());

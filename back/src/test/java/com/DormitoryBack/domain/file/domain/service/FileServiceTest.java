@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,14 +17,21 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+//@ExtendWith(MockitoExtension.class) 이 어노테이션 설정 시 테스트 안됨
 public class FileServiceTest {
 
     @InjectMocks
@@ -37,12 +43,19 @@ public class FileServiceTest {
     @Mock
     private MultipartFile file;
 
-    private String bucketName="delivery-box";
+    @Value("cloud.aws.s3.bucket")
+    private String bucketName;
 
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
         fileService.setBucketName(bucketName);
+        
+    }
+
+    @Test
+    public void testTest(){
+        assertEquals("delivery-box", bucketName);
     }
 
     @Test
