@@ -1,8 +1,14 @@
 package com.DormitoryBack.domain.member.domain.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+//Spring Security
 import org.springframework.stereotype.Service;
+
 import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
@@ -11,8 +17,8 @@ import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.enums.RoleType;
-import com.DormitoryBack.domain.member.domain.repository.ImageRepository;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.crypt.PIEncryptor;
 import com.DormitoryBack.module.crypt.PasswordEncryptor;
@@ -39,6 +45,9 @@ public class UserService {
     private GroupService groupService;
 
     @Autowired
+    private RestrictionService restrictionService;
+
+    @Autowired
     private EncryptedEmailService encryptedEmailService;
 
     @Autowired
@@ -47,10 +56,7 @@ public class UserService {
     @Autowired
     private PIEncryptor piEncryptor;
 
-    @Autowired
-    private RestrictionService restrictionService;
-
-    /*constructor 문제 때문에 일시적으로 주석 처리함
+    /*    
     public List<UserResponseDTO> getAllUsers(){
         List<User> users=userRepository.findAll();
         if(users.isEmpty()){
@@ -104,6 +110,7 @@ public class UserService {
         return user.getNickName();
     }
 
+
     public UserResponseDTO updateUser(Long usrId, UserRequestDTO dto){
         if(dto.getMail()!=null){
             throw new RuntimeException("EmailCannotBeChanged");
@@ -138,6 +145,8 @@ public class UserService {
         return responseDTO;
 
     }
+
+    public void saveProfileImage(){}
 
     public UserResponseDTO makeNewUser(UserRequestDTO dto) {
         String encryptedEmail,encrpytedPhoneNum;
@@ -221,13 +230,13 @@ public class UserService {
         else if(!passwordEncryptor.matchesPassword(dto.getPassWord(), user.getPassWord())){
             throw new RuntimeException("로그인 정보가 올바르지 않습니다.");
         }
-
-        Object result=restrictionService.getIsRestricted(user.getId());
-        if(result instanceof String){ 
+        Object result=restrictionService.getIsRestricted(Function.LOGIN, user.getId());
+        if(result instanceof String){ //String 반환 시 이미 isRestricted는 true
             String message=(String)result;
             throw new RuntimeException(message);
         }
-        
+
+        //result가 String 타입이 아닐 시 Boolean 타입이며 값은 false임. 즉 제제가 없다는 의미이므로 로그인에 문제가 없음. <- 테스트 필요 
         return tokenProvider.createToken(user);
     }
 

@@ -44,6 +44,8 @@ public class User {
     @Column
     private Long dormId;
 
+
+
     @Column
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
@@ -51,6 +53,7 @@ public class User {
     @Column
     @Enumerated(EnumType.STRING)
     private RoleType role;
+
 
     public void update(UserRequestDTO dto){
         if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 

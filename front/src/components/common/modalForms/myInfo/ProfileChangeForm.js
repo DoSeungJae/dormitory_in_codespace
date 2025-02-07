@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import ModalContext from "../../ModalContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-function ProfileChangeForm({setProfileImage}){
+function ProfileChangeForm({setProfileImage, userId}){
 
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const inputRef=useRef(null);
@@ -38,29 +38,6 @@ function ProfileChangeForm({setProfileImage}){
         }
     }
 
-    const saveImage = async (file) => {
-        if(!file) return ;
-
-        const path=`${process.env.REACT_APP_HTTP_API_URL}/file/presignedUrl?fileName=${file.name}`;
-        const headers={headers: {'Authorization': `${token}`}};
-        try{
-            const response=await axios.get(path,headers);
-            const presignedUrl=response.data;
-
-            await axios.put(presignedUrl,file,{
-                headers:{
-                    'Content-Type':file.type,
-                },
-            });
-        }catch(error){
-            console.error(error);
-        }
-    }
-
-    
-
-    /*
-    //삭제 예정
     const saveImage = async (image) => {
         const path=`${process.env.REACT_APP_HTTP_API_URL}/user/image`;
         const formData=new FormData();
@@ -76,14 +53,11 @@ function ProfileChangeForm({setProfileImage}){
             }
         }
     }
-    */
 
     const deleteImage = async () => {
         //const response=axios.delete(path,{headers:{'Authorization':`${token}`}});
 
     }
-
-    
 
     return (
         <div>
