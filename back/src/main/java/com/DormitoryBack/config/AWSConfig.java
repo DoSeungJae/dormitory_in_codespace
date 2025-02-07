@@ -12,8 +12,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 @Configuration
 public class AWSConfig {
 
-    @Value("${iamAcessKey}")
-    private String iamAcessKey;
+    @Value("${iamAccessKey}")
+    private String iamAccessKey;
 
     @Value("${iamSecretKey}")
     private String iamSecretKey;
@@ -23,7 +23,7 @@ public class AWSConfig {
 
     @Bean
     public AmazonS3 amazonS3(){
-        BasicAWSCredentials awsCredentials=new BasicAWSCredentials(iamAcessKey, iamSecretKey);
+        BasicAWSCredentials awsCredentials=new BasicAWSCredentials(iamAccessKey, iamSecretKey);
 
         return AmazonS3ClientBuilder.standard()
             .withRegion(region)
