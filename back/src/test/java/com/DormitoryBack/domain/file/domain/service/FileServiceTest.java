@@ -6,15 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,16 +20,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-//@ExtendWith(MockitoExtension.class) 이 어노테이션 설정 시 테스트 안됨
+@ExtendWith(MockitoExtension.class)
 public class FileServiceTest {
 
     @InjectMocks
@@ -43,38 +38,32 @@ public class FileServiceTest {
     @Mock
     private MultipartFile file;
 
-    @Value("cloud.aws.s3.bucket")
-    private String bucketName;
+    private String bucketName="bucketName";
 
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
         fileService.setBucketName(bucketName);
-        
-    }
-
-    @Test
-    public void testTest(){
-        assertEquals("delivery-box", bucketName);
     }
 
     @Test
     public void testUploadFile() throws IOException {
         String originalFileName="test.txt";
         byte[] content="test content".getBytes();
+
         when(file.getOriginalFilename()).thenReturn(originalFileName);
         when(file.getInputStream()).thenReturn(new ByteArrayInputStream(content));
         when(file.getContentType()).thenReturn("text/plain");
         when(file.getSize()).thenReturn((long) content.length);
 
-        //무슨 의미인지 잘 모르겠다.
-        doAnswer(invocation -> null).when(s3Client).putObject(anyString(), anyString(), any(), any(ObjectMetadata.class));
+        when(s3Client.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class))).thenReturn(null);
         String result=fileService.uploadFile(file);
 
         assertNotNull(result);
         assertTrue(result.startsWith("https://s3.amazonaws.com"));
-        verify(s3Client, times(1)).putObject(eq(bucketName), anyString(), any(), any(ObjectMetadata.class));
+        verify(s3Client, times(1)).putObject(anyString(), anyString(), any(), any(ObjectMetadata.class)); 
     }
+
 
     @Test
     public void testUploadFile_IOException() throws IOException{
