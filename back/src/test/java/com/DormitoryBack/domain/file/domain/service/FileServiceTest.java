@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -118,6 +120,17 @@ public class FileServiceTest {
             assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
             assertTrue(result.contains(fileName));
         }
+    }
+
+    @Test
+    public void testDeleteFile(){
+        String fileName="test.txt";
+        doNothing().when(s3Client).deleteObject(anyString(),anyString());
+
+        fileService.deleteFile(fileName);
+        
+        verify(s3Client, times(1)).deleteObject(anyString(),anyString());
+
     }
 
 
