@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -58,6 +59,7 @@ public class FileService {
         return url.toString();
     }
 
+    //url 전체가 아니라 UUID만 반환하는게 맞음.
     public String uploadFile(MultipartFile file) throws IOException{
         String fileName=generateFileName(file);
         try{
@@ -85,5 +87,14 @@ public class FileService {
 
         return fileName;
     }
+
+    public void deleteFile(String fileName){
+        try{
+            s3Client.deleteObject(bucketName,fileName);
+        }catch(AmazonServiceException e){
+            throw new RuntimeException("AmazonServiceException : "+e.getMessage());
+        }
+    }
+
  
 }
