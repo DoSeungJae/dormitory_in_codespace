@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -13,6 +14,9 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.extern.slf4j.Slf4j;
 
@@ -94,6 +99,25 @@ public class FileServiceTest {
         String fileName=fileService.generateFileName(file);
 
         assertTrue(fileName.contains(originalFileName));
+    }
+
+    @Test
+    public void testGeneratePresignedURL(){
+        String fileName="test.txt";
+        String expectedUrl="https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
+
+        try{
+            URL url=new URL(expectedUrl);
+            when(s3Client.generatePresignedUrl(any(GeneratePresignedUrlRequest.class))).thenReturn(url);
+        }catch(MalformedURLException e){
+            fail("MalformedURLException :"+e.getMessage());
+        }finally{
+            String result=fileService.generatePresignedURL(fileName);
+
+            assertNotNull(result);
+            assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
+            assertTrue(result.contains(fileName));
+        }
     }
 
 
