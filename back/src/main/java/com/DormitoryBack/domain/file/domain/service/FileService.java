@@ -1,23 +1,17 @@
 package com.DormitoryBack.domain.file.domain.service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.SdkClientException;
@@ -26,8 +20,10 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FileService {
 
@@ -41,7 +37,11 @@ public class FileService {
     @Autowired
     private AmazonS3 s3Client;
 
-    private String defaultUrl="https://s3.amazonaws.com";
+    @Autowired
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    private UserServiceExternal userService;
 
     public String generatePresignedURL(String fileName){
         Date expiration=new Date();
@@ -59,13 +59,39 @@ public class FileService {
         return url.toString();
     }
 
-    //url 전체가 아니라 UUID만 반환하는게 맞음.
+    public void setUserProfileImage(MultipartFile file, String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new RuntimeException("InvalidToken");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        String userImageName=userService.getUserImageName(userId);
+        log.info(userImageName);
+        if(userImageName!=null){
+            deleteUserProfileImage(token);
+        }
+        try{
+            userImageName=uploadFile(file);
+            userService.saveUserProfileImage(userId, userImageName);
+        }catch(IOException e){
+            throw new RuntimeException(e.getMessage());
+        }    
+    }
+
+    public void deleteUserProfileImage(String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new RuntimeException("InvalidToken");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        String imageName=userService.deleteUserProfileImage(userId);
+        log.info(imageName);
+        deleteFile(imageName);
+    }
+
     public String uploadFile(MultipartFile file) throws IOException{
-        String fileName=generateFileName(file);
+        String fileName=generateFileName(file); //fileName은 UUID와 업로드할 때 파일의 이름이 조합됨. 따라서 절대 중복될 수 없음.
         try{
             s3Client.putObject(bucketName, fileName, file.getInputStream(), getObjectMetadata(file));
-            
-            return defaultUrl+fileName;
+            return fileName; 
         }catch(SdkClientException e){
             throw new IOException("S3Error:"+e.getMessage());
         }
@@ -95,6 +121,7 @@ public class FileService {
             throw new RuntimeException("AmazonServiceException : "+e.getMessage());
         }
     }
+
 
  
 }
