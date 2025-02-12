@@ -195,7 +195,7 @@ public class UserService {
         return responseDTO;
     }
 
-    public User getSocialAccount(ProviderType provider, String email){
+    public User getSocialAccount(ProviderType provider, String email){ //external로?
         String encryptedEmail;
         try{
             encryptedEmail=piEncryptor.hashify(email);
