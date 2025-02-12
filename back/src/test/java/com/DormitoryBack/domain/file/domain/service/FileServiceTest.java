@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.file.domain.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,8 +25,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -37,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FileServiceTest {
 
     @InjectMocks
+    @Spy
     private FileService fileService;
     
     @Mock
@@ -44,6 +49,12 @@ public class FileServiceTest {
 
     @Mock
     private MultipartFile file;
+
+    @Mock
+    private TokenProvider tokenProvider;
+
+    @Mock
+    private UserServiceExternal userService;
 
     private String bucketName="bucketName";
 
@@ -67,7 +78,7 @@ public class FileServiceTest {
         String result=fileService.uploadFile(file);
 
         assertNotNull(result);
-        assertTrue(result.startsWith("https://s3.amazonaws.com"));
+        assertTrue(result.endsWith(originalFileName));
         verify(s3Client, times(1)).putObject(anyString(), anyString(), any(), any(ObjectMetadata.class)); 
     }
 
@@ -132,6 +143,67 @@ public class FileServiceTest {
         verify(s3Client, times(1)).deleteObject(anyString(),anyString());
 
     }
+
+    @Test
+    public void testSetUserProfileImage_withoutDelete(){
+        String validToken="validToken";
+        Long userId=1L;
+        String imageName="image.png";
+
+        when(tokenProvider.validateToken(validToken)).thenReturn(true);
+        when(tokenProvider.getUserIdFromToken(validToken)).thenReturn(userId);
+        when(userService.getUserImageName(userId)).thenReturn(null);
+
+        assertDoesNotThrow(()->{
+            fileService.setUserProfileImage(file,validToken);
+        });
+        verify(tokenProvider,times(1)).getUserIdFromToken(validToken);
+        verify(userService,times(1)).getUserImageName(userId);
+        try{
+            verify(fileService,times(0)).deleteFile(imageName);
+            verify(fileService,times(1)).uploadFile(file);
+        }catch(IOException e){
+            fail();
+        }
+    }
+
+    @Test
+    public void testSetUserProfileImage_withDelete(){
+        String validToken="validToken";
+        Long userId=1L;
+        String imageName="image.png";
+
+        when(tokenProvider.validateToken(validToken)).thenReturn(true);
+        when(tokenProvider.getUserIdFromToken(validToken)).thenReturn(userId);
+        when(userService.getUserImageName(userId)).thenReturn(imageName);
+
+        assertDoesNotThrow(()->{
+            fileService.setUserProfileImage(file,validToken);
+        });
+        verify(tokenProvider,times(2)).getUserIdFromToken(validToken);
+        verify(userService,times(1)).getUserImageName(userId);
+        try{
+            verify(fileService,times(1)).deleteUserProfileImage(validToken);
+            verify(fileService,times(1)).uploadFile(file);
+        }catch(IOException e){
+            fail();
+        }
+    }
+
+    @Test
+    public void testSetUserProfileImage_InvalidToken(){
+        String invalidToken="invalidToken";
+        
+        when(tokenProvider.validateToken(invalidToken)).thenReturn(false);
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            fileService.setUserProfileImage(file, invalidToken);
+        });
+
+        assertEquals("InvalidToken", exception.getMessage());
+    }
+
+
 
 
 
