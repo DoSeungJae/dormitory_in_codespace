@@ -23,7 +23,6 @@ function ProfileChangeForm({setProfileImage}){
 
     const handleImageChange = (e) => {
         const file=e.target.files[0];
-        console.log(123);
         if(file){
             const reader=new FileReader();
             reader.onloadend = () => {
@@ -38,47 +37,28 @@ function ProfileChangeForm({setProfileImage}){
         }
     }
 
-    const saveImage = async (file) => {
-        if(!file) return ;
-
-        const path=`${process.env.REACT_APP_HTTP_API_URL}/file/presignedUrl?fileName=${file.name}`;
-        const headers={headers: {'Authorization': `${token}`}};
-        try{
-            const response=await axios.get(path,headers);
-            const presignedUrl=response.data;
-
-            await axios.put(presignedUrl,file,{
-                headers:{
-                    'Content-Type':file.type,
-                },
-            });
-        }catch(error){
-            console.error(error);
-        }
-    }
-
-    
-
-    /*
-    //삭제 예정
     const saveImage = async (image) => {
-        const path=`${process.env.REACT_APP_HTTP_API_URL}/user/image`;
-        const formData=new FormData();
-        formData.append("image",image);
-        formData.append("Authorization",token);
-        try{
-            const response=axios.post(path,formData,{headers:{'Content-Type':'multipart/form-data'}});
+        const path = `${process.env.REACT_APP_HTTP_API_URL}/file/userImage`;
+        const formData = new FormData();
+        formData.append("file", image);
+    
+        try {
+          await axios.put(path, formData, {
+            headers: {
+              'Authorization': token,
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+        } catch (error) {
+          console.error(error);
+          if (error.response.data === "유효하지 않은 토큰입니다.") {
+            toast.error("회원 정보가 유효하지 않아요, 다시 로그인해주세요.");
+          }
         }
-        catch(error){
-            console.error(error);
-            if(error.response.data==="유효하지 않은 토큰입니다."){
-                toast.error("회원 정보가 유효하지 않아요, 다시 로그인해주세요.");
-            }
-        }
-    }
-    */
+    };    
 
     const deleteImage = async () => {
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImage`;
         //const response=axios.delete(path,{headers:{'Authorization':`${token}`}});
 
     }
