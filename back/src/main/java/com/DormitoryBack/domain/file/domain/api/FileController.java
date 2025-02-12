@@ -5,10 +5,11 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.DormitoryBack.domain.file.domain.service.FileService;
 
+@CrossOrigin(origins = {"https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev", "https://turbo-chainsaw-rpvvwx9pp5c5p55-3000.app.github.dev"})
 @RequestMapping("api/v1/file")
 @RestController
 public class FileController {
@@ -46,7 +48,7 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(presignedURL);
     }
 
-    @PostMapping("/userImage")
+    @PutMapping("/userImage")
     public ResponseEntity<Void> setUserImage(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token){
         fileService.setUserProfileImage(file, token);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
