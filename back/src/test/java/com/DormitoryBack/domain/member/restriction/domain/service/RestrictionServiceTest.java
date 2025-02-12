@@ -1,7 +1,6 @@
 package com.DormitoryBack.domain.member.restriction.domain.service;
 
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
@@ -18,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
