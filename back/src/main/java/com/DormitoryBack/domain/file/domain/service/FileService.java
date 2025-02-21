@@ -43,7 +43,16 @@ public class FileService {
     @Autowired
     private UserServiceExternal userService;
 
-    public String generatePresignedURL(String fileName){
+    public String generatePresignedURL(String token){ //userId 혹은 token을 파라미터로 받아서 user에 해당하는 fileName을 service에서 가져오도록 하는 것이 낫지 않을까.
+        if(!tokenProvider.validateToken(token)){
+            throw new RuntimeException("InvalidToken");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        String fileName=userService.getUserImageName(userId);
+        if(fileName==null){
+            throw new RuntimeException("NoUserImage");
+        }
+
         Date expiration=new Date();
         long expTimeMillis=expiration.getTime();
         expTimeMillis+=1000*60*60; //1시간
