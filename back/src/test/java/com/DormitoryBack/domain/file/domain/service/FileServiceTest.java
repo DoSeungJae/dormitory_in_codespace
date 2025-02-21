@@ -118,6 +118,12 @@ public class FileServiceTest {
     public void testGeneratePresignedURL(){
         String fileName="test.txt";
         String expectedUrl="https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
+        String validToken="validToken";
+        Long userId=1L;
+        
+        when(tokenProvider.validateToken(validToken)).thenReturn(true);
+        when(tokenProvider.getUserIdFromToken(validToken)).thenReturn(userId);
+        when(userService.getUserImageName(userId)).thenReturn(fileName);
 
         try{
             URL url=new URL(expectedUrl);
@@ -125,12 +131,26 @@ public class FileServiceTest {
         }catch(MalformedURLException e){
             fail("MalformedURLException :"+e.getMessage());
         }finally{
-            String result=fileService.generatePresignedURL(fileName);
+            String result=fileService.generatePresignedURL(validToken);
 
             assertNotNull(result);
             assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
             assertTrue(result.contains(fileName));
         }
+    }
+
+    @Test
+    public void testGeneratePresignedURL_InvalidToken(){
+
+        String invalidToken="invalidToken";
+        
+        when(tokenProvider.validateToken(invalidToken)).thenReturn(false);
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            fileService.generatePresignedURL(invalidToken);
+        });
+
+        assertEquals("InvalidToken", exception.getMessage());
     }
 
     @Test
