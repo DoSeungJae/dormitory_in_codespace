@@ -154,6 +154,22 @@ public class FileServiceTest {
     }
 
     @Test
+    public void testGeneratePresignedURL_NoUserImage(){
+        String validToken="validToken";
+        Long userId=1L;
+        
+        when(tokenProvider.validateToken(validToken)).thenReturn(true);
+        when(tokenProvider.getUserIdFromToken(validToken)).thenReturn(userId);
+        when(userService.getUserImageName(userId)).thenReturn(null);
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            fileService.generatePresignedURL(validToken);
+        });
+
+        assertEquals("NoUserImage", exception.getMessage());
+    }
+
+    @Test
     public void testDeleteFile(){
         String fileName="test.txt";
         doNothing().when(s3Client).deleteObject(anyString(),anyString());
