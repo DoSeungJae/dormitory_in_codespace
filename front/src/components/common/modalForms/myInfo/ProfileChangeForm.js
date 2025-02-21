@@ -15,8 +15,7 @@ function ProfileChangeForm({setProfileImage}){
 
     const deleteProfile = () => {
         setProfileImage(null);
-        console.log(1);
-        //서버에 요청
+        deleteProfileImage();
         closeModal();
     }
 
@@ -57,10 +56,13 @@ function ProfileChangeForm({setProfileImage}){
         }
     };    
 
-    const deleteImage = async () => {
+    const deleteProfileImage = async () => {
         const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImage`;
-        //const response=axios.delete(path,{headers:{'Authorization':`${token}`}});
-
+        try{
+            axios.delete(path,{headers:{'Authorization':`${token}`}});
+        }catch(error){
+            console.error(error);
+        }
     }
 
     
