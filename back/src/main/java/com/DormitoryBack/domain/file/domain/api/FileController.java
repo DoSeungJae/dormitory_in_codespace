@@ -42,9 +42,9 @@ public class FileController {
     }
     */
 
-    @GetMapping("/url/{fileName}")
-    public ResponseEntity<String> getFileURL(@PathVariable("fileName") String fileName) throws IOException{
-        String presignedURL=fileService.generatePresignedURL(fileName);
+    @GetMapping("/userImageUrl")
+    public ResponseEntity<String> getFileURL(@RequestHeader("Authorization") String token) throws IOException{
+        String presignedURL=fileService.generatePresignedURL(token);
         return ResponseEntity.status(HttpStatus.OK).body(presignedURL);
     }
 
