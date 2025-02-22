@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId,commentParam,setCommentsAltered}){
-    const [width,setWidth]=useState(130);
+    const [width,setWidth]=useState(90);
     const [isWriter,setIswriter]=useState(0);
     const navigate=useNavigate();
     const [comment,setComment]=useState("");
@@ -19,7 +19,7 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
 
     useEffect(()=>{
         if(isForReply){
-            setWidth(88);
+            setWidth(45);
         }
         isSame(token).then(result=>setIswriter(result));
         setComment(commentParam);
@@ -88,15 +88,6 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
                 </IconButton>
             </div>
             }
-            
-            <div className="comment-menu-item">
-                <IconButton
-                    onClick={() => {
-                    console.log("like");
-                    }}>
-                    <ThumbUpOutlinedIcon  fontSize="small"/>
-                </IconButton>
-            </div>
 
             <div className='comment-menu-item'>
                 <ThreeDotsMenu isWriterParam={isWriter} 
