@@ -31,7 +31,7 @@ public class User {
     @Column(nullable=false, unique = true, name="email")
     private String encryptedEmail;
 
-    @Column(nullable=false, unique = true, name="phone_num")
+    @Column(nullable=true, unique = true, name="phone_num")
     private String encryptedPhoneNum;
 
     @Column(nullable = false)
@@ -44,16 +44,16 @@ public class User {
     @Column
     private Long dormId;
 
-
-
     @Column
     @Enumerated(EnumType.STRING)
     private ProviderType provider;
 
     @Column
+    private String imageName;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private RoleType role;
-
 
     public void update(UserRequestDTO dto){
         if(dto.getNickName()!=null){this.nickName=dto.getNickName();} 

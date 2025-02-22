@@ -8,7 +8,6 @@ import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.member.restriction.domain.enums.Function;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
@@ -46,10 +45,6 @@ public class CommentService {
 
     @Autowired
     private NotificationServiceExternal notificationService;
-
-    @Autowired
-    private RestrictionService restrictionService;
-    
 
     public Comment getComment(Long commentId){
         Comment comment=commentRepository.findById(commentId).orElse(null);
@@ -130,7 +125,6 @@ public class CommentService {
         }
 
         Long userId=tokenProvider.getUserIdFromToken(token);
-        checkRestricted(userId);
         User userData=userRepository.findById(userId).orElse(null);
         Article article=articleRepository.findById(dto.getArticleId()).orElse(null);
 
@@ -171,7 +165,6 @@ public class CommentService {
             throw new JwtException("InvalidToken");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        checkRestricted(userId);
         User userData=userRepository.findById(userId).orElse(null);
         Comment rootComment=commentRepository.findById(dto.getRootCommentId()).orElse(null);
         Article rootArticle=articleRepository.findById(rootComment.getArticleId()).orElse(null);
@@ -243,7 +236,6 @@ public class CommentService {
             throw new JwtException("InvalidToken");
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
-        checkRestricted(userId);
         Comment comment=commentRepository.findById(commentId).orElse(null);
         if(comment==null){
             throw new IllegalArgumentException("CommentNotFound");
@@ -281,12 +273,4 @@ public class CommentService {
 
         return stringifiedCommentList;
     }
-
-    public void checkRestricted(Long userId){
-        if((Boolean)restrictionService.getIsRestricted(Function.COMMENT, userId)){
-            throw new RuntimeException("CommentFunctionRestricted");
-        }
-    }
-
-
 }

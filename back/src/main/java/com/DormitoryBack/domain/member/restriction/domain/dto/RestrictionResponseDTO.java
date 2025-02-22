@@ -17,6 +17,5 @@ public class RestrictionResponseDTO {
 
     private String reason;
 
-    private List<String> suspendedFunctions;
 
 }

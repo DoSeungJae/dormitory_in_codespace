@@ -17,5 +17,4 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     User findByProviderAndEncryptedEmail(ProviderType provider, String encryptedEmail);
 
-
 }

@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @CrossOrigin(origins = {"https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev", "https://turbo-chainsaw-rpvvwx9pp5c5p55-3000.app.github.dev"})
 @RestController
 @RequestMapping("api/v1/user")
@@ -57,6 +55,8 @@ public class UserApi {
         String userNickName=userService.getUserNickName(token);
         return ResponseEntity.status(HttpStatus.OK).body(userNickName);
     }
+
+    
     @PostMapping("/logIn")
     public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
         log.info(dto.toString());

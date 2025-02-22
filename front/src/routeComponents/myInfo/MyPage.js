@@ -1,7 +1,7 @@
 import userDefault from '../../images/userDefault.png';
 import BackButton from "../../components/home/BackButton";
 import ForwardButton from '../../components/myInfo/ForwardButton';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import HomeSelectContext from '../../components/home/HomeSelectContext';
 import axios from 'axios';
 import { dorIdToDorName } from '../../components/home/HomeUtils';
@@ -14,7 +14,6 @@ import LogoutForm from '../../components/common/modalForms/myInfo/LogoutForm';
 import UserDeletionForm from '../../components/common/modalForms/myInfo/UserDeletionForm';
 import RestrictionForm from '../../components/common/modalForms/myInfo/RestrictionForm';
 import ProfileChangeForm from '../../components/common/modalForms/myInfo/ProfileChangeForm';
-import { toast } from 'react-toastify';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
@@ -60,34 +59,47 @@ const MyPage = () => {
         }
     }
 
-    /*
-    const getUserProfileImage = async (token) => {
+    const getUserProfileImageURL = async (token) => {
+        console.log(111);
+        const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImageUrl`;
+        const headers={
+            'Authorization':`${token}`
+        };
         try{
-            const headers={
-                responseType:'arraybuffer',
-            }; 
-            const response=await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/user/image?Authorization=${token}`,{headers});
-
-            const blob=new Blob([response.data], {type:'image/jpeg'});
-            const imageUrl=URL.createObjectURL(blob);
-            console.log(imageUrl);
-            setProfileImage(imageUrl);
+            const response=await axios.get(path,{headers});
+            const url=response.data;
+            getUserProfileImage(url);
         }catch(error){
-            if(error.response.data==="UserHasNoProfileImage"){
-                return ;
-            }
-            else if(error.response.data==="InvalidToken"){
-                toast.error("회원 정보가 유효하지 않아요, 다시 로그인해주세요.");
-            }
             console.error(error);
         }
     }
-    */
 
+    const getUserProfileImage = async (path) => {
+       try{
+            const response = await axios.get(path, { responseType: 'blob' })
+
+            const contentType = response.headers['content-type'];
+            const blob = new Blob([response.data], { type: contentType });
+            const imageUrl=URL.createObjectURL(blob);
+            setProfileImage(imageUrl);
+       }catch(error){
+        console.error(error);
+       }
+    }
     
     useEffect(()=>{
-        getUser();
+        getUser(); //왜 새로고침 할때만 실행?
     },[])
+
+    useEffect(()=>{
+        if(token==null){
+            return ;
+        }
+        if(profileImage!=userDefault){ //기본 이미지가 아닐 때는 실행하지 않음
+            return ;
+        }
+        getUserProfileImageURL(token);
+    },[token]);
 
     useEffect(()=>{
         if(profileImage!=null){
@@ -95,19 +107,6 @@ const MyPage = () => {
         }
         setProfileImage(userDefault);
     },[profileImage])
-
-    /*
-    useEffect(()=>{
-        if(profileImage!=userDefault){
-            return ;
-        }
-        if(token==null){
-            return ;
-        }
-        getUserProfileImage(token);
-    })
-        */
-
 
     return (
         <div className="App">

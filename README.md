@@ -5,8 +5,8 @@ Mobile    -  React Native (planned)
 
 FrontEnd  -  React.js
 
-BackEnd   -  Spring Boot, Spring Security, JPA, webSocket(Netty)
+BackEnd   -  Spring Boot, Spring Security, JPA, webSocket(Netty), Smtp, OAuth2
 
 DataBase  -  MySQL, Redis, MongoDB
 
-Platform  -  Apache Kafka(Streaming)(2.13-3.7.0), Apache Zookeeper(3.9.2) [temporarily REVERTED] 
+Platform  -  Apache Kafka(Streaming)(2.13-3.7.0), Apache Zookeeper(3.9.2) [temporarily REVERTED], AWS S3(Storage)

@@ -73,6 +73,17 @@ dependencies {
 	implementation 'javax.mail:javax.mail-api:1.6.2'
     implementation 'com.sun.mail:javax.mail:1.6.2'
 
+	
+	//aws s3 관련 의존성 (aws sdk)
+	//implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+    //implementation("software.amazon.awssdk:s3")
+
+	//implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.767'
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.1.1'
+
+
 }
 
 
