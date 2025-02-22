@@ -15,11 +15,13 @@ import com.DormitoryBack.domain.auth.oauth.domain.enums.StateType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.service.UserService;
+import com.DormitoryBack.module.crypt.PIEncryptor;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -41,6 +43,9 @@ public class OAuthService {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @Autowired
+    private PIEncryptor piEncryptor;
 
     public GoogleResponseDTO googleLogin(GoogleRequestDTO requestDTO){
         String email;
@@ -78,10 +83,12 @@ public class OAuthService {
                 .token(token)
                 .build();
         }else{
+            String authToken=piEncryptor.encrypt_AES256(email);
             responseDTO=GoogleResponseDTO.builder()
                 .state(StateType.SIGNUP_NEEDED)
                 .email(email)
                 .provider(ProviderType.GOOGLE)
+                .token(authToken)
                 .build();
         }
 
