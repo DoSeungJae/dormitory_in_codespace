@@ -10,21 +10,10 @@ function RestrictionForm () {
     const [restriction,setRestriction]=useState("");
     const token=localStorage.getItem("token");
 
-    const suspendedFunctionName = (suspendedFunction) => {
-        switch (suspendedFunction) {
-            case "LOGIN": return "로그인"
-            case "ARTICLE": return "글 게시/수정"
-            case "COMMENT": return "댓글 게시"
-            case "GROUP": return "그룹 생성/참여"
-            default: return ""
-        }
-    } 
-
     const restrictionData = (data, index) => (
         <div className="modal-restriction-entry" key={index}>
             제재 사유: {data.reason}<br></br>
             만료 시각: {getRelativeTime(data.expireTime)}<br></br>
-            제재 기능: {data.suspendedFunctions.map(suspendedFunctionName).join(", ")}<br></br>
             만료 여부: {data.isExpired?"O":"X"}
             <hr></hr>
         </div>

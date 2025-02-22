@@ -3,7 +3,6 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import HomeSelectContext from "../home/HomeSelectContext";
 import { toast } from "react-toastify";
-import { checkRestriction } from "../../modules/common/restrictionModule";
 
 function ParticipateButton({articleId}) {
     const token = localStorage.getItem("token");
@@ -35,11 +34,6 @@ function ParticipateButton({articleId}) {
     }
 
     const handleClickedPreprocess = async () => {
-        const restricted = checkRestriction("GROUP");
-        if (restricted) {
-            toast.error("그룹 참가가 제재되었어요, 제한 내역을 확인하세요.");
-            return;
-        }
         const path=`${process.env.REACT_APP_HTTP_API_URL}/group/stateFromExternal/${articleId}`;
         const headers={
             'Authorization':`${token}`

@@ -6,7 +6,6 @@ import {toast} from 'react-toastify';
 import Swal from 'sweetalert2';
 import HomeSelectContext from '../home/HomeSelectContext';
 import ArticleContext from './ArticleContext';
-import { checkRestriction } from '../../modules/common/restrictionModule';
 
 function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply,setCommentsAltered}) {
   const [comment, setComment] = useState('');
@@ -16,11 +15,6 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
   const {article, setArticle}=useContext(ArticleContext);
 
   const sendReply = async () => {
-    const restricted = await checkRestriction("COMMENT");
-    if(restricted){
-      toast.error("댓글 작성이 제재되었어요, 제한 내역을 확인하세요.");
-      return;
-    }
     if(comment===""){
       toast.warn("내용을 입력해주세요!");
       inputRef.current.focus();
@@ -57,11 +51,6 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
   }
 
   const sendComment = async () => {
-    const restricted = await checkRestriction("COMMENT");
-    if(restricted){
-      toast.error("댓글 작성이 제재되었어요, 제한 내역을 확인하세요.");
-      return;
-    }
     if(comment==''){
       toast.warn("내용을 입력해주세요!");
       return 

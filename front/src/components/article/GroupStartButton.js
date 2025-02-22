@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import HomeSelectContext from "../home/HomeSelectContext";
 import { checkGroupState, closeGroup, handleSWalGroupClose, mapGroupStateText } from "../../modules/group/groupModule";
-import { checkRestriction } from "../../modules/common/restrictionModule";
 
 const GroupStartButton = ({articleId}) => {
   const [buttontext,setButtonText]=useState("그룹 시작");
@@ -122,11 +121,6 @@ const GroupStartButton = ({articleId}) => {
   };
 
   const handleSwalMaxCapacity = async () => {
-    const restricted = await checkRestriction("GROUP");
-    if (restricted){
-      toast.error("그룹 생성이 제재되었어요, 제한 내역을 확인하세요.");
-      return;
-    }
     const { value } = await Swal.fire({
       confirmButtonColor:"#FF8C00",
       title: "최대 인원수",

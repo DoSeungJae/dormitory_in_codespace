@@ -6,7 +6,6 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import HomeSelectContext from '../home/HomeSelectContext';
-import { checkRestriction } from '../../modules/common/restrictionModule';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   <h1
@@ -52,11 +51,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
     const path=`${process.env.REACT_APP_HTTP_API_URL}/group/numMembers?groupId=${article.id}`;
     try{
       const response=await axios.get(path);
-      const restricted = await checkRestriction("ARTICLE");
-      if(restricted) {
-        toast.error("글쓰기가 제재되었어요, 제한 내역을 확인하세요.");
-        return;
-      }
       if(response.data>1){
         handleSwalAlert(); 
 
