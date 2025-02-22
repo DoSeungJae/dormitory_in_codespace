@@ -7,6 +7,7 @@ import axios from 'axios';
 import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 import { toast } from 'react-toastify';
 import ArticleContext from '../../components/article/ArticleContext.js';
+import { getRelativeTime } from '../../modules/common/timeModule.js';
 
 function UseLogInButton() {
     const [id, setId] = useState('');
@@ -74,8 +75,16 @@ function UseLogInButton() {
           
         })
         .catch(error => {
-          console.error(error.response.data);
-          toast.error(error.response.data);
+          let errorData = error.response.data;
+          let loginRestrictionMessage = "LoginRestricted:expiredAt:";
+          console.error(errorData);
+          if (errorData.startsWith(loginRestrictionMessage)) {
+            let expireTime = errorData.slice(loginRestrictionMessage.length);
+            toast.error(`계정이 제재되어 ${getRelativeTime(expireTime)}까지 로그인할 수 없어요, 이메일을 확인하세요.`);
+          } else {
+            toast.error(errorData);
+          }
+          
         })
       }
       

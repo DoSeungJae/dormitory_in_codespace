@@ -58,17 +58,13 @@ export const goArticlePage = async (articlePreview,dorId,isEndPage,page,token,se
 
 export const goToPostingPage = async (selectComponentIndex,setSelectComponentIndex) => {
   const token=localStorage.getItem("token");
+  const headers = {'Authorization':`${token}`};
   try{
-    const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/article/validate`, {
-      headers: {
-          'Authorization': `${token}`
-      }
-  });
+    const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/article/validate`, {headers});
     if(response.data===true){
       localStorage.setItem("nextIndex",selectComponentIndex);
       setSelectComponentIndex(2);
-    }
-    else{
+    } else {
       setSelectComponentIndex(8);
       localStorage.setItem("nextIndex",2);
       toast.error("글을 쓰려면 로그인이 필요해요!");

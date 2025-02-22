@@ -23,7 +23,7 @@ const GroupStartButton = ({articleId}) => {
     else{
       setIsBlur(0);
     }
-  }
+  };
   const mapFunctions = () => {
     switch(groupState){
       case 0:
@@ -31,7 +31,6 @@ const GroupStartButton = ({articleId}) => {
         break;
       case 1:
         handleSWalGroupClose(articleId,setGroupState);
-        
         break;
       case -1:
         handleSWalGroupFinish();
@@ -40,8 +39,7 @@ const GroupStartButton = ({articleId}) => {
         toast.info("종료된 그룹이에요.");
         break;
     } 
-  }
-
+  };
 
   const handleSWalGroupFinish = async () => {
     Swal.fire({
@@ -56,7 +54,7 @@ const GroupStartButton = ({articleId}) => {
           finishGroup();
         }
       })
-  }
+  };
 
   const handleSwalGroupFinishForce = async () => {
     Swal.fire({
@@ -72,7 +70,7 @@ const GroupStartButton = ({articleId}) => {
           finishGroup(forcePath);
         }
       })
-  }
+  };
 
   const finishGroup = async (forcePath) => {
     let path;
@@ -99,81 +97,81 @@ const GroupStartButton = ({articleId}) => {
         handleSwalGroupFinishForce();
       }
     }
-  }
+  };
 
-    const makeGroup = async (maxCapacity) => {
-        const path=`${process.env.REACT_APP_HTTP_API_URL}/group/new`;
-        const body={
-            articleId:articleId,
-            maxCapacity:maxCapacity
-        };
-        try{
-            const response=await axios.post(path,body,{});
-            setGroupState(1);
-            window.location.reload();
-            localStorage.setItem("index",4);
-            
+  const makeGroup = async (maxCapacity) => {
+      const path=`${process.env.REACT_APP_HTTP_API_URL}/group/new`;
+      const body={
+          articleId:articleId,
+          maxCapacity:maxCapacity
+      };
+      try{
+          const response=await axios.post(path,body,{});
+          setGroupState(1);
+          window.location.reload();
+          localStorage.setItem("index",4);
+          
 
-        }catch(error){
-            const errMsg=error.response.data;
-            if(errMsg=="DuplicatedParticipation"){
-                toast.warn("이미 그룹에 속해있어요.");
-            }
-        }
-    }
+      }catch(error){
+          const errMsg=error.response.data;
+          if(errMsg=="DuplicatedParticipation"){
+              toast.warn("이미 그룹에 속해있어요.");
+          }
+      }
+  };
 
-    const handleSwalMaxCapacity = async () => {
-        const { value } = await Swal.fire({
-          confirmButtonColor:"#FF8C00",
-          title: "최대 인원수",
-          confirmButtonText:"다음",
-          cancelButtonText:"취소",
-          input:'number',
-          inputPlaceholder: "최소 2명, 최대 10명",
-          showCancelButton: true,
-          inputValidator: (value) => {
-            return new Promise((resolve) => {
-                value=parseInt(value);
-              if (!value) {
-                resolve("최대 인원수를 입력해주세요!");
-              }
-              if (value && value>=2 && value<=10) {
-                resolve();
-                makeGroup(value);      
-              } else {
-                resolve("최대 인원수는 2명에서 10명까지 가능해요!");
-              }
-            });
+  const handleSwalMaxCapacity = async () => {
+    const { value } = await Swal.fire({
+      confirmButtonColor:"#FF8C00",
+      title: "최대 인원수",
+      confirmButtonText:"다음",
+      cancelButtonText:"취소",
+      input:'number',
+      inputPlaceholder: "최소 2명, 최대 10명",
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+            value=parseInt(value);
+          if (!value) {
+            resolve("최대 인원수를 입력해주세요!");
+          }
+          if (value && value>=2 && value<=10) {
+            resolve();
+            makeGroup(value);      
+          } else {
+            resolve("최대 인원수는 2명에서 10명까지 가능해요!");
           }
         });
       }
+    });
+  };
 
     
-    useEffect(()=>{
-      if(selectComponentIndex!=5){
-        return ;
-      }
-      checkGroupState(articleId,setGroupState);
-    },[selectComponentIndex])
+  useEffect(()=>{
+    if(selectComponentIndex!=5){
+      return ;
+    }
+    checkGroupState(articleId,setGroupState);
+  },[selectComponentIndex])
 
-    useEffect(()=>{
-      if(selectComponentIndex!=5){
-        return ;
-      }
-      mapGroupStateText(groupState,setButtonText);
-      handleBlurStyle();
-    },[groupState]);
+  useEffect(()=>{
+    if(selectComponentIndex!=5){
+      return ;
+    }
+    mapGroupStateText(groupState,setButtonText);
+    handleBlurStyle();
+  },[groupState]);
 
 
+    
+  return (
+      <div>
+          <button className="group-start-button" onClick={()=>mapFunctions()}
+                  style={{backgroundColor:bgColor,transition: 'background-color 0.8s ease'}}>
+              {buttontext}
+          </button>
+      </div>
       
-    return (
-        <div>
-            <button className="group-start-button" onClick={()=>mapFunctions()}
-                    style={{backgroundColor:bgColor,transition: 'background-color 0.8s ease'}}>
-                {buttontext}
-            </button>
-        </div>
-        
-    );
+  );
 }
 export default GroupStartButton;

@@ -51,7 +51,6 @@ function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,articl
   }
 
   const sendComment = async () => {
-
     if(comment==''){
       toast.warn("내용을 입력해주세요!");
       return 
