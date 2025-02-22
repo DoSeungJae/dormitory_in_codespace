@@ -531,7 +531,15 @@
   display:flex;
   justify-content:space-between;
   padding-bottom:5px;
+  font-size:0.95rem;
+}
 
+.comment-item-content{
+  font-size:0.9rem;
+}
+
+.comment-item-time{
+  font-size:0.8rem;
 }
 
 
@@ -552,9 +560,12 @@
 
 }
 .comment-item.reply{
-  margin-left:20px;
+  margin-left:5vw;
+  padding-left: 1vw;
+  padding-right: 1vw;
   border-bottom:none;
-  background-color: #f8f8f8;
+  background-color: #fce3cc;
+  border-radius : 0.6rem;
 }
 
 .App-myWritingPage-header{

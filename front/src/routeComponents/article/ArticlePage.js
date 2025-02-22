@@ -187,7 +187,7 @@ function ArticlePage(){
                       </CommentMenu>
                     </div>
                     <p className="comment-item-content">{comment.content}</p>
-                    <p>{getRelativeTime(comment.createdTime)}</p>
+                    <p className="comment-item-time">{getRelativeTime(comment.createdTime)}</p>
                     {comment.replyComments && comment.replyComments.map((reply, replyIndex) => (
                     <div key={replyIndex} className="comment-item reply">
                         <div className="comment-item-header">
@@ -201,7 +201,7 @@ function ArticlePage(){
                             </CommentMenu>
                         </div>
                         <p className="comment-item-content">{reply.content}</p>
-                        <p>{getRelativeTime(reply.createdTime)}</p>
+                        <p className="comment-item-time">{getRelativeTime(reply.createdTime)}</p>
                     </div>
                     ))}
                   </div>
