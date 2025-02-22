@@ -138,27 +138,30 @@ public class UserService {
 
     }
 
-    public UserResponseDTO makeNewUser(UserRequestDTO dto) {
+    public void makeNewUser(UserRequestDTO dto) {
         String encryptedEmail,encrpytedPhoneNum;
         String email=dto.getMail();
         String phoneNum=dto.getPhoneNum();
-        
+        String nickname=dto.getNickName();
+        Long dormId=dto.getDormId();
+        ProviderType provider=dto.getProvider();
+
         if(email==null){
             throw new IllegalArgumentException("EmailOmitted");
         }
         if(phoneNum==null){
-            throw new IllegalArgumentException("PhoneNumOmitted");
+            throw new IllegalArgumentException("PhoneNumberOmitted");
         }
         try{
-            encryptedEmail=piEncryptor.hashify(dto.getMail());
-            encrpytedPhoneNum=piEncryptor.hashify(dto.getPhoneNum());
+            encryptedEmail=piEncryptor.hashify(email);
+            encrpytedPhoneNum=piEncryptor.hashify(phoneNum);
         }catch(NoSuchAlgorithmException e){
-            return null;
+            return ;
         }
-        User existingUserMail = userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
-        User existingUserNick = userRepository.findByNickName(dto.getNickName());
+        User existingUserMailWithProvider = userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider);
+        User existingUserNick = userRepository.findByNickName(nickname);
         User existingUserPhoneNum= userRepository.findByEncryptedPhoneNum(encrpytedPhoneNum);
-        if (existingUserMail != null) {
+        if (existingUserMailWithProvider != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
             //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
         }
@@ -171,28 +174,37 @@ public class UserService {
         }
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
         
+        if(provider!=null){
+            encryptedPassword="social account";
+        }
+        
         User user = User.builder()
                 .encryptedEmail(encryptedEmail)
                 .encryptedPhoneNum(encrpytedPhoneNum)
                 .passWord(encryptedPassword) 
-                .nickName(dto.getNickName())
-                .dormId(dto.getDormId())
-                .provider(dto.getProvier())
+                .nickName(nickname)
+                .dormId(dormId)
+                .provider(provider)
                 .role(RoleType.ROLE_USER)
                 .build();  
-
-        User saved=userRepository.save(user);
+        
+        userRepository.save(user);
         encryptedEmailService.setNewEmailMap(dto.getMail(),encryptedEmail);
         encryptedPhoneNumService.setNewNumberMap(dto.getPhoneNum(),encrpytedPhoneNum);
 
-        UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(encryptedEmailService.getOriginEmail(saved.getEncryptedEmail())) //숨김 처리 필요?
-                .phoneNum(encryptedPhoneNumService.getOriginPhoneNumber(saved.getEncryptedPhoneNum())) //숨김 처리 필요?
-                .nickName(saved.getNickName())
-                .dormId(saved.getDormId())
-                .build();
+        return ;
+    }
 
-        return responseDTO;
+    public void authenticateSocialLoginToken(UserRequestDTO request){
+        String authToken=request.getAuthToken();
+        String originEmail=piEncryptor.decrypt_AES256(authToken);
+        String requestEmail=request.getMail();
+        
+        if(!originEmail.equals(requestEmail)){
+            throw new RuntimeException("InvalidAuthenticationTokenOrEmail");
+        }
+        
+        makeNewUser(request);
     }
 
     public User getSocialAccount(ProviderType provider, String email){ //external로?
@@ -202,7 +214,7 @@ public class UserService {
         }catch(NoSuchAlgorithmException e){
             return null;
         }
-        User socialAccount=userRepository.findByProviderAndEncryptedEmail(provider, encryptedEmail); //암호화된 이메일로 조회해야함 hashify
+        User socialAccount=userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider); //암호화된 이메일로 조회해야함 hashify
         return socialAccount;
     }
 
@@ -215,10 +227,10 @@ public class UserService {
         }
         User user=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
         if(user==null){
-            throw new RuntimeException("로그인 정보가 올바르지 않습니다."); // IllegalArgumentException -> Run
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다."); // IllegalArgumentException -> Run //예외 메시지 변경 필요
         }
         else if(!passwordEncryptor.matchesPassword(dto.getPassWord(), user.getPassWord())){
-            throw new RuntimeException("로그인 정보가 올바르지 않습니다.");
+            throw new RuntimeException("로그인 정보가 올바르지 않습니다."); //예외 메시지 변경 필요
         }
 
         Object result=restrictionService.getIsRestricted(user.getId());
