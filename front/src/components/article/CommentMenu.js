@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isForReply,setIsReply,writerId,commentParam,setCommentsAltered}){
     const [width,setWidth]=useState(90);
     const [isWriter,setIswriter]=useState(0);
-    const navigate=useNavigate();
     const [comment,setComment]=useState("");
     const token=localStorage.getItem('token');
 
