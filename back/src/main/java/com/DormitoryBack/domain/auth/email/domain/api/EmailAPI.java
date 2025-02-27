@@ -34,7 +34,7 @@ public class EmailAPI {
     }
 
     @PostMapping("/authenticateCode")
-    public ResponseEntity authenticateCode(@RequestBody EmailRequestDTO request){
+    public ResponseEntity<EmailResponseDTO> authenticateCode(@RequestBody EmailRequestDTO request){
         EmailResponseDTO response=emailService.authenticateCode(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
