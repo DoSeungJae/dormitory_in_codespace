@@ -211,6 +211,7 @@
   padding-top:5px;
 }
 
+
 .preview { 
   /*max height를 동적으로 관리하는 방법 고려*/
   overflow-y: auto;
@@ -563,7 +564,7 @@
 }
 .comment-item.reply{
   margin-left:5vw;
-  padding-left: 1vw;
+  padding-left: 3vw;
   padding-right: 1vw;
   border-bottom:none;
   background-color: #fce3cc;
