@@ -77,7 +77,7 @@ public class RestrictionServiceTest {
     @Test
     public void testRestrict() {
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
-            .accessKey("20220393-2470011192")
+            .accessKey("??")
             .userId(userId)
             .reason("testRestriction")
             .durationDays(5L)
@@ -96,7 +96,7 @@ public class RestrictionServiceTest {
     @Test
     public void testWarn(){
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
-            .accessKey("20220393-2470011192")
+            .accessKey("??")
             .userId(userId)
             .reason("testRestriction")
             .durationDays(null)
@@ -118,7 +118,7 @@ public class RestrictionServiceTest {
     public void testWarn_RuntimeException_UserNotFound(){
 
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
-        .accessKey("20220393-2470011192")
+        .accessKey("??")
         .userId(invalidUserId)
         .reason("testRestriction")
         .durationDays(null)
@@ -137,7 +137,7 @@ public class RestrictionServiceTest {
     public void testWarn_IllegalArgumentException_WarningCannotHaveDurationDays(){
 
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
-        .accessKey("20220393-2470011192")
+        .accessKey("??")
         .userId(userId)
         .reason("testRestriction")
         .durationDays(1L)
