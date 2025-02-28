@@ -30,6 +30,9 @@ public class UserServiceExternalTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private EncryptedEmailService encryptedEmailService;
+
 
     @BeforeEach
     public void setUp(){
@@ -180,4 +183,44 @@ public class UserServiceExternalTest {
         assertEquals("UserNotFound", exception.getMessage());
         verify(userRepository,times(1)).findById(invalidUserId);
     }
+
+    @Test
+    public void testGetUserEmail(){
+        Long validUserId=1L;
+        String userEmailHashed="testhash@testhash.comhash";
+
+        User user=User.builder()
+            .id(validUserId)
+            .encryptedEmail(userEmailHashed)
+            .build();
+
+        String userEmail="test@test.com";
+
+        when(encryptedEmailService.getOriginEmail(userEmailHashed)).thenReturn(userEmail);
+        when(userRepository.findById(validUserId)).thenReturn(Optional.of(user));
+
+        String email=userService.getUserEmail(validUserId);
+
+        assertEquals(userEmail, email);
+        verify(userRepository, times(1)).findById(validUserId);
+        verify(encryptedEmailService,times(1)).getOriginEmail(userEmailHashed);
+    }
+
+    @Test
+    public void testGetUserEmail_UserNotFound(){
+        Long invalidUserId=2L;
+        String userEmailHashed="testhash@testhash.comhash";
+
+        when(userRepository.findById(invalidUserId)).thenReturn(Optional.empty());
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            userService.getUserImageName(invalidUserId);
+        });
+
+        assertEquals("UserNotFound", exception.getMessage());
+        verify(userRepository,times(1)).findById(invalidUserId);
+        verify(encryptedEmailService,times(0)).getOriginEmail(userEmailHashed);
+    }
+
+
 }
