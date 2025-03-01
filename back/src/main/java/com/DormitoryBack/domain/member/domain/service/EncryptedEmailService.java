@@ -25,6 +25,10 @@ public class EncryptedEmailService {
     }
 
     public void setNewEmailMap(String originEmail, String hashEmail){
+        EncryptedEmailMap exist=encryptedEmailRepository.findByEmailHash(hashEmail);
+        if(exist!=null){
+            throw new RuntimeException("DuplicatedEmailMap");
+        }
         EncryptedEmailMap emailMap=EncryptedEmailMap.builder()
             .emailAES256(emailEncryptor.encrypt_AES256(originEmail))
             .emailHash(hashEmail)

@@ -24,6 +24,10 @@ public class EncryptedPhoneNumService {
     } 
 
     public void setNewNumberMap(String originNumber, String numberHash){
+        EncryptedPhoneNumMap exist=encryptedPhoneNumRepository.findByNumberHash(numberHash);
+        if(exist!=null){
+            throw new RuntimeException("DuplicatedNumberMap");
+        }
         EncryptedPhoneNumMap numberMap=EncryptedPhoneNumMap.builder()
             .numberAES256(phoneNumEncryptor.encrypt_AES256(originNumber))
             .numberHash(numberHash)
