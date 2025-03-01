@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 
-
 @Service
 public class UserServiceExternal {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EncryptedEmailService encryptedEmailService; 
 
     public Boolean isUserExist(Long userId){
         User user=userRepository.findById(userId).orElse(null); //repository에 새로운 메서드 선언 후 리펙터링해야함
@@ -19,6 +21,17 @@ public class UserServiceExternal {
             return false;
         }
         return true;
+    }
+
+    public String getUserEmail(Long userId){
+        User user=userRepository.findById(userId).orElse(null);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+        String userEmailhashed=user.getEncryptedEmail();
+        String userEmail=encryptedEmailService.getOriginEmail(userEmailhashed);
+
+        return userEmail;
     }
   
     public void saveUserProfileImage(Long userId,String imageName){
