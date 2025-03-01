@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.DormitoryBack.domain.auth.email.domain.dto.EmailRequestDTO;
 import com.DormitoryBack.domain.auth.email.domain.dto.EmailResponseDTO;
 import com.DormitoryBack.domain.auth.email.domain.enums.CodeStateType;
+import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTO;
 import com.DormitoryBack.module.crypt.PIEncryptor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -111,6 +112,51 @@ public class EmailService {
         }, executorService);
 
         return CompletableFuture.completedFuture(response);
+    }
+
+    public void sendRestrictionConfirmMail(String to, RestrictionResponseDTO restriction){
+        CompletableFuture.runAsync(()->{
+            try{
+                if(to==null){
+                    throw new RuntimeException("NoEmail");
+                }
+                if(restriction==null){
+                    throw new RuntimeException("NoRestriction");
+                }
+                Properties props = new Properties();
+                props.put("mail.smtp.host", host);
+                props.put("mail.smtp.port", port);
+                props.put("mail.smtp.auth", auth);
+                props.put("mail.smtp.starttls.enable", starttls);
+
+                Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                        return new javax.mail.PasswordAuthentication(email, password);
+                    }
+                });
+
+                String subject = "DeliveryBox 계정 이용 제한 안내";
+                String msg = "";
+
+                msg+="<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">사용자님의 계정이 아래와 같은 사유로 "+restriction.getExpireTime()+"까지 로그인이 제한되었습니다.</p>";
+                msg+="";
+                msg+="<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">사유 : "+restriction.getReason()+"</p>";
+                msg+="<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">문의 사항은 "+email+" 로 남겨주세요.</p>";
+
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(email));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                message.setSubject(subject);
+                message.setContent(msg, "text/html; charset=utf-8");
+
+                Transport.send(message);
+
+            }catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        },executorService);
+        
+        return ;
     }
 
     private void restoreExpirableKeyAfterSend(String key, String value) {

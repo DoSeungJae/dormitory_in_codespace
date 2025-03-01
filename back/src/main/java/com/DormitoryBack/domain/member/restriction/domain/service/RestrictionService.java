@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.DormitoryBack.domain.auth.email.domain.service.EmailService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
-import com.DormitoryBack.domain.member.domain.entity.User;
-import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.member.domain.service.UserService;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionRequestDTO;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTO;
@@ -18,24 +17,23 @@ import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionRespons
 import com.DormitoryBack.domain.member.restriction.domain.repository.RestrictionRepository;
 import com.DormitoryBack.module.TimeOptimizer;
 import com.DormitoryBack.domain.member.restriction.domain.entity.Restriction;
-
 @Service
 public class RestrictionService {
 
-    //@Value("${administrator.key}") //value 어노테이션을 사용하면 test 환경에서 exception이 thorwn.
-    private final String key="20220393-2470011192"; //런타임에서도 Value 어노테이션이 동작하지 않는지 확인하기
+    @Value("${administrator.key}") //value 어노테이션을 사용하면 test 환경에서 exception이 thorwn.
+    private String key; //런타임에서도 Value 어노테이션이 동작하지 않는지 확인하기
 
     @Autowired
     private RestrictionRepository restrictionRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
 
     @Autowired
     private UserServiceExternal userService;
+
+    @Autowired
+    private EmailService emailService;
 
     public RestrictionResponseDTOList getMyRestrictions(String token){
 
@@ -52,10 +50,7 @@ public class RestrictionService {
         }
 
         Long userId=dto.getUserId();
-        Boolean userExist=userService.isUserExist(userId);
-        if(!userExist){
-            throw new RuntimeException("UserNotFound");
-        }
+        String userEmail=userService.getUserEmail(userId);
 
         Restriction restriction=Restriction.builder()
             .userId(dto.getUserId())
@@ -65,8 +60,11 @@ public class RestrictionService {
             .build();
         
         Restriction saved=restrictionRepository.save(restriction);
+        RestrictionResponseDTO responseDTO=makeDTO(saved); 
+        
+        emailService.sendRestrictionConfirmMail(userEmail, responseDTO); 
 
-        return makeDTO(saved);
+        return responseDTO;
     }
 
     public RestrictionResponseDTO warn(RestrictionRequestDTO request){
