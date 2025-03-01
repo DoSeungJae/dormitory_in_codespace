@@ -36,13 +36,13 @@ public class RestrictionAPI {
     }
 
     @GetMapping("/my")
-    public ResponseEntity myRestrictions(@RequestHeader("Authorization") String token){
+    public ResponseEntity<RestrictionResponseDTOList> myRestrictions(@RequestHeader("Authorization") String token){
         RestrictionResponseDTOList dtoList=restrictionService.getMyRestrictions(token);
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
 
     @PostMapping("/new")
-    public ResponseEntity makeRestriction(@RequestBody RestrictionRequestDTO DTO){
+    public ResponseEntity<RestrictionResponseDTO> makeRestriction(@RequestBody RestrictionRequestDTO DTO){
         RestrictionResponseDTO responseDTO=restrictionService.restrict(DTO);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
