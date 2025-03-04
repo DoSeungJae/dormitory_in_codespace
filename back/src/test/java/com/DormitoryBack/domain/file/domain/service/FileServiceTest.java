@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -29,6 +30,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.DormitoryBack.domain.file.domain.dto.FileRequestDTO;
+import com.DormitoryBack.domain.file.domain.enums.ParamType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.amazonaws.services.s3.AmazonS3;
@@ -115,6 +118,102 @@ public class FileServiceTest {
     }
 
     @Test
+    public void testGeneratePresignedURLWithNickname() throws Exception {
+        String nickname = "testNickname";
+        Long userId = 1L;
+        String fileName = "test.txt";
+        String expectedUrl = "https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
+    
+        FileRequestDTO<String> requestDTO = FileRequestDTO.<String>builder()
+                .type(ParamType.NICKNAME)
+                .userInfo(nickname)
+                .build();
+    
+        when(userService.getUserIdFromNickname(nickname)).thenReturn(userId);
+
+
+        when(userService.getUserImageName(userId)).thenReturn(fileName);
+        
+        URL url = new URL(expectedUrl);
+        when(s3Client.generatePresignedUrl(any(GeneratePresignedUrlRequest.class))).thenReturn(url);
+    
+        String result = fileService.generatePresignedURL(requestDTO);
+    
+        assertNotNull(result);
+        assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
+        assertTrue(result.contains(fileName));
+    }
+
+    @Test
+    public void testGeneratePresignedURLWithUserId() throws Exception{
+        Long userId = 1L;
+        String fileName = "test.txt";
+        String expectedUrl = "https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
+
+        FileRequestDTO<Long> requestDTO=FileRequestDTO.<Long>builder()
+            .type(ParamType.USERID)
+            .userInfo(userId)
+            .build();
+
+        when(userService.getUserImageName(userId)).thenReturn(fileName);
+        
+        URL url = new URL(expectedUrl);
+        when(s3Client.generatePresignedUrl(any(GeneratePresignedUrlRequest.class))).thenReturn(url);
+        
+        String result = fileService.generatePresignedURL(requestDTO);
+        
+        assertNotNull(result);
+        assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
+        assertTrue(result.contains(fileName));
+      
+    }
+
+    @Test
+    public void testGeneratePresignedURL_InvalidType() throws Exception{
+
+        FileRequestDTO<Long> requestDTO=FileRequestDTO.<Long>builder()
+            .type(null)
+            .userInfo(null)
+            .build();
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            fileService.generatePresignedURL(requestDTO); 
+        });
+
+        //("InvalidType : type must be NICKNAME or USERID", exception.getMessage());
+        assertEquals("InvalidType : type must be NICKNAME or USERID", exception.getMessage());
+
+        verify(userService,times(0)).getUserImageName(anyLong());
+        verify(s3Client,times(0)).generatePresignedUrl(any(GeneratePresignedUrlRequest.class));
+        verify(userService,times(0)).getUserIdFromNickname(anyString());
+    }
+
+    @Test
+    public void testGeneratePresignedURL_NoUserImage() throws Exception{
+        Long userId=1L;
+        FileRequestDTO<Long> requestDTO=FileRequestDTO.<Long>builder()
+            .type(ParamType.USERID)
+            .userInfo(userId)
+            .build();
+        
+        when(userService.getUserImageName(userId)).thenReturn(null);
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            fileService.generatePresignedURL(requestDTO);
+        });
+
+        assertEquals("NoUserImage", exception.getMessage());
+
+        verify(userService,times(1)).getUserImageName(userId);
+        verify(s3Client,times(0)).generatePresignedUrl(any(GeneratePresignedUrlRequest.class));
+        verify(userService,times(0)).getUserIdFromNickname(anyString());
+    }
+
+
+    
+
+    /*
+    @Test
     public void testGeneratePresignedURL(){
         String fileName="test.txt";
         String expectedUrl="https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
@@ -131,7 +230,7 @@ public class FileServiceTest {
         }catch(MalformedURLException e){
             fail("MalformedURLException :"+e.getMessage());
         }finally{
-            String result=fileService.generatePresignedURL(validToken);
+            String result=fileService.generatePresignedURL(validToken); //!
 
             assertNotNull(result);
             assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
@@ -147,7 +246,7 @@ public class FileServiceTest {
         when(tokenProvider.validateToken(invalidToken)).thenReturn(false);
 
         RuntimeException exception=assertThrows(RuntimeException.class, ()->{
-            fileService.generatePresignedURL(invalidToken);
+            fileService.generatePresignedURL(invalidToken); //!
         });
 
         assertEquals("InvalidToken", exception.getMessage());
@@ -163,11 +262,14 @@ public class FileServiceTest {
         when(userService.getUserImageName(userId)).thenReturn(null);
 
         RuntimeException exception=assertThrows(RuntimeException.class, ()->{
-            fileService.generatePresignedURL(validToken);
+            fileService.generatePresignedURL(validToken); //!
         });
 
         assertEquals("NoUserImage", exception.getMessage());
     }
+    */
+
+
 
     @Test
     public void testDeleteFile(){
