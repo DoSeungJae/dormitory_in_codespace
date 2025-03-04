@@ -16,7 +16,7 @@ public class ExceptionManager {
     }
 
     @ExceptionHandler(JwtException.class)
-    public ResponseEntity jwtExceptionHandler(JwtException e){
+    public ResponseEntity<String> jwtExceptionHandler(JwtException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }
