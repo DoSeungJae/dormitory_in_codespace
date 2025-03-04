@@ -222,5 +222,36 @@ public class UserServiceExternalTest {
         verify(encryptedEmailService,times(0)).getOriginEmail(userEmailHashed);
     }
 
+    @Test
+    public void testGetUserIdFromNickname(){
+        String validUserNickname="validNickname";
+
+        User user=User.builder()
+            .id(1L)
+            .nickName(validUserNickname)
+            .build();
+        
+        when(userRepository.findByNickName(validUserNickname)).thenReturn(user);
+
+        Long userId=userService.getUserIdFromNickname(validUserNickname);
+
+        assertEquals(userId, user.getId());
+        verify(userRepository,times(1)).findByNickName(validUserNickname);
+    }
+
+    @Test
+    public void testGetUserIdFromNickname_UserNotFound(){
+        String invalidUserNickname="invalidUserNickname";
+
+        when(userRepository.findByNickName(invalidUserNickname)).thenReturn(null);
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            userService.getUserIdFromNickname(invalidUserNickname);
+        });
+
+        assertEquals("UserNotFound", exception.getMessage());
+        verify(userRepository,times(1)).findByNickName(invalidUserNickname);
+    }
+
 
 }
