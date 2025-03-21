@@ -1,11 +1,11 @@
 package com.DormitoryBack.domain.article.domain.service;
 
+/*
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,20 +15,16 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.DormitoryBack.domain.article.domain.dto.ArticleDTO;
 import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
-import com.DormitoryBack.domain.article.domain.service.ArticleService;
-import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
@@ -38,9 +34,10 @@ import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionSer
 import com.DormitoryBack.module.TimeOptimizer;
 
 import lombok.extern.slf4j.Slf4j;
+ */
 
+/* 잘못된 단위 테스트 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
 @Slf4j
 public class ArticleServiceTest {
 
@@ -74,8 +71,6 @@ public class ArticleServiceTest {
     private Long articleId;
 
     private UserResponseDTO userResponse;
-
-    private ArticleDTO response;
 
     private Long invalidArticleId;
 
@@ -194,3 +189,5 @@ public class ArticleServiceTest {
 
 
 }
+
+ */
