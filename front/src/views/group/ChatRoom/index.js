@@ -83,7 +83,6 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
 
   useEffect(() => {
     if (shouldScroll) {
-      console.log("going to sroll!");
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
       setShouldScroll(false);
     }
