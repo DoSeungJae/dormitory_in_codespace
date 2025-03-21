@@ -27,7 +27,6 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.TimeOptimizer;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -206,8 +205,7 @@ public class ArticleService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
-        Long userId=tokenProvider.getUserIdFromToken(token);
-
+        
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new IllegalArgumentException("존재하지 않는 글입니다.");
