@@ -22,53 +22,25 @@ public class  TokenProvider implements InitializingBean {
     private static final String USER_ID_KEY = "usrId";
 
     private final Logger logger=LoggerFactory.getLogger(TokenProvider.class);
-    private static final String AUTHORITIES_KEY="auth20220393";
 
-    private final String secret;
+    private String secret;
 
-    private final long tokenValidityMilliseconds;
+    private Long tokenValidityMilliseconds;
 
     private Key key;
 
-
-    public TokenProvider(
-            //@Value("${jwt.secret}") String secret,
-            //@Value("${jwt.token-validity-in-seconds}") long tokenValiditySeconds
-    ) {
-        this.secret = "mySecretKey20220393VlwEyVBsYt9V7zq57Te";
-        this.tokenValidityMilliseconds = 600 * 1000 * 100;  // Convert seconds to milliseconds
-
-
+    public TokenProvider(String secret, Long tokenValidityMilliseconds){
+        this.secret=secret;
+        this.tokenValidityMilliseconds=tokenValidityMilliseconds;
         if (this.secret == null || this.secret.isEmpty()) {
-            throw new IllegalArgumentException("시크릿 키값이 없습니다.");
+            throw new IllegalArgumentException("NoSecretKey");
         }
-
+        if (this.tokenValidityMilliseconds==null) {
+            throw new IllegalArgumentException("NoSecrettokenValidityMilliseconds");
+        }
         afterPropertiesSet();
-
-
     }
 
-
-    /*
-    public TokenProvider(){
-        this.secret=null;
-        this.tokenValidityMilliseconds=0;
-        afterPropertiesSet();
-
-    }
-
-     */
-
-/*
-    @Override
-    public void afterPropertiesSet(){
-        byte[] keyBytes=Decoders.BASE64.decode(secret);
-        this.key=Keys.hmacShaKeyFor(keyBytes);
-        this.key=Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    }
-
-
- */
 
     @Override
     public void afterPropertiesSet() {
@@ -100,10 +72,10 @@ public class  TokenProvider implements InitializingBean {
 
     public Long getUserIdFromToken(String token){
         Claims claims=Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
 
         return claims.get(USER_ID_KEY,Long.class);
     }
@@ -114,9 +86,9 @@ public class  TokenProvider implements InitializingBean {
         }
         try{
             Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
 
             return true;
 
@@ -133,54 +105,8 @@ public class  TokenProvider implements InitializingBean {
             logger.info("JWT 토큰이 잘못되었습니다.");
             return false;
         }
+
+        //사용자 제제 여부 확인
     }
-
-
-        /*
-    public String createToken(Authentication authentication1){
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        long now=(new Date()).getTime();
-        Date validity=new Date(now+this.tokenValidityMilliseconds);
-
-
-        return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .signWith(key,SignatureAlgorithm.HS256)
-                .setExpiration(validity)
-                .compact();
-
-    }
-
-     */
-
-
-
-    /*
-    public Authentication getAuthentication(String token){
-        Claims claims=Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        UserDetails principal = new User(claims.getSubject(),"",authorities);
-        return new UsernamePasswordAuthenticationToken(principal,"",authorities);
-
-    }
-
-     */
-
-
-
 
 }
