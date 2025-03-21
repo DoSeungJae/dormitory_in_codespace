@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +36,7 @@ import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class FileServiceTest {
 
