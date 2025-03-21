@@ -69,5 +69,14 @@ public class UserServiceExternal {
         String imageName=user.getImageName();
         return imageName;
     }
+     
+    public Long getUserIdFromNickname(String nickname){
+        User user=userRepository.findByNickName(nickname);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+        Long userId=user.getId();
+        return userId;
+    }
 
 }
