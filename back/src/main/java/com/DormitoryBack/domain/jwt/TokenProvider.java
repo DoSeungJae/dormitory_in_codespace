@@ -4,46 +4,43 @@ package com.DormitoryBack.domain.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionServiceExternal;
 
 import java.security.Key;
 import java.util.Date;
 
 
 @Slf4j
-public class  TokenProvider implements InitializingBean {
+@Service
+public class TokenProvider  {
 
     private static final String USER_ID_KEY = "usrId";
 
     private final Logger logger=LoggerFactory.getLogger(TokenProvider.class);
 
+    @Value("${jwt.secret}")
     private String secret;
 
+    @Value("${jwt.token-validity-in-seconds}")
     private Long tokenValidityMilliseconds;
 
     private Key key;
 
-    public TokenProvider(String secret, Long tokenValidityMilliseconds){
-        this.secret=secret;
-        this.tokenValidityMilliseconds=tokenValidityMilliseconds;
-        if (this.secret == null || this.secret.isEmpty()) {
-            throw new IllegalArgumentException("NoSecretKey");
-        }
-        if (this.tokenValidityMilliseconds==null) {
-            throw new IllegalArgumentException("NoSecrettokenValidityMilliseconds");
-        }
-        afterPropertiesSet();
-    }
+    @Autowired
+    private RestrictionServiceExternal restrictionService;
 
 
-    @Override
-    public void afterPropertiesSet() {
+    @PostConstruct
+    public void init() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         // Key length check
         logger.info("Key bytes length: {}", keyBytes.length);
@@ -79,17 +76,26 @@ public class  TokenProvider implements InitializingBean {
 
         return claims.get(USER_ID_KEY,Long.class);
     }
+    
     public boolean validateToken(String token){
         if(token==null || token.isEmpty()){
             throw new JwtException("토큰이 없습니다.");
-
         }
+
         try{
             Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
 
+        
+            Long userId=getUserIdFromToken(token);
+            Object restricted=restrictionService.getIsRestricted(userId);
+            if(restricted instanceof String){ 
+                String message="ForcedLogout";
+                throw new RuntimeException(message);
+            }
+            
             return true;
 
         }catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
@@ -105,8 +111,6 @@ public class  TokenProvider implements InitializingBean {
             logger.info("JWT 토큰이 잘못되었습니다.");
             return false;
         }
-
-        //사용자 제제 여부 확인
     }
 
 }
