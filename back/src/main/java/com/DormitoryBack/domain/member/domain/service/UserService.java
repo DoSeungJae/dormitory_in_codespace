@@ -214,7 +214,7 @@ public class UserService {
         }catch(NoSuchAlgorithmException e){
             return null;
         }
-        User socialAccount=userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider); //암호화된 이메일로 조회해야함 hashify
+        User socialAccount=userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider); 
         return socialAccount;
     }
 
@@ -239,7 +239,8 @@ public class UserService {
             throw new RuntimeException(message);
         }
         
-        return tokenProvider.createToken(user);
+        String token=tokenProvider.createToken(user);
+        return token;
     }
 
     public void deleteUser(Long usrId, UserRequestDTO dto){
