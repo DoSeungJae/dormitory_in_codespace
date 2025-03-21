@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.DormitoryBack.domain.file.domain.dto.FileRequestDTO;
+import com.DormitoryBack.domain.file.domain.enums.ParamType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.amazonaws.AmazonServiceException;
@@ -43,11 +45,19 @@ public class FileService {
     @Autowired
     private UserServiceExternal userService;
 
-    public String generatePresignedURL(String token){ //userId 혹은 token을 파라미터로 받아서 user에 해당하는 fileName을 service에서 가져오도록 하는 것이 낫지 않을까.
-        if(!tokenProvider.validateToken(token)){
-            throw new RuntimeException("InvalidToken");
+    public String generatePresignedURL(FileRequestDTO<?> requestDTO){
+        ParamType infoType=requestDTO.getType();
+        Long userId;
+        if(infoType==ParamType.NICKNAME){
+            String nickname=(String)requestDTO.getUserInfo();
+            userId=userService.getUserIdFromNickname(nickname);
+        }else if(infoType==ParamType.USERID){
+            Integer integerUserId=(Integer)requestDTO.getUserInfo();
+            userId=integerUserId.longValue();
+        }else{
+            throw new RuntimeException("InvalidType : type must be NICKNAME or USERID"); //custom exception 필요..
         }
-        Long userId=tokenProvider.getUserIdFromToken(token);
+
         String fileName=userService.getUserImageName(userId);
         if(fileName==null){
             throw new RuntimeException("NoUserImage");
@@ -64,8 +74,8 @@ public class FileService {
                 .withExpiration(expiration);
         
         URL url=s3Client.generatePresignedUrl(generatePresignedUrlRequest);
-        
-        return url.toString();
+        String urlString=url.toString();
+        return urlString;
     }
 
     public void setUserProfileImage(MultipartFile file, String token){
