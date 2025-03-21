@@ -1,7 +1,5 @@
 package com.DormitoryBack.domain.file.domain.api;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +7,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.DormitoryBack.domain.file.domain.dto.FileRequestDTO;
 import com.DormitoryBack.domain.file.domain.service.FileService;
 
 @CrossOrigin(origins = {"https://improved-space-tribble-vjvwrwx956jh69w4-3000.app.github.dev", "https://turbo-chainsaw-rpvvwx9pp5c5p55-3000.app.github.dev"})
@@ -42,8 +42,8 @@ public class FileController {
     */
 
     @GetMapping("/userImageUrl")
-    public ResponseEntity<String> getFileURL(@RequestHeader("Authorization") String token) throws IOException{
-        String presignedURL=fileService.generatePresignedURL(token);
+    public ResponseEntity<String> getFileURL(@RequestBody FileRequestDTO<?> request){
+        String presignedURL=fileService.generatePresignedURL(request);
         return ResponseEntity.status(HttpStatus.OK).body(presignedURL);
     }
 
