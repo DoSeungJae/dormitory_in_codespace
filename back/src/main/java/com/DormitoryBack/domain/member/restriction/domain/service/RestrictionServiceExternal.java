@@ -15,8 +15,6 @@ public class RestrictionServiceExternal {
     @Autowired
     private RestrictionRepository restrictionRepository;
 
-    private RestrictionService restrictionService;
-
     public Object getIsRestricted(Long userId){
         List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId);
         Iterator<Restriction> iterator=restrictions.iterator();
@@ -38,11 +36,37 @@ public class RestrictionServiceExternal {
         }
 
         if(isRestricted){
-            String restrictionDetail=restrictionService.makeRestrictionDetail(userId);
+            String restrictionDetail=makeRestrictionDetail(userId);
             return restrictionDetail;
         }
 
         return isRestricted;
+    }
+
+    public String makeRestrictionDetail(Long userId){
+        String message="LoginRestricted:expiredAt:";
+        LocalDateTime expiredTime=getExpiredTime(userId);
+        message=message+expiredTime.toString();
+
+        return message;
+    }
+
+    public LocalDateTime getExpiredTime(Long userId){
+        List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId);
+        Iterator<Restriction> iterator=restrictions.iterator();
+        LocalDateTime entireExpieredTime=TimeOptimizer.now();
+        while(iterator.hasNext()){
+            Restriction restriction=iterator.next();
+            Long durationDays=restriction.getDurationDays();
+            if(durationDays==null){
+                continue;
+            }
+            LocalDateTime expiredTime=restriction.getTriggeredTime().plusDays(durationDays);
+            if(expiredTime.isAfter(entireExpieredTime)){
+                entireExpieredTime=expiredTime;
+            }
+        }
+        return entireExpieredTime;
     }
 
     
