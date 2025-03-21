@@ -154,7 +154,8 @@ public class RestrictionService {
         }
 
         if(isRestricted){
-            return makeRestrictionDetail(userId);
+            String restrictionDetail=makeRestrictionDetail(userId);
+            return restrictionDetail;
         }
 
         return isRestricted;
