@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import ModalContext from "../../ModalContext";
+import ModalContext from "../../common/ModalContext";
 
 function PasswordChangeForm({userId}) {
 

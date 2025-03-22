@@ -28,8 +28,29 @@ function HomePageSelect() {
     if(idx>=0){
       setSelectComponentIndex(idx);
       localStorage.removeItem('index');
-    } 
+    }
+    if(token==null){
+      return ;
+    }
+    checkRestricted();
   },)
+
+  const checkRestricted = async () => {
+    try{
+      const response = await axios.get(`${process.env.REACT_APP_HTTP_API_URL}/restriction/isRestricted`, {
+        headers: {
+            'Authorization': `${token}`
+        }
+      });
+      if(response.data===true){
+        alert("your account is restricted!");
+        localStorage.clear();
+        //restricted를 알리는 modal form 띄우기, 확인 창을 누르면 localStorage.clear()
+      }
+    }catch(error){
+      console.error(error);
+    }
+  }
   
   const selectMenu = async (item) => {
     try {
