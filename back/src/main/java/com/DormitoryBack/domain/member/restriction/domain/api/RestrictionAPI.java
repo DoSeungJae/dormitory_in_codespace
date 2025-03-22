@@ -47,6 +47,12 @@ public class RestrictionAPI {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
+    @PostMapping("/newWarn")
+    public ResponseEntity<RestrictionResponseDTO> makeWarn(@RequestBody RestrictionRequestDTO DTO){
+        RestrictionResponseDTO responseDTO=restrictionService.warn(DTO);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
     @GetMapping("/isRestricted")
     public ResponseEntity<Boolean> getIsRestricted(@RequestHeader("Authorization") String token){
         Boolean isRestricted=restrictionService.getIsRestricted(token);
