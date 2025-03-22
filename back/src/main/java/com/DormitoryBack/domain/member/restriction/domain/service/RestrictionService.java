@@ -140,7 +140,7 @@ public class RestrictionService {
         Boolean isRestricted=false;
         while(iterator.hasNext()){
             Restriction restriction=iterator.next();
-            if(restriction.getDurationDays()==null){
+            if(restriction.getDurationDays()==null){ 
                 continue;
             }
             LocalDateTime expireDate=restriction.getTriggeredTime().plusDays(restriction.getDurationDays());
@@ -161,6 +161,30 @@ public class RestrictionService {
         return isRestricted;
     }
 
+    public Boolean getIsRestricted(String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new RuntimeException("InvalidToken");
+        }
+        Long userId=tokenProvider.getUserIdFromToken(token);
+        List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId);
+        Iterator<Restriction> iterator=restrictions.iterator();
+        Boolean isRestricted=false;
+        while(iterator.hasNext()){
+            Restriction restriction=iterator.next();
+            if(restriction.getDurationDays()==null){
+                continue;
+            }
+            LocalDateTime expireDate=restriction.getTriggeredTime().plusDays(restriction.getDurationDays());
+            LocalDateTime now=TimeOptimizer.now();
+            Boolean isExpired=now.isAfter(expireDate) || now.equals(expireDate);
+            if(isExpired){
+                continue;  
+            }
+            isRestricted=true;
+            break;
+        }
+        return isRestricted;
+    }
 
     public String makeRestrictionDetail(Long userId){
         String message="LoginRestricted:expiredAt:";
