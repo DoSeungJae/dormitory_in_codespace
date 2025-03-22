@@ -17,11 +17,12 @@ import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionRespons
 import com.DormitoryBack.domain.member.restriction.domain.repository.RestrictionRepository;
 import com.DormitoryBack.module.TimeOptimizer;
 import com.DormitoryBack.domain.member.restriction.domain.entity.Restriction;
+
 @Service
 public class RestrictionService {
 
-    @Value("${administrator.key}") //value 어노테이션을 사용하면 test 환경에서 exception이 thorwn.
-    private String key; //런타임에서도 Value 어노테이션이 동작하지 않는지 확인하기
+    @Value("${administrator.key}")
+    private String key; 
 
     @Autowired
     private RestrictionRepository restrictionRepository;
@@ -136,7 +137,7 @@ public class RestrictionService {
         RestrictionResponseDTO dto=RestrictionResponseDTO.builder()
             .userId(restriction.getUserId())
             .expireTime(expireDate) //경고일 경우 null이 되어야함.
-            .isExpired(isExpired) //경고일 경우 null이 되어야함.
+            .isExpired(isExpired) //""
             .reason(restriction.getReason())
             .build();
         
@@ -149,7 +150,7 @@ public class RestrictionService {
         Boolean isRestricted=false;
         while(iterator.hasNext()){
             Restriction restriction=iterator.next();
-            if(restriction.getDurationDays()==null){ 
+            if(restriction.getDurationDays()==0L){ 
                 continue;
             }
             LocalDateTime expireDate=restriction.getTriggeredTime().plusDays(restriction.getDurationDays());
