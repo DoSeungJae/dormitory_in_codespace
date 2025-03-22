@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.member.restriction.domain.service;
 
+import com.DormitoryBack.domain.auth.email.domain.service.EmailService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -38,6 +40,9 @@ public class RestrictionServiceTest {
 
     @Mock
     private TokenProvider tokenProvider;
+
+    @Mock
+    private EmailService emailService;
 
     private final String validToken = "valid.token.here";
     
@@ -76,6 +81,15 @@ public class RestrictionServiceTest {
 
     @Test
     public void testRestrict() {
+        try{
+            Field keyField=restrictionService.getClass().getDeclaredField("key");
+            keyField.setAccessible(true);
+            keyField.set(restrictionService, "??");
+
+        }catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+        
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
             .accessKey("??")
             .userId(userId)
@@ -85,7 +99,7 @@ public class RestrictionServiceTest {
 
         when(userService.isUserExist(userId)).thenReturn(true);
         when(restrictionRepository.save(any(Restriction.class))).thenAnswer(i -> i.getArguments()[0]);
-
+        doNothing().when(emailService).sendRestrictionConfirmMail(anyString(),any(RestrictionResponseDTO.class));
         RestrictionResponseDTO result = restrictionService.restrict(request);
 
         assertNotNull(result);
@@ -95,16 +109,26 @@ public class RestrictionServiceTest {
 
     @Test
     public void testWarn(){
+        try{
+            Field keyField=restrictionService.getClass().getDeclaredField("key");
+            keyField.setAccessible(true);
+            keyField.set(restrictionService, "??");
+
+        }catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+        
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
             .accessKey("??")
             .userId(userId)
             .reason("testRestriction")
-            .durationDays(null)
+            .durationDays(0L)
             .build();
         
+        assertEquals(request.getAccessKey(),"??");
         when(userService.isUserExist(userId)).thenReturn(true);
         when(restrictionRepository.save(any(Restriction.class))).thenAnswer(i -> i.getArguments()[0]);
-
+        
         RestrictionResponseDTO response=restrictionService.warn(request);
 
         assertNotNull(response);
@@ -117,12 +141,21 @@ public class RestrictionServiceTest {
     @Test
     public void testWarn_RuntimeException_UserNotFound(){
 
+        try{
+            Field keyField=restrictionService.getClass().getDeclaredField("key");
+            keyField.setAccessible(true);
+            keyField.set(restrictionService, "??");
+
+        }catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+        
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
-        .accessKey("??")
-        .userId(invalidUserId)
-        .reason("testRestriction")
-        .durationDays(null)
-        .build();
+            .accessKey("??")
+            .userId(invalidUserId)
+            .reason("testRestriction")
+            .durationDays(0L)
+            .build();
 
         when(userService.isUserExist(invalidUserId)).thenReturn(false);
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
@@ -135,7 +168,15 @@ public class RestrictionServiceTest {
 
     @Test
     public void testWarn_IllegalArgumentException_WarningCannotHaveDurationDays(){
+        try{
+            Field keyField=restrictionService.getClass().getDeclaredField("key");
+            keyField.setAccessible(true);
+            keyField.set(restrictionService, "??");
 
+        }catch(Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+        
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
         .accessKey("??")
         .userId(userId)
@@ -149,7 +190,7 @@ public class RestrictionServiceTest {
             restrictionService.warn(request);
         });
 
-        assertEquals("WarningCannotHaveDurationDays", exception.getMessage());
+        assertEquals("DurationDaysMustBe0", exception.getMessage()); //수정 필요 
 
     }
 
@@ -171,7 +212,7 @@ public class RestrictionServiceTest {
         Restriction restriction3=Restriction.builder()
             .userId(userId)
             .triggeredTime(now)
-            .durationDays(null)
+            .durationDays(0L)
             .build();
 
         when(restrictionRepository.findAllByUserId(userId)).thenReturn(Arrays.asList(restriction1,restriction2,restriction3));
@@ -198,7 +239,7 @@ public class RestrictionServiceTest {
         Restriction restriction2=Restriction.builder()
             .userId(userId)
             .triggeredTime(now)
-            .durationDays(null)
+            .durationDays(0L)
             .build();
         
         when(restrictionRepository.findAllByUserId(userId)).thenReturn(Arrays.asList(restriction1,restriction2));
