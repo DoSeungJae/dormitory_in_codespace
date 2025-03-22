@@ -144,12 +144,13 @@ public class FileServiceTest {
     @Test
     public void testGeneratePresignedURLWithUserId() throws Exception{
         Long userId = 1L;
+        Integer userIdInteger=1;
         String fileName = "test.txt";
         String expectedUrl = "https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
 
-        FileRequestDTO<Long> requestDTO=FileRequestDTO.<Long>builder()
+        FileRequestDTO<Integer> requestDTO=FileRequestDTO.<Integer>builder()
             .type(ParamType.USERID)
-            .userInfo(userId)
+            .userInfo(userIdInteger)
             .build();
 
         when(userService.getUserImageName(userId)).thenReturn(fileName);
@@ -162,13 +163,12 @@ public class FileServiceTest {
         assertNotNull(result);
         assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
         assertTrue(result.contains(fileName));
-      
     }
 
     @Test
     public void testGeneratePresignedURL_InvalidType() throws Exception{
 
-        FileRequestDTO<Long> requestDTO=FileRequestDTO.<Long>builder()
+        FileRequestDTO<Object> requestDTO=FileRequestDTO.<Object>builder()
             .type(null)
             .userInfo(null)
             .build();
@@ -188,9 +188,11 @@ public class FileServiceTest {
     @Test
     public void testGeneratePresignedURL_NoUserImage() throws Exception{
         Long userId=1L;
-        FileRequestDTO<Long> requestDTO=FileRequestDTO.<Long>builder()
+        Integer userIdInteger=1;
+
+        FileRequestDTO<Integer> requestDTO=FileRequestDTO.<Integer>builder()
             .type(ParamType.USERID)
-            .userInfo(userId)
+            .userInfo(userIdInteger)
             .build();
         
         when(userService.getUserImageName(userId)).thenReturn(null);
