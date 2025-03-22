@@ -35,10 +35,6 @@ public class TokenProvider  {
 
     private Key key;
 
-    @Autowired
-    private RestrictionServiceExternal restrictionService;
-
-
     @PostConstruct
     public void init() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -88,14 +84,6 @@ public class TokenProvider  {
                 .build()
                 .parseClaimsJws(token);
 
-        
-            Long userId=getUserIdFromToken(token);
-            Object restricted=restrictionService.getIsRestricted(userId);
-            if(restricted instanceof String){ 
-                String message="ForcedLogout";
-                throw new RuntimeException(message);
-            }
-            
             return true;
 
         }catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e){
