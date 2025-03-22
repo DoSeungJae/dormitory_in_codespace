@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import ModalContext from "../../ModalContext";
+import ModalContext from "../../common/ModalContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 

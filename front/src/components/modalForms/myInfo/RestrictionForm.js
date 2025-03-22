@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import ModalContext from "../../ModalContext";
-import { getRelativeTime } from "../../../../modules/common/timeModule"
+import ModalContext from "../../common/ModalContext";
+import { getRelativeTime } from "../../../modules/common/timeModule";
 import axios from "axios";
 
     

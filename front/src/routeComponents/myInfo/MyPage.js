@@ -7,13 +7,14 @@ import axios from 'axios';
 import { dorIdToDorName } from '../../components/home/HomeUtils';
 import Modal from '../../components/common/Modal';
 import ModalContext from '../../components/common/ModalContext';
-import PasswordChangeForm from '../../components/common/modalForms/myInfo/PasswordChangeForm';
-import DormitoryChangeForm from '../../components/common/modalForms/myInfo/DormitoryChangeForm';
-import InquireForm from '../../components/common/modalForms/myInfo/InquireForm';
-import LogoutForm from '../../components/common/modalForms/myInfo/LogoutForm';
-import UserDeletionForm from '../../components/common/modalForms/myInfo/UserDeletionForm';
-import RestrictionForm from '../../components/common/modalForms/myInfo/RestrictionForm';
-import ProfileChangeForm from '../../components/common/modalForms/myInfo/ProfileChangeForm';
+
+import PasswordChangeForm from '../../components/modalForms/myInfo/PasswordChangeForm';
+import DormitoryChangeForm from '../../components/modalForms/myInfo/DormitoryChangeForm';
+import InquireForm from '../../components/modalForms/myInfo/InquireForm';
+import LogoutForm from '../../components/modalForms/myInfo/LogoutForm';
+import UserDeletionForm from '../../components/modalForms/myInfo/UserDeletionForm';
+import RestrictionForm from '../../components/modalForms/myInfo/RestrictionForm';
+import ProfileChangeForm from '../../components/modalForms/myInfo/ProfileChangeForm';
 
 const MyPage = () => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);

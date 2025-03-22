@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { dormNameToDormId } from "../../../home/HomeUtils";
+import { dormNameToDormId } from "../../home/HomeUtils";
 import axios from "axios";
-import ModalContext from "../../ModalContext";
+import ModalContext from "../../common/ModalContext";
 
 function DormitoryChangeForm({userId}) {
     const [dormitory, setDormitory] = useState("");

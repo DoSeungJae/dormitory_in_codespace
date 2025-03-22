@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import ModalContext from "../../ModalContext";
+import ModalContext from "../../common/ModalContext";
+
 
 function LogoutForm () {
 

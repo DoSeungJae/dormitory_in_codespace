@@ -43,9 +43,8 @@ function HomePageSelect() {
         }
       });
       if(response.data===true){
-        alert("your account is restricted!");
         localStorage.clear();
-        //restricted를 알리는 modal form 띄우기, 확인 창을 누르면 localStorage.clear()
+        window.location.reload();
       }
     }catch(error){
       console.error(error);

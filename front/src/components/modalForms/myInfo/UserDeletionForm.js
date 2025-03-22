@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import ModalContext from "../../ModalContext";
+import ModalContext from "../../common/ModalContext";
 import axios from "axios";
 
 function UserDeletionForm ({userId}) {
