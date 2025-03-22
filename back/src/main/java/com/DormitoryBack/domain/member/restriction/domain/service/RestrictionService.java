@@ -38,24 +38,31 @@ public class RestrictionService {
     public RestrictionResponseDTOList getMyRestrictions(String token){
 
         Long userId=tokenProvider.getUserIdFromToken(token);
-        List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId); //테스트가 필요하긴함.
+        List<Restriction> restrictions=restrictionRepository.findAllByUserId(userId); 
         RestrictionResponseDTOList dtoList=this.makeDTOList(restrictions);
 
         return dtoList;
     }
 
-    public RestrictionResponseDTO restrict(RestrictionRequestDTO dto){
+    public RestrictionResponseDTO restrict(RestrictionRequestDTO dto){ //restrict에서는 durationDays가 0이 될 수 없음.
         if(!key.equals(dto.getAccessKey())){
             throw new RuntimeException("KeyNotCorrect");
         }
 
         Long userId=dto.getUserId();
+        Boolean userExist=userService.isUserExist(userId);
+        if(!userExist){
+            throw new RuntimeException("UserNotFound");
+        }
         String userEmail=userService.getUserEmail(userId);
-
+        Long durationDays=dto.getDurationDays();
+        if(durationDays==0L){
+            throw new RuntimeException("DurationDaysMustBeMoreThan0");
+        }
         Restriction restriction=Restriction.builder()
             .userId(dto.getUserId())
             .reason(dto.getReason())
-            .durationDays(dto.getDurationDays())
+            .durationDays(durationDays)
             .triggeredTime(TimeOptimizer.now())
             .build();
         
@@ -68,32 +75,34 @@ public class RestrictionService {
     }
 
     public RestrictionResponseDTO warn(RestrictionRequestDTO request){
-        if(!key.equals(request.getAccessKey())){
+        String keyInput=request.getAccessKey();
+        if(!key.equals(keyInput)){
             throw new RuntimeException("KeyNotCorrect");
         }
 
         Long userId=request.getUserId();
-        //UserResponseDTO user=userService.getUser(userId);
         Boolean userExist=userService.isUserExist(userId);
         if(!userExist){
             throw new RuntimeException("UserNotFound");
         }
-        if(request.getDurationDays()!=null){
-            throw new IllegalArgumentException("WarningCannotHaveDurationDays");
+        Long durationDays=request.getDurationDays();
+        if(durationDays!=0L){
+            throw new IllegalArgumentException("DurationDaysMustBe0");
         }
 
         Restriction restriction=Restriction.builder()
             .userId(request.getUserId())
             .reason(request.getReason())
-            .durationDays(request.getDurationDays()) //반드시 null임이 보장돼야함.
+            .durationDays(durationDays) 
             .triggeredTime(TimeOptimizer.now())
             .build();
         
         Restriction saved=restrictionRepository.save(restriction);
-
-        return makeDTO(saved);
-        
+        RestrictionResponseDTO dto=makeDTO(saved);
+        return dto;      
     }
+
+
 
     public RestrictionResponseDTOList makeDTOList(List<Restriction> restrictions){
         List<RestrictionResponseDTO> list=new ArrayList<>();
@@ -117,7 +126,7 @@ public class RestrictionService {
         Long durationDays=restriction.getDurationDays();
         Boolean isExpired=null;
         LocalDateTime expireDate=null;
-        if(durationDays!=null){
+        if(durationDays!=0L){
             expireDate=restriction.getTriggeredTime().plusDays(restriction.getDurationDays());
         }
         LocalDateTime now=TimeOptimizer.now();
