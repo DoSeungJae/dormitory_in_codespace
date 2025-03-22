@@ -12,14 +12,14 @@ root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-   strictMode는 기본적으로 (모든) 컴포넌트들이 중복(2번)으로 렌더링되므로 사용하지 않음 
+   strictMode는 컴포넌트들이 2번 렌더링되므로 사용하지 않음 
   */ 
-  <GoogleOAuthProvider clientId='272109241394-9qcdekfl9dhmh8ke5dtjod0hmlaf5t73.apps.googleusercontent.com' >
+  <GoogleOAuthProvider clientId='272109241394-9qcdekfl9dhmh8ke5dtjod0hmlaf5t73.apps.googleusercontent.com' > 
+  {/* 정보 은닉 필요하지 않나? */}
     
     {/*<GoogleLoginButton/>*/}
     <App/>
   </GoogleOAuthProvider>
-
 
 );
 
