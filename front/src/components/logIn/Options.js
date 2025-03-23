@@ -11,11 +11,9 @@ const Options = () => {
     return (
         <div className="continer options-container">
             <div className="options-row mt-1">
-                <div className="text-center btn btn-secondary btn-sm">
-                    <div onClick={handleTextClick}>회원가입</div>    
-                </div>
-                <div className="text-center btn btn-secondary btn-sm">아이디 찾기</div>
-                <div className="text-center btn btn-secondary btn-sm">비밀번호 변경</div>
+                <div className="" onClick={handleTextClick}>회원가입</div>
+                <div className="">아이디 찾기</div>
+                <div className="">비밀번호 변경</div>
             </div>
             <div className="separator mt-4">혹은</div>
         </div> 
