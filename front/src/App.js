@@ -33,12 +33,6 @@ function App() {
     <div className="App">
       {
       <div>
-        {/* 
-        <ToastContainer
-          className="toast-position"
-          position='top-center'/>
-        */}
-
         <StyledToastContainer
           position='top-center'
           closeOnClick={true}
