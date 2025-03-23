@@ -45,6 +45,7 @@ function HomePageSelect() {
       if(response.data===true){
         localStorage.clear();
         window.location.reload();
+        //alert() 사용 고려 : "webapp에서도 잘 돌아갈까?" 
       }
     }catch(error){
       console.error(error);
