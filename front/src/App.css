@@ -217,9 +217,6 @@
   overflow-y: auto;
   padding-top:0.5vh;
 }
-.preview-home{
-  /*height:700px;*/
-}
 
 .slide-item { 
   flex: 0 0 auto;
@@ -313,11 +310,12 @@
 }
 
 .options-row {
-  display : flex;
-  padding-left : 3vw;
-  padding-right : 3vw;
-  flex-direction : row;
-  gap: 3vw;
+  display: flex;
+}
+
+.options-row div{
+  flex:1;
+  text-align: center;
 }
 
 /* 반응형 디자인을 위한 코드  테스트 필요 */
