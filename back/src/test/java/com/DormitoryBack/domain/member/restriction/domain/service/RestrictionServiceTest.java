@@ -178,11 +178,11 @@ public class RestrictionServiceTest {
         }
         
         RestrictionRequestDTO request=RestrictionRequestDTO.builder()
-        .accessKey("??")
-        .userId(userId)
-        .reason("testRestriction")
-        .durationDays(1L)
-        .build();
+            .accessKey("??")
+            .userId(userId)
+            .reason("testRestriction")
+            .durationDays(1L)
+            .build();
 
         when(userService.isUserExist(userId)).thenReturn(true);
 
