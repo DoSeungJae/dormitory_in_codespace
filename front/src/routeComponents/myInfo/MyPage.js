@@ -39,7 +39,7 @@ const MyPage = () => {
         openModal(modalContent);
     }
 
-    const ChangeProfile = (modalContent) => {
+    const changeProfile = (modalContent) => {
         openModal(modalContent)
     }
 
@@ -117,7 +117,7 @@ const MyPage = () => {
             <div className="App-main-myPage">
                 <div className="myPage-profile">
                     <div className="profile-image">
-                        <img src={profileImage} alt="description" onClick={()=>ChangeProfile(<ProfileChangeForm setProfileImage={setProfileImage}/>)}/>
+                        <img src={profileImage} alt="description" onClick={()=>changeProfile(<ProfileChangeForm setProfileImage={setProfileImage}/>)}/>
                     </div>
                     <div className="profile-details">
                         <div className="details-nickName">{user.nickName}</div>
