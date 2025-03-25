@@ -1,8 +1,10 @@
 package com.DormitoryBack.domain.member.domain.api;
 
+import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.enums.DuplicatedType;
 import com.DormitoryBack.domain.member.domain.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,12 @@ public class UserApi {
     public ResponseEntity userNickName(@RequestHeader("Authorization") String token){
         String userNickName=userService.getUserNickName(token);
         return ResponseEntity.status(HttpStatus.OK).body(userNickName);
+    }
+
+    @GetMapping("/emailDuplicated")
+    public ResponseEntity<DuplicatedType> emailDuplicated(@RequestHeader("Email") String email, @RequestParam(required=false) ProviderType provider){
+        DuplicatedType isDuplicated=userService.checkEmailDuplicated(email,provider);
+        return ResponseEntity.status(HttpStatus.OK).body(isDuplicated);
     }
 
     

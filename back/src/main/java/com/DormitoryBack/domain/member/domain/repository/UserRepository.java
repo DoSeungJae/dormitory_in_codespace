@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     User findByEncryptedEmailAndProvider(String encryptedEmail, ProviderType provider);
 
+    long countByEncryptedEmail(String encryptedEmail);
+
 }

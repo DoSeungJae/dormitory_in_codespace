@@ -10,6 +10,7 @@ import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.enums.DuplicatedType;
 import com.DormitoryBack.domain.member.domain.enums.RoleType;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
@@ -41,9 +42,6 @@ public class UserService {
     private EncryptedEmailService encryptedEmailService;
 
     @Autowired
-    private EncryptedPhoneNumService encryptedPhoneNumService;
-
-    @Autowired
     private PIEncryptor piEncryptor;
 
     @Autowired
@@ -56,7 +54,7 @@ public class UserService {
             throw new RuntimeException("사용자가 존재하지 않습니다.");
         }
         List<UserResponseDTO> responseDTO = users.stream()
-                .map(user -> new UserResponseDTO(user.getId(),encryptedEmailService.getOriginEmail(user.getEncryptedEmail()), user.getNickName(),user.getDormId(),user.getPhoneNum()))
+                .map(user -> new UserResponseDTO(user.getId(),encryptedEmailService.getOriginEmail(user.getEncryptedEmail()), user.getNickName(),user.getDormId()))
                 .collect(Collectors.toList());
 
         return responseDTO;
@@ -74,7 +72,6 @@ public class UserService {
                 .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(user.getNickName())
                 .dormId(user.getDormId())
-                .phoneNum(encryptedPhoneNumService.getOriginPhoneNumber(user.getEncryptedPhoneNum()))
                 .build();
 
         return responseDTO;
@@ -107,9 +104,6 @@ public class UserService {
         if(dto.getMail()!=null){
             throw new RuntimeException("EmailCannotBeChanged");
         }
-        if(dto.getPhoneNum()!=null){
-            throw new RuntimeException("PhoneNumberCannotBeChanged");
-        }
         User user=userRepository.findById(usrId).orElse(null);
         if(user==null){
             throw new IllegalArgumentException("해당 아이디에 대한 사용자가 존재하지 않습니다.");
@@ -129,7 +123,6 @@ public class UserService {
         User saved=userRepository.save(user);
 
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                //.eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail()))
                 .nickName(saved.getNickName())
                 .dormId(user.getDormId())
                 .build();
@@ -139,9 +132,8 @@ public class UserService {
     }
 
     public void makeNewUser(UserRequestDTO dto) {
-        String encryptedEmail,encrpytedPhoneNum;
+        String encryptedEmail;
         String email=dto.getMail();
-        String phoneNum=dto.getPhoneNum();
         String nickname=dto.getNickName();
         Long dormId=dto.getDormId();
         ProviderType provider=dto.getProvider();
@@ -149,18 +141,13 @@ public class UserService {
         if(email==null){
             throw new IllegalArgumentException("EmailOmitted");
         }
-        if(phoneNum==null){
-            throw new IllegalArgumentException("PhoneNumberOmitted");
-        }
         try{
             encryptedEmail=piEncryptor.hashify(email);
-            encrpytedPhoneNum=piEncryptor.hashify(phoneNum);
         }catch(NoSuchAlgorithmException e){
             return ;
         }
         User existingUserMailWithProvider = userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider);
         User existingUserNick = userRepository.findByNickName(nickname);
-        User existingUserPhoneNum= userRepository.findByEncryptedPhoneNum(encrpytedPhoneNum);
         if (existingUserMailWithProvider != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
             //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
@@ -168,9 +155,6 @@ public class UserService {
         if(existingUserNick != null){
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
             //throw new IllegalArgumentException("DuplicatedNickname"); <- 이 코드로 변경 필요 
-        }
-        if(existingUserPhoneNum!=null){
-            throw new IllegalArgumentException("DuplicatedPhoneNumber");
         }
         String encryptedPassword=passwordEncryptor.encryptPassword(dto.getPassWord());
         
@@ -180,7 +164,6 @@ public class UserService {
         
         User user = User.builder()
                 .encryptedEmail(encryptedEmail)
-                .encryptedPhoneNum(encrpytedPhoneNum)
                 .passWord(encryptedPassword) 
                 .nickName(nickname)
                 .dormId(dormId)
@@ -189,8 +172,13 @@ public class UserService {
                 .build();  
         
         userRepository.save(user);
-        encryptedEmailService.setNewEmailMap(dto.getMail(),encryptedEmail);
-        encryptedPhoneNumService.setNewNumberMap(dto.getPhoneNum(),encrpytedPhoneNum);
+        try{
+            encryptedEmailService.setNewEmailMap(dto.getMail(),encryptedEmail);
+        }catch(RuntimeException e){
+            if(!e.getMessage().equals("DuplicatedEmailMap")){
+                throw new RuntimeException(e.getMessage());
+            }
+        }
 
         return ;
     }
@@ -257,12 +245,36 @@ public class UserService {
 
         try{
             userRepository.delete(target);
-            encryptedEmailService.deleteEmailMap(target.getEncryptedEmail());
-            encryptedPhoneNumService.deleteNumberMap(target.getEncryptedPhoneNum()); 
+            String encryptedEmail=target.getEncryptedEmail();
+            long emailCount=userRepository.countByEncryptedEmail(encryptedEmail);
+            if(emailCount==0){
+                encryptedEmailService.deleteEmailMap(encryptedEmail); 
+            }
         }catch(Exception e){
             log.info(e.getMessage());
         }finally{
             target=null;
         }
+    }
+
+    public DuplicatedType checkEmailDuplicated(String email,ProviderType provider){
+        String encryptedEmail;
+        try{
+            encryptedEmail=piEncryptor.hashify(email);
+        }catch(NoSuchAlgorithmException e){
+            return null;
+        }
+
+        User existingUserMail;
+        if(provider==null){
+            existingUserMail=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
+        }else{
+            existingUserMail=userRepository.findByEncryptedEmailAndProvider(encryptedEmail, provider);
+        }
+
+        if(existingUserMail==null){
+            return DuplicatedType.NONDUPLICATED;
+        }
+        return DuplicatedType.DUPLICATED;
     }
 }
