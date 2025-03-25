@@ -27,9 +27,6 @@ public class User {
     @Column(nullable=false, unique = true, name="email")
     private String encryptedEmail;
 
-    @Column(nullable=true, unique = true, name="phone_num")
-    private String encryptedPhoneNum;
-
     @Column(nullable = false)
     @JsonIgnore
     private String passWord;

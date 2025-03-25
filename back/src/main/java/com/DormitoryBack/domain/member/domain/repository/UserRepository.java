@@ -13,8 +13,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findByEncryptedEmail(String eMail);
 
     User findByEncryptedEmailAndProviderIsNull(String email);
-    
-    User findByEncryptedPhoneNum(String phoneNum);
 
     User findByEncryptedEmailAndProvider(String encryptedEmail, ProviderType provider);
 

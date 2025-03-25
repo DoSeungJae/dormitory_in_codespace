@@ -13,7 +13,6 @@ public class UserRequestDTO {
     private String mail;
     private String passWord;
     private String nickName;
-    private String phoneNum;
     private Long dormId;
     private String confirmPassword; //유저 수정의 경우에만 사용됨.
 
