@@ -24,7 +24,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique = true, name="email")
+    @Column(nullable=false, unique = false, name="email")
     private String encryptedEmail;
 
     @Column(nullable = false)
