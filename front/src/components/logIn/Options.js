@@ -29,26 +29,30 @@ const Options = ({socialAccountDetails,setSocialAccountDetails}) => {
         openModal(modalContent);
     }
 
+    const isEmptyObject = (obj) =>{
+        return Object.keys(obj).length === 0;
+    }
+
     useEffect(()=>{
         if(signUpEmail.length===0){
             return ;
         }
-        emailDetails={email:signUpEmail,type:"LOCAL"} //local or provider(GOOGLE or NAVER...)
+        emailDetails={email:signUpEmail,provider:"LOCAL"} //local or provider(GOOGLE or NAVER...)
         signUp(<SignUpForm emailDetails={emailDetails}/>)
     },[signUpEmail])
 
     useEffect(()=>{
-        if(socialAccountDetails==null){
+        if(isEmptyObject(socialAccountDetails)){
             return ;
         }
         if(socialAccountDetails.state==='LOGINED'){
             return ;
         }
-
+        emailDetails=socialAccountDetails;
+        signUp(<SignUpForm emailDetails={emailDetails}/>)
     },[socialAccountDetails])
 
     
-
     return (
         <div className="continer options-container">
             <div><Modal/></div>
