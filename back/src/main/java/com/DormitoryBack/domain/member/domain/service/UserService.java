@@ -83,7 +83,7 @@ public class UserService {
             throw new RuntimeException("UserNotFound");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절하지만 의존성 문제 때문에 유지중...
                 .nickName(nickName)
                 .dormId(user.getDormId())
                 .build();
