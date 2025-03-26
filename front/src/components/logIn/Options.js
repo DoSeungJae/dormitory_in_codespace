@@ -4,18 +4,19 @@ import 'bootstrap/dist/js/bootstrap.js';
 import HomeSelectContext from '../home/HomeSelectContext';
 import ModalContext from '../common/ModalContext';
 import Modal from '../common/Modal';
-import SignInForm from '../modalForms/signIn/SignUpForm';
 import EmailVerifyForm from '../modalForms/signIn/EmailVerifyForm';
 import SignUpForm from '../modalForms/signIn/SignUpForm';
+import GoogleLoginButton from './google/GoogleLoginButton';
 
 
-const Options = () => {
+const Options = ({socialAccountDetails,setSocialAccountDetails}) => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const[verifyFinished, setVerifyFinished]=useState(false);
     const[signUpEmail,setSignUpEmail]=useState("");
-
     let emailDetails;
+    
+
     const verifyEmail = (modalContent) => {
         openModal(modalContent);
     }
@@ -29,13 +30,24 @@ const Options = () => {
     }
 
     useEffect(()=>{
-        console.log(signUpEmail);
         if(signUpEmail.length===0){
             return ;
         }
         emailDetails={email:signUpEmail,type:"LOCAL"} //local or provider(GOOGLE or NAVER...)
         signUp(<SignUpForm emailDetails={emailDetails}/>)
     },[signUpEmail])
+
+    useEffect(()=>{
+        if(socialAccountDetails==null){
+            return ;
+        }
+        if(socialAccountDetails.state==='LOGINED'){
+            return ;
+        }
+
+    },[socialAccountDetails])
+
+    
 
     return (
         <div className="continer options-container">
@@ -45,6 +57,8 @@ const Options = () => {
                 <div className="" onClick={()=>initPW(<div>비번 초기화</div>)}>비밀번호 초기화</div>
             </div>
             <div className="separator mt-4">혹은</div>
+            <GoogleLoginButton setSocialAccountDetails={setSocialAccountDetails}/>
+            
         </div> 
     );
 };
