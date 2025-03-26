@@ -55,7 +55,7 @@ function EmailVerifyForm({setSingUpEmail}){
         }
         setSent(true);
         setInputDisabled(true);
-        setMessage("발급된 인증 코드는 10분 동안 유효하며 창을 껐다 키면 재발급 받을 수 있습니다.");
+        setMessage("발급된 인증 코드는 10분 동안 유효합니다. 창을 껐다 키면 재발급 받을 수 있습니다.");
         toast.success("인증 코드가 메일로 전송되었어요.");
     }
     
