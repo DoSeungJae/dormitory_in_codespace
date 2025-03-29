@@ -1,6 +1,7 @@
 package com.DormitoryBack.domain.member.domain.api;
 
 import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
+import com.DormitoryBack.domain.member.domain.dto.PasswordInitDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
@@ -104,10 +105,18 @@ public class UserApi {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
+    @PatchMapping("/initPassword")
+    public ResponseEntity<Void> initUserPasword(@RequestBody PasswordInitDTO request){
+        userService.initUserPassword(request);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
     @DeleteMapping("/{usrId}")
     public ResponseEntity deleteUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
         userService.deleteUser(usrId, dto);
         return ResponseEntity.status(HttpStatus.OK).body("UserDeleted");
     }
+
+
 
 }

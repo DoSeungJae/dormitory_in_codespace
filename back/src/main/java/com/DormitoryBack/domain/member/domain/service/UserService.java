@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.domain.dto.PasswordInitDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 
     @Autowired
-    private final PasswordEncryptor passwordEncryptor;
+    private PasswordEncryptor passwordEncryptor;
 
     @Autowired
     private UserRepository userRepository;
@@ -276,5 +277,39 @@ public class UserService {
             return DuplicatedType.NONDUPLICATED;
         }
         return DuplicatedType.DUPLICATED;
+    }
+
+    public void initUserPassword(PasswordInitDTO request){
+        String email=request.getEmail();
+        String token=request.getEmailToken();
+        if(!tokenProvider.validateToken(token)){
+            throw new RuntimeException("InvalidToken");
+        }
+        String emailFromToken=tokenProvider.getUserEmailFromToken(token);
+        if(!emailFromToken.equals(email)){
+            throw new RuntimeException("InvalidEmail");
+        }
+
+        String encryptedEmail;
+        try{
+            encryptedEmail=piEncryptor.hashify(email);
+        }catch(NoSuchAlgorithmException e){
+            return ;
+        }
+        
+        User user=userRepository.findByEncryptedEmailAndProviderIsNull(encryptedEmail);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+
+        String newPassword=request.getNewPassword();
+        if(newPassword==null){
+            throw new RuntimeException("InvalidPassword");
+        }
+        String encryptedPassword=passwordEncryptor.encryptPassword(newPassword);
+        user.setPassWord(encryptedPassword);
+        userRepository.save(user);
+
+        return ;
     }
 }
