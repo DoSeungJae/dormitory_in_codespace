@@ -4,7 +4,7 @@ import 'bootstrap/dist/js/bootstrap.js';
 import HomeSelectContext from '../home/HomeSelectContext';
 import ModalContext from '../common/ModalContext';
 import Modal from '../common/Modal';
-import EmailVerifyForm from '../modalForms/signIn/EmailVerifyForm';
+import EmailVerifyForm from '../modalForms/etc/EmailVerifyForm';
 import SignUpForm from '../modalForms/signIn/SignUpForm';
 import GoogleLoginButton from './google/GoogleLoginButton';
 
@@ -12,10 +12,11 @@ import GoogleLoginButton from './google/GoogleLoginButton';
 const Options = ({socialAccountDetails,setSocialAccountDetails}) => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
-    const[verifyFinished, setVerifyFinished]=useState(false);
     const[signUpEmail,setSignUpEmail]=useState("");
+    const[recoveryEmail,setRecoveryEmail]=useState("");
+
+
     let emailDetails;
-    
 
     const verifyEmail = (modalContent) => {
         openModal(modalContent);
