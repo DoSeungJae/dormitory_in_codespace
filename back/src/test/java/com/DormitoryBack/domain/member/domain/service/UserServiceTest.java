@@ -185,7 +185,7 @@ public class UserServiceTest {
 
     @Test
     public void testInitUserPassword_InvalidPassword(){
-        String invalidNewPasswrod=null;
+        String newValidPassword="validNewPassword";
         String validEmail="email@email.com";
         String validToken="validToken";
         String hashedEmail="hashed@hashed.com";
@@ -193,7 +193,7 @@ public class UserServiceTest {
         PasswordInitDTO request=PasswordInitDTO.builder()
             .email(validEmail)
             .emailToken(validToken)
-            .newPassword(invalidNewPasswrod)
+            .newPassword(newValidPassword)
             .build();
 
         User user=User.builder()
@@ -221,9 +221,44 @@ public class UserServiceTest {
         });
         
 
-        assertEquals(null, request.getNewPassword());
-        assertEquals("InvalidPassword",exception.getMessage());
-        verify(passwordEncryptor,times(0)).encryptPassword(invalidNewPasswrod);
+        assertEquals("InvalidEmail",exception.getMessage());
+        verify(passwordEncryptor,times(0)).encryptPassword(newValidPassword);
+        verify(userRepository,times(0)).save(user);
+    }
+
+    
+    @Test
+    public void testInitUserPassword_InvalidEmail(){
+        String validEmail="email@email.com";
+        String invalidEmail="invalid@email.com";
+        String validNewPassword="newPassword";
+        String validToken="validToken";
+        String hashedEmail="hashed@hashed.com";
+
+        PasswordInitDTO request=PasswordInitDTO.builder()
+            .email(invalidEmail)
+            .emailToken(validToken)
+            .newPassword(validNewPassword)
+            .build();
+
+        User user=User.builder()
+            .id(1L)
+            .nickName("nickname")
+            .passWord("password")
+            .provider(null)
+            .role(RoleType.ROLE_USER)
+            .dormId(1L)
+            .encryptedEmail(hashedEmail)
+            .build();
+        
+        when(tokenProvider.validateToken(validToken)).thenReturn(true);
+        when(tokenProvider.getUserEmailFromToken(validToken)).thenReturn(validEmail);
+
+        RuntimeException exception=assertThrows(RuntimeException.class, ()->{
+            userService.initUserPassword(request);
+        });
+        
+        assertEquals("InvalidEmail",exception.getMessage());
         verify(userRepository,times(0)).save(user);
     }
 }
