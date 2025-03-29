@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.DormitoryBack.domain.auth.email.domain.dto.EmailRequestDTO;
 import com.DormitoryBack.domain.auth.email.domain.dto.EmailResponseDTO;
 import com.DormitoryBack.domain.auth.email.domain.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +25,24 @@ public class EmailAPI {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/sendVerifyCode")
+    @GetMapping("/sendVerifyCode")
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletableFuture<ResponseEntity<EmailResponseDTO>> verifyCode(@RequestBody EmailRequestDTO dto) throws Exception{
-        return emailService.sendVerifyMail(dto)
+    public CompletableFuture<ResponseEntity<EmailResponseDTO>> verifyCode(@RequestHeader("Email") String email) throws Exception{
+        return emailService.sendVerifyMail(email)
             .thenApply(response -> ResponseEntity.status(HttpStatus.ACCEPTED).body(response))
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null));
     }
 
-    @PostMapping("/authenticateCode")
-    public ResponseEntity<EmailResponseDTO> authenticateCode(@RequestBody EmailRequestDTO request){
-        EmailResponseDTO response=emailService.authenticateCode(request);
+    @GetMapping("/authenticateCode")
+    public ResponseEntity<EmailResponseDTO> authenticateCode(@RequestHeader("Email") String email, @RequestHeader("VerifyCode") String code){
+        EmailResponseDTO response=emailService.authenticateCode(email, code);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/authenticateCode/token")
+    public ResponseEntity<EmailResponseDTO> authenticatingAndPasswordRecoveryCode(@RequestHeader("Email") String email, @RequestHeader("VerifyCode") String code){
+        EmailResponseDTO response=emailService.authenticateCodeAndcreateToken(email,code);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    
 }
