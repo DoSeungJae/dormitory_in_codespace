@@ -5,22 +5,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-
-import com.DormitoryBack.domain.auth.email.domain.dto.EmailRequestDTO;
 import com.DormitoryBack.domain.auth.email.domain.dto.EmailResponseDTO;
 import com.DormitoryBack.domain.auth.email.domain.enums.CodeStateType;
+import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.restriction.domain.dto.RestrictionResponseDTO;
 import com.DormitoryBack.module.crypt.PIEncryptor;
-
 import lombok.extern.slf4j.Slf4j;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.Properties;
@@ -60,16 +56,18 @@ public class EmailService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    public CompletableFuture<EmailResponseDTO> sendVerifyMail(EmailRequestDTO request) {
+    public CompletableFuture<EmailResponseDTO> sendVerifyMail(String to) {
         EmailResponseDTO response = EmailResponseDTO.builder()
             .stateType(CodeStateType.SENDING)
             .build();
 
         CompletableFuture.runAsync(() -> {
             try {
-                String to = request.getEmail();
                 if(to==null){
                     throw new RuntimeException("NoEmail");
                 }
@@ -169,12 +167,10 @@ public class EmailService {
             return ;
         }
         String encryptedValue=encryptor.encrypt_AES256(value); //인증 코드 aes256으로 암호화
-        valueOperations.set(encryptedKey, encryptedValue, expireDuration);;
+        valueOperations.set(encryptedKey, encryptedValue, expireDuration);
     }
 
-    public EmailResponseDTO authenticateCode(EmailRequestDTO request){
-        String email=request.getEmail();
-        String code=request.getCode();
+    public EmailResponseDTO authenticateCode(String email, String code){
         Boolean isCorrect=false;
         if(email==null){
             throw new RuntimeException("NoEmail");
@@ -200,6 +196,18 @@ public class EmailService {
             .stateType(isCorrect ? CodeStateType.MATCH : CodeStateType.MISMATCH)
             .build();
                     
+        return response;
+    }
+
+    public EmailResponseDTO authenticateCodeAndcreateToken(String email, String code){
+        EmailResponseDTO response=authenticateCode(email, code);
+        CodeStateType state=response.getStateType();
+        if(state==CodeStateType.MISMATCH){
+            return response;
+        }
+        String emailToken=tokenProvider.createToken(email);
+        response.registerToken(emailToken);
+        
         return response;
     }
 

@@ -8,5 +8,13 @@ import lombok.Getter;
 @Builder
 @Getter
 public class EmailResponseDTO {
+
     CodeStateType stateType;
+
+    String token;
+
+    public void registerToken(String token){
+        this.token=token;
+    }
+
 }
