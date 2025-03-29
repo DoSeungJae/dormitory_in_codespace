@@ -8,12 +8,10 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.DormitoryBack.domain.member.domain.entity.User;
-import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionServiceExternal;
 
 import java.security.Key;
 import java.util.Date;
@@ -24,6 +22,8 @@ import java.util.Date;
 public class TokenProvider  {
 
     private static final String USER_ID_KEY = "usrId";
+
+    private static final String USER_EMAIL_KEY="email";
 
     private final Logger logger=LoggerFactory.getLogger(TokenProvider.class);
 
@@ -63,6 +63,20 @@ public class TokenProvider  {
                 .compact();
     }
 
+    public String createToken(String email){
+        Date now=new Date();
+        Date validity=new Date(now.getTime()+(600*1000));
+
+        String recoveryToken=Jwts.builder()
+            .claim(USER_EMAIL_KEY, email)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(key,SignatureAlgorithm.HS256)
+            .compact();
+        
+        return recoveryToken;
+    }
+
     public Long getUserIdFromToken(String token){
         Claims claims=Jwts.parserBuilder()
             .setSigningKey(key)
@@ -71,6 +85,18 @@ public class TokenProvider  {
             .getBody();
 
         return claims.get(USER_ID_KEY,Long.class);
+    }
+
+    public String getUserEmailFromToken(String token){
+        Claims claims=Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        String email=claims.get(USER_EMAIL_KEY,String.class);
+
+        return email;
     }
     
     public boolean validateToken(String token){
