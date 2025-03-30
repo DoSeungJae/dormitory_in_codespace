@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.DormitoryBack.domain.file.domain.dto.FileRequestDTO;
 import com.DormitoryBack.domain.file.domain.enums.ParamType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
@@ -45,15 +44,13 @@ public class FileService {
     @Autowired
     private UserServiceExternal userService;
 
-    public String generatePresignedURL(FileRequestDTO<?> requestDTO){
-        ParamType infoType=requestDTO.getType();
+    public String generatePresignedURL(ParamType paramType, String userInfo){
         Long userId;
-        if(infoType==ParamType.NICKNAME){
-            String nickname=(String)requestDTO.getUserInfo();
+        if(paramType==ParamType.NICKNAME){
+            String nickname=userInfo;
             userId=userService.getUserIdFromNickname(nickname);
-        }else if(infoType==ParamType.USERID){
-            Integer integerUserId=(Integer)requestDTO.getUserInfo();
-            userId=integerUserId.longValue();
+        }else if(paramType==ParamType.USERID){
+            userId=Long.valueOf(userInfo);
         }else{
             throw new RuntimeException("InvalidType : type must be NICKNAME or USERID"); //custom exception 필요..
         }
