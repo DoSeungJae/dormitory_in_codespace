@@ -114,67 +114,57 @@ public class FileServiceTest {
         assertTrue(fileName.contains(originalFileName));
     }
 
+
     @Test
     public void testGeneratePresignedURLWithNickname() throws Exception {
         String nickname = "testNickname";
         Long userId = 1L;
         String fileName = "test.txt";
         String expectedUrl = "https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
-    
-        FileRequestDTO<String> requestDTO = FileRequestDTO.<String>builder()
-                .type(ParamType.NICKNAME)
-                .userInfo(nickname)
-                .build();
-    
+        ParamType paramType=ParamType.NICKNAME;
+
+
         when(userService.getUserIdFromNickname(nickname)).thenReturn(userId);
-
-
         when(userService.getUserImageName(userId)).thenReturn(fileName);
         
         URL url = new URL(expectedUrl);
         when(s3Client.generatePresignedUrl(any(GeneratePresignedUrlRequest.class))).thenReturn(url);
     
-        String result = fileService.generatePresignedURL(requestDTO);
+        String result=fileService.generatePresignedURL(paramType, nickname);
     
         assertNotNull(result);
         assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
         assertTrue(result.contains(fileName));
     }
+
+ 
 
     @Test
     public void testGeneratePresignedURLWithUserId() throws Exception{
+        String stringUserId="1";
         Long userId = 1L;
-        Integer userIdInteger=1;
         String fileName = "test.txt";
         String expectedUrl = "https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?~~~~";
-
-        FileRequestDTO<Integer> requestDTO=FileRequestDTO.<Integer>builder()
-            .type(ParamType.USERID)
-            .userInfo(userIdInteger)
-            .build();
+        ParamType paramType=ParamType.USERID;
 
         when(userService.getUserImageName(userId)).thenReturn(fileName);
         
         URL url = new URL(expectedUrl);
         when(s3Client.generatePresignedUrl(any(GeneratePresignedUrlRequest.class))).thenReturn(url);
         
-        String result = fileService.generatePresignedURL(requestDTO);
-        
+        String result = fileService.generatePresignedURL(paramType,stringUserId);
+
         assertNotNull(result);
         assertTrue(result.startsWith("https://delivery-box.s3.ap-northeast-2.amazonaws.com/test.txt?"));
         assertTrue(result.contains(fileName));
     }
+
 
     @Test
     public void testGeneratePresignedURL_InvalidType() throws Exception{
 
-        FileRequestDTO<Object> requestDTO=FileRequestDTO.<Object>builder()
-            .type(null)
-            .userInfo(null)
-            .build();
-
         RuntimeException exception=assertThrows(RuntimeException.class, ()->{
-            fileService.generatePresignedURL(requestDTO); 
+            fileService.generatePresignedURL(null,null); 
         });
 
         //("InvalidType : type must be NICKNAME or USERID", exception.getMessage());
@@ -188,17 +178,13 @@ public class FileServiceTest {
     @Test
     public void testGeneratePresignedURL_NoUserImage() throws Exception{
         Long userId=1L;
-        Integer userIdInteger=1;
-
-        FileRequestDTO<Integer> requestDTO=FileRequestDTO.<Integer>builder()
-            .type(ParamType.USERID)
-            .userInfo(userIdInteger)
-            .build();
+        String stringUserId="1";
+        ParamType paramType=ParamType.USERID;
         
         when(userService.getUserImageName(userId)).thenReturn(null);
 
         RuntimeException exception=assertThrows(RuntimeException.class, ()->{
-            fileService.generatePresignedURL(requestDTO);
+            fileService.generatePresignedURL(paramType,stringUserId);
         });
 
         assertEquals("NoUserImage", exception.getMessage());
@@ -207,6 +193,8 @@ public class FileServiceTest {
         verify(s3Client,times(0)).generatePresignedUrl(any(GeneratePresignedUrlRequest.class));
         verify(userService,times(0)).getUserIdFromNickname(anyString());
     }
+
+
 
 
     
