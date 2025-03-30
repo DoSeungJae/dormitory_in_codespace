@@ -63,7 +63,6 @@ function CommentMenu({rootCommentId,setRootCommentId,setPlaceHolder,inputRef,isF
     const handleSwal= () => {
         Swal.fire({
           confirmButtonColor:"#FF8C00",
-          icon:"question",
           text: "대댓글을 작성하시겠어요?",
           confirmButtonText:"예",
           cancelButtonText:"아니오",

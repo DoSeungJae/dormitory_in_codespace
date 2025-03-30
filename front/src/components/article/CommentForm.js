@@ -122,7 +122,6 @@ const handleBlur = () => {
     if(comment!=""){
       Swal.fire({
         confirmButtonColor:"#FF8C00",
-        icon:"question",
         text: "대댓글을 작성을 종료하시겠어요?",
         confirmButtonText:"예",
         cancelButtonText:"아니오",

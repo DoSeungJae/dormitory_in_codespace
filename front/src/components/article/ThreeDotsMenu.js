@@ -32,7 +32,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
       Swal.fire({
         title:"수정하시겠어요?",
         text:"그룹에 다른 사람이 참가한 경우에는 글을 수정할 때 기숙사, 카테고리를 변경할 수 없어요.",
-        icon: "warning",
         showCancelButton:true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
