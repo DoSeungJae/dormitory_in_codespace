@@ -7,17 +7,24 @@ import Modal from '../common/Modal';
 import EmailVerifyForm from '../modalForms/signIn/EmailVerifyForm';
 import SignUpForm from '../modalForms/signIn/SignUpForm';
 import GoogleLoginButton from './google/GoogleLoginButton';
+import EmailVerifyForRecoveryForm from '../modalForms/passwordRecovery/EmailVerifyForRecoveryForm';
+import InitPasswordForm from '../modalForms/passwordRecovery/InitPasswordForm';
 
 
 const Options = ({socialAccountDetails,setSocialAccountDetails}) => {
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
-    const[verifyFinished, setVerifyFinished]=useState(false);
     const[signUpEmail,setSignUpEmail]=useState("");
     let emailDetails;
+
+    const[recoveryDetails,setRecoveryDetails]=useState({});
     
 
     const verifyEmail = (modalContent) => {
+        openModal(modalContent);
+    }
+
+    const verifyEmailForRecovery = (modalContent) => {
         openModal(modalContent);
     }
 
@@ -52,13 +59,20 @@ const Options = ({socialAccountDetails,setSocialAccountDetails}) => {
         signUp(<SignUpForm emailDetails={emailDetails}/>)
     },[socialAccountDetails])
 
+    useEffect(()=>{
+        if(isEmptyObject(recoveryDetails)){
+            return ;
+        }
+        initPW(<InitPasswordForm recoveryDetails={recoveryDetails}/>);
+    },[recoveryDetails])
+
     
     return (
         <div className="continer options-container">
             <div><Modal/></div>
             <div className="options-row mt-1">
                 <div className="" onClick={()=>verifyEmail(<EmailVerifyForm setSingUpEmail={setSignUpEmail}/>)}>회원가입</div>
-                <div className="" onClick={()=>initPW(<div>비번 초기화</div>)}>비밀번호 초기화</div>
+                <div className="" onClick={()=>verifyEmailForRecovery(<EmailVerifyForRecoveryForm setRecoveryDetails={setRecoveryDetails}/>)}>비밀번호 찾기</div>
             </div>
             <div className="separator mt-4">혹은</div>
             <GoogleLoginButton setSocialAccountDetails={setSocialAccountDetails}/>
