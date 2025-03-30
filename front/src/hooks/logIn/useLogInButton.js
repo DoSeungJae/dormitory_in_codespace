@@ -46,7 +46,6 @@ function UseLogInButton() {
         axios.post(`${process.env.REACT_APP_HTTP_API_URL}/user/logIn`,
         {email:id,passWord:pw})
         .then(response => {
-          console.log(response.data);
           localStorage.setItem('token',response.data);
           if(localStorage.getItem("nextIndex")===null){
             window.location.reload();
