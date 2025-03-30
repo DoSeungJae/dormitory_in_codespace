@@ -9,11 +9,16 @@ function PasswordChangeForm({userId}) {
     const [newPassword, setNewPassword] = useState("");
     const [newPasswordAgain, setNewPasswordAgain] = useState("");
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
-    
+    const rex_pw = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9!@#$%^&*()]{8,16}$/;
+
     const handleButton = () => {
         if(currentPassword=="" || newPassword=="" || newPasswordAgain==""){
             toast.warn("비워진 부분이 있어요, 모두 입력해주세요.");
             return ;
+        }
+        if (!rex_pw.test(newPassword)) {
+            toast.error("양식에 맞지 않는 비밀번호에요!");
+            return;
         }
         if(newPassword!==newPasswordAgain){
             toast.warn("확인 비밀번호가 올바르지 않아요!");
@@ -58,7 +63,7 @@ function PasswordChangeForm({userId}) {
                     <input
                         class="form-control form-control-sm"
                         type="password"
-                        placeholder="변경할 비밀번호"
+                        placeholder="영문, 숫자를 포함해 8~16자"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
