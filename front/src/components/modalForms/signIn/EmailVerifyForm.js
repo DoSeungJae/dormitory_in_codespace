@@ -43,13 +43,15 @@ function EmailVerifyForm({setSingUpEmail}){
             return ;
         }
 
+        console.log("email :",email);
         const path=`${process.env.REACT_APP_HTTP_API_URL}/email/sendVerifyCode`;
         const headers={
-            Email:`${email}`
+            'Email':`${email}`
         };
         try{
-            await axios.get(path,headers);
+            await axios.get(path,{headers});
         }catch(error){
+            console.log(123);
             console.error(error);
             return ;
         }
@@ -86,7 +88,7 @@ function EmailVerifyForm({setSingUpEmail}){
             VerifyCode:`${verifyCode}`
         };
         try{
-            const response=await axios.get(path,headers);
+            const response=await axios.get(path,{headers});
             const result=response.data.stateType;
             if(result==='MISMATCH'){
                 toast.error("인증 코드가 맞지 않아요.");
