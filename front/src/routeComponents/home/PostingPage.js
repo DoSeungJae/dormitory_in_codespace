@@ -117,20 +117,10 @@ function PostingPage() {
           cancelButtonText:"취소",
           input: "select",
           inputOptions: {
-            "족발•보쌈":"족발•보쌈",
-            "찜•탕•찌개":"찜•탕•찌개",
-            "돈까스•일식":"돈까스•일식",
-            '피자':'피자',
-            '고기•구이':'고기•구이',
-            '백반•죽•국수':'백반•죽•국수',
-            '양식':'양식',
-            '치킨':'치킨',
-            '중식':'중식',
-            '아시안':'아시안',
-            '도시락':'도시락',
-            '분식':'분식',
-            '카페•디저트':'카페•디저트',
-            '패스트푸드':'패스트푸드'
+            "배달":"배달",
+            "공동 주문":"공동 주문",
+            "택시":"택시",
+            "기타":"기타"
           },
           inputPlaceholder: "카테고리를 선택해요.",
           showCancelButton: true,
@@ -229,8 +219,7 @@ function PostingPage() {
             <header className="App-postingPage-header">
                     <BackButton></BackButton>
                     <h6>{pageTitle}</h6> 
-
-                    <button type="button" className='btn btn-outline-primary'onClick={processNext}>{buttonText}</button>       
+                    <div className='write-next-button' onClick={processNext}>{buttonText}</div>       
             </header>                 
             <main className="App-postingPage-main">
                 <input type="text" value={title} placeholder='제목' style={{border:'none',outline:'none',width:'90%'}} onChange={e => setTitle(e.target.value)}  />
