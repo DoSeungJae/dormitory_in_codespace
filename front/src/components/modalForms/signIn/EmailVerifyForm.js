@@ -44,11 +44,11 @@ function EmailVerifyForm({setSingUpEmail}){
         }
 
         const path=`${process.env.REACT_APP_HTTP_API_URL}/email/sendVerifyCode`;
-        const body={
-            email:`${email}`
+        const headers={
+            Email:`${email}`
         };
         try{
-            await axios.post(path,body,{});
+            await axios.get(path,headers);
         }catch(error){
             console.error(error);
             return ;
@@ -76,17 +76,17 @@ function EmailVerifyForm({setSingUpEmail}){
             toast.error("인증 코드를 입력해주세요.");
             return 
         }
-        if(verifyCode.length!=6){
+        if(verifyCode.length!==6){
             toast.error("유효하지 않은 인증 코드에요");
             return ;
         }
         const path=`${process.env.REACT_APP_HTTP_API_URL}/email/authenticateCode`;
-        const body={
-            email:`${email}`,
-            code:`${verifyCode}`
+        const headers={
+            Email:`${email}`,
+            VerifyCode:`${verifyCode}`
         };
         try{
-            const response=await axios.post(path,body,{});
+            const response=await axios.get(path,headers);
             const result=response.data.stateType;
             if(result==='MISMATCH'){
                 toast.error("인증 코드가 맞지 않아요.");
