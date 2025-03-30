@@ -21,6 +21,7 @@ const MyPage = () => {
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const [user,setUser]=useState({});
     const [profileImage,setProfileImage]=useState(userDefault);
+    const [profileDeleted,setProfileDeleted]=useState(false);
     const token=localStorage.getItem("token");
 
     const changePassword = (modalContent) => {
@@ -60,12 +61,13 @@ const MyPage = () => {
         }
     }
 
-    const getUserProfileImageURL = async (token) => {
-        console.log(111);
+    const getUserProfileImageURL = async () => {
+        console.log(1717);
         const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImageUrl`;
         const headers={
-            'Authorization':`${token}`
-        };
+            ParamType:'USERID',
+            UserInfo:user.id
+        }
         try{
             const response=await axios.get(path,{headers});
             const url=response.data;
@@ -89,25 +91,29 @@ const MyPage = () => {
     }
     
     useEffect(()=>{
-        getUser(); //왜 새로고침 할때만 실행?
+        getUser(); 
     },[])
 
     useEffect(()=>{
-        if(token==null){
+        if(selectComponentIndex!==1){
             return ;
         }
-        if(profileImage!=userDefault){ //기본 이미지가 아닐 때는 실행하지 않음
+        if(profileImage!=userDefault){
             return ;
         }
-        getUserProfileImageURL(token);
-    },[token]);
+        if(profileDeleted){
+            return ;
+        }
+        getUserProfileImageURL();
+    },[profileImage,selectComponentIndex]);
+
 
     useEffect(()=>{
         if(profileImage!=null){
             return ;
         }
         setProfileImage(userDefault);
-    },[profileImage])
+    },[profileImage,selectComponentIndex])
 
     return (
         <div className="App">
@@ -117,7 +123,7 @@ const MyPage = () => {
             <div className="App-main-myPage">
                 <div className="myPage-profile">
                     <div className="profile-image">
-                        <img src={profileImage} alt="description" onClick={()=>changeProfile(<ProfileChangeForm setProfileImage={setProfileImage}/>)}/>
+                        <img src={profileImage} alt="description" onClick={()=>changeProfile(<ProfileChangeForm setProfileDeleted={setProfileDeleted} profileImage={profileImage} setProfileImage={setProfileImage}/>)}/>
                     </div>
                     <div className="profile-details">
                         <div className="details-nickName">{user.nickName}</div>

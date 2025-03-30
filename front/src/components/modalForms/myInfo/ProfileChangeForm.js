@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import ModalContext from "../../common/ModalContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import userDefault from "../../../images/userDefault.png"
 
-function ProfileChangeForm({setProfileImage}){
+
+function ProfileChangeForm({setProfileDeleted, profileImage, setProfileImage}){
 
     const {isOpen, openModal, closeModal}=useContext(ModalContext);
     const inputRef=useRef(null);
@@ -14,11 +16,11 @@ function ProfileChangeForm({setProfileImage}){
     }
 
     const deleteProfile = () => {
-        setProfileImage(null);
-        deleteProfileImage();
+        if(profileImage!=null & profileImage!=userDefault){
+            deleteProfileImage();
+        }
         closeModal();
     }
-
 
     const handleImageChange = (e) => {
         const file=e.target.files[0];
@@ -60,6 +62,8 @@ function ProfileChangeForm({setProfileImage}){
         const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImage`;
         try{
             axios.delete(path,{headers:{'Authorization':`${token}`}});
+            setProfileImage(null);
+            setProfileDeleted(true);
         }catch(error){
             console.error(error);
         }
