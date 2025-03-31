@@ -3,6 +3,7 @@ package com.DormitoryBack.domain.member.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 
@@ -78,5 +79,20 @@ public class UserServiceExternal {
         Long userId=user.getId();
         return userId;
     }
+
+    public UserResponseDTO getUserByNickName(String nickName) {
+        User user=userRepository.findByNickName(nickName);
+        if(user==null){
+            throw new RuntimeException("UserNotFound");
+        }
+        UserResponseDTO responseDTO=UserResponseDTO.builder()
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절하지만 의존성 문제 때문에 유지중...
+                .nickName(nickName)
+                .dormId(user.getDormId())
+                .build();
+
+        return responseDTO;
+    }
+
 
 }
