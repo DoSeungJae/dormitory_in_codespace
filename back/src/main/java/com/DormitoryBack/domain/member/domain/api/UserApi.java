@@ -68,17 +68,13 @@ public class UserApi {
     
     @PostMapping("/logIn")
     public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
-        log.info(dto.toString());
         try{
             String token=userService.logIn(dto);
-            log.info("로그인 성공");
-
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(token);
         }
         catch(IllegalArgumentException e){
-            log.error("로그인 실패 : "+e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(false);
