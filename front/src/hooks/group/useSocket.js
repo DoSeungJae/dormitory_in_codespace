@@ -22,6 +22,9 @@ export const useSocket = (room, username) => {
     }, [socket, room]);
 
     useEffect(() => {
+        if(username==null || room==0){
+            return ;
+        }
         const socketBaseUrl = `${process.env.REACT_APP_SOCKET_URL}`;
         const s = io(socketBaseUrl, {
             query: `username=${username}&room=${room}`
