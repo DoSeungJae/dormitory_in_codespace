@@ -1,8 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css';
-import {toast} from 'react-toastify';
 import HomePageSelect from './routeComponents/home/HomePageSelect';
 import HomeSelectContext from './components/home/HomeSelectContext';
-import { ToastContainer} from 'react-toastify';
 import {React,useState} from 'react';
 import './App.css';
 import {Routes,Route,BrowserRouter} from "react-router-dom";

@@ -62,11 +62,10 @@ const MyPage = () => {
     }
 
     const getUserProfileImageURL = async () => {
-        console.log(1717);
         const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImageUrl`;
         const headers={
-            ParamType:'USERID',
-            UserInfo:user.id
+            ParamType:'USERID', //"NICKNAME"
+            UserInfo:user.id    //"nickname123"
         }
         try{
             const response=await axios.get(path,{headers});
