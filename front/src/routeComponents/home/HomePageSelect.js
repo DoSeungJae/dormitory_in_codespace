@@ -51,6 +51,14 @@ function HomePageSelect() {
       console.error(error);
     }
   }
+
+  useEffect(()=>{
+    if(token!=null){
+      return ;
+    }
+    setSelectComponentIndex(8);
+    localStorage.setItem("nextIndex",0);
+  },[token])
   
   const selectMenu = async (item) => {
     try {
@@ -68,8 +76,6 @@ function HomePageSelect() {
             localStorage.setItem("nextIndex",menuToIndex[item]);
             setSelectComponentIndex(8);
             toast.error("로그인이 필요한 서비스에요!");
-
-    
         }
     } catch (error) {
         console.error('An error occurred:', error);
