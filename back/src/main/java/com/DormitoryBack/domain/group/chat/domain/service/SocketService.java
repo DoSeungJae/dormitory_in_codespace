@@ -3,8 +3,6 @@ package com.DormitoryBack.domain.group.chat.domain.service;
 import com.DormitoryBack.domain.group.chat.domain.entity.Message;
 import com.DormitoryBack.domain.group.chat.domain.enums.MessageType;
 import com.DormitoryBack.domain.group.chat.domain.module.ChatManager;
-import com.DormitoryBack.domain.group.domain.entitiy.Group;
-import com.DormitoryBack.domain.group.domain.repository.GroupRepository;
 import com.DormitoryBack.module.TimeOptimizer;
 import com.corundumstudio.socketio.SocketIOClient;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -22,7 +19,6 @@ import java.util.Set;
 @Slf4j
 public class SocketService {
     private final MessageService messageService;
-    private final GroupRepository groupRepository;
     private final RedisTemplate<String,Long> redisTemplate;
     private final ChatManager chatManager;
 
@@ -46,7 +42,6 @@ public class SocketService {
                         .message(message.getMessage())
                         .room(message.getRoom())
                         .username(message.getUsername())
-                        //.createdTime(LocalDateTime.now())
                         .createdTime(TimeOptimizer.now())
                         .build()
         );
@@ -59,7 +54,6 @@ public class SocketService {
                         .messageType(MessageType.SERVER)
                         .message(message)
                         .room(room)
-                        //.createdTime(LocalDateTime.now())
                         .createdTime(TimeOptimizer.now())
                         .build()
         );
