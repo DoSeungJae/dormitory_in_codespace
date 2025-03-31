@@ -119,7 +119,7 @@ function PostingPage() {
           inputOptions: {
             "배달":"배달",
             "공동 주문":"공동 주문",
-            "택시":"택시",
+            "택시/카폴":"택시/카폴",
             "기타":"기타"
           },
           inputPlaceholder: "카테고리를 선택해요.",
