@@ -1,22 +1,18 @@
 package com.DormitoryBack.domain.article.comment.domain.entity;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
-import com.DormitoryBack.domain.article.domain.entity.Article;
+import com.DormitoryBack.domain.block.entity.Blockable;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Builder
 @AllArgsConstructor
@@ -25,7 +21,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Table(name="comment")
-public class Comment {
+public class Comment implements Blockable{
 
     @Id
     @GeneratedValue
@@ -81,6 +77,11 @@ public class Comment {
             e.printStackTrace();
         }
         return jsonString;
+    }
+
+    @Override
+    public Long getUserId(){
+        return user.getId();
     }
 
 
