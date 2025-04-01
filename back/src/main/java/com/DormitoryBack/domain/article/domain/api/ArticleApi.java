@@ -34,67 +34,67 @@ public class ArticleApi {
     }
 
     @GetMapping("")
-    public ResponseEntity allArticles(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="10") int size){
-        List<ArticlePreviewDTO> articlesDTO=articleService.getAllArticlesWithinPage(page,size);
+    public ResponseEntity<List<ArticlePreviewDTO>> allArticles(@RequestHeader("Authorization") String token, @RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="10") int size){
+        List<ArticlePreviewDTO> articlesDTO=articleService.getAllArticlesWithinPage(page,size,token);
         return ResponseEntity.status(HttpStatus.OK).body(articlesDTO);
     }
 
     @GetMapping("/filter/user")
-    public ResponseEntity userArticles(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size, @RequestHeader("Authorization") String token){
+    public ResponseEntity<List<ArticlePreviewDTO>> userArticles(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10")int size, @RequestHeader("Authorization") String token){
         List<ArticlePreviewDTO> articlesDTO=articleService.getUserArticlesWithinPage(page,size,token);
         return ResponseEntity.status(HttpStatus.OK).body(articlesDTO);
     }
 
     @GetMapping("/filter/userCommented")
-    public ResponseEntity userCommentedArticles(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "10")int size,@RequestHeader("Authorization") String token){
+    public ResponseEntity<List<ArticlePreviewDTO>> userCommentedArticles(@RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "10")int size,@RequestHeader("Authorization") String token){
         List<ArticlePreviewDTO> articlesDTO=articleService.getUserCommentedArticlesWithinPage(page,size,token);
         return ResponseEntity.status(HttpStatus.OK).body(articlesDTO);
     }
   
     @GetMapping("/dorm/{dormId}")
-    public ResponseEntity DormArticles(@PathVariable("dormId") Long dormId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size){
-        List<ArticlePreviewDTO> articlesDTO=articleService.getDormArticlesWithinPage(dormId,page,size);
+    public ResponseEntity<List<ArticlePreviewDTO>> DormArticles(@RequestHeader("Authorization") String token, @PathVariable("dormId") Long dormId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size){
+        List<ArticlePreviewDTO> articlesDTO=articleService.getDormArticlesWithinPage(dormId,page,size,token);
         return ResponseEntity.status(HttpStatus.OK).body(articlesDTO);
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity article(@PathVariable("articleId") Long articleId){
+    public ResponseEntity<ArticleDTO> article(@PathVariable("articleId") Long articleId){
         ArticleDTO articleDTO=articleService.getArticle(articleId);
         return ResponseEntity.status(HttpStatus.OK).body(articleDTO);
     }
     
     @GetMapping("/isArticle/{articleId}")
-    public ResponseEntity isArticle(@PathVariable("articleId") Long articleId){
+    public ResponseEntity<Boolean> isArticle(@PathVariable("articleId") Long articleId){
         Boolean isArticle=articleService.checkArticleExist(articleId);
         return ResponseEntity.status(HttpStatus.OK).body(isArticle);
     }
 
     @GetMapping("/writerNickName/{articleId}")
-    public ResponseEntity writerNickName(@PathVariable("articleId") Long articleId){
+    public ResponseEntity<String> writerNickName(@PathVariable("articleId") Long articleId){
         String userNickName=articleService.getWriterNickName(articleId);
         return ResponseEntity.status(HttpStatus.OK).body(userNickName);
     }
     
-    @GetMapping("/validate") //WritingPage에 입장하기전 토큰 유효성 검사
-    public ResponseEntity tokenValidation(@RequestHeader("Authorization") String token){
+    @GetMapping("/validate") 
+    public ResponseEntity<Boolean> tokenValidation(@RequestHeader("Authorization") String token){
         Boolean isValid=tokenProvider.validateToken(token);
         return ResponseEntity.status(HttpStatus.OK).body(isValid);
     }
 
     @PostMapping("/new")
-    public ResponseEntity newArticle(@RequestBody NewArticleDTO dto, @RequestHeader("Authorization") String token){
+    public ResponseEntity<String> newArticle(@RequestBody NewArticleDTO dto, @RequestHeader("Authorization") String token){
         Article article=articleService.saveNewArticle(dto,token);
         return ResponseEntity.status(HttpStatus.CREATED).body(article.toJsonString());
     }
 
     @PatchMapping("/{articleId}")
-    public ResponseEntity updateArticle(@PathVariable("articleId") Long articleId, @RequestBody NewArticleDTO dto,@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> updateArticle(@PathVariable("articleId") Long articleId, @RequestBody NewArticleDTO dto,@RequestHeader("Authorization") String token) {
         Article updatedArticle=articleService.updateArticle(dto,articleId,token);
         return ResponseEntity.status(HttpStatus.OK).body(updatedArticle.toJsonString());
     }
 
     @DeleteMapping("/{articleId}")
-    public ResponseEntity deleteArticle(@PathVariable("articleId") Long articleId, @RequestHeader("Authorization") String token){
+    public ResponseEntity<String> deleteArticle(@PathVariable("articleId") Long articleId, @RequestHeader("Authorization") String token){
         articleService.deleteArticle(articleId,token);
         return ResponseEntity.status(HttpStatus.OK).body("ARTICLE DELETED");
     }
