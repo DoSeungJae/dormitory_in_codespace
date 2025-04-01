@@ -8,7 +8,7 @@ import ModalContext from './components/common/ModalContext';
 import { StyledToastContainer } from './modules/common/Toast';
 
 function App() {
-  const [selectComponentIndex,setSelectComponentIndex]=useState(0);
+  const [selectComponentIndex,setSelectComponentIndex]=useState(-1);
   const [isOpen, setIsOpen]=useState(false);
   const [content,setContent]=useState({});
   
@@ -23,10 +23,7 @@ function App() {
     setIsOpen(false);
     setContent({});
   };
-
   
-  
-
   return (
     <div className="App">
       {
