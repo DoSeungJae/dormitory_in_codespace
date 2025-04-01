@@ -49,7 +49,6 @@ function UseLogInButton() {
           localStorage.setItem('token',response.data);
           if(localStorage.getItem("nextIndex")===null){
             window.location.reload();
-            setSelectComponentIndex(0);
           }
           else{
             const requiredIndex=parseInt(localStorage.getItem("nextIndex"));

@@ -53,11 +53,11 @@ function HomePageSelect() {
   }
 
   useEffect(()=>{
-    if(token!=null){
-      return ;
+    if(token==null){
+      setSelectComponentIndex(8);
+    }else{
+      setSelectComponentIndex(0);
     }
-    setSelectComponentIndex(8);
-    localStorage.setItem("nextIndex",0);
   },[token])
   
   const selectMenu = async (item) => {
