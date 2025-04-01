@@ -11,6 +11,7 @@ function HomePage() {
   const [doLoadPage,setDoLoadPage]=useState(0);
   const [dorId,setDorId]=useState(0);
   const [isEndPage,setIsEndPage]=useState(false);
+  const token=localStorage.getItem("token");
   const previewStyle = {
     maxHeight:'83vh'
   }
@@ -27,8 +28,8 @@ function HomePage() {
       path=`${process.env.REACT_APP_HTTP_API_URL}/article?page=${page}`;
     } 
     try{
-      const response = await axios.get(path, {
-    });
+      const headers={"Authorization":`${token}`};
+      const response = await axios.get(path, {headers});
       const result=response.data;
       setArticleList((prevItems)=>[...prevItems,...result]);
       setDoLoadPage(0);
@@ -81,7 +82,7 @@ function HomePage() {
       }
     }
 
-  },[doLoadPage])
+  },[doLoadPage]);
 
   useEffect(()=>{
     setArticleList([]);
@@ -91,7 +92,7 @@ function HomePage() {
     }
     fetchData();
 
-  },[dorId])
+  },[dorId]);
 
   const buttonToPath = {
     "홈": "",
