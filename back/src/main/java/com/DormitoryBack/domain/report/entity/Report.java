@@ -1,8 +1,5 @@
 package com.DormitoryBack.domain.report.entity;
 
-
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
-import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.report.enums.ReportType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,7 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-
 import java.time.LocalDateTime;
 
 @Builder
@@ -21,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Getter
-@Setter
+@Setter //있으면 안되는 annotation
 @Table(name="report")
 public class Report {
     @Id
