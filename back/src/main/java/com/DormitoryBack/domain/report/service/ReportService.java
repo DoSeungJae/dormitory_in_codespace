@@ -1,27 +1,19 @@
 package com.DormitoryBack.domain.report.service;
 
-import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
-import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
-import com.DormitoryBack.domain.article.domain.entity.Article;
-import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.report.dto.InquireDTO;
 import com.DormitoryBack.domain.report.dto.ReportDTO;
 import com.DormitoryBack.domain.report.entity.Report;
-import com.DormitoryBack.domain.report.enums.ReportType;
 import com.DormitoryBack.domain.report.repository.ReportRepository;
 import com.DormitoryBack.module.TimeOptimizer;
-
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,12 +24,9 @@ import java.util.stream.Collectors;
 public class ReportService {
     @Autowired
     private ReportRepository reportRepository;
-    @Autowired
-    private ArticleRepository articleRepository;
+
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CommentRepository commentRepository;
 
     @Autowired
     private TokenProvider tokenProvider;
