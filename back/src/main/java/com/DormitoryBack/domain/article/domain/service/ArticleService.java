@@ -22,6 +22,7 @@ import com.DormitoryBack.domain.article.domain.dto.ArticlePreviewDTO;
 import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
+import com.DormitoryBack.domain.block.service.BlockService;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
@@ -51,6 +52,9 @@ public class ArticleService {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private BlockService blockService;
 
     private final RedisTemplate<String,Long> redisTemplate;
 
@@ -121,29 +125,38 @@ public class ArticleService {
         return true;
     }
 
-    public List<ArticlePreviewDTO> getAllArticlesWithinPage(int page, int size){
+    public List<ArticlePreviewDTO> getAllArticlesWithinPage(int page, int size, String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
         Pageable pageable= PageRequest.of(page,size, Sort.by("createdTime").descending());
-        Page<Article> articlePage=articleRepository.findAll(pageable);
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
+        Page<Article> articlePage=articleRepository.findByUserIdNotIn(blockedIdList, pageable);
         if(articlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
         }
         else if(articlePage.isEmpty()){
             throw new RuntimeException("NoMoreArticlePage");
         }
-        List<ArticlePreviewDTO> articlePreviewList=this.makeArticlePreviewDTOList(articlePage);
+        List<ArticlePreviewDTO> articlePreviewList=this.makeArticlePreviewDTOList(articlePage, token);
         return articlePreviewList;
     }
 
-    public List<ArticlePreviewDTO> getDormArticlesWithinPage(Long dorId,int page,int size){
+    public List<ArticlePreviewDTO> getDormArticlesWithinPage(Long dorId,int page,int size, String token){
+        if(!tokenProvider.validateToken(token)){
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        }
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        Page<Article> articlePage=articleRepository.findAllByDormId(dorId,pageable);
+        //Page<Article> articlePage=articleRepository.findAllByDormId(dorId,pageable);
+        Page<Article> articlePage=articleRepository.findByDormIdAndUserIdNotIn(dorId, blockedIdList, pageable);
         if(articlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
         }
         else if(articlePage.isEmpty()){
             throw new RuntimeException("NoMoreArticlePage");
         }
-        List<ArticlePreviewDTO> articlePreviewListGroupByDorm=this.makeArticlePreviewDTOList(articlePage);
+        List<ArticlePreviewDTO> articlePreviewListGroupByDorm=this.makeArticlePreviewDTOList(articlePage, token);
         return articlePreviewListGroupByDorm;
     }
 
@@ -160,7 +173,7 @@ public class ArticleService {
         else if(userArticlePage.isEmpty()){
             throw new RuntimeException("ExceededPage");
         }
-        List<ArticlePreviewDTO> userArticlePreviewList=this.makeArticlePreviewDTOList(userArticlePage);
+        List<ArticlePreviewDTO> userArticlePreviewList=this.makeArticlePreviewDTOList(userArticlePage, token);
         return userArticlePreviewList;
     }
 
@@ -170,9 +183,10 @@ public class ArticleService {
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
         List<Long> idList=commentService.getUserCommentedArticleIds(userId);
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        List<Article> articleList=articleRepository.findAllById(idList);
-
+        //List<Article> articleList=articleRepository.findAllById(idList);
+        List<Article> articleList=articleRepository.findByIdAndUserIdNotIn(idList,blockedIdList);
         int start=(int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), articleList.size());
         if(start>end){ //start와 end가 같은 경우?
@@ -183,7 +197,7 @@ public class ArticleService {
             throw new RuntimeException("ArticleNotFound");
         }
         Page<Article> userCommentedArticlePage=new PageImpl<>(pagedArticleList, pageable, pagedArticleList.size()); 
-        List<ArticlePreviewDTO> userCommentedArticlePreviewList=this.makeArticlePreviewDTOList(userCommentedArticlePage);
+        List<ArticlePreviewDTO> userCommentedArticlePreviewList=this.makeArticlePreviewDTOList(userCommentedArticlePage, token);
         return userCommentedArticlePreviewList;
     }
 
@@ -253,8 +267,7 @@ public class ArticleService {
         articleRepository.delete(target);
     }
 
-    public List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage){
-
+    public List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage, String token){
         List<ArticlePreviewDTO> articleList= new ArrayList<>(); 
         for (Article article : articlePage.getContent()){
             ArticlePreviewDTO articlePreviewDTO=this.makeArticlePreviewDTO(article);
