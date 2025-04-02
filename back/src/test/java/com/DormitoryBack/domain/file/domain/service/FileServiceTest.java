@@ -29,7 +29,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.DormitoryBack.domain.file.domain.dto.FileRequestDTO;
 import com.DormitoryBack.domain.file.domain.enums.ParamType;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
