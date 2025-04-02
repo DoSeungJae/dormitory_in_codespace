@@ -1,7 +1,6 @@
 package com.DormitoryBack.domain.article.comment.domain.entity;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.CommentUpdateDTO;
-import com.DormitoryBack.domain.block.entity.Blockable;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name="comment")
-public class Comment implements Blockable{
+public class Comment{
 
     @Id
     @GeneratedValue
@@ -32,8 +31,8 @@ public class Comment implements Blockable{
     private Long articleId;
 
     @JsonIgnore
-    @ManyToOne
     @JoinColumn(name="user_id")
+    @ManyToOne
     private User user;
 
     @JsonProperty
@@ -58,6 +57,7 @@ public class Comment implements Blockable{
     public Long getRootCommentId(){
         return rootComment==null ? null : rootComment.getId();
     }
+
     public void addReplyComment(Comment replyComment){
         replyComment.setRootComment(this);
     }
@@ -66,6 +66,7 @@ public class Comment implements Blockable{
         this.isUpdated=true;
         this.content=dto.getContent();
     }
+
     public String toJsonString(){
         ObjectMapper objectMapper=new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -78,11 +79,4 @@ public class Comment implements Blockable{
         }
         return jsonString;
     }
-
-    @Override
-    public Long getUserId(){
-        return user.getId();
-    }
-
-
 }

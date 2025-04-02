@@ -1,7 +1,6 @@
 package com.DormitoryBack.domain.article.domain.entity;
 
 import com.DormitoryBack.domain.article.domain.dto.NewArticleDTO;
-import com.DormitoryBack.domain.block.entity.Blockable;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @NoArgsConstructor
 @Getter
 @Document(collection = "articles")
-public class Article implements Blockable{
+public class Article{
 
     @Transient
     public static final String SEQUENCE_NAME = "articleid";
@@ -44,7 +43,6 @@ public class Article implements Blockable{
     @JoinColumn(name="usr_id") 
     private User usrId; //데이터 필드 이름을 user로 바꿔야할 수도 있음. -> front가 이 변경에 의존적일 것임.
 
-    @Override
     @JsonProperty("userId")
     public Long getUserId(){
         return usrId.getId();
