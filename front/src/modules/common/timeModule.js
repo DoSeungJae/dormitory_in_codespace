@@ -15,7 +15,7 @@ export const getRelativeTime = (absTime) => {
     const beforeAfter = now>created?"전":"후";
 
     if (diffInSeconds < 60) {
-      return `${diffInSeconds}초 ${beforeAfter}`;
+      return "방금 전";
     } else if (diffInMinutes < 60) {
       return `${diffInMinutes}분 ${beforeAfter}`;
     } else if (diffInHours < 24) {
