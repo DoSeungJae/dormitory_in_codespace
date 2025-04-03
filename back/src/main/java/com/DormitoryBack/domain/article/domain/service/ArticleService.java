@@ -270,15 +270,15 @@ public class ArticleService {
     public List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage, String token){
         List<ArticlePreviewDTO> articleList= new ArrayList<>(); 
         for (Article article : articlePage.getContent()){
-            ArticlePreviewDTO articlePreviewDTO=this.makeArticlePreviewDTO(article);
+            ArticlePreviewDTO articlePreviewDTO=this.makeArticlePreviewDTO(article,token);
             articleList.add(articlePreviewDTO);
         }
         return articleList;
     }
     
-    public ArticlePreviewDTO makeArticlePreviewDTO(Article article){
+    public ArticlePreviewDTO makeArticlePreviewDTO(Article article, String token){
         Long articleId=article.getId();
-        Long numComments=commentService.getNumberOfComments(articleId);
+        Long numComments=commentService.getNumberOfComments(articleId,token);
         Long groupNumMembers=groupService.getNumberOfMembers(articleId);
         Long groupMaxCapacity;
         try{
