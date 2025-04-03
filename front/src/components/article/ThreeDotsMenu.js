@@ -66,8 +66,6 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
 
     }
 
-
-
   const handleSwal=async () => {
     const { value: fruit } = await Swal.fire({
       confirmButtonColor:"#FF8C00",
@@ -97,6 +95,41 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
         });
       }
     });
+  }
+
+  const handleSwalBlock = async () => {
+    Swal.fire({
+      confirmButtonColor:"#FF8C00",
+      text: "이 게시물을 차단하면 작성자가 올린 다른 게시물도 모두 차단되고, 한 번 차단하면 되돌릴 수 없어요. ",
+      confirmButtonText:"예",
+      cancelButtonText:"아니오",
+      showCancelButton: true
+    }).then((result)=>{
+        if(result.isConfirmed){
+          block();
+        }
+
+    });
+  }
+
+  const block = async () => {
+    let targetUserId;
+    let target;
+    if(articleParam==null){
+      target=commentParam;
+    }else{
+      target=articleParam;
+    }
+    targetUserId=target.user.id;
+
+    const path=`${process.env.REACT_APP_HTTP_API_URL}/block/${targetUserId}`;
+    const headers={"Authorization":`${token}`};
+    try{
+      axios.post(path,{},{headers});
+      window.location.reload();
+    }catch(error){
+      console.error(error);
+    }
   }
 
   const reportArticle = async (reportReason) => {
@@ -177,15 +210,17 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
     0: [
       { type : 'item', eventKey: "1", text: "신고", action: () => handleSwal()},
       { type: 'divider' },
-      { type : 'item', eventKey: "2", text: "URL 공유", action: () => console.log(1) },
+      { type : 'item', eventKey: "2", text: "차단", action: () => handleSwalBlock()},
+      commentParam===undefined && { type: 'divider' },
+      commentParam===undefined && { type : 'item', eventKey: "3", text: "URL 공유", action: () => alert("개발 중인 기능이에요!")}, //undefined
+    //commentParam===undefined ? null : { type : 'item', eventKey: "3", text: "URL 공유", action: () => console.log(commentParam)}, //는 에러 발생
     ],
     1: [
-      commentParam ? null : 
-      { type : 'item', eventKey: "1", text: "수정", action: () => goToPostingPageInPatchMode()},
-      { type: 'divider' },
+      commentParam ? null : { type : 'item', eventKey: "1", text: "수정", action: () => goToPostingPageInPatchMode()},
+      commentParam ? null : { type: 'divider' },
       { type : 'item', eventKey: "2", text: "삭제", action: () => deleteTarget(token,article,comment) },
-      { type: 'divider' },
-      { type : 'item', eventKey: "3", text: "URL 공유", action: () => alert('Action 3-2 executed') },
+      commentParam ? null : { type: 'divider' },
+      commentParam ? null : { type : 'item', eventKey: "3", text: "URL 공유", action: () => console.log(commentParam)}, //정상 출력
     ].filter(Boolean),
   };
 
@@ -215,11 +250,11 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
               {item.text}
             </Dropdown.Item>
           )
-
         })}
       </Dropdown.Menu>
 
     </Dropdown>
   );
 };
+
 export default ThreeDotsMenu;
