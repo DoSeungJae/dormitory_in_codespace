@@ -19,27 +19,33 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Entity
 @Getter
-@Setter
 @Data
 public class Notification {
     @Id
     @GeneratedValue
     private Long id;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType subjectType;
+
     @NotNull
     private Long subjectId;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType triggerType;
+
     @NotNull
     private Long triggerId;
+
     @NotNull
     private String triggerContent;
+
     @CreatedDate
     @NotNull
     private LocalDateTime triggeredDate;
+
     @NotNull
     private Boolean isConfirmed;
     public String toJsonString(){
@@ -53,6 +59,10 @@ public class Notification {
             e.printStackTrace();
         }
         return jsonString;
+    }
+
+    public void confirm(){
+        isConfirmed=true;
     }
 
 }

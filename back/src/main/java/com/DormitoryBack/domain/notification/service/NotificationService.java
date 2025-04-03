@@ -33,20 +33,27 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
+
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
     private CommentRepository commentRepository;
+    
     @Autowired
     private GroupRepository groupRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ObjectMapper objectMapper=new ObjectMapper();
+
     @Autowired
     private GroupServiceExternal groupService;
+
     @Autowired
-    private TokenProvider tokenProvider; //Autowired 안 넣으면 초기화가 안된다?
+    private TokenProvider tokenProvider; 
 
     public List<NotificationDto> getAllNotifications() {
         List<Notification> notifications=notificationRepository.findAll();
@@ -69,7 +76,7 @@ public class NotificationService {
         if(!checkExistenceOfSubjectAndTriggerWithLazyCascade(notification)){
             throw new RuntimeException("NotificationNotFound");
         }
-        notification.setIsConfirmed(true);
+        notification.confirm();
         notificationRepository.save(notification);
     }
 
