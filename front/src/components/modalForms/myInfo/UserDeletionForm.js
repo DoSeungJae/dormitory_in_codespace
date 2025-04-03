@@ -10,12 +10,12 @@ function UserDeletionForm ({userId}) {
     const deleteAccount = async () => {
         if(password==""){
             toast.warn("비밀번호를 입력해주세요.");
+            return ;
         }
         const path=`${process.env.REACT_APP_HTTP_API_URL}/user/${userId}`;
         const body={
             confirmPassword : password
         };
-        console.log(userId);
         try{
             const response = await axios.request({ method: 'DELETE', url: path, data: body});
             localStorage.removeItem("token");
@@ -23,9 +23,11 @@ function UserDeletionForm ({userId}) {
         }catch(error){
             if(error.response.data==="ConfirmPasswordNotCorrect"){
                 toast.error("확인 비밀번호가 올바르지 않아요.");
+                return ;
             }
             else if(error.response.data==="CannotDeleteUserWhileGrouping"){
                 toast.error("탈퇴할 수 없어요! 그룹에 속해있어요.");
+                return ;
             }
         }
     }
