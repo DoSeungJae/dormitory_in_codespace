@@ -126,7 +126,13 @@ public class CommentService {
 
     public Long getNumberOfComments(Long articleId, String token){
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
-        List<Comment> commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
+        List<Comment> commentList;
+        if(blockedIdList.size()==0){
+            commentList=commentRepository.findAllByArticleId(articleId);
+        }
+        else{
+            commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
+        }
         int size=commentList.size();
         return Long.valueOf(size);
     }
