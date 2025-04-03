@@ -1,11 +1,7 @@
 package com.DormitoryBack.domain.article.comment.domain.repository;
 
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
-import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.domain.entity.User;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,8 +13,8 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     //articleId가 아니라
     //article로 해야함
 
-    //Table의 attribute의 이름이 아니라
-    //Entity의 attribute의 이름을 기준으로 Query가 실행되는 것으로 추측
+    //Table의 column 이름이 아니라
+    //Entity의 attribute 이름을 기준으로 Query가 실행되는 것으로 추측
 
     @Query(value = "SELECT DISTINCT(article_id) FROM comment WHERE user_id = :userId", nativeQuery = true)
     List<Long> findDistinctArticleIdsByUserId(@Param("userId") Long userId);
@@ -26,4 +22,14 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Comment> findAllByUser(User user);
     List<Comment> findAllByArticleId(Long articleId);
 
+
+    @Query(value = "SELECT * FROM comment c " +
+                    "WHERE c.article_id = :articleId " +
+                    "AND c.user_id NOT IN (:blockedIdList) " +
+                    "AND (c.root_comment_id IS NULL OR " +
+                    "(SELECT r.user_id FROM comment r WHERE r.id = c.root_comment_id) NOT IN (:blockedIdList))", nativeQuery = true)
+    List<Comment> findByArticleIdExcludingBlockedComments(@Param("articleId") Long articleId, @Param("blockedIdList") List<Long> blockedIdList);
+    //count 용도로 사용. 이 메서드를 통해 얻은 List<Comment>를 listStringify하면 serializer 관련 에러가 나타나기 때문에 실제 comment 필터링은 응용 계층에서 수행.
+
+    
 }
