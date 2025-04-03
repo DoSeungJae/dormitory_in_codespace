@@ -5,10 +5,10 @@ import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
+import com.DormitoryBack.domain.block.service.BlockService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+
     @Autowired
     private CommentRepository commentRepository;
 
@@ -46,6 +47,9 @@ public class CommentService {
     @Autowired
     private NotificationServiceExternal notificationService;
 
+    @Autowired
+    private BlockService blockService;
+
     public Comment getComment(Long commentId){
         Comment comment=commentRepository.findById(commentId).orElse(null);
         if(comment==null){
@@ -53,6 +57,7 @@ public class CommentService {
         }
         return comment;
     }
+
     public List<Comment> getAllComments(){
         List<Comment> comments=commentRepository.findAll();
         if(comments.isEmpty()){
@@ -60,6 +65,7 @@ public class CommentService {
         }
         return comments;
     }
+
     public List<Comment> getUserComments(Long userId){
         User user=userRepository.findById(userId).orElse(null);
         if(user==null){
@@ -70,19 +76,27 @@ public class CommentService {
             throw new RuntimeException("NoCommentFound");
         }
         return comments;
-
     }
-    public CommentResponseDTO getArticleComments(Long articleId){
+
+    public CommentResponseDTO getArticleComments(Long articleId, String token){
         Article article=articleRepository.findById(articleId).orElse(null);
         if(article==null){
             throw new RuntimeException("ArticleNotFound");
         }
-        List<Comment> commentList=commentRepository.findAllByArticleId(article.getId());
+        if(token==null){
+            throw new RuntimeException("InvalidToken");
+        }
+        List<Comment> commentList=commentRepository.findAllByArticleId(articleId);
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
+        
         List<Comment> rootComments=new ArrayList<>();
         List<Comment> replyComments=new ArrayList<>();
         Iterator<Comment> iterator=commentList.iterator();
         while(iterator.hasNext()){
             Comment comment=iterator.next();
+            if(isCommentBlocked(comment, blockedIdList)){
+                continue;
+            }
             if(comment.getRootComment()==null){
                 rootComments.add(comment);
             }
@@ -90,19 +104,31 @@ public class CommentService {
                 replyComments.add(comment);
             }
         }
+        
         CommentResponseDTO responseDTO=CommentResponseDTO
                 .builder()
                 .rootComments(listStringify(rootComments))
                 .replyComments(listStringify(replyComments))
                 .build();
-        return responseDTO;
 
+        return responseDTO;
     }
 
-    public Long getNumberOfComments(Long articleId){
-        CommentResponseDTO dto=this.getArticleComments(articleId);
-        Long number=Long.valueOf(dto.getReplyComments().size()+dto.getRootComments().size());
-        return number;
+    public Boolean isCommentBlocked(Comment comment, List<Long> blockedIdList){
+        Long commentUserId=comment.getUser().getId();
+        Boolean isBlocked=blockedIdList.contains(commentUserId);
+        if(comment.getRootComment()!=null){
+            Long replyCommentUserId=comment.getRootComment().getUser().getId();
+            isBlocked=isBlocked || blockedIdList.contains(replyCommentUserId);
+        }
+        return isBlocked;
+    }
+
+    public Long getNumberOfComments(Long articleId, String token){
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
+        List<Comment> commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
+        int size=commentList.size();
+        return Long.valueOf(size);
     }
 
     public List<Long> getUserCommentedArticleIds(Long userId){
@@ -154,7 +180,6 @@ public class CommentService {
         notificationService.saveAndPublishNotification(subject,trigger,String.format(NotificationConstants.NEW_COMMENT,savedComment.getContent()));
 
         return savedComment;
-
     }
 
 
@@ -235,7 +260,6 @@ public class CommentService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("InvalidToken");
         }
-        Long userId=tokenProvider.getUserIdFromToken(token);
         Comment comment=commentRepository.findById(commentId).orElse(null);
         if(comment==null){
             throw new IllegalArgumentException("CommentNotFound");
