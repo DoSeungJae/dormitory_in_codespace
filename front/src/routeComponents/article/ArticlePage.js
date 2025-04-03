@@ -51,11 +51,8 @@ function ArticlePage(){
 
     const getComments = async () => {
       const path = `${process.env.REACT_APP_HTTP_API_URL}/comment/article/${article.id}`;
-      const headers={
-        "Authorization":`${token}`
-      }
       try {
-          const response = await axios.get(path,{headers});
+          const response = await axios.get(path);
           const rootCommentList = response.data.rootComments.map(item => JSON.parse(item));
           const replyCommentList = response.data.replyComments.map(item => JSON.parse(item));
           const combinedComments = rootCommentList.map(rootComment => {
