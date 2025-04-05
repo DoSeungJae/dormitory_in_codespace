@@ -1,4 +1,4 @@
-import React, { useState,useRef,useContext} from 'react';
+import React, { useState,useRef,useContext, useCallback } from 'react';
 import { IconButton, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import {toast} from 'react-toastify';
 import Swal from 'sweetalert2';
 import HomeSelectContext from '../home/HomeSelectContext';
 import ArticleContext from './ArticleContext';
+import TextAreaAutosize from 'react-textarea-autosize';
 
 function CommentForm({y,rootCommentId,placeHolder,setPlaceHolder,inputRef,article_Id,isReply,setIsReply,setCommentsAltered}) {
   const [comment, setComment] = useState('');
@@ -148,9 +149,11 @@ const handleBlur = () => {
   return (
     <div className='App'>
       <div className="comment-submit" ref={formRef} >
-        <input
+        <TextAreaAutosize
           ref={inputRef}
           type='text'
+          minRows={1}
+          maxRows={5}
           className="form-control"
           placeholder={placeHolder}
           value={comment}
