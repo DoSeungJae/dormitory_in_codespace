@@ -21,7 +21,7 @@ import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
-import com.DormitoryBack.domain.notification.entitiy.Notification;
+import com.DormitoryBack.domain.notification.entity.Notification;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,12 +92,17 @@ public class NotificationService {
             }
             Long subjectUserId=getEntityUserId(notification.getSubjectId(),notification.getSubjectType());
             Long triggerUserId=getEntityUserId(notification.getTriggerId(),notification.getTriggerType());
+            if(subjectUserId==null || triggerUserId==null){
+                continue;
+            }
 
             if(notification.getSubjectType()==EntityType.GROUP){
+                /*
                 if(!isGroupNotificationValid(notification)){
                     notificationRepository.delete(notification);
                     continue;
                 }
+                */    
                 Long groupId;
                 try{
                     groupId=objectMapper
@@ -135,6 +140,7 @@ public class NotificationService {
                     myDtoList.add(dto);
                 }
             }
+            
             else{
                 if(userId==subjectUserId && userId!=triggerUserId){
                     String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
@@ -176,6 +182,7 @@ public class NotificationService {
                 continue;
             }
 
+            /*
             if(notification.getSubjectType()==EntityType.GROUP){
                 if(!isGroupNotificationValid(notification)){
 
@@ -183,6 +190,7 @@ public class NotificationService {
                     continue;
                 }
             }
+            */ //그룹 알림 유효성 검사 해제 후 테스트... 
 
             String subjectString=getStringifiedEntity(notification.getSubjectId(),notification.getSubjectType());
             String triggerString=getStringifiedEntity(notification.getTriggerId(),notification.getTriggerType());
@@ -222,6 +230,7 @@ public class NotificationService {
         return true;
     }
 
+    /* //현재는 필요없다고 판단되어 임시 주석 처리
     private Boolean isGroupNotificationValid(Notification notification){
         //group noti의 content부터 정의되어야 작성할 수 있음.
         EntityType triggerType=notification.getTriggerType();
@@ -268,6 +277,7 @@ public class NotificationService {
         }
         return false;
     }
+         */
 
 
     private String getStringifiedEntity(Long targetId, EntityType type){
@@ -320,7 +330,11 @@ public class NotificationService {
             if(comment==null){
                 return null;
             }
-            userId=comment.getUser().getId();
+            User user=comment.getUser();
+            if(user==null){
+                return null;
+            }
+            userId=user.getId();
         }
         else if(type==EntityType.GROUP){
             Group group=groupRepository.findById(entityId).orElse(null);
@@ -338,7 +352,5 @@ public class NotificationService {
         }
         return userId;
     }
-
-
-
+    
 }
