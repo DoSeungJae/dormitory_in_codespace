@@ -717,13 +717,16 @@ body{
 }
 
 .profile-image {
-  padding-left:25vw;
-  transform: translateX(-50%); /* 요소의 중앙을 기준으로 정렬 */
+  width: 25vw;
+  height: 25vw;
+  overflow: hidden;
+  border-radius: 50%;
 }
 
 .profile-image img {
-  width:25vw;
-  height: auto;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .profile-details {
