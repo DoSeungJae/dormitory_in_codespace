@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.exception.ErrorInfo;
+import com.DormitoryBack.exception.ErrorType;
 
 import java.security.Key;
 import java.util.Date;
@@ -87,6 +89,20 @@ public class TokenProvider  {
         return claims.get(USER_ID_KEY,Long.class);
     }
 
+    public Long getUserIdFromTokenOrThrow(String token){
+        Claims claims=Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        Long userId=claims.get(USER_ID_KEY,Long.class);
+        if(userId==null){
+            throw new com.DormitoryBack.domain.jwt.exception.JwtException(new ErrorInfo(ErrorType.InvalidToken, "토큰으로 사용자의 ID를 찾을 수 없습니다."));
+        }
+        return userId;
+    }
+
     public String getUserEmailFromToken(String token){
         Claims claims=Jwts.parserBuilder()
             .setSigningKey(key)
@@ -124,6 +140,22 @@ public class TokenProvider  {
         }catch(IllegalArgumentException e){
             logger.info("JWT 토큰이 잘못되었습니다.");
             return false;
+        }
+    }
+
+    public void validateTokenOrThrow(String token){
+        if(token==null || token.isEmpty()){
+            throw new com.DormitoryBack.domain.jwt.exception.JwtException(new ErrorInfo(ErrorType.InvalidToken, "토큰이 없습니다."));
+        }
+        try{
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+            
+            return ;
+        }catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e){
+            throw new com.DormitoryBack.domain.jwt.exception.JwtException(new ErrorInfo(ErrorType.InvalidToken, "유효하지 않은 토큰입니다."));
         }
     }
 
