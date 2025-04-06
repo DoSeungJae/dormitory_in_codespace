@@ -183,10 +183,15 @@ public class ArticleService {
         }
         Long userId=tokenProvider.getUserIdFromToken(token);
         List<Long> idList=commentService.getUserCommentedArticleIds(userId);
-        List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        //List<Article> articleList=articleRepository.findAllById(idList);
-        List<Article> articleList=articleRepository.findByIdAndUserIdNotIn(idList,blockedIdList);
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
+        List<Article> articleList=new ArrayList<>();
+        if(blockedIdList.size()==0){
+            articleList=articleRepository.findAllById(idList);
+        }
+        else{
+            articleList=articleRepository.findByIdAndUserIdNotIn(idList,blockedIdList);
+        }
         int start=(int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), articleList.size());
         if(start>end){ //start와 end가 같은 경우?
