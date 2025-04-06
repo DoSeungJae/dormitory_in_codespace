@@ -221,7 +221,8 @@ body{
 .comment-item{
   text-align:left;
   border-bottom:1px solid gray;
-  padding-top:5px;
+  padding-top:0.3rem;
+  padding-bottom:0.3rem;
 }
 
 
@@ -409,6 +410,10 @@ body{
   padding-left:5%;
   align-items: left;
 }
+.app-article-main p{
+  margin-bottom: 0;
+}
+
 .app-article-footer{
   padding-right:2%;
   padding-left:2%;
@@ -427,6 +432,7 @@ body{
   border-bottom: 1px solid gray;
   display: flex;
   justify-content:space-between;
+  padding-bottom: 0.5rem;
 }
 .article-category, .article-dormitory{
   position:relative;
@@ -479,12 +485,15 @@ body{
 
 
 .rounded-image {
-  width: 50px;  
-  height: 50px; 
   object-fit: cover;  /* 이미지 비율을 유지하면서 프레임에 맞게 조절합니다 */
-  border:1px solid #000;
+  overflow: hidden;
+  border-radius: 50%;
 }
 
+.article-info .rounded-image{
+  width: 3rem;
+  height: 3rem;
+}
 
 .article-info{
   display:flex;
@@ -510,14 +519,15 @@ body{
 .article-title{
   font-size:24px;
 }
+
 .article-content{
-  font-size:16px;
-  padding-top:5px;
+  font-size:1rem;
+  padding-top:0.5rem;
+  padding-bottom:0.5rem;
   word-wrap:break-word;
 
   max-height: 65vh;
   overflow-y: auto;
-
 }
 
 .toast-position{
@@ -537,15 +547,28 @@ body{
 
 .comment-list{
   border-top:1px solid gray;
-  margin-top:10px;
-  padding-top:10px;
 }
 
 .comment-item-header{
   display:flex;
   justify-content:space-between;
+  align-items: center;
   padding-bottom:5px;
   font-size:0.95rem;
+}
+
+.comment-profile-nickname{
+  display:flex;
+  justify-content:space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+
+.comment-item-header .rounded-image{
+  width: 2rem;
+  height: 2rem;
 }
 
 .comment-item-content{

@@ -11,6 +11,7 @@ import ParticipateButton from '../../components/article/ParticipateButton';
 import GroupStartButton from '../../components/article/GroupStartButton';
 import { getRelativeTime } from '../../modules/common/timeModule';
 import ArticleContext from '../../components/article/ArticleContext';
+import { getUserProfileImage } from '../../modules/common/profileImageModule';
 
 function ArticlePage(){
     const[commentList,setCommentList]=useState([]);
@@ -22,6 +23,7 @@ function ArticlePage(){
     const [commentsAltered,setCommentsAltered]=useState(0);
     const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
     const {article,setArticle}=useContext(ArticleContext);
+    const [profileImages,setProfileImages] = useState({undefined:userDefault});
     const token=localStorage.getItem('token');
     
     const inputRef=useRef();
@@ -79,13 +81,12 @@ function ArticlePage(){
         else{
           return 0;
         }
-    
-    } catch (error) {
-        console.error('An error occurred isSame in ArticlePage.js:', error);
-        return 0;
+      } catch (error) {
+          console.error('An error occurred isSame in ArticlePage.js:', error);
+          return 0;
+      }
     }
-    
-    }
+
     const convertDorIdToString = (num) => {
       const mappingDict = {
         1: '오름1',
@@ -132,7 +133,15 @@ function ArticlePage(){
       setCommentsAltered(0);
     },[commentsAltered])
 
+    const getProfileImageOf = (id) => {
+      if (profileImages[id] === undefined) {
+        getUserProfileImage("USERID",id,(url)=>{let a=[]; a[id]=url; setProfileImages({...a, ...profileImages})});
+      }
+    }
 
+    useEffect(()=>{
+      getProfileImageOf(article.user?.id);
+    },[article])
 
     if(selectComponentIndex!==5){
       return null;
@@ -149,7 +158,7 @@ function ArticlePage(){
             </div>
             <div className="app-article-main">
               <div className="article-info">
-                <img src={userDefault} alt="description" className='rounded-image'/> {/* mui/Avatar로 변경 고려 */}
+                <img src={profileImages[article.user?.id] || userDefault} alt="description" className='rounded-image'/>
                   <div className="article-info-detail">
                     <p>{article.user.nickName || "알 수 없음"}</p>
                     <p>{getRelativeTime(article.createdTime)}</p>
@@ -166,13 +175,18 @@ function ArticlePage(){
                   <p className="article-dormitory">{convertDorIdToString(article.dormId)}</p>
                 </div>
 
-                <div className='article-content' ref={commentListRef} >
-                  {article.contentHTML}
+                <div>
+                  <div className='article-content'> 
+                    {article.contentHTML}
+                  </div>
                   <div className="comment-list" >
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
                     <div className="comment-item-header">
-                      {comment.user ? comment.user.nickName : "알 수 없음"}
+                      <div className="comment-profile-nickname">
+                        <img className='rounded-image' src={[getProfileImageOf(comment.user?.id),profileImages[comment.user?.id] || userDefault][1]} />
+                        {comment.user ? comment.user.nickName : "알 수 없음"}
+                      </div>
                       <CommentMenu
                         rootCommentId={comment.id}
                         setRootCommentId={setCommentId}
@@ -183,26 +197,26 @@ function ArticlePage(){
                         writerId={comment.user ? comment.user.id : 0}
                         commentParam={comment}
                         setCommentsAltered={setCommentsAltered}
-                      >
-                        
-                      </CommentMenu>
+                      />
                     </div>
                     <p className="comment-item-content">{comment.content}</p>
                     <p className="comment-item-time">{getRelativeTime(comment.createdTime)}</p>
                     {comment.replyComments && comment.replyComments.map((reply, replyIndex) => (
                     <div key={replyIndex} className="comment-item reply">
-                        <div className="comment-item-header">
-                            {reply.user ? reply.user.nickName : "알 수 없음"}
-                            <CommentMenu
-                              isForReply={1}
-                              writerId={reply.user ? reply.user.id : 0}
-                              commentParam={reply}
-                              setCommentsAltered={setCommentsAltered}
-                                >
-                            </CommentMenu>
+                      <div className="comment-item-header">
+                        <div className="comment-profile-nickname">
+                          <img className='rounded-image' src={[getProfileImageOf(reply.user?.id),profileImages[reply.user?.id] || userDefault][1]} />
+                          {reply.user ? reply.user.nickName : "알 수 없음"}
                         </div>
-                        <p className="comment-item-content">{reply.content}</p>
-                        <p className="comment-item-time">{getRelativeTime(reply.createdTime)}</p>
+                        <CommentMenu
+                          isForReply={1}
+                          writerId={reply.user ? reply.user.id : 0}
+                          commentParam={reply}
+                          setCommentsAltered={setCommentsAltered}
+                        />
+                      </div>
+                      <p className="comment-item-content">{reply.content}</p>
+                      <p className="comment-item-time">{getRelativeTime(reply.createdTime)}</p>
                     </div>
                     ))}
                   </div>
