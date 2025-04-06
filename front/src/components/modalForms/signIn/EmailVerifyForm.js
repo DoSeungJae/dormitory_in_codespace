@@ -42,8 +42,6 @@ function EmailVerifyForm({setSingUpEmail}){
             toast.error("이미 사용중인 메일이에요.");
             return ;
         }
-
-        console.log("email :",email);
         const path=`${process.env.REACT_APP_HTTP_API_URL}/email/sendVerifyCode`;
         const headers={
             'Email':`${email}`
@@ -51,7 +49,6 @@ function EmailVerifyForm({setSingUpEmail}){
         try{
             await axios.get(path,{headers});
         }catch(error){
-            console.log(123);
             console.error(error);
             return ;
         }
