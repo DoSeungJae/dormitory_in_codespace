@@ -1,4 +1,4 @@
-package com.DormitoryBack.domain.notification.entitiy;
+package com.DormitoryBack.domain.notification.entity;
 
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
