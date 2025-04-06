@@ -1,8 +1,7 @@
 package com.DormitoryBack.domain.notification.service;
 
 import com.DormitoryBack.domain.notification.dto.Notifiable;
-//import com.DormitoryBack.domain.notification.dto.NotificationDto;
-import com.DormitoryBack.domain.notification.entitiy.Notification;
+import com.DormitoryBack.domain.notification.entity.Notification;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
 import com.DormitoryBack.module.TimeOptimizer;
 

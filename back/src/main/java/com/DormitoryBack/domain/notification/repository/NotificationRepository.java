@@ -1,8 +1,9 @@
 package com.DormitoryBack.domain.notification.repository;
 
-import com.DormitoryBack.domain.notification.entitiy.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.DormitoryBack.domain.notification.entity.Notification;
 
 import java.util.List;
 
