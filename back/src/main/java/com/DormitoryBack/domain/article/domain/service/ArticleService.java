@@ -270,6 +270,7 @@ public class ArticleService {
             throw new RuntimeException("ArticleWithAProceedingGroupCannotBeDeleted");
         } 
         articleRepository.delete(target);
+        commentService.deleteAllRootComemntsInArticle(articleId);
     }
 
     public List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage, String token){
