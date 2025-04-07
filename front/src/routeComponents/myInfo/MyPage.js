@@ -7,6 +7,7 @@ import axios from 'axios';
 import { dorIdToDorName } from '../../components/home/HomeUtils';
 import Modal from '../../components/common/Modal';
 import ModalContext from '../../components/common/ModalContext';
+import { getUserProfileImage } from "../../modules/common/profileImageModule"
 
 import PasswordChangeForm from '../../components/modalForms/myInfo/PasswordChangeForm';
 import DormitoryChangeForm from '../../components/modalForms/myInfo/DormitoryChangeForm';
@@ -60,34 +61,6 @@ const MyPage = () => {
             console.error(error);
         }
     }
-
-    const getUserProfileImageURL = async () => {
-        const path=`${process.env.REACT_APP_HTTP_API_URL}/file/userImageUrl`;
-        const headers={
-            ParamType:'USERID', //"NICKNAME"
-            UserInfo:user.id    //"nickname123"
-        }
-        try{
-            const response=await axios.get(path,{headers});
-            const url=response.data;
-            getUserProfileImage(url);
-        }catch(error){
-            console.error(error);
-        }
-    }
-
-    const getUserProfileImage = async (path) => {
-       try{
-            const response = await axios.get(path, { responseType: 'blob' })
-
-            const contentType = response.headers['content-type'];
-            const blob = new Blob([response.data], { type: contentType });
-            const imageUrl=URL.createObjectURL(blob);
-            setProfileImage(imageUrl);
-       }catch(error){
-        console.error(error);
-       }
-    }
     
     useEffect(()=>{
         getUser(); 
@@ -103,7 +76,7 @@ const MyPage = () => {
         if(profileDeleted){
             return ;
         }
-        getUserProfileImageURL();
+        getUserProfileImage("USERID", user.id, setProfileImage);
     },[profileImage,selectComponentIndex]);
 
 

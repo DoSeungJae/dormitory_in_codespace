@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
 import { getSocketResponse } from '../../../service/group/socket';
+import TextareaAutosize from 'react-textarea-autosize';
 
 function ChatRoom({ username, room, socketResponse, sendData }) {
 
@@ -109,8 +110,10 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
         }
       </div>
       <div className='group-form' id='group-form'>
-        <input
+        <TextareaAutosize
           type='text'
+          minRows={1}
+          maxRows={5}
           className="form-control group-form-input"
           id = "group-form-input"
           placeholder='메세지를 입력하세요.'
