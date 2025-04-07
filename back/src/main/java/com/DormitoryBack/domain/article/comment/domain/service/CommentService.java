@@ -303,4 +303,11 @@ public class CommentService {
 
         return stringifiedCommentList;
     }
+
+    public void deleteAllRootComemntsInArticle(Long articleId){
+        List<Comment> commentList=commentRepository.findAllByArticleId(articleId);
+        commentList.stream()
+            .filter(comment -> comment.getRootComment()==null)
+            .forEach(comment -> commentRepository.delete(comment));
+    }
 }
