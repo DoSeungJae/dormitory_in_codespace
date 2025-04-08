@@ -1,10 +1,10 @@
 DELIMITER //
 
-CREATE TRIGGER user_after_delete
+CREATE TRIGGER user_after_deleted
 AFTER DELETE ON user
 FOR EACH ROW
 BEGIN
-    INSERT INTO user_deleted (
+    INSERT INTO deleted_user (
         `id`,
         `nick_name`,
         `pass_word`,
