@@ -618,6 +618,7 @@ body{
   max-height: 85vh;
   overflow-y: scroll;
 }
+
 .group-form{
   position: fixed;
   bottom: 0;
@@ -628,8 +629,10 @@ body{
   width:100%;
   padding-right:3vw;
   padding-bottom: 1vh;
-  height:3rem
+  min-height:3rem;
+  max-height:8rem;
 }
+
 .group-form>.btn{
   flex-basis: 5rem;
   display: inline-block;
@@ -714,13 +717,16 @@ body{
 }
 
 .profile-image {
-  padding-left:25vw;
-  transform: translateX(-50%); /* 요소의 중앙을 기준으로 정렬 */
+  width: 25vw;
+  height: 25vw;
+  overflow: hidden;
+  border-radius: 50%;
 }
 
 .profile-image img {
-  width:25vw;
-  height: auto;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .profile-details {
