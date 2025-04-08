@@ -28,5 +28,6 @@ END//
 DELIMITER ;
 
 
+
 -- user의 데이터가 삭제될 때 user_deleted에 동일한 데이터를 삽입.
 -- 25.04.07
