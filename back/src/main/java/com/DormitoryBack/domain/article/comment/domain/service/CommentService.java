@@ -2,17 +2,25 @@ package com.DormitoryBack.domain.article.comment.domain.service;
 
 import com.DormitoryBack.domain.article.comment.domain.dto.*;
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
+import com.DormitoryBack.domain.article.comment.domain.entity.OrphanComment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
+import com.DormitoryBack.domain.article.comment.domain.repository.OrphanCommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.block.service.BlockService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
+import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.domain.member.domain.service.UserService;
+import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.service.NotificationServiceExternal;
+import com.DormitoryBack.exception.ErrorInfo;
+import com.DormitoryBack.exception.ErrorType;
+import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 import com.DormitoryBack.module.TimeOptimizer;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +57,12 @@ public class CommentService {
 
     @Autowired
     private BlockService blockService;
+
+    @Autowired
+    private UserServiceExternal userService;
+
+    @Autowired
+    private OrphanCommentRepository orphanCommentRepository;
 
     public Comment getComment(Long commentId){
         Comment comment=commentRepository.findById(commentId).orElse(null);
@@ -97,6 +111,13 @@ public class CommentService {
             if(isCommentBlocked(comment, blockedIdList)){
                 continue;
             }
+
+            if(comment.getUser()==null){ //댓글의 사용자가 탈퇴한 경우. "nickname" "-"임.
+                Long commentId=comment.getId();
+                User deletedVirtualUser=userService.getDeletedVirtualUserFromOrphanComment(commentId);
+                comment.setVirtualDeletedUser(deletedVirtualUser);
+            }
+
             if(comment.getRootComment()==null){
                 rootComments.add(comment);
             }
@@ -115,13 +136,37 @@ public class CommentService {
     }
 
     public Boolean isCommentBlocked(Comment comment, List<Long> blockedIdList){
-        Long commentUserId=comment.getUser().getId();
+        Long commentUserId;
+        if(comment.getUser()==null){
+            Long commentId=comment.getId();
+            User deletedVirtualUser=userService.getDeletedVirtualUserFromOrphanComment(commentId);
+            commentUserId=deletedVirtualUser.getId();
+        }else{
+            commentUserId=comment.getUser().getId();
+        }
         Boolean isBlocked=blockedIdList.contains(commentUserId);
         if(comment.getRootComment()!=null){
             Long replyCommentUserId=comment.getRootComment().getUser().getId();
             isBlocked=isBlocked || blockedIdList.contains(replyCommentUserId);
         }
         return isBlocked;
+    }
+
+    public Long getNumberOfComments(Article article, String token){
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
+        List<Comment> commentList;
+        Long articleId=article.getId();
+        if(blockedIdList.size()==0){
+            commentList=commentRepository.findAllByArticleId(articleId);
+        }
+        else{
+            commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
+        }
+
+        int orphanCommentCount=orphanCommentRepository.countByArticle(article); //!
+        int size=commentList.size();
+        size+=orphanCommentCount;
+        return Long.valueOf(size);
     }
 
     public Long getNumberOfComments(Long articleId, String token){
@@ -133,6 +178,7 @@ public class CommentService {
         else{
             commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
         }
+
         int size=commentList.size();
         return Long.valueOf(size);
     }
@@ -310,4 +356,14 @@ public class CommentService {
             .filter(comment -> comment.getRootComment()==null)
             .forEach(comment -> commentRepository.delete(comment));
     }
+
+    
+    public OrphanComment getOrphanComment(Long commentId){
+        OrphanComment orphanComment=orphanCommentRepository
+            .findById(commentId)
+            .orElseThrow(()->new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound, "orphanComment를 찾지 못했습니다.")));
+        
+        return orphanComment;
+    }
+
 }
