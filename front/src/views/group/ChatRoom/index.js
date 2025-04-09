@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
 import { getSocketResponse } from '../../../service/group/socket';
-import TextareaAutosize from 'react-textarea-autosize';
+import TextAreaAutosize from 'react-textarea-autosize';
 
 function ChatRoom({ username, room, socketResponse, sendData }) {
 
@@ -110,7 +110,7 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
         }
       </div>
       <div className='group-form' id='group-form'>
-        <TextareaAutosize
+        <TextAreaAutosize
           type='text'
           minRows={1}
           maxRows={5}
