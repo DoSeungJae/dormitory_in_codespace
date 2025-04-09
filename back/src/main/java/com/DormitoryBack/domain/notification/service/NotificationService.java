@@ -3,11 +3,9 @@ package com.DormitoryBack.domain.notification.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.domain.entity.Article;
@@ -18,14 +16,12 @@ import com.DormitoryBack.domain.group.domain.service.GroupServiceExternal;
 import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
 import com.DormitoryBack.domain.notification.entity.Notification;
 import com.DormitoryBack.domain.notification.enums.EntityType;
 import com.DormitoryBack.domain.notification.repository.NotificationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Service
