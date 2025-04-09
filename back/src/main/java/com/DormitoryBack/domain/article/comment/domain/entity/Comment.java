@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Getter
-@Setter
 @Table(name="comment")
 public class Comment{
 
@@ -66,6 +65,15 @@ public class Comment{
         this.isUpdated=true;
         this.content=dto.getContent();
     }
+    
+    public void setVirtualDeletedUser(User user){
+        this.user=user;
+    }
+
+    public void setRootComment(Comment rootComment){
+        this.rootComment=rootComment;
+    }
+
 
     public String toJsonString(){
         ObjectMapper objectMapper=new ObjectMapper();
