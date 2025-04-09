@@ -28,6 +28,9 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.exception.ErrorInfo;
+import com.DormitoryBack.exception.ErrorType;
+import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 import com.DormitoryBack.module.TimeOptimizer;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -284,7 +287,7 @@ public class ArticleService {
     
     public ArticlePreviewDTO makeArticlePreviewDTO(Article article, String token){
         Long articleId=article.getId();
-        Long numComments=commentService.getNumberOfComments(articleId,token);
+        Long numComments=commentService.getNumberOfComments(article,token);
         Long groupNumMembers=groupService.getNumberOfMembers(articleId);
         Long groupMaxCapacity;
         try{
@@ -320,5 +323,13 @@ public class ArticleService {
             .build();
 
         return articlePreviewDTO;
+    }
+
+    public Article getRawArticle(Long articleId){
+        Article article=articleRepository
+            .findById(articleId)
+            .orElseThrow(()->new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound, "Article을 찾을 수 없습니다.")));
+
+        return article;
     }
 }
