@@ -1,5 +1,5 @@
 # Project
-Project - 기숙사 내에서 공동주문을 할 수 있도록 돕는 웹앱
+Project - 기숙사 내 공동주문/택시 카폴 등을 돕는 웹앱
 
 Mobile    -  React Native (planned)
 
