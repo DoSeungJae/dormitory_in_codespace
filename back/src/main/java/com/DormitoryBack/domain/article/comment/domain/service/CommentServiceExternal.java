@@ -9,6 +9,8 @@ import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
 import com.DormitoryBack.domain.article.comment.domain.entity.OrphanComment;
 import com.DormitoryBack.domain.article.comment.domain.repository.CommentRepository;
 import com.DormitoryBack.domain.article.comment.domain.repository.OrphanCommentRepository;
+import com.DormitoryBack.domain.article.domain.entity.Article;
+import com.DormitoryBack.domain.article.domain.service.ArticleService;
 import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,9 @@ public class CommentServiceExternal {
     @Autowired
     private OrphanCommentRepository orphanCommentRepository;
 
+    @Autowired
+    private ArticleService articleService;
+
     
     public List<Comment> getUserComments(User user){
         List<Comment> userComments=commentRepository.findAllByUser(user); 
@@ -33,10 +38,13 @@ public class CommentServiceExternal {
         userComments.stream()
             .forEach(comment -> {
                 Long commentId=comment.getId();
+                Long articleId=comment.getArticleId();
+                Article article=articleService.getRawArticle(articleId);
                 OrphanComment orphanComment=OrphanComment.builder()
                     .id(commentId)
                     .comment(comment)
-                    .deletedUser(deletedUser) 
+                    .deletedUser(deletedUser)
+                    .article(article)
                     .build();
                 
                 orphanCommentRepository.save(orphanComment);
