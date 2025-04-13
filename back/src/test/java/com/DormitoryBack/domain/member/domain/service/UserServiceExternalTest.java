@@ -24,6 +24,8 @@ import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.DeletedUserRepository;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.exception.ErrorType;
+import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceExternalTest {
@@ -264,7 +266,7 @@ public class UserServiceExternalTest {
     }
 
     @Test
-    public void testGetDeletedVirtualUserFromOrphanComment(){
+    public void testGetDeletedVirtualUserFromOrphanComment_Success(){
         Long commentId=10L;
         Long userId=1L;
   
@@ -301,6 +303,34 @@ public class UserServiceExternalTest {
         assertEquals(expectedvirtualUser.getProvider(), actualvirtualUser.getProvider());
         assertEquals(expectedvirtualUser.getImageName(), actualvirtualUser.getImageName());
         assertEquals(expectedvirtualUser.getRole(), actualvirtualUser.getRole());
+        verify(commentService,times(1)).getOrphanComment(commentId);
+        verify(deletedUserRepository,times(1)).findById(userId);
+    }
+
+    @Test
+    public void testGetDeletedVirtualUserFromOrphanComment_EntityNotFoundException(){
+        Long commentId=10L;
+        Long userId=1L;
+
+        DeletedUser deletedUser=DeletedUser.builder()
+            .id(userId)
+            .build();
+
+        OrphanComment orphanComment=OrphanComment.builder()
+            .id(commentId)
+            .deletedUser(deletedUser)
+            .article(null)
+            .build();
+
+        when(commentService.getOrphanComment(commentId)).thenReturn(orphanComment);
+        when(deletedUserRepository.findById(userId)).thenReturn(Optional.empty());
+
+        EntityNotFoundException exception=assertThrows(EntityNotFoundException.class, ()->{
+            userService.getDeletedVirtualUserFromOrphanComment(commentId);
+        });
+
+        assertEquals("DeletedUser를 찾지 못했습니다.", exception.getErrorInfo().getErrorMessage());
+        assertEquals(ErrorType.EntityNotFound,exception.getErrorInfo().getErrorType());
         verify(commentService,times(1)).getOrphanComment(commentId);
         verify(deletedUserRepository,times(1)).findById(userId);
     }
