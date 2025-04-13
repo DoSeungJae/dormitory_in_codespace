@@ -39,6 +39,13 @@ public class UserServiceExternal {
         return true;
     }
 
+    public void checkDeletedUserExistsOrThrow(Long userId){
+        Boolean exists=deletedUserRepository.existsById(userId);
+        if(!exists){
+            throw new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound, "DeletedUser를 찾지 못했습니다."));
+        }
+    }
+
     public String getUserEmail(Long userId){
         User user=userRepository.findById(userId).orElse(null);
         if(user==null){
@@ -108,7 +115,6 @@ public class UserServiceExternal {
 
         return responseDTO;
     }
-    
     public User getDeletedVirtualUserFromOrphanComment(Long commentId){
         OrphanComment orphanComment=commentService.getOrphanComment(commentId);
         Long userId=orphanComment.getDeletedUser().getId();
