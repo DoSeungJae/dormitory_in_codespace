@@ -172,7 +172,7 @@ function ArticlePage(){
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
                     <div className="comment-item-header">
-                      {comment.user ? comment.user.nickName : "알 수 없음"}
+                      {comment.user.nickname ? comment.user.nickName : "알 수 없음"}
                       <CommentMenu
                         rootCommentId={comment.id}
                         setRootCommentId={setCommentId}
@@ -192,7 +192,7 @@ function ArticlePage(){
                     {comment.replyComments && comment.replyComments.map((reply, replyIndex) => (
                     <div key={replyIndex} className="comment-item reply">
                         <div className="comment-item-header">
-                            {reply.user ? reply.user.nickName : "알 수 없음"}
+                            {reply.user.nickName ? reply.user.nickName : "알 수 없음"}
                             <CommentMenu
                               isForReply={1}
                               writerId={reply.user ? reply.user.id : 0}
