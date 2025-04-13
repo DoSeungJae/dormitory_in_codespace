@@ -157,6 +157,7 @@ public class CommentServiceExternalTest {
         assertEquals(comment4, savedOrphanComments.get(3).getComment());
         assertEquals(deletedUser, savedOrphanComments.get(3).getDeletedUser());
         assertEquals(article,savedOrphanComments.get(3).getArticle());
+        
 
 
     }
