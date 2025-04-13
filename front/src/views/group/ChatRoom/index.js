@@ -51,25 +51,30 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
 
   const handleMessages = (initialMessages) => {
     const messages = initialMessages.filter((message) => {
-      return (message.messageType === "CLIENT") || (message.message.startsWith("participatedInGroup:"))
+      return (message.messageType === "CLIENT") || 
+        (message.message.startsWith("participatedInGroup:")) ||
+        (message.message.startsWith("leftGroup:"))
     });
     return messages.map((currentMessage, index) => {
       const isServerMessage = currentMessage.messageType === "SERVER";
       const isSender = currentMessage.username === username;
       const previousMessage = messages[index-1];
       const nextMessage = messages[index+1];
-      const dateEqualWithPrevious = (previousMessage !== undefined) && dateEqual(currentMessage.createdTime, previousMessage.createdTime);
-      const usernameEqualWithPrevious = (previousMessage !== undefined) && (currentMessage.username === previousMessage.username);
-      const minuteEqualWithPrevious = (previousMessage !== undefined) && minuteEqual(currentMessage.createdTime, previousMessage.createdTime);
-      const minuteEqualWithNext = (nextMessage !== undefined) && minuteEqual(currentMessage.createdTime, nextMessage.createdTime);
-      const usernameEqualWithNext = (nextMessage !== undefined) && (currentMessage.username === nextMessage.username);
+      const dateEqualToPrevious = (previousMessage !== undefined) && dateEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const usernameEqualToPrevious = (previousMessage !== undefined) && (currentMessage.username === previousMessage.username);
+      const minuteEqualToPrevious = (previousMessage !== undefined) && minuteEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const minuteEqualToNext = (nextMessage !== undefined) && minuteEqual(currentMessage.createdTime, nextMessage.createdTime);
+      const usernameEqualToNext = (nextMessage !== undefined) && (currentMessage.username === nextMessage.username);
+      const inGroup = currentMessage.message.startsWith("participatedInGroup:");
       return {
         ...currentMessage,
-        message: (isServerMessage)?(currentMessage.message.slice(20)+" 님이 참여하였습니다."):(currentMessage.message),
+        message: (isServerMessage)?
+          (inGroup?(currentMessage.message.slice(20)+" 님이 참여하였습니다."):(currentMessage.message.slice(10)+" 님이 퇴장하였습니다.")):
+          (currentMessage.message),
         isSender: isSender,
-        showDate: !dateEqualWithPrevious,
-        showName: !(isServerMessage || isSender || (usernameEqualWithPrevious && minuteEqualWithPrevious)),
-        showTime: !(isServerMessage || (usernameEqualWithNext && minuteEqualWithNext)),
+        showDate: !dateEqualToPrevious,
+        showName: !(isServerMessage || isSender || (usernameEqualToPrevious && minuteEqualToPrevious)),
+        showTime: !(isServerMessage || (usernameEqualToNext && minuteEqualToNext)),
         profileImage: profileImageByNickname(currentMessage.username),
       }
     })
