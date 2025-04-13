@@ -18,7 +18,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.DormitoryBack.domain.article.comment.domain.entity.OrphanComment;
+import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
+import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.DeletedUserRepository;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +36,12 @@ public class UserServiceExternalTest {
 
     @Mock
     private EncryptedEmailService encryptedEmailService;
+
+    @Mock
+    private DeletedUserRepository deletedUserRepository;
+
+    @Mock
+    private CommentService commentService;
 
 
     @BeforeEach
@@ -253,5 +263,46 @@ public class UserServiceExternalTest {
         verify(userRepository,times(1)).findByNickName(invalidUserNickname);
     }
 
+    @Test
+    public void testGetDeletedVirtualUserFromOrphanComment(){
+        Long commentId=10L;
+        Long userId=1L;
+  
+        DeletedUser deletedUser=DeletedUser.builder()
+            .id(userId)
+            .build();
+        
+        User expectedvirtualUser=User.builder()
+            .id(userId)
+            .encryptedEmail("-")
+            .passWord("-")
+            .nickName(null)
+            .dormId(null)
+            .provider(null)
+            .imageName(null)
+            .role(null)
+            .build();
+
+        OrphanComment orphanComment=OrphanComment.builder()
+            .id(commentId)
+            .deletedUser(deletedUser)
+            .article(null)
+            .build();
+
+        when(commentService.getOrphanComment(commentId)).thenReturn(orphanComment);
+        when(deletedUserRepository.findById(userId)).thenReturn(Optional.of(deletedUser));
+
+        User actualvirtualUser=userService.getDeletedVirtualUserFromOrphanComment(commentId);
+        assertEquals(expectedvirtualUser.getId(), actualvirtualUser.getId());
+        assertEquals(expectedvirtualUser.getEncryptedEmail(), actualvirtualUser.getEncryptedEmail());
+        assertEquals(expectedvirtualUser.getPassWord(), actualvirtualUser.getPassWord());
+        assertEquals(expectedvirtualUser.getNickName(), actualvirtualUser.getNickName());
+        assertEquals(expectedvirtualUser.getDormId(), actualvirtualUser.getDormId());
+        assertEquals(expectedvirtualUser.getProvider(), actualvirtualUser.getProvider());
+        assertEquals(expectedvirtualUser.getImageName(), actualvirtualUser.getImageName());
+        assertEquals(expectedvirtualUser.getRole(), actualvirtualUser.getRole());
+        verify(commentService,times(1)).getOrphanComment(commentId);
+        verify(deletedUserRepository,times(1)).findById(userId);
+    }
 
 }
