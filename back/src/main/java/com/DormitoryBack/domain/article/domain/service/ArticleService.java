@@ -92,16 +92,9 @@ public class ArticleService {
             throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
         }
         User user=userRepository.findById(article.getUserId()).orElse(null);
-        Long userId;
-        String userNickname;
-        if(user==null){
-            userId=null;
-            userNickname=null;
-        }
-        else{
-            userId=user.getId();
-            userNickname=user.getNickName();
-        }
+        Long userId=article.getUserId();
+        String userNickname=(user==null) ? null : user.getNickName();
+
         UserResponseDTO userDTO=UserResponseDTO.builder()
             .id(userId)
             .nickName(userNickname)
