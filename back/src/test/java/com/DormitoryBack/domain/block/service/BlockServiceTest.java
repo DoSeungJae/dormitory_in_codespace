@@ -1,5 +1,6 @@
 package com.DormitoryBack.domain.block.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -51,10 +52,12 @@ public class BlockServiceTest {
         when(tokenProvider.validateToken(token)).thenReturn(true);
         when(tokenProvider.getUserIdFromToken(token)).thenReturn(blockerId);
         when(userService.isUserExist(blockedUserId)).thenReturn(true);
+        
 
         blockService.block(token, blockedUserId);
 
         verify(blockRepository,times(1)).save(any(Block.class));
+        assertDoesNotThrow(()->userService.checkDeletedUserExistsOrThrow(blockedUserId));
     }
 
     @Test
