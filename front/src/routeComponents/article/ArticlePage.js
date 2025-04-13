@@ -132,8 +132,6 @@ function ArticlePage(){
       setCommentsAltered(0);
     },[commentsAltered])
 
-
-
     if(selectComponentIndex!==5){
       return null;
     }
@@ -172,7 +170,7 @@ function ArticlePage(){
                   {commentList && commentList.map((comment, index) => (
                   <div key={index} className="comment-item">
                     <div className="comment-item-header">
-                      {comment.user.nickname ? comment.user.nickName : "알 수 없음"}
+                      {comment.user.nickName ? comment.user.nickName : "알 수 없음"}
                       <CommentMenu
                         rootCommentId={comment.id}
                         setRootCommentId={setCommentId}
