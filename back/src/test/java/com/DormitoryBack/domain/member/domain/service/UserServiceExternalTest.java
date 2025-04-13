@@ -335,4 +335,24 @@ public class UserServiceExternalTest {
         verify(deletedUserRepository,times(1)).findById(userId);
     }
 
+    @Test
+    public void testCheckDeletedUserExistsOrThrow_Success(){
+        Long validUserId=1L;
+        when(deletedUserRepository.existsById(validUserId)).thenReturn(true);
+        userService.checkDeletedUserExistsOrThrow(validUserId);
+        verify(deletedUserRepository,times(1)).existsById(validUserId);
+    }
+
+    @Test
+    public void testCheckDeletedUserExistsOrThrow_EntityNotFoundException(){
+        Long invalidUserId=2L;
+        when(deletedUserRepository.existsById(invalidUserId)).thenReturn(false);
+        EntityNotFoundException exception=assertThrows(EntityNotFoundException.class, ()->{
+            userService.checkDeletedUserExistsOrThrow(invalidUserId);
+        });
+        assertEquals("DeletedUser를 찾지 못했습니다.", exception.getErrorInfo().getErrorMessage());
+        assertEquals(ErrorType.EntityNotFound, exception.getErrorInfo().getErrorType());
+        verify(deletedUserRepository,times(1)).existsById(invalidUserId);
+    }
+
 }
