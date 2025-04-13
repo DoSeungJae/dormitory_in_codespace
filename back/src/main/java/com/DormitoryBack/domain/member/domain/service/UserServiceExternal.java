@@ -1,11 +1,19 @@
 package com.DormitoryBack.domain.member.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import com.DormitoryBack.domain.article.comment.domain.entity.OrphanComment;
+import com.DormitoryBack.domain.article.comment.domain.service.CommentService;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
+import com.DormitoryBack.domain.member.domain.repository.DeletedUserRepository;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.exception.ErrorInfo;
+import com.DormitoryBack.exception.ErrorType;
+import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 
 @Service
 public class UserServiceExternal {
@@ -14,7 +22,14 @@ public class UserServiceExternal {
     private UserRepository userRepository;
 
     @Autowired
+    private DeletedUserRepository deletedUserRepository;
+
+    @Autowired
     private EncryptedEmailService encryptedEmailService; 
+
+    @Autowired
+    @Lazy //circular reference가 해결되긴함...
+    private CommentService commentService;
 
     public Boolean isUserExist(Long userId){
         User user=userRepository.findById(userId).orElse(null); //repository에 새로운 메서드 선언 후 리펙터링해야함
@@ -93,6 +108,26 @@ public class UserServiceExternal {
 
         return responseDTO;
     }
+    
+    public User getDeletedVirtualUserFromOrphanComment(Long commentId){
+        OrphanComment orphanComment=commentService.getOrphanComment(commentId);
+        Long userId=orphanComment.getDeletedUser().getId();
+        
+        DeletedUser deletedUser=deletedUserRepository
+            .findById(userId)
+            .orElseThrow(()->new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound, "DeletedUser를 찾지 못했습니다.")));
 
-
+        User user=User.builder()
+            .id(deletedUser.getId())
+            .encryptedEmail("-")
+            .passWord("-")
+            .nickName(null)
+            .dormId(null)
+            .provider(null)
+            .imageName(null)
+            .role(null)
+            .build();
+            
+        return user;
+    }
 }
