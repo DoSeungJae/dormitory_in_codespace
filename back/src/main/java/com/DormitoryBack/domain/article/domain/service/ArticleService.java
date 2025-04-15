@@ -280,7 +280,7 @@ public class ArticleService {
     
     public ArticlePreviewDTO makeArticlePreviewDTO(Article article, String token){
         Long articleId=article.getId();
-        Long numComments=commentService.getNumberOfComments(article,token);
+        Long numComments=commentService.getNumberOfComments(articleId,token);
         Long groupNumMembers=groupService.getNumberOfMembers(articleId);
         Long groupMaxCapacity;
         try{
