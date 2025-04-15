@@ -1,7 +1,7 @@
 package com.DormitoryBack.domain.article.comment.domain.entity;
 
-import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -29,8 +29,7 @@ public class OrphanComment {
     @JoinColumn(name="deleted_user_id")
     private DeletedUser deletedUser;
 
-    @ManyToOne
-    @JoinColumn(name="article_id")
-    private Article article;
+    @Column(name="article_id")
+    private Long articleId;
    
 }
