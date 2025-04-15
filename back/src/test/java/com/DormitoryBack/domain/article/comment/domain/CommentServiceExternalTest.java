@@ -121,17 +121,12 @@ public class CommentServiceExternalTest {
             .userId(user.getId())
             .build();
 
-        when(articleService.getRawArticle(comment1.getArticleId())).thenReturn(article);
-        when(articleService.getRawArticle(comment2.getArticleId())).thenReturn(article);
-        when(articleService.getRawArticle(comment3.getArticleId())).thenReturn(article);
-        when(articleService.getRawArticle(comment4.getArticleId())).thenReturn(article);
-    
+
         List<Comment> userComments=List.of(comment1, comment2, comment3, comment4);
 
         commentService.makeAllUserCommentsOrphans(deletedUser, user, userComments);
         
         int size=userComments.size();
-        verify(articleService, times(size)).getRawArticle(article.getId());
         ArgumentCaptor<OrphanComment> argumentCaptor=ArgumentCaptor.forClass(OrphanComment.class);
         verify(orphanCommentRepository,times(size)).save(argumentCaptor.capture());
 
@@ -141,22 +136,22 @@ public class CommentServiceExternalTest {
         assertEquals(1L, savedOrphanComments.get(0).getId());
         assertEquals(comment1, savedOrphanComments.get(0).getComment());
         assertEquals(deletedUser, savedOrphanComments.get(0).getDeletedUser());
-        assertEquals(article,savedOrphanComments.get(0).getArticle());
+        assertEquals(article.getId(),savedOrphanComments.get(0).getArticleId());
 
         assertEquals(2L, savedOrphanComments.get(1).getId());
         assertEquals(comment2, savedOrphanComments.get(1).getComment());
         assertEquals(deletedUser, savedOrphanComments.get(1).getDeletedUser());
-        assertEquals(article,savedOrphanComments.get(1).getArticle());
+        assertEquals(article.getId(),savedOrphanComments.get(1).getArticleId());
 
         assertEquals(3L, savedOrphanComments.get(2).getId());
         assertEquals(comment3, savedOrphanComments.get(2).getComment());
         assertEquals(deletedUser, savedOrphanComments.get(2).getDeletedUser());
-        assertEquals(article,savedOrphanComments.get(2).getArticle());
+        assertEquals(article.getId(),savedOrphanComments.get(2).getArticleId());
 
         assertEquals(4L, savedOrphanComments.get(3).getId());
         assertEquals(comment4, savedOrphanComments.get(3).getComment());
         assertEquals(deletedUser, savedOrphanComments.get(3).getDeletedUser());
-        assertEquals(article,savedOrphanComments.get(3).getArticle());
+        assertEquals(article.getId(),savedOrphanComments.get(3).getArticleId());
         
 
 
