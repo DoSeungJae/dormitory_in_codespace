@@ -9,10 +9,8 @@ import com.DormitoryBack.domain.article.domain.entity.Article;
 import com.DormitoryBack.domain.article.domain.repository.ArticleRepository;
 import com.DormitoryBack.domain.block.service.BlockService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
-import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
-import com.DormitoryBack.domain.member.domain.service.UserService;
 import com.DormitoryBack.domain.member.domain.service.UserServiceExternal;
 import com.DormitoryBack.domain.notification.constant.NotificationConstants;
 import com.DormitoryBack.domain.notification.dto.Notifiable;
@@ -152,23 +150,6 @@ public class CommentService {
         return isBlocked;
     }
 
-    public Long getNumberOfComments(Article article, String token){
-        List<Long> blockedIdList=blockService.getBlockedIdList(token);
-        List<Comment> commentList;
-        Long articleId=article.getId();
-        if(blockedIdList.size()==0){
-            commentList=commentRepository.findAllByArticleId(articleId);
-        }
-        else{
-            commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
-        }
-
-        int orphanCommentCount=orphanCommentRepository.countByArticle(article); //!
-        int size=commentList.size();
-        size+=orphanCommentCount;
-        return Long.valueOf(size);
-    }
-
     public Long getNumberOfComments(Long articleId, String token){
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         List<Comment> commentList;
@@ -178,7 +159,6 @@ public class CommentService {
         else{
             commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
         }
-
         int size=commentList.size();
         return Long.valueOf(size);
     }
