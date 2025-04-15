@@ -39,6 +39,14 @@ public class UserServiceExternal {
         return true;
     }
 
+    public Boolean isDeletedUserExist(Long userId){
+        DeletedUser deletedUser=deletedUserRepository.findById(userId).orElse(null);
+        if(deletedUser==null){
+            return false;
+        }
+        return true;
+    }
+
     public void checkDeletedUserExistsOrThrow(Long userId){
         Boolean exists=deletedUserRepository.existsById(userId);
         if(!exists){
