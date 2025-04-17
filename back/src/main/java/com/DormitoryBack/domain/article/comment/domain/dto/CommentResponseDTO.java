@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CommentResponseDTO {
+    Long number;
     List<String> rootComments;
     List<String> replyComments;
 }
