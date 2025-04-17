@@ -144,7 +144,6 @@ public class ArticleService {
         }
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        //Page<Article> articlePage=articleRepository.findAllByDormId(dorId,pageable);
         Page<Article> articlePage=articleRepository.findByDormIdAndUserIdNotIn(dorId, blockedIdList, pageable);
         if(articlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
@@ -186,7 +185,7 @@ public class ArticleService {
             articleList=articleRepository.findAllById(idList);
         }
         else{
-            articleList=articleRepository.findByIdAndUserIdNotIn(idList,blockedIdList);
+            articleList=articleRepository.findByIdInAndUserIdNotIn(idList,blockedIdList);
         }
         int start=(int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), articleList.size());
@@ -195,7 +194,7 @@ public class ArticleService {
         }
         List<Article> pagedArticleList = articleList.subList(start,end);
         if(pagedArticleList.isEmpty() && page==0){
-            throw new RuntimeException("ArticleNotFound");
+            throw new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound,  "사용자가 댓글을 단 글을 찾을 수 없습니다."));
         }
         Page<Article> userCommentedArticlePage=new PageImpl<>(pagedArticleList, pageable, pagedArticleList.size()); 
         List<ArticlePreviewDTO> userCommentedArticlePreviewList=this.makeArticlePreviewDTOList(userCommentedArticlePage, token);
