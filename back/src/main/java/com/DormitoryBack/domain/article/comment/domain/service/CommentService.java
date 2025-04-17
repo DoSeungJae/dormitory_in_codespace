@@ -124,8 +124,9 @@ public class CommentService {
             }
         }
         
-        CommentResponseDTO responseDTO=CommentResponseDTO
-                .builder()
+        Long size=Long.valueOf(rootComments.size()+replyComments.size());
+        CommentResponseDTO responseDTO=CommentResponseDTO.builder()
+                .number(size)
                 .rootComments(listStringify(rootComments))
                 .replyComments(listStringify(replyComments))
                 .build();
@@ -150,6 +151,7 @@ public class CommentService {
         return isBlocked;
     }
 
+    /*
     public Long getNumberOfComments(Long articleId, String token){
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         List<Comment> commentList;
@@ -158,9 +160,16 @@ public class CommentService {
         }
         else{
             commentList=commentRepository.findByArticleIdExcludingBlockedComments(articleId, blockedIdList);
+            //여기서 orphan count? 
         }
         int size=commentList.size();
         return Long.valueOf(size);
+    }
+    */
+
+    public Long getNumberOfComments(Long articleId, String token){
+        CommentResponseDTO dto=getArticleComments(articleId, token);
+        return dto.getNumber();
     }
 
     public List<Long> getUserCommentedArticleIds(Long userId){
