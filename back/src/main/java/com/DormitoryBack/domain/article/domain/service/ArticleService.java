@@ -318,11 +318,4 @@ public class ArticleService {
         return articlePreviewDTO;
     }
 
-    public Article getRawArticle(Long articleId){
-        Article article=articleRepository
-            .findById(articleId)
-            .orElseThrow(()->new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound, "Article을 찾을 수 없습니다.")));
-
-        return article;
-    }
 }
