@@ -44,7 +44,7 @@ const GroupStartButton = ({articleId}) => {
   const handleSWalGroupFinish = async () => {
     Swal.fire({
       title:"그룹을 종료할까요?",
-      text: "",
+      text: "그룹이 사라져요.",
       confirmButtonColor:"#FF8C00",
       confirmButtonText:"종료하기",
       cancelButtonText:"취소",

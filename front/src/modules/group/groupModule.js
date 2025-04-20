@@ -50,7 +50,7 @@ export const closeGroup = async (groupId,setGroupState) => {
 export const handleSWalGroupClose = async (groupId, setGroupState) => {
   Swal.fire({
     title:"그룹을 마감할까요?",
-    text: "마감되면 참여 혹은 퇴장이 불가능해요.",
+    text: "마감되면 더이상 참여가 불가능해요.",
     confirmButtonColor:"#FF8C00",
     confirmButtonText:"마감하기",
     cancelButtonText:"취소",
