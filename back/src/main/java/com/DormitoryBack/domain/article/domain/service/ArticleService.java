@@ -122,9 +122,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getAllArticlesWithinPage(int page, int size, String token){
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         Pageable pageable= PageRequest.of(page,size, Sort.by("createdTime").descending());
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Page<Article> articlePage=articleRepository.findByUserIdNotIn(blockedIdList, pageable);
@@ -139,9 +137,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getDormArticlesWithinPage(Long dorId,int page,int size, String token){
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
         Page<Article> articlePage=articleRepository.findByDormIdAndUserIdNotIn(dorId, blockedIdList, pageable);
@@ -156,9 +152,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getUserArticlesWithinPage(int page, int size, String token) {
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         Long userId=tokenProvider.getUserIdFromToken(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
         Page<Article> userArticlePage=articleRepository.findAllByUserId(userId,pageable);
@@ -173,9 +167,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getUserCommentedArticlesWithinPage(int page, int size, String token) {
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         Long userId=tokenProvider.getUserIdFromToken(token);
         List<Long> idList=commentService.getUserCommentedArticleIds(userId);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
