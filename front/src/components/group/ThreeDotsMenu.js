@@ -40,6 +40,7 @@ const ThreeDotsMenu = ({isHostParam,groupParam,hostNickNameParam,myNickName,grou
     5:"푸름2",
     6:"푸름3",
     7:"푸름4",
+    8:"상관없음",
   }
 
   const DropDownMenuItems = ({}) => {

@@ -17,7 +17,7 @@ function HomePage() {
   }
   
   const getArticlesPerPage = async (page) => {
-    if(!(dorId>=1 || dorId<=7)){
+    if(!(dorId>=1 || dorId<=8)){
       return;
     }
     let path;
@@ -105,7 +105,8 @@ function HomePage() {
     "푸름1": 4,
     "푸름2": 5,
     "푸름3": 6,
-    "푸름4": 7
+    "푸름4": 7,
+    "상관없음":8
   };
 
 return (
@@ -115,7 +116,7 @@ return (
     
     <main className="App-main">
       <div className="slide-menu no_scroll">
-        {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
+        {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4', '상관없음'].map((item, i) => {
           const dorItemStyle=calculateDorItemStyle(dorId-1,i);
           return (
             <div 
