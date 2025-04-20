@@ -155,7 +155,7 @@ public class TokenProvider  {
             
             return ;
         }catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e){
-            throw new com.DormitoryBack.domain.jwt.exception.JwtException(new ErrorInfo(ErrorType.InvalidToken, "유효하지 않은 토큰입니다."));
+            throw new com.DormitoryBack.domain.jwt.exception.JwtException(new ErrorInfo(ErrorType.InvalidToken, "로그인 정보가 유효하지 않습니다."));
         }
     }
 
