@@ -18,7 +18,7 @@ public class XSSFilterTest {
     @Test
     public void testFilterXSS(){
         String unsafeHtml="<script>alert('XSS')</script><b>안전한 텍스트</b> 일반 텍스트";
-        String safeHtml=XSSFilter.filterXSS(unsafeHtml);
+        String safeHtml=XSSFilter.filter(unsafeHtml);
 
         assertFalse(safeHtml.contains("<script>"));
         assertFalse(safeHtml.contains("</script>"));
