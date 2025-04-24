@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "messages")
 @Builder
 @Getter
-@Setter
 @Entity
 @Data
 @NoArgsConstructor
@@ -27,6 +26,10 @@ public class Message {
     private String message;
     private LocalDateTime createdTime;
 
+    public void setSafeContent(String safeContent){
+        this.message=safeContent;
+    }
+    
     public String toJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

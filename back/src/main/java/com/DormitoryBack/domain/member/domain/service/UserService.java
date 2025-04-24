@@ -26,6 +26,7 @@ import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.crypt.PIEncryptor;
 import com.DormitoryBack.module.crypt.PasswordEncryptor;
+import com.DormitoryBack.module.xssFilter.XSSFilter;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -150,10 +151,12 @@ public class UserService {
     public void makeNewUser(UserRequestDTO dto) {
         String encryptedEmail;
         String email=dto.getMail();
-        String nickname=dto.getNickName();
         Long dormId=dto.getDormId();
         ProviderType provider=dto.getProvider();
 
+        String rawNickname=dto.getNickName();
+        String safeNickname=XSSFilter.filter(rawNickname);
+        
         if(email==null){
             throw new IllegalArgumentException("EmailOmitted");
         }
@@ -163,7 +166,7 @@ public class UserService {
             return ;
         }
         User existingUserMailWithProvider = userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider);
-        User existingUserNick = userRepository.findByNickName(nickname);
+        User existingUserNick = userRepository.findByNickName(safeNickname);
         if (existingUserMailWithProvider != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
             //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
@@ -181,7 +184,7 @@ public class UserService {
         User user = User.builder()
                 .encryptedEmail(encryptedEmail)
                 .passWord(encryptedPassword) 
-                .nickName(nickname)
+                .nickName(safeNickname)
                 .dormId(dormId)
                 .provider(provider)
                 .role(RoleType.ROLE_USER)

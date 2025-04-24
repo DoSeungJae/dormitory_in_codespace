@@ -20,6 +20,8 @@ import com.DormitoryBack.exception.ErrorInfo;
 import com.DormitoryBack.exception.ErrorType;
 import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 import com.DormitoryBack.module.TimeOptimizer;
+import com.DormitoryBack.module.xssFilter.XSSFilter;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -195,11 +197,13 @@ public class CommentService {
         User userData=userRepository.findById(userId).orElse(null);
         Article article=articleRepository.findById(dto.getArticleId()).orElse(null);
 
+        String rawContent=dto.getContent();
+        String safeContent=XSSFilter.filter(rawContent);
+
         Comment newComment=Comment.builder()
                 .articleId(article.getId())
                 .user(userData)
-                .content(dto.getContent())
-                //.createdTime(LocalDateTime.now())
+                .content(safeContent)
                 .createdTime(TimeOptimizer.now())
                 .isUpdated(false)
                 .build();
@@ -234,6 +238,10 @@ public class CommentService {
         User userData=userRepository.findById(userId).orElse(null);
         Comment rootComment=commentRepository.findById(dto.getRootCommentId()).orElse(null);
         Article rootArticle=articleRepository.findById(rootComment.getArticleId()).orElse(null);
+
+        String rawContent=dto.getContent();
+        String safeContent=XSSFilter.filter(rawContent);
+
         if(rootComment==null){
             throw new RuntimeException("CommentNotFound");
         }
@@ -247,12 +255,9 @@ public class CommentService {
         Comment newReply=Comment.builder()
                 .articleId(rootArticle.getId())
                 .user(userData)
-                .content(dto.getContent())
-                //.createdTime(LocalDateTime.now())
+                .content(safeContent)
                 .createdTime(TimeOptimizer.now())
                 .build();
-
-
 
         rootComment.addReplyComment(newReply);
         Comment savedReply=commentRepository.save(newReply);
@@ -308,7 +313,12 @@ public class CommentService {
         if(comment.getUser().getId()!=tokenProvider.getUserIdFromToken(token)){
             throw new RuntimeException("NoPermission");
         }
+
+        String rawContent=dto.getContent();
+        String safeContent=XSSFilter.filter(rawContent);
+        dto.setSafeContent(safeContent);
         comment.update(dto);
+        
         Comment saved=commentRepository.save(comment);
 
         return saved;

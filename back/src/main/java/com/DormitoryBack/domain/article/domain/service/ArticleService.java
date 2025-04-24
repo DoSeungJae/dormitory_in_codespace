@@ -32,6 +32,8 @@ import com.DormitoryBack.exception.ErrorInfo;
 import com.DormitoryBack.exception.ErrorType;
 import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 import com.DormitoryBack.module.TimeOptimizer;
+import com.DormitoryBack.module.xssFilter.XSSFilter;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,12 +72,18 @@ public class ArticleService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
+        String rawContent=dto.getContentHTML();
+        String safeContent=XSSFilter.filter(rawContent);
+        
+        String rowTitle=dto.getTitle();
+        String safeTitle=XSSFilter.filter(rowTitle);
+
         Long userId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(userId).orElse(null);
         Article newArticle = Article.builder()
                 .dormId(dto.getDormId())
-                .title(dto.getTitle())
-                .contentHTML(dto.getContentHTML())
+                .title(safeTitle)
+                .contentHTML(safeContent)
                 .category(dto.getCategory())
                 .createdTime(TimeOptimizer.now())
                 .usrId(user) //리펙터링 필요하지 않나.
@@ -220,13 +228,17 @@ public class ArticleService {
         Query query=new Query(Criteria.where("_id").is(articleId));
         Update update=new Update();
 
-        String newTitle=dto.getTitle();
-        if(newTitle!=null){
-            update.set("title", newTitle);
+        String newRawTitle=dto.getTitle();
+        String newSafeTitle=XSSFilter.filter(newRawTitle);
+
+        if(newSafeTitle!=null){
+            update.set("title", newSafeTitle);
         }
-        String newContentHTML=dto.getContentHTML();
-        if(newContentHTML!=null){
-            update.set("contentHTML",newContentHTML);
+        String newRawContentHTML=dto.getContentHTML();
+        String newSafeContentHTML=XSSFilter.filter(newRawContentHTML);
+
+        if(newSafeContentHTML!=null){
+            update.set("contentHTML",newSafeContentHTML);
         }
         Long newDormId=dto.getDormId();
         if(newDormId!=null){
