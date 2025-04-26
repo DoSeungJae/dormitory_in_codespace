@@ -1,16 +1,24 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
 import { getSocketResponse } from '../../../service/group/socket';
-import TextAreaAutosize from 'react-textarea-autosize';
+import TextareaAutosize from 'react-textarea-autosize';
+import ProfileImageContext from '../../../components/common/ProfileImageContext';
+import userDefault from '../../../images/userDefault.png';
+import { getProfileImages } from '../../../modules/common/profileImageModule';
 
 function ChatRoom({ username, room, socketResponse, sendData }) {
-
 
   const [messageInput, setMessageInput] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [shouldScroll, setShouldScroll] = useState(false);
   const messagesRef = useRef(null);
+  const {profileImages, setProfileImages} = useContext(ProfileImageContext);
+
+  const profileImageByNickname = (nickname) => {
+    getProfileImages("NICKNAME", nickname, profileImages, setProfileImages);
+    return profileImages["NICKNAME"][nickname] || userDefault;
+  };
 
   const dateEqual = function (time1, time2) {
     const date1 = new Date(time1); 
@@ -43,25 +51,31 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
 
   const handleMessages = (initialMessages) => {
     const messages = initialMessages.filter((message) => {
-      return (message.messageType === "CLIENT") || (message.message.startsWith("participatedInGroup:"))
+      return (message.messageType === "CLIENT") || 
+        (message.message.startsWith("participatedInGroup:")) ||
+        (message.message.startsWith("leftGroup:"))
     });
     return messages.map((currentMessage, index) => {
       const isServerMessage = currentMessage.messageType === "SERVER";
       const isSender = currentMessage.username === username;
       const previousMessage = messages[index-1];
       const nextMessage = messages[index+1];
-      const dateEqualWithPrevious = (previousMessage !== undefined) && dateEqual(currentMessage.createdTime, previousMessage.createdTime);
-      const usernameEqualWithPrevious = (previousMessage !== undefined) && (currentMessage.username === previousMessage.username);
-      const minuteEqualWithPrevious = (previousMessage !== undefined) && minuteEqual(currentMessage.createdTime, previousMessage.createdTime);
-      const minuteEqualWithNext = (nextMessage !== undefined) && minuteEqual(currentMessage.createdTime, nextMessage.createdTime);
-      const usernameEqualWithNext = (nextMessage !== undefined) && (currentMessage.username === nextMessage.username);
+      const dateEqualToPrevious = (previousMessage !== undefined) && dateEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const usernameEqualToPrevious = (previousMessage !== undefined) && (currentMessage.username === previousMessage.username);
+      const minuteEqualToPrevious = (previousMessage !== undefined) && minuteEqual(currentMessage.createdTime, previousMessage.createdTime);
+      const minuteEqualToNext = (nextMessage !== undefined) && minuteEqual(currentMessage.createdTime, nextMessage.createdTime);
+      const usernameEqualToNext = (nextMessage !== undefined) && (currentMessage.username === nextMessage.username);
+      const inGroup = currentMessage.message.startsWith("participatedInGroup:");
       return {
         ...currentMessage,
-        message: (isServerMessage)?(currentMessage.message.slice(20)+" 님이 참여하였습니다."):(currentMessage.message),
+        message: (isServerMessage)?
+          (inGroup?(currentMessage.message.slice(20)+" 님이 참여하였습니다."):(currentMessage.message.slice(10)+" 님이 퇴장하였습니다.")):
+          (currentMessage.message),
         isSender: isSender,
-        showDate: !dateEqualWithPrevious,
-        showName: !(isSender || (usernameEqualWithPrevious && minuteEqualWithPrevious)),
-        showTime: !(isServerMessage || (usernameEqualWithNext && minuteEqualWithNext)),
+        showDate: !dateEqualToPrevious,
+        showName: !(isServerMessage || isSender || (usernameEqualToPrevious && minuteEqualToPrevious)),
+        showTime: !(isServerMessage || (usernameEqualToNext && minuteEqualToNext)),
+        profileImage: profileImageByNickname(currentMessage.username),
       }
     })
   };
@@ -94,7 +108,7 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
     <div className='App'>
       <div className='group-messages' id='group-messages' ref={messagesRef}>
         {
-          messageList.map(({id, isSender, username, messageType, message, createdTime, showDate, showName, showTime}) => {
+          messageList.map(({id, isSender, username, messageType, message, createdTime, showDate, showName, showTime, profileImage}) => {
             return <ChatBubble
               key={id} 
               isSender={isSender}
@@ -105,6 +119,7 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
               showDate={showDate}
               showName={showName}
               showTime={showTime}
+              profileImage={profileImage}
             />
           })
         }
