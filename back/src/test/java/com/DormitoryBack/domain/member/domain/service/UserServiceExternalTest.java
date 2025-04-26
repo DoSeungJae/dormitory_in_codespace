@@ -288,7 +288,7 @@ public class UserServiceExternalTest {
         OrphanComment orphanComment=OrphanComment.builder()
             .id(commentId)
             .deletedUser(deletedUser)
-            .article(null)
+            //.article(null)
             .build();
 
         when(commentService.getOrphanComment(commentId)).thenReturn(orphanComment);
@@ -319,7 +319,7 @@ public class UserServiceExternalTest {
         OrphanComment orphanComment=OrphanComment.builder()
             .id(commentId)
             .deletedUser(deletedUser)
-            .article(null)
+            //.article(null)
             .build();
 
         when(commentService.getOrphanComment(commentId)).thenReturn(orphanComment);
