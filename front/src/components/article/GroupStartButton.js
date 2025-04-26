@@ -12,9 +12,9 @@ const GroupStartButton = ({articleId}) => {
   const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   const token = localStorage.getItem("token");
   //0: 시작대기, 1: 진행중, -1:마감됨, -2:종료됨
-  const defaultColor = '#FF8C00';
+  const defaultColor = '#FDAA5A';
   const [isBlur, setIsBlur]=useState(0);
-  const bgColor = isBlur ? 'rgba(255, 140, 0, 0.6)' : defaultColor;
+  const bgColor = isBlur ? 'rgba(253, 170, 90, 0.6)' : defaultColor;
   
   const handleBlurStyle = () => {
     if(groupState==-1 || groupState==-2){
@@ -44,7 +44,7 @@ const GroupStartButton = ({articleId}) => {
   const handleSWalGroupFinish = async () => {
     Swal.fire({
       title:"그룹을 종료할까요?",
-      text: "",
+      text: "그룹이 사라져요.",
       confirmButtonColor:"#FF8C00",
       confirmButtonText:"종료하기",
       cancelButtonText:"취소",

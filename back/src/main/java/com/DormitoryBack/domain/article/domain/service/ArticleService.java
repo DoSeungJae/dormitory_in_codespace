@@ -28,7 +28,12 @@ import com.DormitoryBack.domain.jwt.TokenProvider;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
+import com.DormitoryBack.exception.ErrorInfo;
+import com.DormitoryBack.exception.ErrorType;
+import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 import com.DormitoryBack.module.TimeOptimizer;
+import com.DormitoryBack.module.xssFilter.XSSFilter;
+
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,12 +72,18 @@ public class ArticleService {
         if(!tokenProvider.validateToken(token)){
             throw new JwtException("유효하지 않은 토큰입니다.");
         }
+        String rawContent=dto.getContentHTML();
+        String safeContent=XSSFilter.filter(rawContent);
+        
+        String rowTitle=dto.getTitle();
+        String safeTitle=XSSFilter.filter(rowTitle);
+
         Long userId=tokenProvider.getUserIdFromToken(token);
         User user=userRepository.findById(userId).orElse(null);
         Article newArticle = Article.builder()
                 .dormId(dto.getDormId())
-                .title(dto.getTitle())
-                .contentHTML(dto.getContentHTML())
+                .title(safeTitle)
+                .contentHTML(safeContent)
                 .category(dto.getCategory())
                 .createdTime(TimeOptimizer.now())
                 .usrId(user) //리펙터링 필요하지 않나.
@@ -89,16 +100,9 @@ public class ArticleService {
             throw new IllegalArgumentException("존재하지 않는 글 번호입니다.");
         }
         User user=userRepository.findById(article.getUserId()).orElse(null);
-        Long userId;
-        String userNickname;
-        if(user==null){
-            userId=null;
-            userNickname=null;
-        }
-        else{
-            userId=user.getId();
-            userNickname=user.getNickName();
-        }
+        Long userId=article.getUserId();
+        String userNickname=(user==null) ? null : user.getNickName();
+
         UserResponseDTO userDTO=UserResponseDTO.builder()
             .id(userId)
             .nickName(userNickname)
@@ -126,9 +130,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getAllArticlesWithinPage(int page, int size, String token){
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         Pageable pageable= PageRequest.of(page,size, Sort.by("createdTime").descending());
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Page<Article> articlePage=articleRepository.findByUserIdNotIn(blockedIdList, pageable);
@@ -143,12 +145,9 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getDormArticlesWithinPage(Long dorId,int page,int size, String token){
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        //Page<Article> articlePage=articleRepository.findAllByDormId(dorId,pageable);
         Page<Article> articlePage=articleRepository.findByDormIdAndUserIdNotIn(dorId, blockedIdList, pageable);
         if(articlePage.isEmpty() && page==0){
             throw new RuntimeException("ArticleNotFound");
@@ -161,9 +160,7 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getUserArticlesWithinPage(int page, int size, String token) {
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         Long userId=tokenProvider.getUserIdFromToken(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
         Page<Article> userArticlePage=articleRepository.findAllByUserId(userId,pageable);
@@ -178,15 +175,18 @@ public class ArticleService {
     }
 
     public List<ArticlePreviewDTO> getUserCommentedArticlesWithinPage(int page, int size, String token) {
-        if(!tokenProvider.validateToken(token)){
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        }
+        tokenProvider.validateTokenOrThrow(token);
         Long userId=tokenProvider.getUserIdFromToken(token);
         List<Long> idList=commentService.getUserCommentedArticleIds(userId);
-        List<Long> blockedIdList=blockService.getBlockedIdList(token);
         Pageable pageable=PageRequest.of(page,size,Sort.by("createdTime").descending());
-        //List<Article> articleList=articleRepository.findAllById(idList);
-        List<Article> articleList=articleRepository.findByIdAndUserIdNotIn(idList,blockedIdList);
+        List<Long> blockedIdList=blockService.getBlockedIdList(token);
+        List<Article> articleList=new ArrayList<>();
+        if(blockedIdList.size()==0){
+            articleList=articleRepository.findAllById(idList);
+        }
+        else{
+            articleList=articleRepository.findByIdInAndUserIdNotIn(idList,blockedIdList);
+        }
         int start=(int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), articleList.size());
         if(start>end){ //start와 end가 같은 경우?
@@ -194,7 +194,7 @@ public class ArticleService {
         }
         List<Article> pagedArticleList = articleList.subList(start,end);
         if(pagedArticleList.isEmpty() && page==0){
-            throw new RuntimeException("ArticleNotFound");
+            throw new EntityNotFoundException(new ErrorInfo(ErrorType.EntityNotFound,  "사용자가 댓글을 단 글을 찾을 수 없습니다."));
         }
         Page<Article> userCommentedArticlePage=new PageImpl<>(pagedArticleList, pageable, pagedArticleList.size()); 
         List<ArticlePreviewDTO> userCommentedArticlePreviewList=this.makeArticlePreviewDTOList(userCommentedArticlePage, token);
@@ -228,13 +228,17 @@ public class ArticleService {
         Query query=new Query(Criteria.where("_id").is(articleId));
         Update update=new Update();
 
-        String newTitle=dto.getTitle();
-        if(newTitle!=null){
-            update.set("title", newTitle);
+        String newRawTitle=dto.getTitle();
+        String newSafeTitle=XSSFilter.filter(newRawTitle);
+
+        if(newSafeTitle!=null){
+            update.set("title", newSafeTitle);
         }
-        String newContentHTML=dto.getContentHTML();
-        if(newContentHTML!=null){
-            update.set("contentHTML",newContentHTML);
+        String newRawContentHTML=dto.getContentHTML();
+        String newSafeContentHTML=XSSFilter.filter(newRawContentHTML);
+
+        if(newSafeContentHTML!=null){
+            update.set("contentHTML",newSafeContentHTML);
         }
         Long newDormId=dto.getDormId();
         if(newDormId!=null){
@@ -265,6 +269,7 @@ public class ArticleService {
             throw new RuntimeException("ArticleWithAProceedingGroupCannotBeDeleted");
         } 
         articleRepository.delete(target);
+        commentService.deleteAllRootComemntsInArticle(articleId);
     }
 
     public List<ArticlePreviewDTO> makeArticlePreviewDTOList(Page<Article> articlePage, String token){
@@ -315,4 +320,5 @@ public class ArticleService {
 
         return articlePreviewDTO;
     }
+
 }

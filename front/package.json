@@ -24,6 +24,7 @@
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
+    "react-pull-to-refresh": "^2.0.1",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
     "react-textarea-autosize": "^8.5.9",

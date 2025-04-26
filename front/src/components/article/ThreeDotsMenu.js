@@ -121,11 +121,11 @@ const ThreeDotsMenu = ({isWriterParam,articleParam,commentParam,setCommentsAlter
       target=articleParam;
     }
     targetUserId=target.user.id;
-
     const path=`${process.env.REACT_APP_HTTP_API_URL}/block/${targetUserId}`;
     const headers={"Authorization":`${token}`};
+
     try{
-      axios.post(path,{},{headers});
+      await axios.post(path,{},{headers});
       window.location.reload();
     }catch(error){
       console.error(error);

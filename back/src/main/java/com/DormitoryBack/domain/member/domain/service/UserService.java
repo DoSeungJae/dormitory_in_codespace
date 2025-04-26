@@ -1,8 +1,15 @@
 package com.DormitoryBack.domain.member.domain.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.DormitoryBack.domain.article.comment.domain.entity.Comment;
+import com.DormitoryBack.domain.article.comment.domain.service.CommentServiceExternal;
 import com.DormitoryBack.domain.auth.oauth.domain.enums.ProviderType;
 import com.DormitoryBack.domain.group.domain.service.GroupService;
 import com.DormitoryBack.domain.jwt.TokenProvider;
@@ -10,13 +17,16 @@ import com.DormitoryBack.domain.member.domain.dto.PasswordInitDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserLogInDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserRequestDTO;
 import com.DormitoryBack.domain.member.domain.dto.UserResponseDTO;
+import com.DormitoryBack.domain.member.domain.entity.DeletedUser;
 import com.DormitoryBack.domain.member.domain.entity.User;
 import com.DormitoryBack.domain.member.domain.enums.DuplicatedType;
 import com.DormitoryBack.domain.member.domain.enums.RoleType;
+import com.DormitoryBack.domain.member.domain.repository.DeletedUserRepository;
 import com.DormitoryBack.domain.member.domain.repository.UserRepository;
 import com.DormitoryBack.domain.member.restriction.domain.service.RestrictionService;
 import com.DormitoryBack.module.crypt.PIEncryptor;
 import com.DormitoryBack.module.crypt.PasswordEncryptor;
+import com.DormitoryBack.module.xssFilter.XSSFilter;
 
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +57,12 @@ public class UserService {
 
     @Autowired
     private RestrictionService restrictionService;
+
+    @Autowired
+    private DeletedUserRepository deletedUserRepository;
+
+    @Autowired
+    private CommentServiceExternal commentService;
 
     /*constructor 문제 때문에 일시적으로 주석 처리함
     public List<UserResponseDTO> getAllUsers(){
@@ -84,7 +100,7 @@ public class UserService {
             throw new RuntimeException("UserNotFound");
         }
         UserResponseDTO responseDTO=UserResponseDTO.builder()
-                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절하지만 의존성 문제 때문에 유지중...
+                .eMail(encryptedEmailService.getOriginEmail(user.getEncryptedEmail())) //보안상 부적절하지만 의존성 문제가 있을 수 있기 때문에 유지중...
                 .nickName(nickName)
                 .dormId(user.getDormId())
                 .build();
@@ -135,10 +151,12 @@ public class UserService {
     public void makeNewUser(UserRequestDTO dto) {
         String encryptedEmail;
         String email=dto.getMail();
-        String nickname=dto.getNickName();
         Long dormId=dto.getDormId();
         ProviderType provider=dto.getProvider();
 
+        String rawNickname=dto.getNickName();
+        String safeNickname=XSSFilter.filter(rawNickname);
+        
         if(email==null){
             throw new IllegalArgumentException("EmailOmitted");
         }
@@ -148,7 +166,7 @@ public class UserService {
             return ;
         }
         User existingUserMailWithProvider = userRepository.findByEncryptedEmailAndProvider(encryptedEmail,provider);
-        User existingUserNick = userRepository.findByNickName(nickname);
+        User existingUserNick = userRepository.findByNickName(safeNickname);
         if (existingUserMailWithProvider != null) {
             throw new IllegalArgumentException("이미 사용중인 메일입니다.");
             //throw new IllegalArgumentException("DuplicatedMail"); <- 이 코드로 변경 필요 
@@ -166,7 +184,7 @@ public class UserService {
         User user = User.builder()
                 .encryptedEmail(encryptedEmail)
                 .passWord(encryptedPassword) 
-                .nickName(nickname)
+                .nickName(safeNickname)
                 .dormId(dormId)
                 .provider(provider)
                 .role(RoleType.ROLE_USER)
@@ -233,11 +251,11 @@ public class UserService {
     }
 
     public void deleteUser(Long usrId, UserRequestDTO dto){
-        User target=userRepository.findById(usrId).orElse(null);
-        if(target==null){
+        User targetUser=userRepository.findById(usrId).orElse(null);
+        if(targetUser==null){
             throw new IllegalArgumentException("존재하지 않는 유저입니다.");
         }
-        else if(!passwordEncryptor.matchesPassword(dto.getConfirmPassword(), target.getPassWord())){
+        else if(!passwordEncryptor.matchesPassword(dto.getConfirmPassword(), targetUser.getPassWord())){
             throw new RuntimeException("ConfirmPasswordNotCorrect");
         }
         else if(groupService.isBelongToAnywhere(usrId)){
@@ -245,16 +263,23 @@ public class UserService {
         }
 
         try{
-            userRepository.delete(target);
+            Long userId=targetUser.getId();
+            List<Comment> userComments=commentService.getUserComments(targetUser); //사용자가 삭제되기 전에 호출&실행 돼야함.
+            userRepository.delete(targetUser); //삭제되면 DB 내에 trigger로 deleted_user에 같은 데이터가 생김
+            DeletedUser deletedUser=deletedUserRepository.findById(userId).orElse(null); //null이 생길 수 없음. 반드시.
+            
+            commentService.makeAllUserCommentsOrphans(deletedUser,targetUser,userComments);
+
+            /*
             String encryptedEmail=target.getEncryptedEmail();
             long emailCount=userRepository.countByEncryptedEmail(encryptedEmail);
-            if(emailCount==0){
-                encryptedEmailService.deleteEmailMap(encryptedEmail); 
-            }
+            if(emailCount==0){encryptedEmailService.deleteEmailMap(encryptedEmail);} 삭제된 사용자는 deletd_user에 저장되므로 emailMap이 필요할 수도 있음.
+             */
+            
         }catch(Exception e){
             log.info(e.getMessage());
         }finally{
-            target=null;
+            targetUser=null;
         }
     }
 
@@ -312,4 +337,5 @@ public class UserService {
 
         return ;
     }
+
 }

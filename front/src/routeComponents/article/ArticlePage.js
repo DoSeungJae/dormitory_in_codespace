@@ -96,6 +96,7 @@ function ArticlePage(){
         5: '푸름2',
         6: '푸름3',
         7: '푸름4',
+        8: '기숙사 상관없음'
       };
       return mappingDict[num] || "Invalid input";
     }

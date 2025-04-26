@@ -125,7 +125,7 @@ function ChatRoom({ username, room, socketResponse, sendData }) {
         }
       </div>
       <div className='group-form' id='group-form'>
-        <TextareaAutosize
+        <TextAreaAutosize
           type='text'
           minRows={1}
           maxRows={5}

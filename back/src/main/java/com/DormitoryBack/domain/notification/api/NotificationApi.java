@@ -1,7 +1,7 @@
 package com.DormitoryBack.domain.notification.api;
 
 import com.DormitoryBack.domain.notification.dto.NotificationDto;
-import com.DormitoryBack.domain.notification.entitiy.Notification;
+import com.DormitoryBack.domain.notification.entity.Notification;
 import com.DormitoryBack.domain.notification.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,19 +11,12 @@ function ParticipateButton({articleId}) {
     //진행중인 group이라면 groupState를 1로 설정
     const [groupState,setGroupState]=useState(0); 
     //0: 시작 대기, 1: 진행중&%member, 2:진행중&&nonMember -1: 마감됨, -2: 종료됨, 9: 꽉 참
-    const [doesGroupExist,setDoesGroupExist]=useState(0); //그룹이 존재하면 1, 그렇지 않다면 0
-    //위 값으로 "시작 대기" 상태를 체크할 수 있음.
-    //doesGroupExist가 0이면 대기 상태고, 그렇지 않다면 다른 상태일 것임
-    const [isMember, setIsMember]=useState(0);
-    const [numMembers,setNumMembers]=useState(0);
-    //참여자의 숫자를 나타내는 값, 마감 혹은 종료 상태를 판단할 수 있음
-    //위 기능 뿐만 아니라 다른 곳에서도 필요할 것으로 예상
-    
+
     const [buttonText,setButtonText]=useState("");
     const [isBlur, setIsBlur]=useState(0);
 
-    const defaultColor = '#FF8C00';
-    const bgColor = isBlur ? 'rgba(255, 140, 0, 0.6)' : defaultColor;
+    const defaultColor = '#FDAA5A';
+    const bgColor = isBlur ? 'rgba(253, 170, 90, 0.6)' : defaultColor;
     const handleBlurStyle = () => {
         if(groupState==-1 || groupState==-2 || groupState==9){
             setIsBlur(1);

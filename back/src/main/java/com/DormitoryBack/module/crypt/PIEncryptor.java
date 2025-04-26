@@ -35,6 +35,9 @@ public class PIEncryptor {
     public String hashify(String pi) throws NoSuchAlgorithmException{ //hashifyEmail
         MessageDigest digest=MessageDigest.getInstance("SHA-256");
         byte[] encodedHash=digest.digest(pi.getBytes());
+        
+        //byte[] encodedHash=digest.digest((pi+encryptionKey).getBytes());
+        //보안성 강화를 위해 이 코드로 변경 필요. 테스트 해본적 없음.
         return Base64.getEncoder().encodeToString(encodedHash);
     }
 }

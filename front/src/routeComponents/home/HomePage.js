@@ -1,8 +1,10 @@
-import {React,useEffect,useState,useRef} from 'react';
+import {React,useEffect,useState,useRef, useContext} from 'react';
 import axios from 'axios';
 import ArticlePreview from '../../components/article/ArticlePreview.js';
 import { calculateDorItemStyle } from '../../components/home/HomeUtils.js';
 import WriteButton from '../../components/home/WriteButton.js';
+import { toast } from 'react-toastify';
+import HomeSelectContext from '../../components/home/HomeSelectContext.js';
 
 function HomePage() {
   const [articleList,setArticleList]=useState([]);
@@ -12,12 +14,13 @@ function HomePage() {
   const [dorId,setDorId]=useState(0);
   const [isEndPage,setIsEndPage]=useState(false);
   const token=localStorage.getItem("token");
+  const {selectComponentIndex,setSelectComponentIndex}=useContext(HomeSelectContext);
   const previewStyle = {
     maxHeight:'83vh'
   }
   
   const getArticlesPerPage = async (page) => {
-    if(!(dorId>=1 || dorId<=7)){
+    if(!(dorId>=1 || dorId<=8)){
       return;
     }
     let path;
@@ -35,13 +38,17 @@ function HomePage() {
       setDoLoadPage(0);
     }
     catch(error){
-      const errMsg=error.response.data;
-      if(errMsg==='NoMoreArticlePage' || errMsg==="ExceededPage"){
+      const err=error.response.data;
+      if(err==='NoMoreArticlePage' || err==="ExceededPage"){
         setDoLoadPage(1);
         setIsEndPage(1);
       }
-      if(errMsg==="ArticleNotFound"){
+      if(err==="ArticleNotFound"){
         return ;
+      }
+      if(err.errorType==="InvalidToken"){
+        localStorage.setItem("nextIndex",selectComponentIndex);
+        setSelectComponentIndex(8);
       }
     }
   };
@@ -105,7 +112,8 @@ function HomePage() {
     "푸름1": 4,
     "푸름2": 5,
     "푸름3": 6,
-    "푸름4": 7
+    "푸름4": 7,
+    "상관없음":8
   };
 
 return (
@@ -115,7 +123,7 @@ return (
     
     <main className="App-main">
       <div className="slide-menu no_scroll">
-        {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4'].map((item, i) => {
+        {['오름1', '오름2', '오름3', '푸름1', '푸름2', '푸름3', '푸름4', '상관없음'].map((item, i) => {
           const dorItemStyle=calculateDorItemStyle(dorId-1,i);
           return (
             <div 

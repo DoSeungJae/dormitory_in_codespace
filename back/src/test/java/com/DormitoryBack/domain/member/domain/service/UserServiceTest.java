@@ -193,7 +193,7 @@ public class UserServiceTest {
         PasswordInitDTO request=PasswordInitDTO.builder()
             .email(validEmail)
             .emailToken(validToken)
-            .newPassword(newValidPassword)
+            .newPassword(null)
             .build();
 
         User user=User.builder()
@@ -221,7 +221,7 @@ public class UserServiceTest {
         });
         
 
-        assertEquals("InvalidEmail",exception.getMessage());
+        assertEquals("InvalidPassword",exception.getMessage());
         verify(passwordEncryptor,times(0)).encryptPassword(newValidPassword);
         verify(userRepository,times(0)).save(user);
     }
