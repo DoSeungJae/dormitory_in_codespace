@@ -30,6 +30,7 @@ import com.DormitoryBack.exception.globalException.EntityNotFoundException;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceExternalTest {
     
+    
     @InjectMocks
     private UserServiceExternal userService;
 
