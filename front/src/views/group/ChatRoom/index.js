@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 
 import ChatBubble from '../../../components/group/ChatBubble';
 import { getSocketResponse } from '../../../service/group/socket';
-import TextareaAutosize from 'react-textarea-autosize';
+import TextAreaAutosize from 'react-textarea-autosize';
 import ProfileImageContext from '../../../components/common/ProfileImageContext';
 import userDefault from '../../../images/userDefault.png';
 import { getProfileImages } from '../../../modules/common/profileImageModule';
