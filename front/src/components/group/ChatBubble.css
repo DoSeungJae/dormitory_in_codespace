@@ -27,6 +27,26 @@
     align-self: flex-start;
 }
 
+.chat-bubble-profile-wrap{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.chat-bubble-profile-image {
+    object-fit: cover;  /* 이미지 비율을 유지하면서 프레임에 맞게 조절합니다 */
+    overflow: hidden;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    margin-top: 0.2rem;
+}
+
+.chat-bubble-username-wrap{
+    display: flex;
+    flex-direction: column;
+}
+
 .chat-bubble-username{
     font-size: 1rem;
 }
