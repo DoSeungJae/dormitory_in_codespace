@@ -1,7 +1,7 @@
 # Project
 Project - 기숙사 내 공동주문/택시 카폴 웹앱
 
-Mobile    -  React Native (planned)
+Mobile    -  PWA, (React Native) (planned)
 
 FrontEnd  -  React.js
 
