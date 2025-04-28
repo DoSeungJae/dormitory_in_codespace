@@ -149,7 +149,7 @@ function ArticlePage(){
           <div className="comment-item-header">
             <div className="comment-profile-nickname">
               <img className='rounded-image' src={profileImageById(comment.user?.id)} />
-              {comment.user ? comment.user.nickName : "알 수 없음"}
+              {comment.user.encryptedEmail!=="-" ? comment.user.nickName : "알 수 없음"}
             </div>
             <CommentMenu
               rootCommentId={comment.id}
@@ -158,7 +158,7 @@ function ArticlePage(){
               inputRef={inputRef}
               isReply={isReply}
               setIsReply={setIsReply}
-              writerId={comment.user ? comment.user.id : 0}
+              writerId={comment.user.encryptedEmail!=="-" ? comment.user.id : 0}
               commentParam={comment}
               setCommentsAltered={setCommentsAltered}
             />
@@ -176,11 +176,11 @@ function ArticlePage(){
           <div className="comment-item-header">
             <div className="comment-profile-nickname">
               <img className='rounded-image' src={profileImageById(reply.user?.id)} />
-              {reply.user ? reply.user.nickName : "알 수 없음"}
+              {reply.user.encryptedEmail!=="-" ? reply.user.nickName : "알 수 없음"}
             </div>
             <CommentMenu
               isForReply={1}
-              writerId={reply.user ? reply.user.id : 0}
+              writerId={reply.user.encryptedEmail!=="-" ? reply.user.id : 0}
               commentParam={reply}
               setCommentsAltered={setCommentsAltered}
             />
