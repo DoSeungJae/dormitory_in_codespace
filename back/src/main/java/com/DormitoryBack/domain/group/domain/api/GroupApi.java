@@ -35,41 +35,41 @@ public class GroupApi {
 
 
     @GetMapping("")
-    public ResponseEntity allGroups(){
+    public ResponseEntity<GroupListDto> allGroups(){
         GroupListDto responseDto=groupService.getAllGroups();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/proceedings")
-    public ResponseEntity allProceedingGroups(){
+    public ResponseEntity<GroupListDto> allProceedingGroups(){
         GroupListDto responseDto=groupService.getAllProceedingGroups();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @GetMapping("/userBelongsTo")
-    public ResponseEntity groupThatUserBelongsTo(@RequestHeader("Authorization") String token){
+    public ResponseEntity<SingleGroupDto> groupThatUserBelongsTo(@RequestHeader("Authorization") String token){
         SingleGroupDto responseDto=groupService.getGroupThatUserBelongsTo(token);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/{groupId}")
-    public ResponseEntity group(@PathVariable("groupId") Long groupId){
+    public ResponseEntity<SingleGroupDto> group(@PathVariable("groupId") Long groupId){
         SingleGroupDto responseDto=groupService.getGroup(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @GetMapping("/host/{groupId}")
-    public ResponseEntity groupHost(@PathVariable("groupId") Long groupId){
+    public ResponseEntity<UserResponseDTO> groupHost(@PathVariable("groupId") Long groupId){
         UserResponseDTO responseDto=groupService.getGroupHost(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @GetMapping("/numMembers")
-    public ResponseEntity numberOfMembers(
+    public ResponseEntity<Long> numberOfMembers(
             @RequestParam(name="groupId",defaultValue = "-1") Long groupId){
         long num=groupService.getNumberOfMembers(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(num);
     }
     @GetMapping("/isMember")
-    public ResponseEntity isMember(@RequestParam(name = "groupId", defaultValue = "-1") Long groupId,
+    public ResponseEntity<Boolean> isMember(@RequestParam(name = "groupId", defaultValue = "-1") Long groupId,
                                    @RequestHeader("Authorization") String token){
 
         Boolean isMember=groupService.getIsMember(groupId,token);
@@ -78,7 +78,7 @@ public class GroupApi {
     }
 
     @GetMapping("/stateFromExternal/{groupId}")
-    public ResponseEntity groupStateFromExternalView(@PathVariable("groupId") Long groupId,
+    public ResponseEntity<Long> groupStateFromExternalView(@PathVariable("groupId") Long groupId,
                                                      @RequestHeader("Authorization") String token){
 
         Long groupState=groupService.getGroupStateFromExternalView(groupId,token);
@@ -86,24 +86,24 @@ public class GroupApi {
     }
 
     @GetMapping("/isGroupProceeding/{groupId}")
-    public ResponseEntity checkProceeding(@PathVariable("groupId") Long groupId){
+    public ResponseEntity<Boolean> checkProceeding(@PathVariable("groupId") Long groupId){
         Boolean isGroupProceeding=groupService.checkGroupProceeding(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(isGroupProceeding);
     }
 
     @GetMapping("/groupMaxCapacity/{groupId}")
-    public ResponseEntity groupMaxCapacity(@PathVariable("groupId") Long groupId){
+    public ResponseEntity<Long> groupMaxCapacity(@PathVariable("groupId") Long groupId){
         Long maxCapacity=groupService.getMaxCapacity(groupId);
         return ResponseEntity.status(HttpStatus.OK).body(maxCapacity);
     }
 
     @PostMapping("/new")
-    public ResponseEntity newGroup(@RequestBody GroupCreateDto requestDto){
+    public ResponseEntity<GroupCreatedDto> newGroup(@RequestBody GroupCreateDto requestDto){
         GroupCreatedDto responseDto=groupService.createNewGroup(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @PatchMapping("/participate")
-    public ResponseEntity newJoiner(
+    public ResponseEntity<GroupChangedDto> newJoiner(
             @RequestHeader("Authorization") String token,
             @RequestParam(name="groupId", defaultValue = "-1") Long groupId){
 
@@ -113,7 +113,7 @@ public class GroupApi {
     }
 
     @PatchMapping("quit")
-    public ResponseEntity quit(
+    public ResponseEntity<GroupChangedDto> quit(
             @RequestHeader("Authorization") String token,
             @RequestParam(name = "groupId",defaultValue = "-1") Long groupId){
 
@@ -122,7 +122,7 @@ public class GroupApi {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @PatchMapping("expel")
-    public ResponseEntity invite(
+    public ResponseEntity<GroupChangedDto> invite(
             @RequestHeader("Authorization") String hostToken,
             @RequestParam(name = "groupId", defaultValue = "-1") Long groupId,
             @RequestParam(name="targetId", defaultValue = "-1") Long targetId){
@@ -132,7 +132,7 @@ public class GroupApi {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @PatchMapping("/finish/{groupId}")
-    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId,
+    public ResponseEntity<String> deleteGroup(@PathVariable("groupId") Long groupId,
                                       @RequestHeader("Authorization") String token,
                                       @RequestParam(name="force",defaultValue = "0") Long force){
 
@@ -140,7 +140,7 @@ public class GroupApi {
         return ResponseEntity.status(HttpStatus.OK).body("GroupFinished");
     }
     @PatchMapping("/close/{groupId}")
-    public ResponseEntity closeGroup(@PathVariable("groupId") Long groupId,
+    public ResponseEntity<String> closeGroup(@PathVariable("groupId") Long groupId,
                                      @RequestHeader("Authorization") String token){
 
         groupService.closeGroup(groupId,token);
