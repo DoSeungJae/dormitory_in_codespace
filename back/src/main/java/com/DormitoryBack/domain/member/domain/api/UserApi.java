@@ -31,6 +31,7 @@ public class UserApi {
         return "12";
     }
 
+
     /*
     @GetMapping("")
     public ResponseEntity allUsers(){
@@ -41,20 +42,20 @@ public class UserApi {
     */
 
     @GetMapping("/{usrId}")
-    public ResponseEntity user(@PathVariable("usrId") Long usrId){
+    public ResponseEntity<UserResponseDTO> user(@PathVariable("usrId") Long usrId){
         UserResponseDTO responseDTO=userService.getUser(usrId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
     @GetMapping("/findByNick/{nickName}")
-    public ResponseEntity userByNickName(@PathVariable("nickName") String nickName){
+    public ResponseEntity<UserResponseDTO> userByNickName(@PathVariable("nickName") String nickName){
         UserResponseDTO responseDTO=userService.getUserByNickName(nickName);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
     }
 
     @GetMapping("/NickName")
-    public ResponseEntity userNickName(@RequestHeader("Authorization") String token){
+    public ResponseEntity<String> userNickName(@RequestHeader("Authorization") String token){
         String userNickName=userService.getUserNickName(token);
         return ResponseEntity.status(HttpStatus.OK).body(userNickName);
     }
@@ -67,7 +68,7 @@ public class UserApi {
 
     
     @PostMapping("/logIn")
-    public ResponseEntity logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
+    public ResponseEntity<?> logIn(@RequestBody UserLogInDTO dto){ //return type : ResponseEntity <String>
         try{
             String token=userService.logIn(dto);
             return ResponseEntity
@@ -83,7 +84,7 @@ public class UserApi {
 
 
     @PostMapping("/join")
-    public ResponseEntity signUp(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<String> signUp(@RequestBody UserRequestDTO dto) {
         userService.makeNewUser(dto);
         return ResponseEntity.ok().body("회원가입이 성공적으로 처리되었습니다");
     }
@@ -96,7 +97,7 @@ public class UserApi {
 
     //토큰 인증 필요
     @PatchMapping("/{usrId}")
-    public ResponseEntity updateUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
         UserResponseDTO responseDTO=userService.updateUser(usrId,dto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
@@ -108,7 +109,7 @@ public class UserApi {
     }
 
     @DeleteMapping("/{usrId}")
-    public ResponseEntity deleteUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
+    public ResponseEntity<String> deleteUser(@PathVariable("usrId") Long usrId, @RequestBody UserRequestDTO dto){
         userService.deleteUser(usrId, dto);
         return ResponseEntity.status(HttpStatus.OK).body("UserDeleted");
     }
